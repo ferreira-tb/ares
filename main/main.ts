@@ -8,7 +8,10 @@ function createWindow() {
         height: 1000,
         show: false,
         title: 'Claustrophobia',
-        icon: path.resolve(__dirname, '../public/favicon.ico')
+        icon: path.resolve(__dirname, '../public/favicon.ico'),
+        webPreferences: {
+            preload: path.resolve(__dirname, 'preload.js')
+        }
     });
     
     const childWindow = new BrowserWindow({
@@ -17,7 +20,6 @@ function createWindow() {
         height: 300,
         show: false,
         closable: false,
-        resizable: false,
         minimizable: false,
         maximizable: false,
         title: 'Claustrophobia',

@@ -9,8 +9,8 @@
         "preview": "vite preview",
         "build-only": "vite build",
         "type-check": "vue-tsc --noEmit",
-        "start": "npm run build && npm run start-tsc-only",
-        "start-main": "rollup -c && electron ."
+        "start": "npm run build && npm run main",
+        "main": "rollup -c && electron ."
     },
     "keywords": [
         "tribal-wars"
@@ -19,7 +19,8 @@
     "license": "MIT",
     "dependencies": {
         "pinia": "^2.0.28",
-        "vue": "^3.2.45"
+        "vue": "^3.2.45",
+        "vue-router": "^4.1.6"
     },
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^15.0.1",
