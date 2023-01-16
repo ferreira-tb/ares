@@ -10,7 +10,7 @@
         "build-only": "vite build",
         "type-check": "vue-tsc --noEmit",
         "start": "npm run build && npm run start-tsc-only",
-        "start-tsc-only": "rollup -c && electron ."
+        "start-main": "rollup -c && electron ."
     },
     "keywords": [
         "tribal-wars"

@@ -6,6 +6,7 @@ function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 1200,
         height: 1000,
+        show: false,
         title: 'Claustrophobia',
         icon: path.resolve(__dirname, '../public/favicon.ico')
     });
@@ -14,6 +15,7 @@ function createWindow() {
         parent: mainWindow,
         width: 200,
         height: 300,
+        show: false,
         closable: false,
         resizable: false,
         minimizable: false,
@@ -26,11 +28,16 @@ function createWindow() {
         }
     });
 
+    mainWindow.maximize();
+
     mainWindow.setMenu(mainMenu);
     childWindow.setMenu(null);
 
     mainWindow.loadURL('https://www.tribalwars.com.br/');
     childWindow.loadFile('dist/index.html');
+
+    mainWindow.once('ready-to-show', () => mainWindow.show());
+    childWindow.once('ready-to-show', () => childWindow.show());
 };
 
 app.whenReady().then(() => createWindow());
