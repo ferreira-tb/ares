@@ -9,9 +9,8 @@
         "preview": "vite preview",
         "build-only": "vite build",
         "type-check": "vue-tsc --noEmit",
-        "build-main": "tsc main/main.ts --outDir dist",
         "start": "npm run build && npm run start-tsc-only",
-        "start-tsc-only": "npm run build-main && electron ."
+        "start-tsc-only": "rollup -c && electron ."
     },
     "keywords": [
         "tribal-wars"
@@ -23,12 +22,15 @@
         "vue": "^3.2.45"
     },
     "devDependencies": {
-        "electron": "^22.0.2",
+        "@rollup/plugin-node-resolve": "^15.0.1",
+        "@rollup/plugin-typescript": "^11.0.0",
         "@types/node": "^18.11.12",
         "@vitejs/plugin-vue": "^4.0.0",
         "@vue/tsconfig": "^0.1.3",
+        "electron": "^22.0.2",
         "npm-run-all": "^4.1.5",
-        "typescript": "~4.7.4",
+        "tslib": "^2.4.1",
+        "typescript": "^4.9.4",
         "vite": "^4.0.0",
         "vue-tsc": "^1.0.12"
     }

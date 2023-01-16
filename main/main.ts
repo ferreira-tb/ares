@@ -1,10 +1,12 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
+import { mainMenu } from './menu.js';
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 1200,
         height: 1000,
+        title: 'Claustrophobia',
         icon: path.resolve(__dirname, '../public/favicon.ico')
     });
     
@@ -16,12 +18,16 @@ function createWindow() {
         resizable: false,
         minimizable: false,
         maximizable: false,
+        title: 'Claustrophobia',
         icon: path.resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
         }
     });
+
+    mainWindow.setMenu(mainMenu);
+    childWindow.setMenu(null);
 
     mainWindow.loadURL('https://www.tribalwars.com.br/');
     childWindow.loadFile('dist/index.html');
