@@ -1,0 +1,35 @@
+{
+    "name": "claustrophobia",
+    "version": "1.0.0",
+    "description": "Ferramenta para Tribal Wars",
+    "main": "dist/main.js",
+    "scripts": {
+        "dev": "vite",
+        "build": "run-p type-check build-only && node dist.mjs",
+        "preview": "vite preview",
+        "build-only": "vite build",
+        "type-check": "vue-tsc --noEmit",
+        "build-main": "tsc main/main.ts --outDir dist",
+        "start": "npm run build && npm run start-tsc-only",
+        "start-tsc-only": "npm run build-main && electron ."
+    },
+    "keywords": [
+        "tribal-wars"
+    ],
+    "author": "Andrew Ferreira <andrew.shien2@gmail.com> (https://github.com/ferreira-tb)",
+    "license": "MIT",
+    "dependencies": {
+        "pinia": "^2.0.28",
+        "vue": "^3.2.45"
+    },
+    "devDependencies": {
+        "electron": "^22.0.2",
+        "@types/node": "^18.11.12",
+        "@vitejs/plugin-vue": "^4.0.0",
+        "@vue/tsconfig": "^0.1.3",
+        "npm-run-all": "^4.1.5",
+        "typescript": "~4.7.4",
+        "vite": "^4.0.0",
+        "vue-tsc": "^1.0.12"
+    }
+}
