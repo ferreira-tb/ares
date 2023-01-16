@@ -17,6 +17,14 @@ const preloadTsOptions = {
     }
 };
 
+const gameTsOptions = {
+    include: ['game/**/*'],
+    tsconfig: 'game/tsconfig.json',
+    compilerOptions: {
+        target: 'esnext'
+    }
+};
+
 export default [
     {
         input: 'main/main.ts',
@@ -31,7 +39,7 @@ export default [
         external: ['electron']
     },
     {
-        input: 'preload/index.ts',
+        input: 'preload/preload.ts',
         output: {
             file: 'dist/preload.js',
             format: 'cjs'
@@ -41,5 +49,15 @@ export default [
             nodeResolve()
         ],
         external: ['electron']
+    },
+    {
+        input: 'game/game.ts',
+        output: {
+            file: 'dist/game.js',
+            format: 'es'
+        },
+        plugins: [
+            typescript(gameTsOptions)
+        ]
     }
 ];

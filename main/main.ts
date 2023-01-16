@@ -10,7 +10,8 @@ function createWindow() {
         title: 'Claustrophobia',
         icon: path.resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
-            preload: path.resolve(__dirname, 'preload.js')
+            preload: path.resolve(__dirname, 'preload.js'),
+            sandbox: false
         }
     });
     

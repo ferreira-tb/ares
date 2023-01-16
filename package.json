@@ -1,7 +1,7 @@
 {
     "name": "claustrophobia",
     "version": "1.0.0",
-    "description": "Ferramenta para Tribal Wars",
+    "description": "Experimento com o Electron",
     "main": "dist/main.js",
     "scripts": {
         "dev": "vite",
