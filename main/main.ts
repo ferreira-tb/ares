@@ -31,6 +31,13 @@ function createWindow() {
         }
     });
 
+    // Eventos.
+    mainWindow.webContents.on('did-finish-load', () => {
+        const currentURL = mainWindow.webContents.getURL();
+        childWindow.webContents.send('game-url', currentURL);
+    });
+
+    // Outros.
     mainWindow.maximize();
 
     mainWindow.setMenu(mainMenu);
