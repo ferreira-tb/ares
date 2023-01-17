@@ -29,6 +29,7 @@
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
         "removeComments": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "esModuleInterop": true
     }
 }

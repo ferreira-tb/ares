@@ -14,6 +14,7 @@
         },
 
         "lib": ["esnext", "dom"],
+        "target": "esnext",
         
         // Modo estrito
         "alwaysStrict": true,
@@ -38,8 +39,8 @@
         "exactOptionalPropertyTypes": true,
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
-        "removeComments": true
-
+        "removeComments": true,
+        "esModuleInterop": true
     },
     "references": [
         {

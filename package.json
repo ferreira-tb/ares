@@ -13,7 +13,7 @@
         "main": "rollup -c && electron ."
     },
     "keywords": [
-        "tribal-wars"
+        "tribal-wars", "electron"
     ],
     "author": "Andrew Ferreira <andrew.shien2@gmail.com> (https://github.com/ferreira-tb)",
     "license": "MIT",

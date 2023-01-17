@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
-import { mainMenu } from './menu.js';
+import { mainMenu, childMenu } from './menu.js';
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -8,6 +8,7 @@ function createWindow() {
         height: 1000,
         show: false,
         title: 'Claustrophobia',
+        autoHideMenuBar: true,
         icon: path.resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
             preload: path.resolve(__dirname, 'preload.js'),
@@ -24,6 +25,7 @@ function createWindow() {
         minimizable: false,
         maximizable: false,
         title: 'Claustrophobia',
+        autoHideMenuBar: true,
         icon: path.resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
             nodeIntegration: true,
@@ -41,7 +43,7 @@ function createWindow() {
     mainWindow.maximize();
 
     mainWindow.setMenu(mainMenu);
-    childWindow.setMenu(null);
+    childWindow.setMenu(childMenu);
 
     mainWindow.loadURL('https://www.tribalwars.com.br/');
     childWindow.loadFile('dist/index.html');

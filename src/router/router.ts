@@ -1,16 +1,18 @@
 import { createRouter, createMemoryHistory } from 'vue-router';
+import Home from '@/views/Home.vue';
+import Plunder from '@/views/Plunder.vue';
 import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
         name: 'home',
-        component: () => import('@/views/Home.vue')
+        component: Home
     },
     {
         path: '/am_farm',
         name: 'am_farm',
-        component: () => import('@/views/Plunder.vue')
+        component: Plunder
     }
 ];
 
@@ -19,4 +21,4 @@ export const router = createRouter({
     routes: routes
 });
 
-export const routeNames = new Set(routes.map(route => route.name as string));
+export const routeNames = routes.map(route => route.name as string);
