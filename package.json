@@ -2,7 +2,13 @@
     "name": "claustrophobia",
     "version": "1.0.0",
     "description": "Ferramenta para Tribal Wars",
+    "author": "Andrew Ferreira <andrew.shien2@gmail.com> (https://github.com/ferreira-tb)",
+    "license": "MIT",
     "main": "dist/main.js",
+    "keywords": [
+        "tribal-wars",
+        "electron"
+    ],
     "scripts": {
         "dev": "vite",
         "build": "run-p type-check build-only && node dist.mjs",
@@ -12,17 +18,15 @@
         "start": "npm run build && npm run main",
         "main": "rollup -c && electron ."
     },
-    "keywords": [
-        "tribal-wars", "electron"
-    ],
-    "author": "Andrew Ferreira <andrew.shien2@gmail.com> (https://github.com/ferreira-tb)",
-    "license": "MIT",
     "dependencies": {
+        "electron-store": "^8.1.0",
         "pinia": "^2.0.28",
         "vue": "^3.2.45",
         "vue-router": "^4.1.6"
     },
     "devDependencies": {
+        "@rollup/plugin-commonjs": "^24.0.0",
+        "@rollup/plugin-json": "^6.0.0",
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@rollup/plugin-typescript": "^11.0.0",
         "@types/node": "^18.11.12",

@@ -3,6 +3,9 @@ import Home from '@/views/Home.vue';
 import Plunder from '@/views/Plunder.vue';
 import type { RouteRecordRaw } from 'vue-router';
 
+// Os componentes devem ser passados diretamente.
+// Importá-los gera problemas ao compilar.
+
 const routes: RouteRecordRaw[] = [
     {
         path: '/',

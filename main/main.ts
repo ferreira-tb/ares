@@ -1,6 +1,7 @@
-import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
+import { app, BrowserWindow } from 'electron';
 import { mainMenu, childMenu } from './menu.js';
+import './config.js';
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -11,15 +12,14 @@ function createWindow() {
         autoHideMenuBar: true,
         icon: path.resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
-            preload: path.resolve(__dirname, 'preload.js'),
-            sandbox: false
+            preload: path.resolve(__dirname, 'preload.js')
         }
     });
     
     const childWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 200,
-        height: 300,
+        width: 300,
+        height: 200,
         show: false,
         closable: false,
         minimizable: false,

@@ -4,6 +4,10 @@ export class ClaustrophobicError extends Error {
     constructor(message: string) {
         super(message);
     };
+
+    public static handle(err: unknown) {
+        if (err instanceof Error) console.error(err);
+    };
 };
 
 export function assert(condition: any, message: string): asserts condition {

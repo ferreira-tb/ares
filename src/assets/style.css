@@ -47,6 +47,10 @@ body {
     font-size: var(--main-font-size);
 }
 
+main {
+    margin: 0.5em;
+}
+
 /** CLASSES */
 .bold {
     font-weight: bold;
@@ -64,7 +68,7 @@ body {
     color: var(--color-red);
 }
 
-.suspense-text {
+.to-center {
     position: relative;
     top: 50%;
     left: 50%;

@@ -1,5 +1,5 @@
 {
-    "include": ["./**/*"],
+    "include": ["./**/*", "../index.d.ts"],
 
     "compilerOptions": {
         "target": "esnext",

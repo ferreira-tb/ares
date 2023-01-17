@@ -24,6 +24,7 @@ watchEffect(() => {
 // Comunicação.
 ipcRenderer.on('game-url', (_e, url) => {
     assert(typeof url === 'string', 'A URL é inválida.');
+    if (!url.includes('tribalwars')) return;
     currentURL.value = url;
 });
 </script>

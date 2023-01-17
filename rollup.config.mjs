@@ -1,4 +1,6 @@
 import typescript from '@rollup/plugin-typescript';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 const mainTsOptions = {
@@ -22,11 +24,14 @@ export default [
         input: 'main/main.ts',
         output: {
             file: 'dist/main.js',
-            format: 'cjs'
+            format: 'cjs',
+            generatedCode: 'es2015'
         },
         plugins: [
-            typescript(mainTsOptions),
-            nodeResolve()
+            nodeResolve(),
+            commonjs(),
+            json(),
+            typescript(mainTsOptions)
         ],
         external: ['electron']
     },
@@ -34,11 +39,12 @@ export default [
         input: 'preload/preload.ts',
         output: {
             file: 'dist/preload.js',
-            format: 'cjs'
+            format: 'cjs',
+            generatedCode: 'es2015'
         },
         plugins: [
-            typescript(preloadTsOptions),
-            nodeResolve()
+            nodeResolve(),
+            typescript(preloadTsOptions)
         ],
         external: ['electron']
     }
