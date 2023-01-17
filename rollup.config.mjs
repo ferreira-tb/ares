@@ -3,22 +3,6 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
-const mainTsOptions = {
-    include: ['main/**/*'],
-    tsconfig: 'main/tsconfig.json',
-    compilerOptions: {
-        target: 'esnext'
-    }
-};
-
-const preloadTsOptions = {
-    include: ['preload/**/*'],
-    tsconfig: 'preload/tsconfig.json',
-    compilerOptions: {
-        target: 'esnext'
-    }
-};
-
 export default [
     {
         input: 'main/main.ts',
@@ -28,23 +12,23 @@ export default [
             generatedCode: 'es2015'
         },
         plugins: [
-            nodeResolve(),
+            nodeResolve({ extensions: ['.mjs', '.js', '.mts', '.ts', '.json'] }),
             commonjs(),
             json(),
-            typescript(mainTsOptions)
+            typescript({ tsconfig: 'main/tsconfig.json' })
         ],
         external: ['electron']
     },
     {
-        input: 'preload/preload.ts',
+        input: ['preload/preload.ts'],
         output: {
             file: 'dist/preload.js',
             format: 'cjs',
             generatedCode: 'es2015'
         },
         plugins: [
-            nodeResolve(),
-            typescript(preloadTsOptions)
+            typescript({ tsconfig: 'preload/tsconfig.json' }),
+            nodeResolve({ extensions: ['.mjs', '.js', '.mts', '.ts', '.json'] })
         ],
         external: ['electron']
     }

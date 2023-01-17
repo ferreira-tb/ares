@@ -1,9 +1,19 @@
 {
     "include": ["./**/*"],
+    "files": [
+        "../src/constants.ts",
+        "../src/error.ts",
+        "../src/composables/game.ts"
+    ],
 
     "compilerOptions": {
         "target": "esnext",
         "lib": ["esnext", "dom"],
+        "paths": {
+            "@/*": [
+                "../src/*"
+            ]
+        },
         
         // Modo estrito
         "alwaysStrict": true,

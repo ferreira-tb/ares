@@ -1,9 +1,17 @@
 {
     "include": ["./**/*"],
+    "files": [
+        "../src/stores/plunder.ts"
+    ],
 
     "compilerOptions": {
         "target": "esnext",
         "lib": ["esnext"],
+        "paths": {
+            "@/*": [
+                "../src/*"
+            ]
+        },
         
         // Modo estrito
         "alwaysStrict": true,

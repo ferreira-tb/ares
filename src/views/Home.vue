@@ -7,13 +7,16 @@ import Button from '@/components/Button.vue';
 <template>
     <main>
         <div class="title-area">
-            <h1 class="green-text">Claustrophobia</h1>
+            <h1 class="green-text bold">Claustrophobia</h1>
             <h2>Uma ferramenta para Tribal Wars</h2>
         </div>
         <div class="link-area">
             <Button @click="shell.openExternal(authorURL)">Autor</Button>
             <Button @click="shell.openExternal(repoURL)">Repositório</Button>
             <Button @click="shell.openExternal(helpURL)">Suporte</Button>
+        </div>
+        <div class="footer-area">
+            <span>ferreira-tb © 2023</span>
         </div>
     </main>
 </template>
@@ -45,5 +48,9 @@ h2 {
 .link-area > button {
     width: 90%;
     max-width: 150px;
+}
+
+.footer-area {
+    margin-top: 2em;
 }
 </style>
