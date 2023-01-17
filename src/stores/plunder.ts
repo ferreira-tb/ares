@@ -1,18 +1,29 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-export const usePlunderStore = defineStore('plunder', () => {
+export type PlunderState = {
     /** Indica se o Plunder está ativado. */
-    const status = ref<boolean>(false);
+    status: boolean;
     /** Determina se o Plunder deve atacar aldeias com muralha. */
-    const ignoreWall = ref<boolean>(false);
+    ignoreWall: boolean;
     /** Determina se o Plunder deve demolir a muralha das aldeias. */
-    const destroyWall = ref<boolean>(false);
+    destroyWall: boolean;
     /** Determina se o Plunder deve utilizar o grupo Insidious ao atacar. */
-    const groupAttack = ref<boolean>(false);
+    groupAttack: boolean;
     /** Determina se o Plunder deve atacar usando o modelo C. */
-    const useCModel = ref<boolean>(false);
+    useCModel: boolean;
     /** Se ativado, o Plunder não terá delay entre os ataques. */
+    ignoreDelay: boolean;
+};
+
+export type PlunderStateValue = PlunderState[keyof PlunderState];
+
+export const usePlunderStore = defineStore('plunder', () => {
+    const status = ref<boolean>(false);
+    const ignoreWall = ref<boolean>(false);
+    const destroyWall = ref<boolean>(false);
+    const groupAttack = ref<boolean>(false);
+    const useCModel = ref<boolean>(false);
     const ignoreDelay = ref<boolean>(false);
 
     return { 

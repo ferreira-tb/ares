@@ -19,7 +19,11 @@ function createWindow() {
     const childWindow = new BrowserWindow({
         parent: mainWindow,
         width: 300,
+        minWidth: 300,
+        maxWidth: 500,
         height: 200,
+        minHeight: 200,
+        maxHeight: 500,
         show: false,
         closable: false,
         minimizable: false,
@@ -33,13 +37,19 @@ function createWindow() {
         }
     });
 
-    // Eventos.
+    ////// Eventos.
     mainWindow.webContents.on('did-finish-load', () => {
         const currentURL = mainWindow.webContents.getURL();
+        mainWindow.webContents.send('game-url', currentURL);
         childWindow.webContents.send('game-url', currentURL);
     });
 
-    // Outros.
+    // Impede que o usuário navegue para fora da página do jogo.
+    mainWindow.webContents.on('will-navigate', (e, url) => {
+        if (!url.includes('tribalwars')) e.preventDefault();
+    });
+
+    ////// Outros.
     mainWindow.maximize();
 
     mainWindow.setMenu(mainMenu);

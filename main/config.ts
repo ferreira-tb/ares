@@ -1,5 +1,6 @@
-import Store, { type Schema } from 'electron-store';
+import Store from 'electron-store';
 import { ipcMain } from 'electron';
+import type { Schema } from 'electron-store';
 
 const falseDefault: Record<string, unknown> = {
     type: 'boolean',
@@ -24,8 +25,9 @@ const configStore = new Store({
     schema: configSchema
 });
 
+ipcMain.handle('is-plunder-active', () => configStore.get('plunder-state.status', false));
 ipcMain.handle('get-plunder-state', () => configStore.get('plunder-state', null));
-ipcMain.handle('set-plunder-state', (_e, name: keyof PlunderState, state: boolean) => {
+ipcMain.handle('set-plunder-state', (_e, name: string, state: unknown) => {
     try {
         configStore.set(`plunder-state.${name}`, state);
         return true;

@@ -3,10 +3,11 @@ import { ref } from 'vue';
 import { ipcInvoke } from '@/ipc.js';
 import { usePlunderStore } from '@/stores/plunder.js';
 import { ClaustrophobicError } from '@/error.js';
+import { gameURL } from '@/constants.js';
 
 export const usePhobiaStore = defineStore('phobia', () => {
     /** URL da página atual. */
-    const currentURL = ref<string>('https://www.tribalwars.com.br/');
+    const currentURL = ref<string>(gameURL);
 
     return {
         currentURL

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { usePlunderStore } from '@/stores/plunder.js';
 import { ipcInvoke } from '@/ipc.js';
 import { ClaustrophobicError } from '@/error.js';
 import Button from '@/components/Button.vue';
-import { storeToRefs } from 'pinia';
+
+import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 
 const { 
     status,
