@@ -8,7 +8,7 @@ const falseDefault: Record<string, unknown> = {
     default: false
 };
 
-const configSchema: Schema<Record<string, unknown>> = {
+const plunderSchema: Schema<Record<string, unknown>> = {
     'plunder-state': {
         type: 'object',
         properties: {
@@ -17,20 +17,22 @@ const configSchema: Schema<Record<string, unknown>> = {
             destroyWall: falseDefault,
             groupAttack: falseDefault,
             useCModel: falseDefault,
-            ignoreDelay: falseDefault
+            ignoreDelay: falseDefault,
+            blindAttack: falseDefault
         }
     }
 };
 
-const configStore = new Store({
-    schema: configSchema
+const plunderStore = new Store({
+    name: 'plunder',
+    schema: plunderSchema
 });
 
-ipcMain.handle('is-plunder-active', () => configStore.get('plunder-state.status', false));
-ipcMain.handle('get-plunder-state', () => configStore.get('plunder-state', null));
+ipcMain.handle('is-plunder-active', () => plunderStore.get('plunder-state.status', false));
+ipcMain.handle('get-plunder-state', () => plunderStore.get('plunder-state', null));
 ipcMain.handle('set-plunder-state', (_e, name: keyof PlunderState, state: PlunderStateValue) => {
     try {
-        configStore.set(`plunder-state.${name}`, state);
+        plunderStore.set(`plunder-state.${name}`, state);
         return true;
     } catch (err) {
         if (err instanceof Error) return err.message;

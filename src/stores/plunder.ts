@@ -14,6 +14,8 @@ export type PlunderState = {
     useCModel: boolean;
     /** Se ativado, o Plunder não terá delay entre os ataques. */
     ignoreDelay: boolean;
+    /** Se ativado, o Plunder não levará em consideração as informações dos exploradores. */
+    blindAttack: boolean;
 };
 
 export type PlunderStateValue = PlunderState[keyof PlunderState];
@@ -25,6 +27,7 @@ export const usePlunderStore = defineStore('plunder', () => {
     const groupAttack = ref<boolean>(false);
     const useCModel = ref<boolean>(false);
     const ignoreDelay = ref<boolean>(false);
+    const blindAttack = ref<boolean>(false);
 
     return { 
         status,
@@ -32,6 +35,7 @@ export const usePlunderStore = defineStore('plunder', () => {
         destroyWall,
         groupAttack,
         useCModel,
-        ignoreDelay
+        ignoreDelay,
+        blindAttack
     };
 });

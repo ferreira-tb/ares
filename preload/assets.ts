@@ -7,4 +7,4 @@ export type GameScreen =
     | 'place'
     | 'report';
 
-export const supportedScreens: GameScreen[] = ['am_farm'];
+export const supportedScreens: ReadonlyArray<GameScreen> = ['am_farm'];

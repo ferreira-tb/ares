@@ -14,15 +14,17 @@ const {
     destroyWall,
     groupAttack,
     useCModel,
-    ignoreDelay
+    ignoreDelay,
+    blindAttack
 } = storeToRefs(usePlunderStore());
 
-watch(status, () => updatePlunderState('status', status.value));
-watch(ignoreWall, () => updatePlunderState('ignoreWall', ignoreWall.value));
-watch(destroyWall, () => updatePlunderState('destroyWall', destroyWall.value));
-watch(groupAttack, () => updatePlunderState('groupAttack', groupAttack.value));
-watch(useCModel, () => updatePlunderState('useCModel', useCModel.value));
-watch(ignoreDelay, () => updatePlunderState('ignoreDelay', ignoreDelay.value));
+watch(status, value => updatePlunderState('status', value));
+watch(ignoreWall, value => updatePlunderState('ignoreWall', value));
+watch(destroyWall, value => updatePlunderState('destroyWall', value));
+watch(groupAttack, value => updatePlunderState('groupAttack', value));
+watch(useCModel, value => updatePlunderState('useCModel', value));
+watch(ignoreDelay, value => updatePlunderState('ignoreDelay', value));
+watch(blindAttack, value => updatePlunderState('blindAttack', value));
 
 async function updatePlunderState(name: keyof PlunderState, value: PlunderStateValue) {
     try {
@@ -66,6 +68,10 @@ const plunderButtonText = computed(() => {
             <label class="checkbox-label">
                 <input type="checkbox" v-model="ignoreDelay" />
                 <span>Ignorar delay</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" v-model="blindAttack" />
+                <span>Ataque às cegas</span>
             </label>
         </div>
     </main>

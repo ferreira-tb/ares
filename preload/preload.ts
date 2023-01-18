@@ -4,6 +4,7 @@ import { assert } from '@/error.js';
 import { useCurrentScreen } from '@/composables/game.js';
 import { gameURL } from '@/constants.js';
 import { supportedScreens } from '$/assets.js';
+import { loadFarmModule } from '$/farm/farm.js';
 
 export const currentURL = ref<string>(gameURL);
 
@@ -12,6 +13,7 @@ const unwatch = watch(currentURL, () => {
     if (!currentScreen.value || !supportedScreens.includes(currentScreen.value)) return;
     
     unwatch();
+    if (currentScreen.value === 'am_farm') loadFarmModule();
 });
 
 ipcRenderer.on('game-url', (_e, url) => {

@@ -10,6 +10,7 @@ export class ClaustrophobicError extends Error {
     };
 
     public static handleDOMError(selector: string) {
+        // Esse método deve ser usado para documentar erros relacionados ao DOM.
         console.error(selector);
     };
 };
@@ -19,6 +20,8 @@ export function assert(condition: any, message: string): asserts condition {
 };
 
 export function assertDOM(condition: any, selector: string): asserts condition {
-    ClaustrophobicError.handleDOMError(selector);
-    if (!condition) throw new ClaustrophobicError(selector);
+    if (!condition) {
+        ClaustrophobicError.handleDOMError(selector);
+        throw new ClaustrophobicError(selector);
+    };
 };

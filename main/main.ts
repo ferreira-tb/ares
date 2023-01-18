@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { app, BrowserWindow } from 'electron';
 import { mainMenu, childMenu } from './menu.js';
-import './config.js';
+import './store.js';
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -27,7 +27,7 @@ function createWindow() {
         useContentSize: true,
         show: false,
         closable: false,
-        minimizable: false,
+        minimizable: true,
         maximizable: false,
         title: 'Claustrophobia',
         autoHideMenuBar: true,
