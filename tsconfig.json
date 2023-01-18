@@ -5,11 +5,17 @@
         "src/**/*",
         "src/**/*.vue"
     ],
+    "files": [
+        "preload/assets.ts"
+    ],
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
             "@/*": [
                 "./src/*"
+            ],
+            "$/*": [
+                "./preload/*"
             ]
         },
 

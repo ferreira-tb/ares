@@ -24,6 +24,7 @@ import Button from '@/components/Button.vue';
 <style scoped>
 main {
     text-align: center;
+    user-select: none;
 }
 
 .title-area {
@@ -51,6 +52,6 @@ h2 {
 }
 
 .footer-area {
-    margin-top: 2em;
+    margin-top: 1.5em;
 }
 </style>

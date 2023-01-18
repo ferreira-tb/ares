@@ -3,12 +3,15 @@ import { ref, watch } from 'vue';
 import { assert } from '@/error.js';
 import { useCurrentScreen } from '@/composables/game.js';
 import { gameURL } from '@/constants.js';
+import { supportedScreens } from '$/assets.js';
 
-const currentURL = ref<string>(gameURL);
+export const currentURL = ref<string>(gameURL);
 
-watch(currentURL, () => {
-    console.log(currentURL.value);
-    console.log(useCurrentScreen(currentURL).value);
+const unwatch = watch(currentURL, () => {
+    const currentScreen = useCurrentScreen(currentURL);
+    if (!currentScreen.value || !supportedScreens.includes(currentScreen.value)) return;
+    
+    unwatch();
 });
 
 ipcRenderer.on('game-url', (_e, url) => {
