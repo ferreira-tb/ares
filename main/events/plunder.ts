@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { plunderStore } from '#/store.js';
+import { plunderStore } from '#/store/plunder.js';
 import type { BrowserWindow } from 'electron';
 import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 

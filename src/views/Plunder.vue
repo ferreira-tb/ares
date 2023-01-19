@@ -3,7 +3,7 @@ import { computed, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { usePlunderStore } from '@/stores/plunder.js';
 import { ipcInvoke } from '@/ipc.js';
-import { ClaustrophobicError } from '@/error.js';
+import { assert, ClaustrophobicError } from '@/error.js';
 import Button from '@/components/Button.vue';
 
 import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
@@ -30,11 +30,11 @@ watch(blindAttack, value => updatePlunderState('blindAttack', value));
 async function updatePlunderState(name: keyof PlunderState, value: PlunderStateValue) {
     try {
         const response = await ipcInvoke('set-plunder-state', name, value);
-        if (typeof response === 'string' || response === false) throw response;
+        assert(typeof response !== 'string', response as string);
+        assert(response === true, 'Erro ao salvar as configurações');
+
     } catch (err) {
-        if (err instanceof Error) throw err;
-        if (err === false) throw new ClaustrophobicError('Erro ao salvar as configurações');
-        if (typeof err === 'string') throw new ClaustrophobicError(err);
+        if (err instanceof Error) ClaustrophobicError.handle(err);
     };
 };
 
@@ -79,6 +79,10 @@ const plunderButtonText = computed(() => {
 </template>
 
 <style scoped>
+main {
+    user-select: none;
+}
+
 .button-area {
     text-align: center;
     margin-bottom: 0.5em;

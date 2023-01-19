@@ -1,14 +1,11 @@
 import Store from 'electron-store';
+import { falseDefault } from '#/store/defaults.js';
 import type { Schema } from 'electron-store';
-
-const falseDefault: Record<string, unknown> = {
-    type: 'boolean',
-    default: false
-};
 
 const plunderSchema: Schema<Record<string, unknown>> = {
     'plunder-state': {
         type: 'object',
+        additionalProperties: false,
         properties: {
             status: falseDefault,
             ignoreWall: falseDefault,
