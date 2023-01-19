@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import * as path from 'path';
 
 export default defineConfig({
     plugins: [vue()],
@@ -14,14 +15,15 @@ export default defineConfig({
     build: {
         target: 'esnext',
         outDir: 'dist',
-        emptyOutDir: true,
+        emptyOutDir: false,
+        lib: {
+            entry: path.resolve(__dirname, 'preload/preload.ts'),
+            fileName: 'preload',
+            name: 'preload',
+            formats: ['cjs']
+        },
         rollupOptions: {
-            external: ['electron'],
-            output: {
-                format: 'cjs',
-                generatedCode: 'es2015',
-                interop: 'auto'
-            }
+            external: ['electron']
         }
     }
 });

@@ -32,7 +32,12 @@ ipcRenderer.on('game-url', (_e, url) => {
 <template>
     <RouterView v-slot="{ Component, route }">
         <Transition name="fade" mode="out-in">
-            <component :is="Component" :key="route.path" />
+            <Suspense>
+                <component :is="Component" :key="route.path" />
+                <template #fallback class="to-center green-text bold">
+                    Carregando...
+                </template>
+            </Suspense>
         </Transition>
     </RouterView>
 </template>

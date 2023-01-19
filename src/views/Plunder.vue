@@ -8,6 +8,7 @@ import Button from '@/components/Button.vue';
 
 import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 
+const plunderStore = usePlunderStore();
 const { 
     status,
     ignoreWall,
@@ -16,7 +17,7 @@ const {
     useCModel,
     ignoreDelay,
     blindAttack
-} = storeToRefs(usePlunderStore());
+} = storeToRefs(plunderStore);
 
 watch(status, value => updatePlunderState('status', value));
 watch(ignoreWall, value => updatePlunderState('ignoreWall', value));

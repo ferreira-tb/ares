@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { app, BrowserWindow } from 'electron';
-import { mainMenu, childMenu } from './menu.js';
-import './store.js';
+import { mainMenu, childMenu } from '#/menu.js';
+import { setEvents } from '#/events/index.js';
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -39,17 +39,8 @@ function createWindow() {
     });
 
     ////// Eventos.
-    mainWindow.webContents.on('did-finish-load', () => {
-        const currentURL = mainWindow.webContents.getURL();
-        mainWindow.webContents.send('game-url', currentURL);
-        childWindow.webContents.send('game-url', currentURL);
-    });
-
-    // Impede que o usuário navegue para fora da página do jogo.
-    mainWindow.webContents.on('will-navigate', (e, url) => {
-        if (!url.includes('tribalwars')) e.preventDefault();
-    });
-
+    setEvents(mainWindow, childWindow);
+    
     ////// Outros.
     mainWindow.maximize();
 

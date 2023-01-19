@@ -1,6 +1,7 @@
 {
     "name": "claustrophobia",
-    "version": "1.0.0",
+    "productName": "Claustrophobia",
+    "version": "1.0.0-beta",
     "description": "Ferramenta para Tribal Wars",
     "author": "Andrew Ferreira <andrew.shien2@gmail.com> (https://github.com/ferreira-tb)",
     "license": "MIT",
@@ -11,12 +12,12 @@
     ],
     "scripts": {
         "dev": "vite",
-        "build": "run-p type-check build-only && node dist.mjs",
-        "preview": "vite preview",
-        "build-only": "vite build",
+        "build": "run-p type-check build-only && node dist.mjs && npm run build-only:pre",
+        "build-only": "vite build --config vite.config.ts",
+        "build-only:pre": "vite build --config pre.config.ts",
         "type-check": "vue-tsc --noEmit",
-        "start": "npm run build && npm run main",
-        "main": "rollup -c && electron ."
+        "main": "rollup -c && electron .",
+        "start": "npm run build && npm run main"
     },
     "dependencies": {
         "electron-store": "^8.1.0",

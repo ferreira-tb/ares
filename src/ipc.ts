@@ -1,8 +1,10 @@
 import { ipcRenderer } from 'electron';
-import type { PlunderState, PlunderStateValue } from './stores/plunder.js';
+import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 
-export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>
-export async function ipcInvoke(channel: 'get-plunder-state'): Promise<PlunderState | null>
+export async function ipcInvoke(channel: 'app-name'): Promise<string>;
+export async function ipcInvoke(channel: 'app-version'): Promise<string>;
+export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
+export async function ipcInvoke(channel: 'get-plunder-state'): Promise<PlunderState | null>;
 export async function ipcInvoke(
     channel: 'set-plunder-state',
     name: keyof PlunderState,

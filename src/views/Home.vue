@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { shell } from 'electron';
+import { ipcInvoke } from '@/ipc.js';
 import { authorURL, repoURL, helpURL } from '@/constants.js';
 import Button from '@/components/Button.vue';
+
+const appName = ref<string>(await ipcInvoke('app-name'));
+const appVersion = ref<string>(await ipcInvoke('app-version'));
 </script>
 
 <template>
     <main>
         <div class="title-area">
-            <h1 class="green-text bold">Claustrophobia</h1>
+            <h1 class="green-text bold">{{ appName }}</h1>
             <h2>Uma ferramenta para Tribal Wars</h2>
         </div>
         <div class="link-area">
@@ -16,7 +21,7 @@ import Button from '@/components/Button.vue';
             <Button @click="shell.openExternal(helpURL)">Suporte</Button>
         </div>
         <div class="footer-area">
-            <span>ferreira-tb © 2023</span>
+            <span>{{ appVersion }} © 2023 ferreira-tb</span>
         </div>
     </main>
 </template>

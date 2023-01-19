@@ -18,18 +18,5 @@ export default [
             typescript({ tsconfig: 'main/tsconfig.json' })
         ],
         external: ['electron']
-    },
-    {
-        input: ['preload/preload.ts'],
-        output: {
-            file: 'dist/preload.js',
-            format: 'cjs',
-            generatedCode: 'es2015'
-        },
-        plugins: [
-            typescript({ tsconfig: 'preload/tsconfig.json' }),
-            nodeResolve({ extensions: ['.mjs', '.js', '.mts', '.ts', '.json'] })
-        ],
-        external: ['electron']
     }
 ];
