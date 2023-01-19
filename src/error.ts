@@ -19,8 +19,15 @@ export function assert(condition: any, message: string): asserts condition {
     if (!condition) throw new ClaustrophobicError(message);
 };
 
-export function assertDOM(condition: any, selector: string): asserts condition is Element {
-    if (!(condition instanceof Element)) {
+export function assertDOM(condition: any, selector: string): asserts condition {
+    if (!condition) {
+        ClaustrophobicError.reportDOMError(selector);
+        throw new ClaustrophobicError(selector);
+    };
+};
+
+export function assertElement(item: any, selector: string): asserts item is Element {
+    if (!(item instanceof Element)) {
         ClaustrophobicError.reportDOMError(selector);
         throw new ClaustrophobicError(selector);
     };

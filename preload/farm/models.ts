@@ -1,5 +1,5 @@
 import { reactive } from "vue";
-import { assert, assertDOM } from "@/error.js";
+import { assert } from "@/error.js";
 
 export class PlunderModel {
     spear = 0;
@@ -19,22 +19,17 @@ export const modelB = reactive(new PlunderModel());
 /** Obtêm informações sobre os modelos de saque. */
 export function queryModelData() {
     // Corpo da tabela com os modelos do assistente de saque.
-    const modelTable = document.querySelector('#content_value form tbody:has(td input[type="text"][name^="spear" i])');
-    assertDOM(modelTable, '#content_value form tbody:has(td input[type="text"][name^="spear" i])');
+    const modelTable = document.queryAndAssert('#content_value form tbody:has(td input[type="text"][name^="spear" i])');
 
     // Campos do modelo A.
-    const aRow = modelTable.querySelector('tr:nth-of-type(2):has(td input[type="text"][name^="spear" i])');
-    assertDOM(aRow, 'tr:nth-of-type(2):has(td input[type="text"][name^="spear" i])');
-
-    const aFields = aRow.querySelectorAll('td input[type="text"][name]');
+    const aRow = modelTable.queryAndAssert('tr:nth-of-type(2):has(td input[type="text"][name^="spear" i])');
+    const aFields = aRow.queryAsArray('td input[type="text"][name]');
     assert(aFields.length >= 7, 'Não foi possível encontrar os campos de texto do modelo A.');
     parseUnitAmount('a', aFields);
 
     // Campos do modelo B.
-    const bRow = modelTable.querySelector('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
-    assertDOM(bRow, 'tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
-
-    const bFields = bRow.querySelectorAll('td input[type="text"][name]');
+    const bRow = modelTable.queryAndAssert('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
+    const bFields = bRow.queryAsArray('td input[type="text"][name]');
     assert(bFields.length >= 7, 'Não foi possível encontrar os campos de texto do modelo B.');
     parseUnitAmount('b', bFields);
 
@@ -47,11 +42,11 @@ export function queryModelData() {
  * @param row Identificador da linha.
  * @param fields Campos da linha.
  */
-function parseUnitAmount(row: 'a' | 'b', fields: NodeListOf<Element>) {
+function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
     const model = row === 'a' ? modelA : modelB;
     const verify = (unit: string): unit is keyof PlunderModel => unit in model;
 
-    for (const field of Array.from(fields)) {
+    for (const field of fields) {
         /** O atributo name é usado para determinar a unidade referente ao campo. */
         const fieldName = field.getAttribute('name');
         assert(fieldName, 'O atributo "name" não foi encontrado no campo de texto do modelo.');

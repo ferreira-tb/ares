@@ -1,8 +1,9 @@
 import '@/assets/style.css';
+import '$/prototype.js';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '@/router/router.js';
-import { setSavedState } from '@/stores/store.js';
+import { setChildWindowSavedState } from '@/stores/store.js';
 import App from '@/App.vue';
 
 const app = createApp(App);
@@ -13,7 +14,7 @@ app.use(pinia);
 app.use(router);
 
 // Atribui as configurações salvas.
-setSavedState();
+setChildWindowSavedState();
 
 router.push('/');
 app.mount('#app');

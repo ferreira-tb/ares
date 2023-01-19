@@ -1,19 +1,21 @@
 import { ipcRenderer } from 'electron';
 import { assert } from '@/error.js';
-import { currentURL } from '$/preload.js';
 import { usePlunderStore } from '@/stores/plunder.js';
+import { usePhobiaStore } from '@/stores/store.js';
 import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 import type { Pinia } from 'pinia';
+
 
 export function setPreloadEvents(pinia: Pinia) {
     // Pinia.
     const plunderStore = usePlunderStore(pinia);
+    const phobiaStore = usePhobiaStore(pinia);
     
     // Atualiza a URL atual.
     ipcRenderer.on('game-url', (_e, url) => {
         assert(typeof url === 'string', 'A URL é inválida.');
         if (!url.includes('tribalwars')) return;
-        currentURL.value = url;
+        phobiaStore.currentURL = url;
     });
 
     // Atualiza o estado local do Plunder sempre que ocorre uma mudança dele na janela filha.
