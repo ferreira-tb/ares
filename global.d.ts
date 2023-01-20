@@ -5,7 +5,7 @@ declare global {
     }
 
     interface Element {
-        assertAttribute: (attribute: string) => string;
+        assertAttribute: <T extends string>(attribute: string) => T;
         assertAttributeAsInt: (attribute: string, allowNegative?: boolean, radix?: number) => number;
         parseInt: (allowNegative?: boolean, radix?: number) => number;
         parseFloat: (allowNegative?: boolean) => number;

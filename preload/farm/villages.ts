@@ -40,7 +40,7 @@ export class PlunderVillageInfo {
 /** Ajuda a controlar o MutationObserver. */
 const eventTarget = new EventTarget();
 
-export function queryVillagesInfo() {
+export function queryVillagesInfo(): typeof villagesInfo {
     // Desconecta qualquer observer que esteja ativo.
     eventTarget.dispatchEvent(new Event('stop'));
 
@@ -81,6 +81,8 @@ export function queryVillagesInfo() {
         // Caso a função seja chamada novamente, desconecta o observer ativo.
         eventTarget.addEventListener('stop', () => observeTable.disconnect(), { once: true });
     };
+
+    return villagesInfo;
 };
 
 function queryReport(row: Element, info: PlunderVillageInfo) {

@@ -31,6 +31,8 @@ export function queryModelData() {
     const bFields = bRow.queryAsArray('td input[type="text"][name]');
     assert(bFields.length >= 7, 'Não foi possível encontrar os campos de texto do modelo B.');
     parseUnitAmount('b', bFields);
+
+    return { modelA, modelB };
 };
 
 /**

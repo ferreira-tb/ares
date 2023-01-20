@@ -11,10 +11,10 @@ Document.prototype.queryAsArray = function(selector: string): Element[] {
     return Array.from(elements);
 };
 
-Element.prototype.assertAttribute = function(attribute: string): string {
+Element.prototype.assertAttribute = function<T extends string>(attribute: string): T {
     const value = this.getAttribute(attribute);
     assertType(typeof value === 'string', `O atributo ${attribute} não existe no elemento.`);
-    return value;
+    return value.trim() as T;
 };
 
 Element.prototype.assertAttributeAsInt = function(attribute: string, allowNegative = false, radix: number = 10): number {
