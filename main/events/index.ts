@@ -1,5 +1,6 @@
 import { app, ipcMain } from 'electron';
 import { setPlunderEvents } from '#/events/plunder.js';
+import { setGameEvents } from '#/events/game.js';
 import type { BrowserWindow } from 'electron';
 
 export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
@@ -20,5 +21,6 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
     });
 
     // Outros eventos.
+    setGameEvents(childWindow);
     setPlunderEvents(mainWindow);
 };

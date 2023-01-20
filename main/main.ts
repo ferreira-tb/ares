@@ -47,6 +47,8 @@ function createWindow() {
     mainWindow.setMenu(mainMenu);
     childWindow.setMenu(childMenu);
 
+    mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+
     mainWindow.loadURL('https://www.tribalwars.com.br/');
     childWindow.loadFile('dist/index.html');
 

@@ -2,15 +2,11 @@
 import { storeToRefs } from 'pinia';
 import { watchEffect, Transition } from 'vue';
 import { RouterView } from 'vue-router';
-import { ipcRenderer } from 'electron';
-import { useCurrentScreen } from '@/composables/game.js';
 import { routeNames, router } from '@/router/router.js';
 import { usePhobiaStore } from '@/stores/store.js';
-import { assert } from '@/error.js';
 
 const phobiaStore = usePhobiaStore();
-const { currentURL } = storeToRefs(phobiaStore);
-const currentScreen = useCurrentScreen(currentURL);
+const { currentScreen } = storeToRefs(phobiaStore);
 
 // Define a janela de acordo com a página atual no jogo.
 watchEffect(() => {
@@ -19,13 +15,6 @@ watchEffect(() => {
     } else {
         router.push('/');
     };
-});
-
-// Comunicação.
-ipcRenderer.on('game-url', (_e, url) => {
-    assert(typeof url === 'string', 'A URL é inválida.');
-    if (!url.includes('tribalwars')) return;
-    currentURL.value = url;
 });
 </script>
 

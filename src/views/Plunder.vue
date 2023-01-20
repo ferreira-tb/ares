@@ -2,11 +2,9 @@
 import { computed, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { usePlunderStore } from '@/stores/plunder.js';
-import { ipcInvoke } from '@/ipc.js';
-import { assert, ClaustrophobicError } from '@/error.js';
+import { ipcSend } from '@/ipc.js';
 import Button from '@/components/Button.vue';
 import Resources from '@/components/Resources.vue';
-import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 
 const plunderStore = usePlunderStore();
 const { 
@@ -19,28 +17,15 @@ const {
     blindAttack
 } = storeToRefs(plunderStore);
 
-watch(status, value => updatePlunderState('status', value));
-watch(ignoreWall, value => updatePlunderState('ignoreWall', value));
-watch(destroyWall, value => updatePlunderState('destroyWall', value));
-watch(groupAttack, value => updatePlunderState('groupAttack', value));
-watch(useCModel, value => updatePlunderState('useCModel', value));
-watch(ignoreDelay, value => updatePlunderState('ignoreDelay', value));
-watch(blindAttack, value => updatePlunderState('blindAttack', value));
+watch(status, value => ipcSend('set-plunder-state', 'status', value));
+watch(ignoreWall, value => ipcSend('set-plunder-state', 'ignoreWall', value));
+watch(destroyWall, value => ipcSend('set-plunder-state', 'destroyWall', value));
+watch(groupAttack, value => ipcSend('set-plunder-state', 'groupAttack', value));
+watch(useCModel, value => ipcSend('set-plunder-state', 'useCModel', value));
+watch(ignoreDelay, value => ipcSend('set-plunder-state', 'ignoreDelay', value));
+watch(blindAttack, value => ipcSend('set-plunder-state', 'blindAttack', value));
 
-async function updatePlunderState(name: keyof PlunderState, value: PlunderStateValue) {
-    try {
-        const response = await ipcInvoke('set-plunder-state', name, value);
-        assert(typeof response !== 'string', response as string);
-        assert(response === true, 'Erro ao salvar as configurações');
-
-    } catch (err) {
-        if (err instanceof Error) ClaustrophobicError.handle(err);
-    };
-};
-
-const plunderButtonText = computed(() => {
-    return status.value === false ? 'Saquear' : 'Parar';
-});
+const plunderButtonText = computed(() => status.value === false ? 'Saquear' : 'Parar');
 </script>
 
 <template>

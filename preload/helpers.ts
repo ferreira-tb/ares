@@ -1,8 +1,9 @@
 import { pinia } from '$/preload.js';
 import { assert, assertElement } from "@/error.js";
 import { usePhobiaStore } from '@/stores/store.js';
+import { ipcSend } from '@/ipc.js';
 
-/** Obtêm as coordenadas da aldeia atual a partir do DOM e as salva na store. */
+/** Obtêm as coordenadas da aldeia atual a partir do DOM e as salva no Pinia. */
 export function queryCurrentVillageCoords() {
     const selector = '#header_info tr#menu_row2 td:not(:has(a[href*="screen=overview"])):has(b)';
     const coordsField = document.querySelector(selector);
@@ -14,6 +15,9 @@ export function queryCurrentVillageCoords() {
     const phobiaStore = usePhobiaStore(pinia);
     phobiaStore.currentX = coords[0];
     phobiaStore.currentY = coords[1];
+
+    // Notificado o processo principal, que então notificará a janela filha.
+    ipcSend('update-current-coords', coords[0], coords[1]);
 };
 
 /**

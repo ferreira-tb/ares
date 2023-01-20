@@ -4,6 +4,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '@/router/router.js';
 import { setChildWindowSavedState } from '@/stores/store.js';
+import { setChildWindowEvents } from '@/events.js';
 import App from '@/App.vue';
 
 const app = createApp(App);
@@ -15,6 +16,8 @@ app.use(router);
 
 // Atribui as configurações salvas.
 setChildWindowSavedState();
+// Eventos.
+setChildWindowEvents(pinia);
 
 router.push('/');
 app.mount('#app');
