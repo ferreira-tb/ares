@@ -3,7 +3,10 @@ import { assert, assertElement } from "@/error.js";
 import { usePhobiaStore } from '@/stores/store.js';
 import { ipcSend } from '@/ipc.js';
 
-/** Obtêm as coordenadas da aldeia atual a partir do DOM e as salva no Pinia. */
+/**
+ * Obtêm as coordenadas da aldeia atual a partir do DOM e as salva no Pinia.
+ * Essa função deve ser chamada apenas no contexto da janela mãe.
+ */
 export function queryCurrentVillageCoords() {
     const selector = '#header_info tr#menu_row2 td:not(:has(a[href*="screen=overview"])):has(b)';
     const coordsField = document.querySelector(selector);

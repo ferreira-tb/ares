@@ -8,16 +8,14 @@ type CurrentFieldReturnType<T extends string> = (url: Ref<string>) => ComputedRe
 function useCurrentField(fieldName: 'screen'): CurrentFieldReturnType<GameScreen>;
 function useCurrentField(fieldName: 'mode'): CurrentFieldReturnType<string>;
 function useCurrentField(fieldName: 'subtype'): CurrentFieldReturnType<string>;
+function useCurrentField(fieldName: 'village'): CurrentFieldReturnType<string>;
 function useCurrentField(fieldName: string) {
     return function(url: Ref<string>): ComputedRef<string | null> {
         assert(typeof url.value === 'string', 'A URL é inválida.');
 
         return computed(() => {
-            const urlFields = (url.value.replace('\?', '')).split('\&');
-            for (const field of urlFields) {
-                if (field.includes(`${fieldName}=`)) return field.replace(`${fieldName}=`, '');
-            };
-            return null;
+            const urlObject = new URL(url.value);
+            return urlObject.searchParams.get(fieldName);
         });
     };
 };
@@ -25,3 +23,4 @@ function useCurrentField(fieldName: string) {
 export const useCurrentScreen = useCurrentField('screen');
 export const useCurrentMode = useCurrentField('mode');
 export const useCurrentSubType = useCurrentField('subtype');
+export const useCurrentVillageId = useCurrentField('village');

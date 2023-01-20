@@ -1,5 +1,4 @@
 import Store from 'electron-store';
-import { falseDefault } from '#/store/defaults.js';
 import type { Schema } from 'electron-store';
 
 const plunderSchema: Schema<Record<string, unknown>> = {
@@ -7,13 +6,13 @@ const plunderSchema: Schema<Record<string, unknown>> = {
         type: 'object',
         additionalProperties: false,
         properties: {
-            status: falseDefault,
-            ignoreWall: falseDefault,
-            destroyWall: falseDefault,
-            groupAttack: falseDefault,
-            useCModel: falseDefault,
-            ignoreDelay: falseDefault,
-            blindAttack: falseDefault
+            status: { type: 'boolean', default: false },
+            ignoreWall: { type: 'boolean', default: false },
+            destroyWall: { type: 'boolean', default: false },
+            groupAttack: { type: 'boolean', default: false },
+            useCModel: { type: 'boolean', default: false },
+            ignoreDelay: { type: 'boolean', default: false },
+            blindAttack: { type: 'boolean', default: false }
         }
     }
 };

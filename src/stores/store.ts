@@ -1,15 +1,16 @@
-import { defineStore } from 'pinia';
+import { defineStore, getActivePinia, type Pinia } from 'pinia';
 import { ref } from 'vue';
-import { patchPlunderStore } from '@/stores/plunder.js';
-import { ClaustrophobicError } from '@/error.js';
 import { gameURL } from '@/constants.js';
 import { useCurrentScreen } from '@/composables/game.js';
+import { ipcInvoke } from '@/ipc.js';
 
 export const usePhobiaStore = defineStore('phobia', () => {
     /** URL da página atual. */
     const currentURL = ref<string>(gameURL);
     /** Página atual. */
     const currentScreen = useCurrentScreen(currentURL);
+    /** Mundo atual. */
+    const currentWorld = ref<string | null>(null);
     /** Coordenada X da aldeia atual. */
     const currentX = ref<number>(0);
     /** Coordenada Y da aldeia atual. */
@@ -18,17 +19,18 @@ export const usePhobiaStore = defineStore('phobia', () => {
     return {
         currentURL,
         currentScreen,
+        currentWorld,
         currentX,
         currentY
     };
 });
 
-/** Carrega na janela filha as informações que estão salvas no armazenamento da aplicação. */
-export async function setChildWindowSavedState() {
-    try {
-        await patchPlunderStore();
+export async function updateCurrentWorld(pinia?: Pinia) {
+    if (!pinia) pinia = getActivePinia();
 
-    } catch (err) {
-        ClaustrophobicError.handle(err)
-    };
+    const world = await ipcInvoke('get-current-world');
+    if (typeof world !== 'string' && world !== null) return;
+
+    const phobiaStore = usePhobiaStore(pinia);
+    phobiaStore.currentWorld = world;
 };

@@ -21,6 +21,6 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
     });
 
     // Outros eventos.
-    setGameEvents(childWindow);
+    setGameEvents(mainWindow, childWindow);
     setPlunderEvents(mainWindow);
 };

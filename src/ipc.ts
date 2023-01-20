@@ -5,6 +5,7 @@ export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;
 export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-plunder-state'): Promise<PlunderState | null>;
+export async function ipcInvoke(channel: 'get-current-world'): Promise<string | null>;
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
     const response = await ipcRenderer.invoke(channel, ...args);
     return response;
