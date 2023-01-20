@@ -1,3 +1,5 @@
+@charset "utf-8";
+
 :root {
     --color-background: #181818;
     --color-background-soft: #222222;
@@ -73,6 +75,39 @@ main {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.icon {
+	width: 18px;
+	height: 18px;
+	display: inline-block;
+    margin-top: auto;
+    margin-right: 5px;
+    margin-bottom: auto;
+    margin-left: 0;
+	overflow: hidden;
+	background-repeat: no-repeat;
+	vertical-align: -4px;
+}
+
+.wood {
+    background-image: url("../../public/images/wood-18.png");
+}
+
+.stone {
+    background-image: url("../../public/images/stone-18.png");
+}
+
+.iron {
+    background-image: url("../../public/images/iron-18.png");
+}
+
+.storage {
+    background-image: url("../../public/images/buildings/storage-18.png");
+}
+
+.wall {
+    background-image: url("../../public/images/buildings/wall-16.png");
 }
 
 /** TRANSIÇÕES */

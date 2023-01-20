@@ -5,7 +5,7 @@ import { usePlunderStore } from '@/stores/plunder.js';
 import { ipcInvoke } from '@/ipc.js';
 import { assert, ClaustrophobicError } from '@/error.js';
 import Button from '@/components/Button.vue';
-
+import Resources from '@/components/Resources.vue';
 import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 
 const plunderStore = usePlunderStore();
@@ -48,6 +48,8 @@ const plunderButtonText = computed(() => {
         <div class="button-area">
             <Button @click="status = !status">{{ plunderButtonText }}</Button>
         </div>
+
+        <Resources />
 
         <div class="checkbox-area">
             <label class="checkbox-label">
