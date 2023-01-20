@@ -49,9 +49,7 @@ export function queryVillagesInfo() {
         if (row.hasAttribute('data-tb-village')) continue;
 
         // A coerção à string é válida pois já foi verificada a existência do id ao usar querySelectorAll();
-        let villageId = row.getAttribute('id');
-        assertType(typeof villageId === 'string', 'Não foi possível obter o ID da aldeia.');
-        villageId = villageId.replace(/\D/g, '');
+        const villageId = row.assertAttribute('id').replace(/\D/g, '');
 
         // Facilita o acesso ao id da aldeia.
         row.setAttribute('data-tb-village', villageId);
@@ -131,12 +129,8 @@ function queryResourcesField(row: Element, info: PlunderVillageInfo): Element | 
     const ironField = resourcesField.queryAndAssert('span span[class*="iron" i] + span');
 
     [woodField, stoneField, ironField].forEach((resField, index) => {
-        assert(resField.textContent, 'Não foi possível determinar a quantidade de recursos.');
-        const rawAmount = resField.textContent.replace(/\D/g, '');
-
         // Adiciona o valor à quantia total.
-        const resAmount = Number.parseInt(rawAmount, 10);
-        assert(!Number.isNaN(resAmount), 'A quantia de recursos calculada é inválida');
+        const resAmount = resField.parseInt();
         info.total += resAmount;
 
         const resName = resourceList[index];
@@ -158,11 +152,9 @@ function queryWallLevel(resourcesField: Element | null, info: PlunderVillageInfo
 
     const wallLevelField = resourcesField.nextElementSibling;
     assertElement(wallLevelField, 'O campo com o nível da muralha não foi encontrado');
-    assert(wallLevelField.textContent, 'Não foi possível determinar o nível da muralha.');
 
-    const wallLevel = Number.parseInt(wallLevelField.textContent.replace(/\D/g, ''), 10);
+    const wallLevel = wallLevelField.parseInt();
     const errorMessage = 'O valor encontrado não corresponde ao nível da muralha';
-    assert(Number.isInteger(wallLevel), errorMessage);
     assert(wallLevel >= 0, errorMessage);
     assert(wallLevel <= 20, errorMessage);
 
@@ -182,8 +174,7 @@ function queryModelButtons(row: Element, info: PlunderVillageInfo) {
 
     if (info.cButton) {
         // Verifica se o botão C está desativado.
-        const cButtonStatus = info.cButton.getAttribute('class');
-        assertType(typeof cButtonStatus === 'string', 'Não foi possível determinar a classe do botão C.');
+        const cButtonStatus = info.cButton.assertAttribute('class');
         if (cButtonStatus.includes('disabled')) info.cStatus = false;
     };
 };

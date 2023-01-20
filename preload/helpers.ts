@@ -1,5 +1,5 @@
 import { pinia } from '$/preload.js';
-import { assert, assertElement, assertType, ClaustrophobicError } from "@/error.js";
+import { assert, assertType, ClaustrophobicError } from "@/error.js";
 import { usePhobiaStore } from '@/stores/store.js';
 import { ipcSend } from '@/ipc.js';
 import type { XMLTags } from '@/types.js';
@@ -10,8 +10,7 @@ import type { XMLTags } from '@/types.js';
  */
 export function queryCurrentVillageCoords() {
     const selector = '#header_info tr#menu_row2 td:not(:has(a[href*="screen=overview"])):has(b)';
-    const coordsField = document.querySelector(selector);
-    assertElement(coordsField, selector);
+    const coordsField = document.queryAndAssert(selector);
 
     const coords = parseCoordsFromTextContent(coordsField.textContent);
     assertType(Array.isArray(coords), 'O valor obtido para as coordenadas não é uma array.');
@@ -119,9 +118,6 @@ export function queryXMLTags(xmlDocument: XMLDocument, type: 'world' | 'unit') {
             throw new ClaustrophobicError(`O campo \"${tag}\" não foi encontrado no documento XML.`);
         };
 
-        assert(valueField.textContent !== null, `O campo \"${tag}\" foi encontrado, mas está vazio.`);
-        const result = Number.parseFloat(valueField.textContent);
-        assert(!Number.isNaN(result), `O valor de \"${tag}\" obtido no documento XML é inválido.`);
-        return result;
+        return valueField.parseFloat();
     };
 };

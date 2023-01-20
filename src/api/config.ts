@@ -60,10 +60,13 @@ const getWorldDataUrl = (world: string) => `https://${world}.tribalwars.com.br/i
 const getUnitDataUrl = (world: string) => `https://${world}.tribalwars.com.br/interface.php?func=get_unit_info`;
 
 /**
- * Obtêm informações sobre o mundo e as unidades dele e então as salva no armazenamento.
- * @returns `boolean` indicando se a operação foi bem sucedida.
+ * Verifica se as informações sobre o mundo e suas unidades estão salvas no armazenamento.
+ * Se não estiverem, tenta fazer download desses dados.
+ * @returns `boolean` indicando o status da operação.
+ * Se `true`, os dados estão disponíveis no armazenamento e poderão ser acessados normalmente.
+ * Se `false`, eles tanto não estão disponíveis quanto não foi possível obtê-los.
  */
-export async function fetchWorldAndUnitData() {
+export async function verifyWorldAndUnitData() {
     const phobiaStore = usePhobiaStore();
     if (typeof phobiaStore.currentWorld !== 'string') {
         phobiaStore.currentWorld = await ipcInvoke('get-current-world');

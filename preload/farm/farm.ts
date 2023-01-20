@@ -12,6 +12,8 @@ export async function loadFarmModule() {
         queryModelData();
         queryVillagesInfo();
 
+
+
     } catch (err) {
         ClaustrophobicError.handle(err);
     };

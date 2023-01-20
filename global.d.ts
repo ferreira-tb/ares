@@ -5,7 +5,11 @@ declare global {
     }
 
     interface Element {
-        queryAndAssert: (selector: string) => Element
+        assertAttribute: (attribute: string) => string;
+        assertAttributeAsInt: (attribute: string, allowNegative?: boolean, radix?: number) => number;
+        parseInt: (allowNegative?: boolean, radix?: number) => number;
+        parseFloat: (allowNegative?: boolean) => number;
+        queryAndAssert: (selector: string) => Element;
         queryAsArray: (selector: string) => Element[];
     }
 }

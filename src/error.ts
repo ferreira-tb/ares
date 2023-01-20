@@ -19,6 +19,14 @@ export function assert(condition: any, message: string): asserts condition {
     if (!condition) throw new ClaustrophobicError(message);
 };
 
+export function assertInteger(item: any, message: string): asserts item is number {
+    if (!Number.isInteger(item)) throw new TypeError(message);
+};
+
+export function assertFinite(item: any, message: string): asserts item is number {
+    if (!Number.isFinite(item)) throw new TypeError(message);
+};
+
 export function assertType(condition: any, message: string): asserts condition {
     if (!condition) throw new TypeError(message);
 };

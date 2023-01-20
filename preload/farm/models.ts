@@ -1,5 +1,4 @@
-import { reactive } from "vue";
-import { assert } from "@/error.js";
+import { assert } from '@/error.js';
 
 export class PlunderModel {
     spear = 0;
@@ -13,8 +12,8 @@ export class PlunderModel {
     marcher = 0;
 };
 
-export const modelA = reactive(new PlunderModel());
-export const modelB = reactive(new PlunderModel());
+const modelA = new PlunderModel();
+const modelB = new PlunderModel();
 
 /** Obtêm informações sobre os modelos de saque. */
 export function queryModelData() {
@@ -46,20 +45,14 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
 
     for (const field of fields) {
         /** O atributo name é usado para determinar a unidade referente ao campo. */
-        const fieldName = field.getAttribute('name');
-        assert(fieldName, 'O atributo "name" não foi encontrado no campo de texto do modelo.');
-
+        const fieldName = field.assertAttribute('name');
         /** O valor no atributo name é algo como "spear[11811]". */
         const unitType = fieldName.slice(0, fieldName.indexOf('\['));
-        /** Contém a quantidade de unidades. */
-        const fieldValue = field.getAttribute('value');
-        assert(fieldValue, `Não foi possível encontrar o valor do campo de texto (${unitType}).`);
 
         assert(verify(unitType), `${unitType} não é uma unidade válida.`);
         field.setAttribute(`data-tb-model-${row}`, unitType);
         
-        const parsedAmount = Number.parseInt(fieldValue, 10);
-        assert(Number.isInteger(parsedAmount), `Quantidade inválida (${unitType}).`);
-        model[unitType] = parsedAmount;
+        /** Contém a quantidade de unidades. */
+        model[unitType] = field.assertAttributeAsInt('value');
     };
 };
