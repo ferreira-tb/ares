@@ -1,15 +1,17 @@
-import { calcDistance, parseCoordsFromTextContent, parseGameDate, queryCurrentVillageCoords } from '$/helpers.js';
-import { assert, assertDOM } from '@/error.js';
+import { calcDistance, parseCoordsFromTextContent, parseGameDate } from '$/helpers.js';
+import { assert, assertDOM, assertElement, ClaustrophobicError } from '@/error.js';
+import { resources as resourceList } from '@/constants.js';
 
-import type { WallLevel } from '@/types.js';
+/** Mapa com as informações sobre cada aldeia da tabela. */
+export const villagesInfo: Map<string, PlunderVillageInfo> = new Map();
 
 export class PlunderVillageInfo {
     /** Data do último ataque contra a aldeia. */
     lastAttack: number = 0;
     /** Indica se há informações obtidas por exploradores. */
-    spyStatus: boolean = false;
+    spyInfo: boolean = false;
     /** Nível da muralha. */
-    wallLevel: WallLevel = 0;
+    wallLevel: number = 0;
     /** Distância até à aldeia. */
     distance: number = Infinity;
 
@@ -23,62 +25,174 @@ export class PlunderVillageInfo {
     total: number = 0;
 
     /** Botão A do assistente de saque. */
-    aButton: HTMLElement | null = null;
+    aButton: Element | null = null;
     /** Botão B do assistente de saque. */
-    bButton: HTMLElement | null = null;
+    bButton: Element | null = null;
     /** Botão C do assistente de saque. */
-    cButton: HTMLElement | null = null;
+    cButton: Element | null = null;
     /** Botão para abrir a janela de comandos no assistente de saque. */
-    place: HTMLElement | null = null;
+    place: Element | null = null;
 
     /** Indica se o botão C está ativo ou não. */
-    cStatus: boolean = false;
+    cStatus: boolean = true;
 };
 
+/** Ajuda a controlar o MutationObserver. */
+const eventTarget = new EventTarget();
+
 export function queryVillagesInfo() {
-    queryCurrentVillageCoords();
+    // Desconecta qualquer observer que esteja ativo.
+    eventTarget.dispatchEvent(new Event('stop'));
 
     const plunderListRows = document.queryAsArray('#plunder_list tbody tr[id^="village_"]');
     for (const row of plunderListRows) {
         if (row.hasAttribute('data-tb-village')) continue;
 
         // A coerção à string é válida pois já foi verificada a existência do id ao usar querySelectorAll();
-        let villageId = row.getAttribute('id') as string;
+        let villageId = row.getAttribute('id');
+        assert(typeof villageId === 'string', 'Não foi possível obter o ID da aldeia.');
         villageId = villageId.replace(/\D/g, '');
-
-        // Objeto onde serão armazenadas as informações sobre a aldeia.
-        const info = new PlunderVillageInfo();
 
         // Facilita o acesso ao id da aldeia.
         row.setAttribute('data-tb-village', villageId);
 
+        // Objeto onde serão armazenadas as informações sobre a aldeia.
+        const info = new PlunderVillageInfo();
+
         // Campo de relatório. É usado para calcular a distância até a aldeia-alvo.
-        const report = row.queryAndAssert('td a[href*="screen=report"]');
-        const coords = parseCoordsFromTextContent(report.textContent);
-        assert(Array.isArray(coords), 'Não foi possível obter as coordenadas da aldeia-alvo.');
-        info.distance = calcDistance(coords[0], coords[1]);
-
+        queryReport(row, info);
         // Data do último ataque.
-        const fields = row.queryAsArray('td:not(:has(a)):not(:has(img)):not(:has(span.icon))');
-        assertDOM(fields.length >= 1, 'td:not(:has(a)):not(:has(img)):not(:has(span.icon))');
-        for (const field of fields) {
-            if (!field.textContent) continue;
-            const date = parseGameDate(field.textContent);
-            if (!date) continue;
-            info.lastAttack = date;
-            break;
-        };
-
-        assert(Number.isInteger(info.lastAttack), 'Não foi possível determinar a data do último ataque');
-
+        queryLastAttack(row, info);
         // Quantidade de recursos.
-        queryResourcesField(row);
+        const resourcesField = queryResourcesField(row, info);
+        // Nível da muralha.
+        queryWallLevel(resourcesField, info);
+        // Botões dos modelos.
+        queryModelButtons(row, info);
+        // Botão da praça de reunião.
+        queryPlaceButton(row, info);
+
+        // Armazena os dados obtidos.
+        villagesInfo.set(villageId, info);
+
+        // Dispara a função novamente caso surjam alterações na tabela.
+        const plunderList = document.queryAndAssert('#plunder_list');
+        const observeTable = new MutationObserver(() => queryVillagesInfo());
+        observeTable.observe(plunderList, { subtree: true, childList: true });
+
+        // Caso a função seja chamada novamente, desconecta o observer ativo.
+        eventTarget.addEventListener('stop', () => observeTable.disconnect(), { once: true });
     };
 };
 
-function queryResourcesField(row: Element) {
-    const resourcesField = row.queryAndAssert('td:has(span > span.icon.wood)');
+function queryReport(row: Element, info: PlunderVillageInfo) {
+    const report = row.queryAndAssert('td a[href*="screen=report"]');
+    const coords = parseCoordsFromTextContent(report.textContent);
+    assert(Array.isArray(coords), 'Não foi possível obter as coordenadas da aldeia-alvo.');
+    info.distance = calcDistance(coords[0], coords[1]);
+};
+
+function queryLastAttack(row: Element, info: PlunderVillageInfo) {
+    const fields = row.queryAsArray('td:not(:has(a)):not(:has(img)):not(:has(span.icon))');
+    assertDOM(fields.length >= 1, 'td:not(:has(a)):not(:has(img)):not(:has(span.icon))');
+
+    for (const field of fields) {
+        if (!field.textContent) continue;
+        const date = parseGameDate(field.textContent);
+        if (date) {
+            info.lastAttack = date;
+            return;
+        };
+    };
+
+    throw new ClaustrophobicError('Não foi possível determinar a data do último ataque');
+};
+
+/**
+ * Verifica se existem informações sobre os recursos disponíveis na aldeia-alvo.
+ * Em caso positivo, armazena essas informações na instância pertinente do objeto `PlunderVillageInfo`.
+ * @param row Linha da tabela de aldeias.
+ * @param info Objeto `PlunderVillageInfo`.
+ * @returns O elemento onde estão as informações sobre os recursos, caso elas estejam disponíveis.
+ * Do contrário, retorna `null`.
+ */
+function queryResourcesField(row: Element, info: PlunderVillageInfo): Element | null {
+    // A não existência desse campo poder indicar que não há informações obtidas por exploradores.
+    const resourcesField = row.querySelector('td:has(span > span.icon.wood)');
+    if (!resourcesField) {
+        // É preciso verificar se é realmente esse o caso.
+        row.queryAndAssert('span[data-title*="explorador" i]');
+        info.spyInfo = false;
+        return null;
+    };
+
     const woodField = resourcesField.queryAndAssert('span span[class*="wood" i] + span');
     const stoneField = resourcesField.queryAndAssert('span span[class*="stone" i] + span');
     const ironField = resourcesField.queryAndAssert('span span[class*="iron" i] + span');
+
+    [woodField, stoneField, ironField].forEach((resField, index) => {
+        assert(resField.textContent, 'Não foi possível determinar a quantidade de recursos.');
+        const rawAmount = resField.textContent.replace(/\D/g, '');
+
+        // Adiciona o valor à quantia total.
+        const resAmount = Number.parseInt(rawAmount, 10);
+        assert(!Number.isNaN(resAmount), 'A quantia de recursos calculada é inválida');
+        info.total += resAmount;
+
+        const resName = resourceList[index];
+        info[resName] = resAmount;
+    });
+
+    info.spyInfo = true;
+    return resourcesField;
+};
+
+/**
+ * É preciso usar o campo dos recursos como referência para encontrar o nível da muralha.
+ * @param resourcesField O elemento onde estão as informações sobre os recursos.
+ * @param info Objeto `PlunderVillageInfo`.
+ * @returns O nível da muralha.
+ */
+function queryWallLevel(resourcesField: Element | null, info: PlunderVillageInfo) {
+    if (resourcesField === null) return;
+
+    const wallLevelField = resourcesField.nextElementSibling;
+    assertElement(wallLevelField, 'O campo com o nível da muralha não foi encontrado');
+    assert(wallLevelField.textContent, 'Não foi possível determinar o nível da muralha.');
+
+    const wallLevel = Number.parseInt(wallLevelField.textContent.replace(/\D/g, ''), 10);
+    const errorMessage = 'O valor encontrado não corresponde ao nível da muralha';
+    assert(Number.isInteger(wallLevel), errorMessage);
+    assert(wallLevel >= 0, errorMessage);
+    assert(wallLevel <= 20, errorMessage);
+
+    info.wallLevel = wallLevel;
+};
+
+/**
+ * Não pode haver emissão de erro caso os botões não forem encontrados.
+ * Isso porquê eles naturalmente não estarão presentes caso não haja modelo registrado.
+ * @param row Linha da tabela de aldeias.
+ * @param info Objeto `PlunderVillageInfo`.
+ */
+function queryModelButtons(row: Element, info: PlunderVillageInfo) {
+    info.aButton = row.querySelector('td a[class*="farm_icon_a" i]:not([class*="disabled" i])');      
+    info.bButton = row.querySelector('td a[class*="farm_icon_b" i]:not([class*="disabled" i])');
+    info.cButton = row.querySelector('td a[class*="farm_icon_c" i][onclick*="farm" i]');
+
+    if (info.cButton) {
+        // Verifica se o botão C está desativado.
+        const cButtonStatus = info.cButton.getAttribute('class');
+        assert(typeof cButtonStatus === 'string', 'Não foi possível determinar a classe do botão C.');
+        if (cButtonStatus.includes('disabled')) info.cStatus = false;
+    };
+};
+
+/**
+ * Encontra o botão da praça de reunião.
+ * @param row Linha da tabela de aldeias.
+ * @param info Objeto `PlunderVillageInfo`.
+ */
+function queryPlaceButton(row: Element, info: PlunderVillageInfo) {
+    info.place = row.queryAndAssert('td a[href*="screen=place" i][onclick]:has(img)');
 };
