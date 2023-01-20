@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { assert } from '@/error.js';
+import { assert, assertType } from '@/error.js';
 import { usePlunderStore } from '@/stores/plunder.js';
 import { usePhobiaStore } from '@/stores/store.js';
 import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
@@ -12,8 +12,8 @@ export function setPreloadEvents(pinia: Pinia) {
     const phobiaStore = usePhobiaStore(pinia);
     
     // Atualiza a URL atual.
-    ipcRenderer.on('game-url', (_e, url) => {
-        assert(typeof url === 'string', 'A URL é inválida.');
+    ipcRenderer.on('page-url', (_e, url) => {
+        assertType(typeof url === 'string', 'A URL é inválida.');
         if (!url.includes('tribalwars')) return;
         phobiaStore.currentURL = url;
     });

@@ -19,5 +19,6 @@ const plunderSchema: Schema<Record<string, unknown>> = {
 
 export const plunderStore = new Store({
     name: 'plunder',
-    schema: plunderSchema
+    schema: plunderSchema,
+    accessPropertiesByDotNotation: true
 });

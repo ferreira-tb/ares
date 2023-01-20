@@ -11,8 +11,8 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
     // Informa às janelas qual é a URL atual sempre que ocorre navegação.
     mainWindow.webContents.on('did-finish-load', () => {
         const currentURL = mainWindow.webContents.getURL();
-        mainWindow.webContents.send('game-url', currentURL);
-        childWindow.webContents.send('game-url', currentURL);
+        mainWindow.webContents.send('page-url', currentURL);
+        childWindow.webContents.send('page-url', currentURL);
     });
 
     // Impede que o usuário navegue para fora da página do jogo.

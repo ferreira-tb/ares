@@ -19,6 +19,10 @@ export function assert(condition: any, message: string): asserts condition {
     if (!condition) throw new ClaustrophobicError(message);
 };
 
+export function assertType(condition: any, message: string): asserts condition {
+    if (!condition) throw new TypeError(message);
+};
+
 export function assertDOM(condition: any, selector: string): asserts condition {
     if (!condition) {
         ClaustrophobicError.reportDOMError(selector);

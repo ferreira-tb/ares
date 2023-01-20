@@ -18,6 +18,7 @@ app.use(router);
 // Atribui as configurações salvas.
 patchPlunderStore(pinia)
     .catch((err: unknown) => ClaustrophobicError.handle(err));
+
 // Eventos.
 setChildWindowEvents(pinia);
 

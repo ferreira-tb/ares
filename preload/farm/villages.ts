@@ -1,5 +1,5 @@
 import { calcDistance, parseCoordsFromTextContent, parseGameDate } from '$/helpers.js';
-import { assert, assertDOM, assertElement, ClaustrophobicError } from '@/error.js';
+import { assert, assertDOM, assertElement, assertType, ClaustrophobicError } from '@/error.js';
 import { resources as resourceList } from '@/constants.js';
 
 /** Mapa com as informações sobre cada aldeia da tabela. */
@@ -50,7 +50,7 @@ export function queryVillagesInfo() {
 
         // A coerção à string é válida pois já foi verificada a existência do id ao usar querySelectorAll();
         let villageId = row.getAttribute('id');
-        assert(typeof villageId === 'string', 'Não foi possível obter o ID da aldeia.');
+        assertType(typeof villageId === 'string', 'Não foi possível obter o ID da aldeia.');
         villageId = villageId.replace(/\D/g, '');
 
         // Facilita o acesso ao id da aldeia.
@@ -88,7 +88,7 @@ export function queryVillagesInfo() {
 function queryReport(row: Element, info: PlunderVillageInfo) {
     const report = row.queryAndAssert('td a[href*="screen=report"]');
     const coords = parseCoordsFromTextContent(report.textContent);
-    assert(Array.isArray(coords), 'Não foi possível obter as coordenadas da aldeia-alvo.');
+    assertType(Array.isArray(coords), 'O valor obtido para as coordenadas da aldeia-alvo não é uma array.');
     info.distance = calcDistance(coords[0], coords[1]);
 };
 
@@ -183,7 +183,7 @@ function queryModelButtons(row: Element, info: PlunderVillageInfo) {
     if (info.cButton) {
         // Verifica se o botão C está desativado.
         const cButtonStatus = info.cButton.getAttribute('class');
-        assert(typeof cButtonStatus === 'string', 'Não foi possível determinar a classe do botão C.');
+        assertType(typeof cButtonStatus === 'string', 'Não foi possível determinar a classe do botão C.');
         if (cButtonStatus.includes('disabled')) info.cStatus = false;
     };
 };

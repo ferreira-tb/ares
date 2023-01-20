@@ -1,7 +1,8 @@
 import { pinia } from '$/preload.js';
-import { assert, assertElement } from "@/error.js";
+import { assert, assertElement, assertType, ClaustrophobicError } from "@/error.js";
 import { usePhobiaStore } from '@/stores/store.js';
 import { ipcSend } from '@/ipc.js';
+import type { XMLTags } from '@/types.js';
 
 /**
  * Obtêm as coordenadas da aldeia atual a partir do DOM e as salva no Pinia.
@@ -13,7 +14,7 @@ export function queryCurrentVillageCoords() {
     assertElement(coordsField, selector);
 
     const coords = parseCoordsFromTextContent(coordsField.textContent);
-    assert(Array.isArray(coords), 'Não foi possível obter as coordenadas da aldeia atual.');
+    assertType(Array.isArray(coords), 'O valor obtido para as coordenadas não é uma array.');
 
     const phobiaStore = usePhobiaStore(pinia);
     phobiaStore.currentX = coords[0];
@@ -102,4 +103,25 @@ export function parseGameDate(date: string): number | null {
     };
 
     return null;
+};
+
+/**
+ * Retorna uma função que auxilia na análise dos documentos XML que contêm informações sobre o mundo.
+ * @param xmlDocument Documento XML.
+ * @param type Indica se o documento corresponde às configurações do mundo ou das unidades.
+ */
+export function queryXMLTags(xmlDocument: XMLDocument, type: 'world' | 'unit') {
+    return function(tag: XMLTags): number {
+        const valueField = xmlDocument.querySelector(tag);
+        if (valueField === null) {
+            // Caso não exista campo para arqueiros, assume que o mundo não os possui.
+            if (type === 'unit' && tag.includes('archer')) return 0;
+            throw new ClaustrophobicError(`O campo \"${tag}\" não foi encontrado no documento XML.`);
+        };
+
+        assert(valueField.textContent !== null, `O campo \"${tag}\" foi encontrado, mas está vazio.`);
+        const result = Number.parseFloat(valueField.textContent);
+        assert(!Number.isNaN(result), `O valor de \"${tag}\" obtido no documento XML é inválido.`);
+        return result;
+    };
 };

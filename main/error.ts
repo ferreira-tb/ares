@@ -13,3 +13,7 @@ export class MainProcessError extends Error {
 export function assert(condition: any, message: string): asserts condition {
     if (!condition) throw new MainProcessError(message);
 };
+
+export function assertType(condition: any, message: string): asserts condition {
+    if (!condition) throw new TypeError(message);
+};
