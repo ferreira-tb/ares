@@ -1,13 +1,17 @@
 import { reactive } from 'vue';
-import { PlunderModel } from '$/farm/models.js';
 import { assert } from '@/error.js';
 
-class AvailableFarmUnits extends PlunderModel {
+class AvailableFarmUnits {
+    spear = 0;
+    sword = 0;
+    axe = 0;
+    spy = 0;
+    light = 0;
+    heavy = 0;
+    knight = 0;
+    archer = 0;
+    marcher = 0;
     ram = 0;
-
-    constructor() {
-        super();
-    };
 };
 
 /** Quantidade de unidades disponíveis no assistente de saque. */

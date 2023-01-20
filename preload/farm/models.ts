@@ -1,6 +1,10 @@
 import { assert } from '@/error.js';
 
 export class PlunderModel {
+    /** Capacidade de carga. */
+    carry = 0;
+
+    // Unidades.
     spear = 0;
     sword = 0;
     axe = 0;
@@ -26,11 +30,17 @@ export function queryModelData() {
     assert(aFields.length >= 7, 'Não foi possível encontrar os campos de texto do modelo A.');
     parseUnitAmount('a', aFields);
 
+    const aCarryField = aRow.queryAndAssert('td:not(:has(input[data-tb-model-a])):not(:has(input[type*="hidden"]))');
+    modelA.carry = aCarryField.parseInt();
+
     // Campos do modelo B.
     const bRow = modelTable.queryAndAssert('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
     const bFields = bRow.queryAsArray('td input[type="text"][name]');
     assert(bFields.length >= 7, 'Não foi possível encontrar os campos de texto do modelo B.');
     parseUnitAmount('b', bFields);
+
+    const bCarryField = bRow.queryAndAssert('td:not(:has(input[data-tb-model-b])):not(:has(input[type*="hidden"]))');
+    modelB.carry = bCarryField.parseInt();
 
     return { modelA, modelB };
 };
