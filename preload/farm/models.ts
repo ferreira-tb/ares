@@ -1,4 +1,4 @@
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watchSyncEffect } from 'vue';
 import { assert } from '@/error.js';
 import { units } from '$/farm/units.js';
 import { farmUnits } from '@/constants.js';
@@ -27,13 +27,15 @@ const modelB = new PlunderModel();
 
 /** Representa o total de recursos disponíveis na aldeia-alvo. */
 export const resources = ref<number>(0);
-export const bestModel = ref<PlunderModel | null>(null);
-export const otherModel = ref<PlunderModel | null>(null);
+const bestModel = ref<PlunderModel | null>(null);
+const otherModel = ref<PlunderModel | null>(null);
 
-export const canAttack = computed<boolean>(() => {
-    if (bestModel.value === null && otherModel.value === null) return false;
-    if (bestModel.value?.ok === false && otherModel.value?.ok === false) return false;
-    return true;
+/** Modelo que deve ser usado no ataque. Se `null`, não é possível atacar. */
+export const attackModel = computed<PlunderModel | null>(() => {
+    if (bestModel.value === null && otherModel.value === null) return null;
+    if (bestModel.value?.ok === true) return bestModel.value;
+    if (otherModel.value?.ok === true) return otherModel.value;
+    return null;
 });
 
 /** Obtêm informações sobre os modelos de saque. */
@@ -58,7 +60,6 @@ export function queryModelData() {
 
     const bCarryField = bRow.queryAndAssert('td:not(:has(input[data-tb-model-b])):not(:has(input[type*="hidden"]))');
     modelB.carry = bCarryField.parseInt();
-
 };
 
 /**
@@ -85,7 +86,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
     };
 };
 
-watchEffect(() => {
+watchSyncEffect(() => {
     const bigger = modelA.carry >= modelB.carry ? modelA : modelB;
     const smaller = modelA.carry < modelB.carry ? modelA : modelB;
 

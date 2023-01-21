@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { patchPlunderStore, usePlunderStore } from '@/stores/plunder.js';
-import { queryModelData, bestModel, otherModel, canAttack, resources } from '$/farm/models.js';
+import { queryModelData, attackModel, resources } from '$/farm/models.js';
 import { queryVillagesInfo, villagesInfo } from '$/farm/villages.js';
 import { queryCurrentVillageCoords } from '$/helpers.js';
 import { queryAvailableUnits } from '$/farm/units.js';
@@ -40,8 +40,8 @@ async function handleAttack() {
         const info = villagesInfo.assert(villageId);
         resources.value = info.total;
         
-        if (canAttack.value === false) continue;
-        console.log(bestModel, otherModel);
+        if (attackModel.value === null) continue;
+        console.log(attackModel.value);
     };
 };
 </script>
