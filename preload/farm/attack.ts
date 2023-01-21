@@ -1,5 +1,6 @@
 import { usePlunderStore } from '@/stores/plunder.js';
 import { generateIntegerBetween, wait } from '$/helpers.js';
+import { ipcSend } from '@/ipc.js';
 import type { ExpectedResources } from '$/farm/resources.js';
 
 export const eventTarget = new EventTarget();
@@ -11,7 +12,7 @@ export async function prepareAttack(resources: ExpectedResources, button: HTMLAn
         const delay = store.ignoreDelay === true ? 0 : generateIntegerBetween(200, 300);
         const attackTimeout = setTimeout(() => {
             sendAttack(button)
-                .then(() => updatePlunderedAmount(resources))
+                .then(() => ipcSend('update-plundered-amount', resources))
                 .then(() => resolve())
                 .catch((err: unknown) => reject(err))
                 .finally(() => attackCtrl.abort());
@@ -48,22 +49,4 @@ function sendAttack(button: HTMLAnchorElement) {
             .then(() => observeTroops.disconnect())
             .then(() => reject('TIMEOUT: O servidor demorou demais para responder.'));
     });
-};
-
-async function updatePlunderedAmount(resources: ExpectedResources) {/*
-    // Caso ainda não exista, entende que o ataque atual é o primeiro.
-    if (!this.plundered) {
-        this.plundered = new PlunderedAmount(resources, true);
-    } else {
-        this.plundered = new PlunderedAmount(resources, false);           
-    };
-
-    [...Assets.list.resources, 'total'].forEach((item: keyof TotalPlundered) => {
-        const label = document.querySelector(`#ins_plundered_${item}`);
-        if (label) label.textContent = this.plundered![item].toLocaleString('pt-br');
-    });
-
-    // Salva os valores no banco de dados.
-    await Store.set({ [Keys.totalPlundered]: this.plundered });*/
-    console.log(resources);
 };

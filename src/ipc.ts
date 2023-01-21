@@ -1,6 +1,7 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 import type { WorldData, UnitData } from '@/api/config.js';
+import type { ExpectedResources } from '$/farm/resources.js';
 
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;
@@ -18,6 +19,7 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
 
 export function ipcSend(channel: 'set-plunder-state', name: keyof PlunderState, value: PlunderStateValue): void;
 export function ipcSend(channel: 'update-current-coords', x: number, y: number): void;
+export function ipcSend(channel: 'update-plundered-amount', resources: ExpectedResources): void;
 export function ipcSend(channel: string, ...args: any[]) {
     ipcRenderer.send(channel, ...args);
 };

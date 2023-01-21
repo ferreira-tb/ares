@@ -4,6 +4,7 @@ import { RouterView } from 'vue-router';
 import { routeNames, router } from '@/router/router.js';
 import { usePhobiaStore, updateCurrentWorld } from '@/stores/store.js';
 import { patchPlunderStore } from '@/stores/plunder.js';
+import { verifyWorldAndUnitData } from '@/api/config.js';
 
 const phobiaStore = usePhobiaStore();
 
@@ -16,12 +17,18 @@ watchEffect(() => {
     };
 });
 
-watch(() => phobiaStore.currentURL, async () => await updateCurrentWorld());
+// Atualiza o mundo atual sempre que a URL da página muda.
+watch(() => phobiaStore.currentURL, async () => {
+    await updateCurrentWorld();
+});
 
-// Atribui as configurações salvas.
+// Atribui as configurações salvas de acordo com o mundo atual.
 watch(() => phobiaStore.currentWorld, async () => {
     if (phobiaStore.currentWorld === null) return;
-    await patchPlunderStore();
+    await Promise.all([
+        verifyWorldAndUnitData(phobiaStore),
+        patchPlunderStore()
+    ]);
 });
 </script>
 
@@ -37,7 +44,3 @@ watch(() => phobiaStore.currentWorld, async () => {
         </Transition>
     </RouterView>
 </template>
-
-<style scoped>
-
-</style>

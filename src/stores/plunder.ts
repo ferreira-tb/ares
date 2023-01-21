@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { ipcInvoke } from '@/ipc.js';
 
@@ -38,6 +38,24 @@ export const usePlunderStore = defineStore('plunder', () => {
         useCModel,
         ignoreDelay,
         blindAttack
+    };
+});
+
+export const usePlunderHistoryStore = defineStore('plunder-history', () => {
+    const wood = ref<number>(0);
+    const stone = ref<number>(0);
+    const iron = ref<number>(0);
+    const attackAmount = ref<number>(0);
+    const total = computed(() => wood.value + stone.value + iron.value);
+
+    const increaseAttackAmount = () => attackAmount.value++;
+
+    return { 
+        wood,
+        stone,
+        iron,
+        total,
+        increaseAttackAmount
     };
 });
 

@@ -66,8 +66,8 @@ const getUnitDataUrl = (world: string) => `https://${world}.tribalwars.com.br/in
  * Se `true`, os dados estão disponíveis no armazenamento e poderão ser acessados normalmente.
  * Se `false`, eles tanto não estão disponíveis quanto não foi possível obtê-los.
  */
-export async function verifyWorldAndUnitData() {
-    const phobiaStore = usePhobiaStore();
+export async function verifyWorldAndUnitData(phobiaStore?: ReturnType<typeof usePhobiaStore>) {
+    if (!phobiaStore) phobiaStore = usePhobiaStore();
     if (typeof phobiaStore.currentWorld !== 'string') {
         phobiaStore.currentWorld = await ipcInvoke('get-current-world');
         assert(phobiaStore.currentWorld !== null, 'Não há informação sobre o mundo atual.');
