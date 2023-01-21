@@ -4,6 +4,7 @@ import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { routeNames, router } from '@/router/router.js';
 import { usePhobiaStore } from '@/stores/store.js';
+import { patchPlunderStore } from '@/stores/plunder.js';
 
 const phobiaStore = usePhobiaStore();
 const { currentScreen } = storeToRefs(phobiaStore);
@@ -16,6 +17,9 @@ watchEffect(() => {
         router.push('/');
     };
 });
+
+// Atribui as configurações salvas.
+patchPlunderStore();
 </script>
 
 <template>

@@ -1,64 +1,54 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import { usePlunderStore } from '@/stores/plunder.js';
 import { ipcSend } from '@/ipc.js';
 import Button from '@/components/Button.vue';
 import Resources from '@/components/Resources.vue';
 
-const plunderStore = usePlunderStore();
-const { 
-    status,
-    ignoreWall,
-    destroyWall,
-    groupAttack,
-    useCModel,
-    ignoreDelay,
-    blindAttack
-} = storeToRefs(plunderStore);
+const store = usePlunderStore();
 
-watch(status, value => ipcSend('set-plunder-state', 'status', value));
-watch(ignoreWall, value => ipcSend('set-plunder-state', 'ignoreWall', value));
-watch(destroyWall, value => ipcSend('set-plunder-state', 'destroyWall', value));
-watch(groupAttack, value => ipcSend('set-plunder-state', 'groupAttack', value));
-watch(useCModel, value => ipcSend('set-plunder-state', 'useCModel', value));
-watch(ignoreDelay, value => ipcSend('set-plunder-state', 'ignoreDelay', value));
-watch(blindAttack, value => ipcSend('set-plunder-state', 'blindAttack', value));
+watch(() => store.status, (value) => ipcSend('set-plunder-state', 'status', value));
+watch(() => store.ignoreWall, (value) => ipcSend('set-plunder-state', 'ignoreWall', value));
+watch(() => store.destroyWall, (value) => ipcSend('set-plunder-state', 'destroyWall', value));
+watch(() => store.groupAttack, (value) => ipcSend('set-plunder-state', 'groupAttack', value));
+watch(() => store.useCModel, (value) => ipcSend('set-plunder-state', 'useCModel', value));
+watch(() => store.ignoreDelay, (value) => ipcSend('set-plunder-state', 'ignoreDelay', value));
+watch(() => store.blindAttack, (value) => ipcSend('set-plunder-state', 'blindAttack', value));
 
-const plunderButtonText = computed(() => status.value === false ? 'Saquear' : 'Parar');
+const plunderButtonText = computed(() => store.status === false ? 'Saquear' : 'Parar');
 </script>
 
 <template>
     <main>
         <div class="button-area">
-            <Button @click="status = !status">{{ plunderButtonText }}</Button>
+            <Button @click="store.status = !store.status">{{ plunderButtonText }}</Button>
         </div>
 
         <Resources />
 
         <div class="checkbox-area">
             <label class="checkbox-label">
-                <input type="checkbox" v-model="ignoreWall" />
+                <input type="checkbox" v-model="store.ignoreWall" />
                 <span>Ignorar muralha</span>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" v-model="destroyWall" />
+                <input type="checkbox" v-model="store.destroyWall" />
                 <span>Destruir muralha</span>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" v-model="groupAttack" />
+                <input type="checkbox" v-model="store.groupAttack" />
                 <span>Usar grupo</span>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" v-model="useCModel" />
+                <input type="checkbox" v-model="store.useCModel" />
                 <span>Usar modelo C</span>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" v-model="ignoreDelay" />
+                <input type="checkbox" v-model="store.ignoreDelay" />
                 <span>Ignorar delay</span>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" v-model="blindAttack" />
+                <input type="checkbox" v-model="store.blindAttack" />
                 <span>Ataque às cegas</span>
             </label>
         </div>

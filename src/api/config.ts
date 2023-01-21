@@ -1,6 +1,6 @@
 import { usePhobiaStore } from "@/stores/store.js";
 import { ipcInvoke } from '@/ipc.js';
-import { assert, ClaustrophobicError } from "@/error.js";
+import { assert } from "@/error.js";
 import { queryXMLTags } from "$/helpers.js";
 import { allUnits } from '@/constants.js';
 import type { UnitDetails } from '@/types.js';
@@ -94,8 +94,7 @@ export async function verifyWorldAndUnitData() {
         if (worldDataStatus && unitDataStatus) return true;
         return false;
 
-    } catch (err) {
-        ClaustrophobicError.handle(err);
+    } catch {
         return false;
     };
 };

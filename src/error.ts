@@ -8,10 +8,18 @@ export class ClaustrophobicError extends Error {
     public static handle(err: unknown) {
         if (err instanceof Error) console.error(err);
     };
+};
 
-    public static reportDOMError(selector: string) {
+export class GameDOMError extends Error {
+    override readonly name = 'GameDOMError';
+
+    constructor(message: string) {
+        super(message);
+    };
+
+    public static reportDOMError(err: GameDOMError) {
         // Esse método deve ser usado para documentar erros relacionados ao DOM.
-        console.error(selector);
+        console.error(err.message);
     };
 };
 
@@ -21,7 +29,7 @@ export function assert(condition: any, message: string): asserts condition {
 
 /** Garante a existência de determinado item dentro da array. */
 export function assertArray<T>(array: T[], item: any, message: string): asserts item is T {
-    assert(array.includes(item), message);
+    if (!array.includes(item)) throw new TypeError(message);
 };
 
 export function assertInteger(item: any, message: string): asserts item is number {
@@ -37,15 +45,9 @@ export function assertType(condition: any, message: string): asserts condition {
 };
 
 export function assertDOM(condition: any, selector: string): asserts condition {
-    if (!condition) {
-        ClaustrophobicError.reportDOMError(selector);
-        throw new ClaustrophobicError(selector);
-    };
+    if (!condition) throw new GameDOMError(selector);
 };
 
 export function assertElement(item: any, selector: string): asserts item is Element {
-    if (!(item instanceof Element)) {
-        ClaustrophobicError.reportDOMError(selector);
-        throw new ClaustrophobicError(selector);
-    };
+    if (!(item instanceof Element)) throw new GameDOMError(selector);
 };
