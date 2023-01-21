@@ -2,7 +2,7 @@ import Store from 'electron-store';
 import { MainProcessError } from '#/error.js';
 import type { JSONSchema, Schema } from '@/types.js';
 
-const worldDataSchema: JSONSchema = {
+const worldData: JSONSchema = {
     type: 'object',
     additionalProperties: false,
     properties: {
@@ -17,7 +17,7 @@ const worldDataSchema: JSONSchema = {
     }
 };
 
-const eachUnitSchema: JSONSchema = {
+const eachUnit: JSONSchema = {
     type: 'object',
     additionalProperties: false,
     properties: {
@@ -28,36 +28,36 @@ const eachUnitSchema: JSONSchema = {
     }
 };
 
-const unitDataSchema: JSONSchema = {
+const unitData: JSONSchema = {
     type: 'object',
     additionalProperties: false,
     properties: {
         // Data do último fetch.
         fetch: { type: 'number', default: 0 },
-        spear: eachUnitSchema,
-        sword: eachUnitSchema,
-        axe: eachUnitSchema,
-        archer: eachUnitSchema,
-        spy: eachUnitSchema,
-        light: eachUnitSchema,
-        marcher: eachUnitSchema,
-        heavy: eachUnitSchema,
-        ram: eachUnitSchema,
-        catapult: eachUnitSchema,
-        knight: eachUnitSchema,
-        snob: eachUnitSchema,
-        militia: eachUnitSchema
+        spear: eachUnit,
+        sword: eachUnit,
+        axe: eachUnit,
+        archer: eachUnit,
+        spy: eachUnit,
+        light: eachUnit,
+        marcher: eachUnit,
+        heavy: eachUnit,
+        ram: eachUnit,
+        catapult: eachUnit,
+        knight: eachUnit,
+        snob: eachUnit,
+        militia: eachUnit
     }
 };
 
 const worldSchema: Schema = {
     'world-info': {
         type: 'object',
-        additionalProperties: worldDataSchema
+        additionalProperties: worldData
     },
     'unit-info': {
         type: 'object',
-        additionalProperties: unitDataSchema
+        additionalProperties: unitData
     }
 };
 

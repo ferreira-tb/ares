@@ -41,15 +41,9 @@ export const usePlunderStore = defineStore('plunder', () => {
     };
 });
 
-/**
- * Atualiza os dados da store com base nos valores salvos no armazenamento.
- * @param pinia Instância ativa do Pinia.
- * @returns A store do Plunder.
- */
-export async function patchPlunderStore(): Promise<ReturnType<typeof usePlunderStore>> {
+/** Atualiza os dados da store com base nos valores salvos no armazenamento. */
+export async function patchPlunderStore() {
     const plunderStore = usePlunderStore();
     const plunderState = await ipcInvoke('get-plunder-state');
     if (plunderState) plunderStore.$patch({ ...plunderState });
-
-    return plunderStore;
 };

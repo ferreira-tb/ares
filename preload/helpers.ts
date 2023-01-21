@@ -120,3 +120,26 @@ export function queryXMLTags(xmlDocument: XMLDocument, type: 'world' | 'unit') {
         return valueField.parseFloat();
     };
 };
+
+/** Gera um número inteiro entre dois outros. */
+export function generateIntegerBetween(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min) + min);
+};
+
+/** Retorna o tempo de resposta do servidor. */
+export function getResponseTime() {
+    const navigationTiming = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    return navigationTiming.responseEnd - navigationTiming.fetchStart;
+};
+
+/**
+ * Cria um breve atraso tendo como base o tempo de resposta do servidor.
+ * @param extra Tempo adicional (em milisegundos).
+ */
+export function wait(extra?: number) {
+    let time = getResponseTime();
+    if (time <= 0) time = 500;
+    if (extra && Number.isInteger(extra)) time += extra;
+    
+    return new Promise<void>((resolve) => setTimeout(() => resolve(), time));
+};

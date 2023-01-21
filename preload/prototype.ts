@@ -1,13 +1,13 @@
 import { assert, assertElement, assertFinite, assertInteger, assertType } from "@/error.js";
 
-Document.prototype.queryAndAssert = function(selector: string): Element {
-    const element = this.querySelector(selector);
+Document.prototype.queryAndAssert = function<T extends Element>(selector: string): T {
+    const element = this.querySelector<T>(selector);
     assertElement(element, selector);
     return element;
 };
 
-Document.prototype.queryAsArray = function(selector: string): Element[] {
-    const elements = this.querySelectorAll(selector);
+Document.prototype.queryAsArray = function<T extends Element>(selector: string): T[] {
+    const elements = this.querySelectorAll<T>(selector);
     return Array.from(elements);
 };
 
@@ -58,14 +58,14 @@ Element.prototype.parseFloat = function(allowNegative = false): number {
     return parsed;
 };
 
-Element.prototype.queryAndAssert = function(selector: string): Element {
-    const element = this.querySelector(selector);
+Element.prototype.queryAndAssert = function<T extends Element>(selector: string): T {
+    const element = this.querySelector<T>(selector);
     assertElement(element, selector);
     return element;
 };
 
-Element.prototype.queryAsArray = function(selector: string): Element[] {
-    const elements = this.querySelectorAll(selector);
+Element.prototype.queryAsArray = function<T extends Element>(selector: string): T[] {
+    const elements = this.querySelectorAll<T>(selector);
     return Array.from(elements);
 };
 

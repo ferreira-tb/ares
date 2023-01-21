@@ -5,6 +5,8 @@ import { farmUnits } from '@/constants.js';
 import type { FarmUnits } from '@/types.js';
 
 export class PlunderModel {
+    /** Tipo do modelo. */
+    readonly type: 'a' | 'b';
     /** Indica se há tropas o suficiente para o modelo ser usado. */
     ok = false;
     /** Capacidade de carga. */
@@ -20,10 +22,14 @@ export class PlunderModel {
     knight = 0;
     archer = 0;
     marcher = 0;
+
+    constructor(type: 'a' | 'b') {
+        this.type = type;
+    };
 };
 
-const modelA = new PlunderModel();
-const modelB = new PlunderModel();
+const modelA = new PlunderModel('a');
+const modelB = new PlunderModel('b');
 
 /** Representa o total de recursos disponíveis na aldeia-alvo. */
 export const resources = ref<number>(0);

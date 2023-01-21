@@ -27,8 +27,6 @@ export const usePhobiaStore = defineStore('phobia', () => {
 
 export async function updateCurrentWorld() {
     const world = await ipcInvoke('get-current-world');
-    if (typeof world !== 'string' && world !== null) return;
-
     const phobiaStore = usePhobiaStore();
     phobiaStore.currentWorld = world;
 };

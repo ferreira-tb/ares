@@ -17,8 +17,8 @@ export class GameDOMError extends Error {
         super(message);
     };
 
+    /** Esse método deve ser usado para documentar erros relacionados ao DOM. */
     public static reportDOMError(err: GameDOMError) {
-        // Esse método deve ser usado para documentar erros relacionados ao DOM.
         console.error(err.message);
     };
 };
@@ -27,8 +27,7 @@ export function assert(condition: any, message: string): asserts condition {
     if (!condition) throw new ClaustrophobicError(message);
 };
 
-/** Garante a existência de determinado item dentro da array. */
-export function assertArray<T>(array: T[], item: any, message: string): asserts item is T {
+export function assertArrayIncludes<T>(array: T[], item: any, message: string): asserts item is T {
     if (!array.includes(item)) throw new TypeError(message);
 };
 

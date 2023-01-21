@@ -1,7 +1,7 @@
 declare global {
     interface Document {
-        queryAndAssert: (selector: string) => Element;
-        queryAsArray: (selector: string) => Element[];
+        queryAndAssert: <T extends Element>(selector: string) => T;
+        queryAsArray: <T extends Element>(selector: string) => T[];
     }
 
     interface Element {
@@ -9,8 +9,8 @@ declare global {
         assertAttributeAsInt: (attribute: string, allowNegative?: boolean, radix?: number) => number;
         parseInt: (allowNegative?: boolean, radix?: number) => number;
         parseFloat: (allowNegative?: boolean) => number;
-        queryAndAssert: (selector: string) => Element;
-        queryAsArray: (selector: string) => Element[];
+        queryAndAssert: <T extends Element>(selector: string) => T;
+        queryAsArray: <T extends Element>(selector: string) => T[];
     }
 
     interface Map<K, V> {

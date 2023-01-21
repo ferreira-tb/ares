@@ -22,13 +22,13 @@ export class PlunderVillageInfo {
     total: number = 0;
 
     /** Botão A do assistente de saque. */
-    aButton: Element | null = null;
+    a: HTMLAnchorElement | null = null;
     /** Botão B do assistente de saque. */
-    bButton: Element | null = null;
+    b: HTMLAnchorElement | null = null;
     /** Botão C do assistente de saque. */
-    cButton: Element | null = null;
+    c: HTMLAnchorElement | null = null;
     /** Botão para abrir a janela de comandos no assistente de saque. */
-    place: Element | null = null;
+    place: HTMLAnchorElement | null = null;
 
     /** Indica se o botão C está ativo ou não. */
     cStatus: boolean = true;
@@ -168,13 +168,13 @@ function queryWallLevel(resourcesField: Element | null, info: PlunderVillageInfo
  * @param info Objeto `PlunderVillageInfo`.
  */
 function queryModelButtons(row: Element, info: PlunderVillageInfo) {
-    info.aButton = row.querySelector('td a[class*="farm_icon_a" i]:not([class*="disabled" i])');      
-    info.bButton = row.querySelector('td a[class*="farm_icon_b" i]:not([class*="disabled" i])');
-    info.cButton = row.querySelector('td a[class*="farm_icon_c" i][onclick*="farm" i]');
+    info.a = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_a" i]:not([class*="disabled" i])');      
+    info.b = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_b" i]:not([class*="disabled" i])');
+    info.c = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_c" i][onclick*="farm" i]');
 
-    if (info.cButton) {
+    if (info.c) {
         // Verifica se o botão C está desativado.
-        const cButtonStatus = info.cButton.assertAttribute('class');
+        const cButtonStatus = info.c.assertAttribute('class');
         if (cButtonStatus.includes('disabled')) info.cStatus = false;
     };
 };
@@ -185,5 +185,5 @@ function queryModelButtons(row: Element, info: PlunderVillageInfo) {
  * @param info Objeto `PlunderVillageInfo`.
  */
 function queryPlaceButton(row: Element, info: PlunderVillageInfo) {
-    info.place = row.queryAndAssert('td a[href*="screen=place" i][onclick]:has(img)');
+    info.place = row.queryAndAssert<HTMLAnchorElement>('td a[href*="screen=place" i][onclick]:has(img)');
 };
