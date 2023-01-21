@@ -17,6 +17,7 @@
         "build-only:pre": "vite build --config pre.config.ts",
         "type-check": "vue-tsc --noEmit",
         "main": "rollup -c && electron .",
+        "pre": "npm run type-check && npm run build-only:pre && electron .",
         "start": "npm run build && npm run main"
     },
     "dependencies": {

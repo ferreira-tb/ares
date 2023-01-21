@@ -15,20 +15,18 @@ class AvailableFarmUnits {
 };
 
 /** Quantidade de unidades disponíveis no assistente de saque. */
-const units = reactive(new AvailableFarmUnits());
+export const units = reactive(new AvailableFarmUnits());
 
 /**
  * Analisa a linha com as tropas disponíveis e armazena as informações num objeto reativo.
  * Um `MutationObserver` garante que o objeto esteja sempre atualizado.
  */
-export function queryAvailableUnits(): AvailableFarmUnits {
+export function queryAvailableUnits() {
     const unitsRow = document.queryAndAssert('#farm_units #units_home tr:has(td#spear):has(td#sword)');
     
     queryUnitsRow(unitsRow);
     const observer = new MutationObserver(() => queryUnitsRow(unitsRow));
     observer.observe(unitsRow, { subtree: true, childList: true });
-
-    return units;
 };
 
 function queryUnitsRow(unitsRow: Element) {

@@ -1,23 +1,22 @@
 import '$/prototype.js';
-import { watch, createApp } from 'vue';
-import { createPinia, storeToRefs } from 'pinia';
-import { loadFarmModule } from '$/farm/farm.js';
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import { router } from '$/router/router.js';
 import { setPreloadEvents } from '$/events.js';
-import { usePhobiaStore } from '@/stores/store.js';
 import Preload from '$/Preload.vue';
 
 const mainApp = createApp(Preload);
-export const pinia = createPinia();
+const pinia = createPinia();
 
 // Plugins.
 mainApp.use(pinia);
-
-// Janela.
-const phobiaStore = usePhobiaStore(pinia);
-const { currentScreen } = storeToRefs(phobiaStore);
-watch(currentScreen, (value) => {
-    if (value === 'am_farm') loadFarmModule();
-});
+mainApp.use(router);
 
 // Eventos.
 setPreloadEvents(pinia);
+
+window.addEventListener('DOMContentLoaded', () => {
+    router.push('/');
+    const claustrophobia = document.createElement('claustrophobia');
+    mainApp.mount(claustrophobia);
+}, { once: true });

@@ -1,4 +1,3 @@
-import { pinia } from '$/preload.js';
 import { assert, assertType, ClaustrophobicError } from "@/error.js";
 import { usePhobiaStore } from '@/stores/store.js';
 import { ipcSend } from '@/ipc.js';
@@ -15,7 +14,7 @@ export function queryCurrentVillageCoords() {
     const coords = parseCoordsFromTextContent(coordsField.textContent);
     assertType(Array.isArray(coords), 'O valor obtido para as coordenadas não é uma array.');
 
-    const phobiaStore = usePhobiaStore(pinia);
+    const phobiaStore = usePhobiaStore();
     phobiaStore.currentX = coords[0];
     phobiaStore.currentY = coords[1];
 
@@ -44,7 +43,7 @@ export function parseCoordsFromTextContent(text: string | null): [number, number
 
 /** Calcula distância em campos entre duas coordenadas. */
 export function calcDistance(destX: number, destY: number, originX?: number, originY?: number) {
-    const phobiaStore = usePhobiaStore(pinia);
+    const phobiaStore = usePhobiaStore();
     if (typeof originX !== 'number') originX = phobiaStore.currentX;
     if (typeof originY !== 'number') originY = phobiaStore.currentY;
 

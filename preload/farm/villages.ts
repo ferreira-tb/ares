@@ -2,9 +2,6 @@ import { calcDistance, parseCoordsFromTextContent, parseGameDate } from '$/helpe
 import { assert, assertDOM, assertElement, assertType, ClaustrophobicError } from '@/error.js';
 import { resources as resourceList } from '@/constants.js';
 
-/** Mapa com as informações sobre cada aldeia da tabela. */
-export const villagesInfo: Map<string, PlunderVillageInfo> = new Map();
-
 export class PlunderVillageInfo {
     /** Data do último ataque contra a aldeia. */
     lastAttack: number = 0;
@@ -40,7 +37,10 @@ export class PlunderVillageInfo {
 /** Ajuda a controlar o MutationObserver. */
 const eventTarget = new EventTarget();
 
-export function queryVillagesInfo(): typeof villagesInfo {
+/** Mapa com as informações sobre cada aldeia da tabela. */
+export const villagesInfo: Map<string, PlunderVillageInfo> = new Map();
+
+export function queryVillagesInfo() {
     // Desconecta qualquer observer que esteja ativo.
     eventTarget.dispatchEvent(new Event('stop'));
 
@@ -81,8 +81,6 @@ export function queryVillagesInfo(): typeof villagesInfo {
         // Caso a função seja chamada novamente, desconecta o observer ativo.
         eventTarget.addEventListener('stop', () => observeTable.disconnect(), { once: true });
     };
-
-    return villagesInfo;
 };
 
 function queryReport(row: Element, info: PlunderVillageInfo) {

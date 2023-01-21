@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { watchEffect, Transition } from 'vue';
+import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { routeNames, router } from '@/router/router.js';
 import { usePhobiaStore } from '@/stores/store.js';

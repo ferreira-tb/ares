@@ -1,4 +1,4 @@
-import { defineStore, getActivePinia, type Pinia } from 'pinia';
+import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { gameURL } from '@/constants.js';
 import { useCurrentScreen } from '@/composables/game.js';
@@ -25,12 +25,10 @@ export const usePhobiaStore = defineStore('phobia', () => {
     };
 });
 
-export async function updateCurrentWorld(pinia?: Pinia) {
-    if (!pinia) pinia = getActivePinia();
-
+export async function updateCurrentWorld() {
     const world = await ipcInvoke('get-current-world');
     if (typeof world !== 'string' && world !== null) return;
 
-    const phobiaStore = usePhobiaStore(pinia);
+    const phobiaStore = usePhobiaStore();
     phobiaStore.currentWorld = world;
 };

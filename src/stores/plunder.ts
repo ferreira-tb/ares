@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { defineStore, getActivePinia, type Pinia } from 'pinia';
+import { defineStore } from 'pinia';
 import { ipcInvoke } from '@/ipc.js';
 
 export type PlunderState = {
@@ -42,14 +42,12 @@ export const usePlunderStore = defineStore('plunder', () => {
 });
 
 /**
- * Atualiza os dados da store com base nos valores salvos no arquivo de configuração.
+ * Atualiza os dados da store com base nos valores salvos no armazenamento.
  * @param pinia Instância ativa do Pinia.
  * @returns A store do Plunder.
  */
-export async function patchPlunderStore(pinia?: Pinia): Promise<ReturnType<typeof usePlunderStore>> {
-    if (!pinia) pinia = getActivePinia();
-
-    const plunderStore = usePlunderStore(pinia);
+export async function patchPlunderStore(): Promise<ReturnType<typeof usePlunderStore>> {
+    const plunderStore = usePlunderStore();
     const plunderState = await ipcInvoke('get-plunder-state');
     if (plunderState) plunderStore.$patch({ ...plunderState });
 

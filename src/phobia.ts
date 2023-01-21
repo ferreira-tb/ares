@@ -8,19 +8,19 @@ import { setChildWindowEvents } from '@/events.js';
 import { ClaustrophobicError } from '@/error.js';
 import App from '@/App.vue';
 
-const app = createApp(App);
+const childApp = createApp(App);
 const pinia = createPinia();
 
 // Plugins.
-app.use(pinia);
-app.use(router);
+childApp.use(pinia);
+childApp.use(router);
 
 // Atribui as configurações salvas.
-patchPlunderStore(pinia)
+patchPlunderStore()
     .catch((err: unknown) => ClaustrophobicError.handle(err));
 
 // Eventos.
 setChildWindowEvents(pinia);
 
 router.push('/');
-app.mount('#app');
+childApp.mount('#app');

@@ -5,7 +5,6 @@ import { usePhobiaStore } from '@/stores/store.js';
 import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 import type { Pinia } from 'pinia';
 
-
 export function setPreloadEvents(pinia: Pinia) {
     // Pinia.
     const plunderStore = usePlunderStore(pinia);

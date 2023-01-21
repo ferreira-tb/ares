@@ -52,7 +52,11 @@ function createWindow() {
     mainWindow.loadURL('https://www.tribalwars.com.br/');
     childWindow.loadFile('dist/index.html');
 
-    mainWindow.once('ready-to-show', () => mainWindow.show());
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
+        mainWindow.webContents.toggleDevTools();
+    });
+
     childWindow.once('ready-to-show', () => childWindow.show());
 };
 

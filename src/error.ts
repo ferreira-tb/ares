@@ -19,6 +19,11 @@ export function assert(condition: any, message: string): asserts condition {
     if (!condition) throw new ClaustrophobicError(message);
 };
 
+/** Garante a existência de determinado item dentro da array. */
+export function assertArray<T>(array: T[], item: any, message: string): asserts item is T {
+    assert(array.includes(item), message);
+};
+
 export function assertInteger(item: any, message: string): asserts item is number {
     if (!Number.isInteger(item)) throw new TypeError(message);
 };

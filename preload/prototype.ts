@@ -1,4 +1,4 @@
-import { assertElement, assertFinite, assertInteger, assertType } from "@/error.js";
+import { assert, assertElement, assertFinite, assertInteger, assertType } from "@/error.js";
 
 Document.prototype.queryAndAssert = function(selector: string): Element {
     const element = this.querySelector(selector);
@@ -67,4 +67,10 @@ Element.prototype.queryAndAssert = function(selector: string): Element {
 Element.prototype.queryAsArray = function(selector: string): Element[] {
     const elements = this.querySelectorAll(selector);
     return Array.from(elements);
+};
+
+Map.prototype.assert = function<K, V>(key: K): V {
+    const item = this.get(key);
+    assert(item !== undefined, 'O item não existe no mapa.');
+    return item;
 };

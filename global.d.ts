@@ -12,6 +12,10 @@ declare global {
         queryAndAssert: (selector: string) => Element;
         queryAsArray: (selector: string) => Element[];
     }
+
+    interface Map<K, V> {
+        assert: (key: K) => V;
+    }
 }
 
 export {};
