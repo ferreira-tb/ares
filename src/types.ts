@@ -49,3 +49,11 @@ export type UnitDetails = {
     speed: number;
     carry: number;
 };
+
+export type PlunderedAmount = {
+    wood: number;
+    stone: number;
+    iron: number;
+    total: number;
+    attackAmount: number;
+};

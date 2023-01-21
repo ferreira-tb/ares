@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { ipcInvoke } from '@/ipc.js';
+import type { PlunderedAmount } from '@/types.js';
 
 export type PlunderState = {
     /** Indica se o Plunder está ativado. */
@@ -30,7 +31,7 @@ export const usePlunderStore = defineStore('plunder', () => {
     const ignoreDelay = ref<boolean>(false);
     const blindAttack = ref<boolean>(false);
 
-    return { 
+    return {
         status,
         ignoreWall,
         destroyWall,
@@ -48,14 +49,31 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
     const attackAmount = ref<number>(0);
     const total = computed(() => wood.value + stone.value + iron.value);
 
-    const increaseAttackAmount = () => attackAmount.value++;
+    function getState(): PlunderedAmount {
+        return {
+            wood: wood.value,
+            stone: stone.value,
+            iron: iron.value,
+            total: total.value,
+            attackAmount: attackAmount.value
+        };
+    };
 
-    return { 
+    function resetState() {
+        wood.value = 0;
+        stone.value = 0;
+        iron.value = 0;
+        attackAmount.value = 0;
+    };
+
+    return {
         wood,
         stone,
         iron,
         total,
-        increaseAttackAmount
+        attackAmount,
+        getState,
+        resetState
     };
 });
 

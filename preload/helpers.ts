@@ -34,8 +34,8 @@ export function parseCoordsFromTextContent(text: string | null): [number, number
     if (!targetCoords) return null;
 
     const coords = targetCoords[0].split('\|')
-        .map(value => Number.parseInt(value, 10))
-        .filter(value => !Number.isNaN(value));
+        .map((value) => Number.parseInt(value, 10))
+        .filter((value) => !Number.isNaN(value));
 
     assert(coords.length === 2, 'As coordenadas são inválidas.');
     return coords as [number, number];
@@ -69,7 +69,7 @@ export function parseGameDate(date: string): number | null {
 
     const dateFields = splitDate.split('\:').map(item => Number.parseInt(item, 10));
     if (dateFields.length < 3) return null;
-    if (dateFields.some(item => Number.isNaN(item))) return null;
+    if (dateFields.some((item) => Number.isNaN(item))) return null;
 
     // Detalhes da data.
     const [hours, minutes, seconds] = dateFields;
@@ -92,8 +92,8 @@ export function parseGameDate(date: string): number | null {
         // Em outros cenários, também altera o dia e o mês.
         const dayAndMonth = (writtenDate.split(' '))[1];
         const [day, month] = dayAndMonth.split('.')
-            .map(item => Number.parseInt(item, 10))
-            .filter(item => !Number.isNaN(item));
+            .map((item) => Number.parseInt(item, 10))
+            .filter((item) => !Number.isNaN(item));
 
         const anyDay = new Date().setHours(hours, minutes, seconds, milliseconds);
         // O valor para o mês possui índice zero, por isso é preciso diminuí-lo em 1.

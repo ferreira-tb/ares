@@ -1,19 +1,30 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
-import { usePlunderStore } from '@/stores/plunder.js';
+import { usePlunderStore, usePlunderHistoryStore } from '@/stores/plunder.js';
 import { ipcSend } from '@/ipc.js';
 import Button from '@/components/Button.vue';
 import Resources from '@/components/Resources.vue';
 
 const store = usePlunderStore();
+const history = usePlunderHistoryStore();
 
-watch(() => store.status, (value) => ipcSend('set-plunder-state', 'status', value));
 watch(() => store.ignoreWall, (value) => ipcSend('set-plunder-state', 'ignoreWall', value));
 watch(() => store.destroyWall, (value) => ipcSend('set-plunder-state', 'destroyWall', value));
 watch(() => store.groupAttack, (value) => ipcSend('set-plunder-state', 'groupAttack', value));
 watch(() => store.useCModel, (value) => ipcSend('set-plunder-state', 'useCModel', value));
 watch(() => store.ignoreDelay, (value) => ipcSend('set-plunder-state', 'ignoreDelay', value));
 watch(() => store.blindAttack, (value) => ipcSend('set-plunder-state', 'blindAttack', value));
+
+watch(() => store.status, (value) => {
+    ipcSend('set-plunder-state', 'status', value);
+
+    // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
+    if (value === false) {
+        const currentHistoryState = history.getState();
+        ipcSend('save-plundered-amount', currentHistoryState);
+        history.resetState();
+    };
+});
 
 const plunderButtonText = computed(() => store.status === false ? 'Saquear' : 'Parar');
 </script>
