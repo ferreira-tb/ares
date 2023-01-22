@@ -28,4 +28,5 @@ coverage
 *.sw?
 
 public
-out/
+out
+*.env

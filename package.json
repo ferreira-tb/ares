@@ -30,6 +30,7 @@
         "start": "npm run build && npm run main"
     },
     "dependencies": {
+        "dotenv": "^16.0.3",
         "electron-store": "^8.1.0",
         "pinia": "^2.0.28",
         "vue": "^3.2.45",

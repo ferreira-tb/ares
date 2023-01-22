@@ -1,7 +1,10 @@
-import * as path from 'path';
+import dotenv from 'dotenv';
 import { app, BrowserWindow } from 'electron';
-import { mainMenu, childMenu } from '#/menu.js';
+import { resolve } from 'path';
+import { setAppMenu } from '#/menu.js';
 import { setEvents } from '#/events/index.js';
+
+dotenv.config();
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -10,9 +13,9 @@ function createWindow() {
         show: false,
         title: 'Claustrophobia',
         autoHideMenuBar: true,
-        icon: path.resolve(__dirname, '../public/favicon.ico'),
+        icon: resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
-            preload: path.resolve(__dirname, 'preload.js')
+            preload: resolve(__dirname, 'preload.js')
         }
     });
     
@@ -31,32 +34,23 @@ function createWindow() {
         maximizable: false,
         title: 'Claustrophobia',
         autoHideMenuBar: true,
-        icon: path.resolve(__dirname, '../public/favicon.ico'),
+        icon: resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
         }
     });
 
-    ////// Eventos.
     setEvents(mainWindow, childWindow);
+    setAppMenu(mainWindow, childWindow);
     
-    ////// Outros.
     mainWindow.maximize();
-
-    mainWindow.setMenu(mainMenu);
-    childWindow.setMenu(childMenu);
-
     mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 
     mainWindow.loadURL('https://www.tribalwars.com.br/');
     childWindow.loadFile('dist/index.html');
 
-    mainWindow.once('ready-to-show', () => {
-        mainWindow.show();
-        mainWindow.webContents.toggleDevTools();
-    });
-
+    mainWindow.once('ready-to-show', () =>  mainWindow.show());
     childWindow.once('ready-to-show', () => childWindow.show());
 };
 
