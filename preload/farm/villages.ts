@@ -72,15 +72,15 @@ export function queryVillagesInfo() {
 
         // Armazena os dados obtidos.
         villagesInfo.set(villageId, info);
-
-        // Dispara a função novamente caso surjam alterações na tabela.
-        const plunderList = document.queryAndAssert('#plunder_list');
-        const observeTable = new MutationObserver(() => queryVillagesInfo());
-        observeTable.observe(plunderList, { subtree: true, childList: true });
-
-        // Caso a função seja chamada novamente, desconecta o observer ativo.
-        eventTarget.addEventListener('stop', () => observeTable.disconnect(), { once: true });
     };
+
+    // Dispara a função novamente caso surjam alterações na tabela.
+    const plunderList = document.queryAndAssert('#plunder_list');
+    const observeTable = new MutationObserver(() => queryVillagesInfo());
+    observeTable.observe(plunderList, { subtree: true, childList: true });
+
+    // Caso a função seja chamada novamente, desconecta o observer ativo.
+    eventTarget.addEventListener('stop', () => observeTable.disconnect(), { once: true });
 };
 
 function queryReport(row: Element, info: PlunderVillageInfo) {
