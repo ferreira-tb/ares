@@ -1,3 +1,4 @@
+import '$/assets/preload.css';
 import '$/prototype.js';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';

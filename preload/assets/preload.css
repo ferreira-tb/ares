@@ -1,0 +1,9 @@
+.tb-fade-enter-active,
+.tb-fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.tb-fade-enter-from,
+.tb-fade-leave-to {
+    opacity: 0;
+}

@@ -18,6 +18,9 @@ export type PlunderState = {
     ignoreDelay: boolean;
     /** Se ativado, o Plunder não levará em consideração as informações dos exploradores. */
     blindAttack: boolean;
+
+    /** Minutos até que a página seja recarregada automaticamente. */
+    minutesUntilReload: number;
 };
 
 export type PlunderStateValue = PlunderState[keyof PlunderState];
@@ -31,6 +34,8 @@ export const usePlunderStore = defineStore('plunder', () => {
     const ignoreDelay = ref<boolean>(false);
     const blindAttack = ref<boolean>(false);
 
+    const minutesUntilReload = ref<number>(10);
+
     return {
         status,
         ignoreWall,
@@ -38,7 +43,8 @@ export const usePlunderStore = defineStore('plunder', () => {
         groupAttack,
         useCModel,
         ignoreDelay,
-        blindAttack
+        blindAttack,
+        minutesUntilReload
     };
 });
 

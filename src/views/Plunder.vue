@@ -35,8 +35,15 @@ const plunderButtonText = computed(() => store.status === false ? 'Saquear' : 'P
             <Button @click="store.status = !store.status">{{ plunderButtonText }}</Button>
         </div>
 
-        <Resources />
-
+        <Transition name="fade" mode="out-in">
+            <Suspense>
+                <Resources :plunder-status="store.status" />
+                <template #fallback class="to-center green-text bold">
+                    Carregando...
+                </template>
+            </Suspense>
+        </Transition>
+        
         <div class="checkbox-area">
             <label class="checkbox-label">
                 <input type="checkbox" v-model="store.ignoreWall" />

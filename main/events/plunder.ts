@@ -1,33 +1,26 @@
 import { ipcMain } from 'electron';
-import { assertInteger, assertObjectHasSameProps, assertType, MainProcessError } from '#/error.js';
+import { assertInteger, assertObjectHasSameProps, assertType } from '#/error.js';
 import { plunderStore } from '#/store/plunder.js';
-import { getCurrentWorld } from '#/helpers.js';
+import { assertCurrentWorld } from '#/helpers.js';
 import type { BrowserWindow } from 'electron';
 
 export function setPlunderEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
     ipcMain.handle('is-plunder-active', () => {
-        const world = getCurrentWorld(mainWindow);
-        if (world === null) return false;
+        const world = assertCurrentWorld(mainWindow);
         return plunderStore.get(`plunder-state.${world}.status`, false);
     });
 
     ipcMain.handle('get-plunder-state', () => {
-        const world = getCurrentWorld(mainWindow);
-        if (world === null) return null;
+        const world = assertCurrentWorld(mainWindow);
         return plunderStore.get(`plunder-state.${world}`, null);
     });
 
     ipcMain.on('set-plunder-state', (_e, stateName: unknown, value: unknown) => {
-        try {
-            const world = getCurrentWorld(mainWindow);
-            assertType(typeof world === 'string', 'O mundo é inválido.');
-            assertType(typeof stateName === 'string', 'O nome do estado é inválido.');
-            
-            plunderStore.set(`plunder-state.${world}.${stateName}`, value);
-            mainWindow.webContents.send('plunder-state-update', stateName, value);
-        } catch (err) {
-            MainProcessError.handle(err);
-        };
+        const world = assertCurrentWorld(mainWindow);
+        assertType(typeof stateName === 'string', 'O nome do estado é inválido.');
+        
+        plunderStore.set(`plunder-state.${world}.${stateName}`, value);
+        mainWindow.webContents.send('plunder-state-update', stateName, value);
     });
 
     // Emitido pela janela mãe após cada ataque realizado pelo Plunder.
@@ -37,8 +30,7 @@ export function setPlunderEvents(mainWindow: BrowserWindow, childWindow: Browser
 
     // Emitido pela janela filha quando o Plunder é desativado.
     ipcMain.on('save-plundered-amount', (_e, resources: unknown) => {
-        const world = getCurrentWorld(mainWindow);
-        assertType(typeof world === 'string', 'O mundo é inválido.');
+        const world = assertCurrentWorld(mainWindow);
 
         const plundered = new PlunderedAmount(resources);
         plunderStore.set(`history.${world}.last`, plundered);
@@ -47,6 +39,16 @@ export function setPlunderEvents(mainWindow: BrowserWindow, childWindow: Browser
         if (totalPlundered) PlunderedAmount.sum(plundered, totalPlundered);
         
         plunderStore.set(`history.${world}.total`, plundered);
+    });
+
+    ipcMain.handle('get-last-plundered-amount', (_e, world?: string) => {
+        if (!world) world = assertCurrentWorld(mainWindow);
+        return plunderStore.get(`history.${world}.last`, null);
+    });
+
+    ipcMain.handle('get-total-plundered-amount', (_e, world?: string) => {
+        if (!world) world = assertCurrentWorld(mainWindow);
+        return plunderStore.get(`history.${world}.total`, null);
     });
 };
 

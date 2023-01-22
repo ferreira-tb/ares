@@ -13,11 +13,15 @@ export async function ipcInvoke(channel: 'has-world-data', world: string): Promi
 export async function ipcInvoke(channel: 'has-unit-data', world: string): Promise<boolean>;
 export async function ipcInvoke(channel: 'set-world-data', world: string, data: WorldData): Promise<boolean>;
 export async function ipcInvoke(channel: 'set-unit-data', world: string, data: UnitData): Promise<boolean>;
+export async function ipcInvoke(channel: 'get-last-plundered-amount', world?: string): Promise<PlunderedAmount | null>;
+export async function ipcInvoke(channel: 'get-total-plundered-amount', world?: string): Promise<PlunderedAmount | null>;
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
     const response = await ipcRenderer.invoke(channel, ...args);
     return response;
 };
 
+export function ipcSend(channel: 'reload-main-window'): void;
+export function ipcSend(channel: 'force-reload-main-window'): void;
 export function ipcSend(channel: 'set-plunder-state', name: keyof PlunderState, value: PlunderStateValue): void;
 export function ipcSend(channel: 'update-current-coords', x: number, y: number): void;
 export function ipcSend(channel: 'update-plundered-amount', resources: ExpectedResources): void;

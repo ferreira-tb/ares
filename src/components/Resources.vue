@@ -1,7 +1,23 @@
 <script setup lang="ts">
 import { usePlunderHistoryStore } from '@/stores/plunder.js';
+import { ipcInvoke } from '@/ipc.js';
+
+const props = defineProps<{
+    plunderStatus: boolean;
+}>();
 
 const history = usePlunderHistoryStore();
+
+// Se o Plunder estiver ativado, atualiza o histórico com as informações salvas.
+if (props.plunderStatus === true) {
+    const lastPlundered = await ipcInvoke('get-last-plundered-amount');
+    if (lastPlundered) history.$patch({ 
+        wood: lastPlundered.wood,
+        stone: lastPlundered.stone,
+        iron: lastPlundered.iron,
+        attackAmount: lastPlundered.attackAmount,
+    });
+};
 </script>
 
 <template>

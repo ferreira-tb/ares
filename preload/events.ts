@@ -2,7 +2,6 @@ import { ipcRenderer } from 'electron';
 import { assert, assertType } from '@/error.js';
 import { usePlunderStore } from '@/stores/plunder.js';
 import { usePhobiaStore } from '@/stores/store.js';
-import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 import type { Pinia } from 'pinia';
 
 export function setPreloadEvents(pinia: Pinia) {
@@ -17,8 +16,10 @@ export function setPreloadEvents(pinia: Pinia) {
         phobiaStore.currentURL = url;
     });
 
+    type PlunderKeys = keyof typeof plunderStore;
+    type PlunderValue<T extends PlunderKeys> = typeof plunderStore[T];
     // Atualiza o estado local do Plunder sempre que ocorre uma mudança dele na janela filha.
-    ipcRenderer.on('plunder-state-update', (_e, stateName: keyof PlunderState, value: PlunderStateValue) => {
+    ipcRenderer.on('plunder-state-update', <K extends PlunderKeys>(_e: unknown, stateName: K, value: PlunderValue<K>) => {
         assert(stateName in plunderStore, `${stateName} não é um estado válido para o Plunder.`);
         plunderStore[stateName] = value;
     });
