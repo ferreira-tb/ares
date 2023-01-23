@@ -16,14 +16,14 @@ export function setAppMenu(mainWindow: BrowserWindow, childWindow: BrowserWindow
         { label: 'Suporte', click: () => shell.openExternal(helpURL) }
     ];
 
-    const devOnlyOptions: MenuItemConstructorOptions[] = [
+    const devOnly: MenuItemConstructorOptions[] = [
         { label: 'Atualizar', visible: false, accelerator: 'F5', role: 'reload' },
         { label: 'Forçar atualização', visible: false, accelerator: 'CmdOrCtrl+F5', role: 'forceReload' },
         { label: 'Inspecionar', visible: false, accelerator: 'F1', role: 'toggleDevTools' },
     ];
 
     if (process.env.CLAUSTROPHOBIC_MODE === 'dev') {
-        devOnlyOptions.forEach((option) => optionsMenu.push(option));
+        devOnly.forEach((option) => optionsMenu.push(option));
     };
     
     const mainMenu = Menu.buildFromTemplate([
