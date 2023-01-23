@@ -30,3 +30,5 @@ coverage
 public
 out
 *.env
+
+__testpy__
