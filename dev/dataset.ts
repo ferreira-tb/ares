@@ -9,7 +9,7 @@ import { ipcSend } from '@/ipc.js';
 export type CSVDataSet = [number, number, number, number, number, number];
 
 /** Deve ser invocada apenas na janela de relatórios. */
-export async function getReportDataset() {
+export async function queryReportDataset() {
     const startTime = Date.now();
 
     const urls: string[] = [];

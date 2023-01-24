@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron';
 import { assert, assertType } from '@/error.js';
 import { usePlunderStore } from '@/stores/plunder.js';
 import { usePhobiaStore } from '@/stores/store.js';
-import { getReportDataset } from '../dev/dataset.js';
+import { queryReportDataset } from '../dev/dataset.js';
 import type { Pinia } from 'pinia';
 
 export function setPreloadEvents(pinia: Pinia) {
@@ -29,5 +29,5 @@ export function setPreloadEvents(pinia: Pinia) {
 };
 
 function setDevEvents() {
-    ipcRenderer.on('dev-report-dataset', () => getReportDataset());
+    ipcRenderer.on('dev-report-dataset', () => queryReportDataset());
 };
