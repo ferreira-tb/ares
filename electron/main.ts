@@ -1,10 +1,20 @@
 import dotenv from 'dotenv';
+import getPort from 'get-port';
+import http from 'node:http';
 import { app, BrowserWindow } from 'electron';
 import { resolve } from 'path';
+import { spawn } from 'child_process';
 import { setAppMenu } from '#/menu.js';
 import { setEvents } from '#/events/index.js';
 
 dotenv.config();
+
+let pyPort = '8000';
+const pyPath = resolve(__dirname, '../__testpy__/phobia.exe');
+getPort({ port: 8000 }).then((port) => {
+    pyPort = port.toString(10);
+    spawn(pyPath, [pyPort]);
+});
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -48,7 +58,7 @@ function createWindow() {
     mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 
     mainWindow.loadURL('https://www.tribalwars.com.br/');
-    childWindow.loadFile('dist/index.html');
+    childWindow.loadFile('__dist__/index.html');
 
     mainWindow.once('ready-to-show', () =>  mainWindow.show());
     childWindow.once('ready-to-show', () => childWindow.show());
@@ -56,3 +66,4 @@ function createWindow() {
 
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
+app.on('will-quit', () => http.get(`http://127.0.0.1:${pyPort}/quit`));

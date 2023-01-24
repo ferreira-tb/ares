@@ -1,7 +1,7 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 import vue from '@vitejs/plugin-vue';
-import * as path from 'path';
 
 export default defineConfig({
     plugins: [vue()],
@@ -14,10 +14,10 @@ export default defineConfig({
     },
     build: {
         target: 'esnext',
-        outDir: 'dist',
+        outDir: '__dist__',
         emptyOutDir: false,
         lib: {
-            entry: path.resolve(__dirname, 'preload/preload.ts'),
+            entry: resolve(__dirname, 'preload/preload.ts'),
             fileName: 'preload',
             name: 'preload',
             formats: ['cjs']

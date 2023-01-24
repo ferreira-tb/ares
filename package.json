@@ -14,7 +14,7 @@
         "email": "andrew.shien2@gmail.com"
     },
     "license": "MIT",
-    "main": "dist/main.js",
+    "main": "__dist__/main.js",
     "keywords": [
         "tribal-wars",
         "electron"
@@ -32,6 +32,7 @@
     "dependencies": {
         "dotenv": "^16.0.3",
         "electron-store": "^8.1.0",
+        "get-port": "^6.1.2",
         "pinia": "^2.0.28",
         "vue": "^3.2.45",
         "vue-router": "^4.1.6"
@@ -41,10 +42,10 @@
         "@rollup/plugin-json": "^6.0.0",
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@rollup/plugin-typescript": "^11.0.0",
-        "@types/node": "^18.11.12",
+        "@types/node": "^18.11.18",
         "@vitejs/plugin-vue": "^4.0.0",
         "@vue/tsconfig": "^0.1.3",
-        "electron": "^22.0.3",
+        "electron": "^23.0.0-beta.5",
         "npm-run-all": "^4.1.5",
         "tslib": "^2.4.1",
         "typescript": "^4.9.4",

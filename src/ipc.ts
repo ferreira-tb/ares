@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
-import type { WorldData, UnitData } from '@/api/config.js';
+import type { WorldData, UnitData } from '@/world/config.js';
 import type { ExpectedResources } from '$/farm/resources.js';
 import type { PlunderedAmount } from '@/types.js';
 

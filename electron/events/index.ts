@@ -20,7 +20,7 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
         childWindow.webContents.send('page-url', currentURL);
 
         try {
-            const style = await fs.readFile('dist/style.css', { encoding: 'utf8' });
+            const style = await fs.readFile('__dist__/style.css', { encoding: 'utf8' });
             await mainWindow.webContents.insertCSS(style);
         } catch (err) {
             MainProcessError.handle(err);

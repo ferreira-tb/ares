@@ -13,7 +13,7 @@ export default defineConfig({
     },
     build: {
         target: 'esnext',
-        outDir: 'dist',
+        outDir: '__dist__',
         emptyOutDir: true,
         rollupOptions: {
             external: ['electron'],

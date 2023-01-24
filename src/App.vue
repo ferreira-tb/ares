@@ -4,7 +4,7 @@ import { RouterView } from 'vue-router';
 import { routeNames, router } from '@/router/router.js';
 import { usePhobiaStore, updateCurrentWorld } from '@/stores/store.js';
 import { patchPlunderStore } from '@/stores/plunder.js';
-import { verifyWorldAndUnitData } from '@/api/config.js';
+import { verifyWorldAndUnitData } from '@/world/config.js';
 
 const phobiaStore = usePhobiaStore();
 

@@ -31,4 +31,8 @@ public
 out
 *.env
 
+__dist__
 __testpy__
+**/db.sqlite3
+**/__pycache__
+*.pyc
