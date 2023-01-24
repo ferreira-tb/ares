@@ -7,12 +7,6 @@ export class ExpectedResources {
     stone: number;
     iron: number;
 
-    /**
-     * Calcula a quantidade recursos esperada no saque.
-     * Sempre presume carga total.
-     * @param villageID ID da aldeia-alvo.
-     * @param model Modelo usado no ataque.
-     */
     constructor(info: PlunderVillageInfo, carry: number) {
         this.wood = info.wood;
         this.stone = info.stone;
