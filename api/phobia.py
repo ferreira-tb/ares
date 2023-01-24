@@ -1,4 +1,3 @@
-# No diretório principal:
 # pyinstaller api/phobia.py --onefile --specpath __testpy__ --distpath __testpy__ --workpath __testpy__
 import sys
 from routes import routes
@@ -8,6 +7,7 @@ app = web.Application()
 app.add_routes(routes)
 
 def set_port():
+    ''' Define a porta que será usada pela aplicação. '''
     try:
         port = int(sys.argv[1])
         return port
