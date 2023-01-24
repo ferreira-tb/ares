@@ -2,6 +2,7 @@ import { app, ipcMain } from 'electron';
 import * as fs from 'node:fs/promises';
 import { setPlunderEvents } from '#/events/plunder.js';
 import { setGameEvents } from '#/events/game.js';
+import { setDevEvents } from '#/events/dev.js';
 import { MainProcessError } from '#/error.js';
 import type { BrowserWindow } from 'electron';
 
@@ -35,4 +36,6 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
     // Outros eventos.
     setGameEvents(mainWindow, childWindow);
     setPlunderEvents(mainWindow, childWindow);
+
+    if (process.env.CLAUSTROPHOBIC_MODE === 'dev') setDevEvents();
 };

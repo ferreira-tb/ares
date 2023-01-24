@@ -30,6 +30,12 @@ Element.prototype.assertAttributeAsInt = function(attribute: string, allowNegati
     return parsed;
 };
 
+Element.prototype.assertTextContent = function<T extends string>(): T {
+    const content = this.textContent;
+    assertType(typeof content === 'string', 'O elemento não possui conteúdo em texto.');
+    return content.trim() as T;
+};
+
 Element.prototype.parseInt = function(allowNegative = false, radix: number = 10): number {
     const content = this.textContent;
     assertType(typeof content === 'string', 'O elemento não possui conteúdo em texto.');

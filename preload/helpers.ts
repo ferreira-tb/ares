@@ -1,6 +1,7 @@
-import { assert, assertType, ClaustrophobicError } from "@/error.js";
+import { assert, assertArrayIncludes, assertInteger, assertType, ClaustrophobicError } from "@/error.js";
 import { usePhobiaStore } from '@/stores/store.js';
 import { ipcSend } from '@/ipc.js';
+import { months } from "@/constants.js";
 import type { XMLTags } from '@/types.js';
 
 /**
@@ -142,4 +143,46 @@ export function wait(extra?: number) {
     if (extra && Number.isInteger(extra)) time += extra;
     
     return new Promise<void>((resolve) => setTimeout(() => resolve(), time));
+};
+
+export function parseReportDate(report: Element) {
+    const selector = 'td.nopad table:has([class="report_ReportAttack" i]) tr:nth-of-type(2) td:nth-of-type(2)';
+    const dateField = report.queryAndAssert(selector);
+
+    // Exemplo: "out. 17, 2022  22:16:46:503".
+    const rawDate = dateField.assertTextContent();
+
+    const rawDateFields = rawDate.split(' ')
+        .filter((value) => value)
+        .map((value) => value.trim());
+
+    const getDigits = (value: string) => Number.parseInt(value.replace(/\D/g, ''), 10);
+
+    const dateFields = rawDateFields.map((field, index) => {
+        if (index === 0) {
+            const month = field.replace(/\W/g, '').slice(0, 3);
+            assertType(month && typeof month === 'string', 'O mês obtido é inválido.');
+            assertArrayIncludes((months as unknown) as string[], month, 'O mês obtido é inválido.');
+            
+            // Date.prototype.setFullYear() usa índice zero para os meses.
+            return ((months as unknown) as string[]).indexOf(month as any);
+
+        } else if (index === 3) {
+            return field.split(':').map((value) => getDigits(value));
+  
+        } else {
+            return getDigits(field);
+        };
+    });
+
+    const year = dateFields[2] as number;
+    const month = dateFields[0] as number;
+    const day = dateFields[1] as number;
+    const fullYear = new Date().setFullYear(year, month, day);
+
+    const [hour, minute, second, millisec] = dateFields[3] as number[];
+    const date = new Date(fullYear).setHours(hour, minute, second, millisec);
+    assertInteger(date, 'A data obtida é inválida.');
+
+    return date;
 };

@@ -6,7 +6,8 @@
         "src/**/*",
         "src/**/*.vue",
         "preload/**/*",
-        "preload/**/*.vue"
+        "preload/**/*.vue",
+        "dev/**/*"
     ],
     "compilerOptions": {
         "baseUrl": ".",

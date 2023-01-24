@@ -22,7 +22,6 @@ function createWindow() {
         height: 1000,
         show: false,
         title: 'Claustrophobia',
-        autoHideMenuBar: true,
         icon: resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
             preload: resolve(__dirname, 'preload.js')

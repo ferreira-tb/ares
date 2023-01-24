@@ -3,6 +3,7 @@ import type { PlunderState, PlunderStateValue } from '@/stores/plunder.js';
 import type { WorldData, UnitData } from '@/world/config.js';
 import type { ExpectedResources } from '$/farm/resources.js';
 import type { PlunderedAmount } from '@/types.js';
+import type { CSVDataSet } from '../dev/dataset.js';
 
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;
@@ -26,6 +27,7 @@ export function ipcSend(channel: 'set-plunder-state', name: keyof PlunderState, 
 export function ipcSend(channel: 'update-current-coords', x: number, y: number): void;
 export function ipcSend(channel: 'update-plundered-amount', resources: ExpectedResources): void;
 export function ipcSend(channel: 'save-plundered-amount', resources: PlunderedAmount): void;
+export function ipcSend(channel: 'dev-report-dataset', dataset: CSVDataSet[]): void;
 export function ipcSend(channel: string, ...args: any[]) {
     ipcRenderer.send(channel, ...args);
 };
