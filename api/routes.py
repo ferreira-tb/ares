@@ -1,6 +1,8 @@
 import os
 import signal
 from aiohttp import web
+from json import JSONEncoder
+from deimos.plunder import plunder
 
 routes = web.RouteTableDef()
 prefix = 'ares'
@@ -9,9 +11,11 @@ prefix = 'ares'
 async def get_home(request):
     return web.Response(text='Você não deveria estar aqui.')
 
-@routes.post(f'/{prefix}/predict')
+@routes.get(f'/{prefix}/predict')
 async def predict(request):
-    return web.Response(text='Não implementado')
+    prediction = plunder.predict([[558, 300, 23336, 27345, 27]])
+    result = int(prediction[0])
+    return web.Response(text=JSONEncoder().encode(result))
 
 # Finaliza a aplicação.
 @routes.get(f'/{prefix}/quit')

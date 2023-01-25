@@ -12,7 +12,7 @@ export function setDevEvents() {
             dataset.forEach((data: number[]) => rows.push(data.join(',')));
             const csv = rows.join('\r\n');
     
-            const desktop = app.getPath('desktop');
+            const desktop = app.getPath('userData');
             const filePath = resolve(desktop, 'reports.csv');
             await fs.writeFile(filePath, csv, { encoding: 'utf-8' });
             

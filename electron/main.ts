@@ -8,20 +8,26 @@ import { setAppMenu } from '#/menu.js';
 import { setEvents } from '#/events/index.js';
 
 dotenv.config();
+const isDev = process.env.CLAUSTROPHOBIC_MODE === 'dev';
 
 let pyPort = '8000';
-const pyPath = resolve(__dirname, '../__testpy__/ares.exe');
 getPort({ port: 8000 }).then((port) => {
     pyPort = port.toString(10);
-    spawn(pyPath, [pyPort]);
+    const pyPath = resolve(__dirname, '../__testpy__/ares.exe');
+    const args = [pyPort, app.getPath('userData')];
+    const options = { detached: isDev, shell: isDev };
+    spawn(pyPath, args, options);
 });
+
+/** Título padrão do aplicativo. */
+const appTitle = `${app.getName()} ${app.getVersion()}`;
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 1200,
         height: 1000,
         show: false,
-        title: 'Ares',
+        title: appTitle,
         icon: resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
             preload: resolve(__dirname, 'preload.js')
@@ -41,7 +47,7 @@ function createWindow() {
         closable: false,
         minimizable: true,
         maximizable: false,
-        title: 'Ares',
+        title: appTitle,
         autoHideMenuBar: true,
         icon: resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
@@ -65,4 +71,4 @@ function createWindow() {
 
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
-app.on('will-quit', () => http.get(`http://127.0.0.1:${pyPort}/quit`));
+app.on('will-quit', () => http.get(`http://127.0.0.1:${pyPort}/ares/quit`));

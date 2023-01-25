@@ -1,7 +1,10 @@
-# pyinstaller api/ares.py --onefile --specpath __testpy__ --distpath __testpy__ --workpath __testpy__
 import sys
 from routes import routes
 from aiohttp import web
+
+# sys.argv
+# 1 - Porta usada pela aplicação.
+# 2 - Caminho para o diretório padrão usado pelo Electron.
 
 app = web.Application()
 app.add_routes(routes)
