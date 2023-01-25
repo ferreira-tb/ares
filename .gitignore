@@ -37,3 +37,5 @@ __testpy__
 **/__pycache__
 *.pyc
 *.db
+sofia-env
+*.csv
