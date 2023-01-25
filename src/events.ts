@@ -1,27 +1,27 @@
 import { ipcRenderer } from 'electron';
 import { assert, assertInteger, assertType } from '@/error.js';
-import { usePhobiaStore } from '@/stores/store.js';
+import { useAresStore } from '@/stores/store.js';
 import { usePlunderHistoryStore, usePlunderStore } from '@/stores/plunder.js';
 import { resources as resourceList } from '@/constants.js';
 import type { Pinia } from 'pinia';
 import type { ExpectedResources } from '$/farm/resources.js';
 
 export function setChildWindowEvents(pinia: Pinia) {
-    const phobiaStore = usePhobiaStore(pinia);
+    const aresStore = useAresStore(pinia);
     const plunderStore = usePlunderStore(pinia);
     const plunderHistoryStore = usePlunderHistoryStore(pinia);
 
     ipcRenderer.on('page-url', (_e, url) => {
         assertType(typeof url === 'string', 'A URL é inválida.');
         if (!url.includes('tribalwars')) return;
-        phobiaStore.currentURL = url;
+        aresStore.currentURL = url;
     });
 
     ipcRenderer.on('update-current-coords', (_e, currentX: number, currentY: number) => {
         assertType(typeof currentX === 'number', 'A coordenada X é inválida.');
         assertType(typeof currentY === 'number', 'A coordenada Y é inválida.');
-        phobiaStore.currentX = currentX;
-        phobiaStore.currentY = currentY;
+        aresStore.currentX = currentX;
+        aresStore.currentY = currentY;
     });
 
     ipcRenderer.on('update-plundered-amount', (_e, resources: ExpectedResources) => {

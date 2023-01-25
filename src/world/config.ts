@@ -1,4 +1,4 @@
-import { usePhobiaStore } from "@/stores/store.js";
+import { useAresStore } from "@/stores/store.js";
 import { ipcInvoke } from '@/ipc.js';
 import { assert } from "@/error.js";
 import { queryXMLTags } from "$/helpers.js";
@@ -66,20 +66,20 @@ const getUnitDataUrl = (world: string) => `https://${world}.tribalwars.com.br/in
  * Se `true`, os dados estão disponíveis no armazenamento e poderão ser acessados normalmente.
  * Se `false`, eles tanto não estão disponíveis quanto não foi possível obtê-los.
  */
-export async function verifyWorldAndUnitData(phobiaStore?: ReturnType<typeof usePhobiaStore>) {
-    if (!phobiaStore) phobiaStore = usePhobiaStore();
-    if (typeof phobiaStore.currentWorld !== 'string') {
-        phobiaStore.currentWorld = await ipcInvoke('get-current-world');
-        assert(phobiaStore.currentWorld !== null, 'Não há informação sobre o mundo atual.');
+export async function verifyWorldAndUnitData(aresStore?: ReturnType<typeof useAresStore>) {
+    if (!aresStore) aresStore = useAresStore();
+    if (typeof aresStore.currentWorld !== 'string') {
+        aresStore.currentWorld = await ipcInvoke('get-current-world');
+        assert(aresStore.currentWorld !== null, 'Não há informação sobre o mundo atual.');
     };
 
     // Verifica se as informações já estão salvas no armazenamento.
-    let worldDataStatus = await ipcInvoke('has-world-data', phobiaStore.currentWorld);
-    let unitDataStatus = await ipcInvoke('has-unit-data', phobiaStore.currentWorld);
+    let worldDataStatus = await ipcInvoke('has-world-data', aresStore.currentWorld);
+    let unitDataStatus = await ipcInvoke('has-unit-data', aresStore.currentWorld);
     if (worldDataStatus && unitDataStatus) return true;
 
-    const worldDataUrl = getWorldDataUrl(phobiaStore.currentWorld);
-    const unitDataUrl = getUnitDataUrl(phobiaStore.currentWorld);
+    const worldDataUrl = getWorldDataUrl(aresStore.currentWorld);
+    const unitDataUrl = getUnitDataUrl(aresStore.currentWorld);
 
     try {
         const worldDocument = await fetchHtmlDocument(worldDataUrl);
@@ -88,8 +88,8 @@ export async function verifyWorldAndUnitData(phobiaStore?: ReturnType<typeof use
         const worlData = new WorldData(worldDocument);
         const unitData = new UnitData(unitDocument);
 
-        worldDataStatus = await ipcInvoke('set-world-data', phobiaStore.currentWorld, worlData);
-        unitDataStatus = await ipcInvoke('set-unit-data', phobiaStore.currentWorld, unitData);
+        worldDataStatus = await ipcInvoke('set-world-data', aresStore.currentWorld, worlData);
+        unitDataStatus = await ipcInvoke('set-unit-data', aresStore.currentWorld, unitData);
         
         if (worldDataStatus && unitDataStatus) return true;
         return false;

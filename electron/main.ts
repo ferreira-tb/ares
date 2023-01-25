@@ -10,7 +10,7 @@ import { setEvents } from '#/events/index.js';
 dotenv.config();
 
 let pyPort = '8000';
-const pyPath = resolve(__dirname, '../__testpy__/phobia.exe');
+const pyPath = resolve(__dirname, '../__testpy__/ares.exe');
 getPort({ port: 8000 }).then((port) => {
     pyPort = port.toString(10);
     spawn(pyPath, [pyPort]);
@@ -21,7 +21,7 @@ function createWindow() {
         width: 1200,
         height: 1000,
         show: false,
-        title: 'Claustrophobia',
+        title: 'Ares',
         icon: resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {
             preload: resolve(__dirname, 'preload.js')
@@ -41,7 +41,7 @@ function createWindow() {
         closable: false,
         minimizable: true,
         maximizable: false,
-        title: 'Claustrophobia',
+        title: 'Ares',
         autoHideMenuBar: true,
         icon: resolve(__dirname, '../public/favicon.ico'),
         webPreferences: {

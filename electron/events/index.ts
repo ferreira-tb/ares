@@ -7,7 +7,7 @@ import { MainProcessError } from '#/error.js';
 import type { BrowserWindow } from 'electron';
 
 export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
-    // Informações sobre o Claustrophobia.
+    // Informações sobre o Ares.
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
 

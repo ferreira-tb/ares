@@ -2,14 +2,14 @@
 import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { routeNames, router } from '$/router/router.js';
-import { usePhobiaStore } from '@/stores/store.js';
+import { useAresStore } from '@/stores/store.js';
 
-const phobiaStore = usePhobiaStore();
+const aresStore = useAresStore();
 
 // Define a janela de acordo com a página atual no jogo.
 watchEffect(() => {
-    if (phobiaStore.currentScreen && routeNames.includes(phobiaStore.currentScreen)) {
-        router.push({ name: phobiaStore.currentScreen });
+    if (aresStore.currentScreen && routeNames.includes(aresStore.currentScreen)) {
+        router.push({ name: aresStore.currentScreen });
     } else {
         router.push('/');
     };

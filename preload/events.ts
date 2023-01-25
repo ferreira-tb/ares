@@ -1,20 +1,20 @@
 import { ipcRenderer } from 'electron';
 import { assert, assertType } from '@/error.js';
 import { usePlunderStore } from '@/stores/plunder.js';
-import { usePhobiaStore } from '@/stores/store.js';
+import { useAresStore } from '@/stores/store.js';
 import { queryReportDataset } from '../dev/dataset.js';
 import type { Pinia } from 'pinia';
 
 export function setPreloadEvents(pinia: Pinia) {
     // Pinia.
     const plunderStore = usePlunderStore(pinia);
-    const phobiaStore = usePhobiaStore(pinia);
+    const aresStore = useAresStore(pinia);
     
     // Atualiza a URL atual.
     ipcRenderer.on('page-url', (_e, url) => {
         assertType(typeof url === 'string', 'A URL é inválida.');
         if (!url.includes('tribalwars')) return;
-        phobiaStore.currentURL = url;
+        aresStore.currentURL = url;
     });
 
     type PlunderKeys = keyof typeof plunderStore;

@@ -4,7 +4,7 @@ import { gameURL } from '@/constants.js';
 import { useCurrentScreen } from '@/composables/game.js';
 import { ipcInvoke } from '@/ipc.js';
 
-export const usePhobiaStore = defineStore('phobia', () => {
+export const useAresStore = defineStore('ares', () => {
     /** URL da página atual. */
     const currentURL = ref<string>(gameURL);
     /** Página atual. */
@@ -27,6 +27,6 @@ export const usePhobiaStore = defineStore('phobia', () => {
 
 export async function updateCurrentWorld() {
     const world = await ipcInvoke('get-current-world');
-    const phobiaStore = usePhobiaStore();
-    phobiaStore.currentWorld = world;
+    const aresStore = useAresStore();
+    aresStore.currentWorld = world;
 };

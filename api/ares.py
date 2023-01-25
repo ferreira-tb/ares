@@ -1,4 +1,4 @@
-# pyinstaller api/phobia.py --onefile --specpath __testpy__ --distpath __testpy__ --workpath __testpy__
+# pyinstaller api/ares.py --onefile --specpath __testpy__ --distpath __testpy__ --workpath __testpy__
 import sys
 from routes import routes
 from aiohttp import web

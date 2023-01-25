@@ -3,8 +3,8 @@ import type { BrowserWindow, MenuItemConstructorOptions } from 'electron';
 
 export function setAppMenu(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
     const authorURL = 'https://github.com/ferreira-tb';
-    const repoURL = 'https://github.com/ferreira-tb/claustrophobia';
-    const helpURL = 'https://github.com/ferreira-tb/claustrophobia/issues';
+    const repoURL = 'https://github.com/ferreira-tb/ares';
+    const helpURL = 'https://github.com/ferreira-tb/ares/issues';
     
     const optionsMenu: MenuItemConstructorOptions[] = [
         { label: 'Sair', accelerator: 'Esc', role: 'quit' }

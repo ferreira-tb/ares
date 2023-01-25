@@ -28,6 +28,6 @@ setPreloadEvents(pinia);
 
 window.addEventListener('DOMContentLoaded', () => {
     router.push('/');
-    const claustrophobia = document.createElement('claustrophobia');
-    mainApp.mount(claustrophobia);
+    const ares = document.createElement('ares');
+    mainApp.mount(ares);
 }, { once: true });

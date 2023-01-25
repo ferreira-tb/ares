@@ -3,7 +3,7 @@ import signal
 from aiohttp import web
 
 routes = web.RouteTableDef()
-prefix = 'phobia'
+prefix = 'ares'
 
 @routes.get(f'/{prefix}')
 async def get_home(request):

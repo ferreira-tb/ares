@@ -1,5 +1,5 @@
 import { assert, assertArrayIncludes, assertInteger, assertType, ClaustrophobicError } from "@/error.js";
-import { usePhobiaStore } from '@/stores/store.js';
+import { useAresStore } from '@/stores/store.js';
 import { ipcSend } from '@/ipc.js';
 import { months } from "@/constants.js";
 import type { XMLTags } from '@/types.js';
@@ -15,9 +15,9 @@ export function queryCurrentVillageCoords() {
     const coords = parseCoordsFromTextContent(coordsField.textContent);
     assertType(Array.isArray(coords), 'O valor obtido para as coordenadas não é uma array.');
 
-    const phobiaStore = usePhobiaStore();
-    phobiaStore.currentX = coords[0];
-    phobiaStore.currentY = coords[1];
+    const aresStore = useAresStore();
+    aresStore.currentX = coords[0];
+    aresStore.currentY = coords[1];
 
     // Notificado o processo principal, que então notificará a janela filha.
     ipcSend('update-current-coords', coords[0], coords[1]);
@@ -44,9 +44,9 @@ export function parseCoordsFromTextContent(text: string | null): [number, number
 
 /** Calcula distância em campos entre duas coordenadas. */
 export function calcDistance(destX: number, destY: number, originX?: number, originY?: number) {
-    const phobiaStore = usePhobiaStore();
-    if (typeof originX !== 'number') originX = phobiaStore.currentX;
-    if (typeof originY !== 'number') originY = phobiaStore.currentY;
+    const aresStore = useAresStore();
+    if (typeof originX !== 'number') originX = aresStore.currentX;
+    if (typeof originY !== 'number') originY = aresStore.currentY;
 
     return Math.sqrt(((destX - originX) ** 2) + ((destY - originY) ** 2));
 };
