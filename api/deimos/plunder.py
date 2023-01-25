@@ -13,10 +13,10 @@ y = dataset['plundered'].to_numpy()
 
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-sofia = linear_model.ElasticNet()
-sofia.fit(X, y)
+plunder = linear_model.ElasticNet()
+plunder.fit(X, y)
 
-# y_pred = sofia.predict(X_test)
+# y_pred = plunder.predict(X_test)
 # data_frame = pandas.DataFrame({'Actual': y_test, 'Predicted': y_pred})
 # print(data_frame.head(25))
 
