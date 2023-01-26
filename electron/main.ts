@@ -2,21 +2,23 @@ import dotenv from 'dotenv';
 import getPort from 'get-port';
 import http from 'node:http';
 import { app, BrowserWindow } from 'electron';
-import { resolve } from 'path';
-import { spawn } from 'child_process';
+import { execFile } from 'child_process';
 import { setAppMenu } from '#/menu.js';
 import { setEvents } from '#/events/index.js';
+import { aresExe, gameURL, favicon, indexHtml, preloadJs } from '#/constants.js';
+import { MainProcessError } from '#/error.js';
 
 dotenv.config();
-const isDev = process.env.CLAUSTROPHOBIC_MODE === 'dev';
 
 let pyPort = '8000';
 getPort({ port: 8000 }).then((port) => {
     pyPort = port.toString(10);
-    const pyPath = resolve(__dirname, '../__testpy__/ares.exe');
     const args = [pyPort, app.getPath('userData')];
-    const options = { detached: isDev, shell: isDev };
-    spawn(pyPath, args, options);
+    execFile(aresExe, args, (err) => {
+        MainProcessError.handle(err);
+    });
+
+    if (process.env.ARES_MODE === 'dev') console.log('Porta:', pyPort);
 });
 
 /** Título padrão do aplicativo. */
@@ -28,9 +30,9 @@ function createWindow() {
         height: 1000,
         show: false,
         title: appTitle,
-        icon: resolve(__dirname, '../public/favicon.ico'),
+        icon: favicon,
         webPreferences: {
-            preload: resolve(__dirname, 'preload.js')
+            preload: preloadJs
         }
     });
     
@@ -49,7 +51,7 @@ function createWindow() {
         maximizable: false,
         title: appTitle,
         autoHideMenuBar: true,
-        icon: resolve(__dirname, '../public/favicon.ico'),
+        icon: favicon,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
@@ -62,8 +64,8 @@ function createWindow() {
     mainWindow.maximize();
     mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 
-    mainWindow.loadURL('https://www.tribalwars.com.br/');
-    childWindow.loadFile('__dist__/index.html');
+    mainWindow.loadURL(gameURL);
+    childWindow.loadFile(indexHtml);
 
     mainWindow.once('ready-to-show', () =>  mainWindow.show());
     childWindow.once('ready-to-show', () => childWindow.show());

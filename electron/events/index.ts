@@ -4,6 +4,7 @@ import { setPlunderEvents } from '#/events/plunder.js';
 import { setGameEvents } from '#/events/game.js';
 import { setDevEvents } from '#/events/dev.js';
 import { MainProcessError } from '#/error.js';
+import { styleCss } from '#/constants.js';
 import type { BrowserWindow } from 'electron';
 
 export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
@@ -21,7 +22,7 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
         childWindow.webContents.send('page-url', currentURL);
 
         try {
-            const style = await fs.readFile('__dist__/style.css', { encoding: 'utf8' });
+            const style = await fs.readFile(styleCss, { encoding: 'utf8' });
             await mainWindow.webContents.insertCSS(style);
         } catch (err) {
             MainProcessError.handle(err);
@@ -37,5 +38,5 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
     setGameEvents(mainWindow, childWindow);
     setPlunderEvents(mainWindow, childWindow);
 
-    if (process.env.CLAUSTROPHOBIC_MODE === 'dev') setDevEvents();
+    if (process.env.ARES_MODE === 'dev') setDevEvents();
 };

@@ -7,3 +7,4 @@ pyinstaller api/ares.py ^
     --specpath __testpy__ ^
     --distpath __testpy__ ^
     --workpath __testpy__ ^
+    --icon ../public/favicon.ico
