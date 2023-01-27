@@ -36,12 +36,12 @@ async def deimos_save(request: web.Request):
         deimos = get_deimos(world)
         deimos.save(reports)
         return web.Response(status=201, text='Operação bem sucedida.')
-    except JSONDecodeError:
-        return web.Response(status=400, text='Erro ao decodificar o JSON.')
-    except (AttributeError, TypeError):
-        return web.Response(status=400, text='Parâmetros inválidos.')
-    except IntegrityError:
-        return web.Response(status=400, text='Violação na integridade do banco de dados.')
+    except JSONDecodeError as err:
+        return web.Response(status=400, text=f'Erro ao decodificar o JSON: {repr(err)}')
+    except (AttributeError, TypeError) as err:
+        return web.Response(status=400, text=f'Parâmetros inválidos: {repr(err)}')
+    except IntegrityError as err:
+        return web.Response(status=400, text=f'Violação na integridade do banco de dados: {repr(err)}')
 
 # Faz uma previsão usando o Deimos.
 @routes.post('/deimos/predict/{world}')
@@ -58,10 +58,10 @@ async def deimos_predict(request: web.Request):
         features = await request.json()
         prediction = deimos.predict(features)
         return web.Response(status=200, text=str(prediction))
-    except JSONDecodeError:
-        return web.Response(status=400, text='Erro ao decodificar o JSON.')
-    except (AttributeError, TypeError):
-        return web.Response(status=400, text='Parâmetros inválidos.')
+    except JSONDecodeError as err:
+        return web.Response(status=400, text=f'Erro ao decodificar o JSON: {repr(err)}')
+    except (AttributeError, TypeError) as err:
+        return web.Response(status=400, text=f'Parâmetros inválidos: {repr(err)}')
 
 
 app.add_routes(routes)
