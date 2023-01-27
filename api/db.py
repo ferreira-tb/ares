@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import create_engine, Column, Integer, Table
+from sqlalchemy import create_engine, Column, Integer
 from sqlalchemy.orm import registry
 from helpers import get_user_path, is_dev
 
@@ -24,4 +24,3 @@ def create_deimos_table(world: str):
 
     mapper_registry.metadata.create_all(engine, checkfirst=True)
     return new_table
-
