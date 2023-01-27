@@ -1,5 +1,5 @@
 import os
-from typing import Dict, List
+from typing import ClassVar, Dict, List, TypedDict, Self, NotRequired
 import joblib
 import numpy
 from sqlalchemy.orm import Session
@@ -7,10 +7,20 @@ from sklearn import linear_model
 from helpers import get_user_path
 from db import create_deimos_table, engine
 
-# Cache.
-_active_deimos = {}
+class DeimosReport(TypedDict):
+    id: NotRequired[int]
+    expected: int
+    carry: int
+    atk_id: int
+    def_id: int
+    time: int
+    plundered: NotRequired[int]
+
 
 class Deimos:
+    # Cache.
+    active: ClassVar[Dict[str, Self]] = {}
+
     # Indica se o Deimos pode ser usado para previsões.
     # Será False caso não hajam dados o suficiente para treiná-lo.
     ready = True
@@ -26,7 +36,7 @@ class Deimos:
         try:
             # Tenta carregar um modelo já treinado.
             self.model = joblib.load(self.path)
-            _active_deimos[world] = self
+            Deimos.active[world] = self
             
         except FileNotFoundError:
             # Se não houver, verifica se é possível treinar um novo.
@@ -34,8 +44,8 @@ class Deimos:
                 amount = session.query(self.table).count()
                 if amount > 100:
                     raw_reports = session.query(self.table).all()
-                    features, targets = parse_reports(raw_reports)
-                    
+                    features, targets = parse_reports(raw_reports) # type: ignore 
+                   
                     self.model = linear_model.ElasticNet()
                     self.model.fit(features, targets)
 
@@ -43,24 +53,21 @@ class Deimos:
                 else:
                     self.ready = False
 
-            _active_deimos[world] = self
+            Deimos.active[world] = self
         
-    def predict(self, features: List[int]):
+    def predict(self, features: DeimosReport) -> int:
         """ Faz uma previsão usando o modelo pertinente ao mundo. """
 
-        if type(features) is not list:
-            raise TypeError('O objeto não é uma lista.')
-        elif len(features) != 5:
-            raise TypeError('A lista não possui o tamanho adequado.')
+        if len(features) != 5:
+            raise TypeError('O dicionário não possui a quantidade adequada de parâmetros.')
 
-        for feat in features:
-            if type(feat) is not int:
-                raise TypeError('Um dos itens na lista não é um número inteiro.')
+        feat_list = get_feats_from_deimos_report(features)
 
-        prediction = self.model.predict([features])
+        # A lista precisa ser envelopada em outra lista.
+        prediction = self.model.predict([feat_list])
         return int(prediction[0])
 
-    def save(self, reports: List[List[int]]):
+    def save(self, reports: List[DeimosReport]) -> None:
         """ Salva informações sobre ataques no banco de dados do Deimos. """
 
         if type(reports) is not list:
@@ -68,28 +75,14 @@ class Deimos:
 
         with Session(engine) as session:
             for report in reports:
-                if type(report) is not list:
-                    raise TypeError('A lista não possui apenas outras listas em seu interior.')
-                # Diferentemente da lista usada para predição, nessa é obrigatória a presença do ID do relatório.
-                # Ele deve ser o primeiro item da lista.
-                elif len(report) != 7:
-                    raise TypeError('A lista não possui o tamanho adequado.')
-                
-                for value in report:
+                if len(report) != 7:
+                    raise TypeError('O dicionário não possui a quantidade correta de itens.')
+                    
+                for value in report.values():
                     if type(value) is not int:
-                        raise TypeError('Um dos itens da lista não é um número inteiro.')
+                        raise TypeError('Um dos valores no dicionário não é um número inteiro.')
 
-                # É crucial que a ordem dos itens dentro da lista seja respeitada.
-                new_row = self.table(
-                    id=report[0],
-                    expected=report[1],
-                    carry=report[2],
-                    atk_id=report[3],
-                    def_id=report[4],
-                    time=report[5],
-                    plundered=report[6],
-                )
-
+                new_row = self.table(**report)
                 session.add(new_row)
 
             session.commit()
@@ -98,34 +91,39 @@ class Deimos:
 def get_deimos(world: str) -> Deimos:
     if type(world) is not str:
         raise TypeError('É preciso indicar a qual mundo o modelo deve ser associado.')
-    elif world in _active_deimos:
-        return _active_deimos[world]
+    elif world in Deimos.active:
+        return Deimos.active[world]
     else:
         return Deimos(world)
 
 
-def parse_reports(reports: list):
+def parse_reports(reports: List[DeimosReport]):
     features: List[List[int]] = []
     targets: List[int] = []
 
     for report in reports:
-        r_feats = [
-            report.expected,
-            report.carry,
-            report.atk_id,
-            report.def_id,
-            report.time
-        ]
+        r_feats = get_feats_from_deimos_report(report)
+        features.append(r_feats)
 
-        for r_feat in r_feats:
-            if type(r_feat) is not int:
-                raise TypeError('O valor da feature não é um número inteiro.')
+        plundered = report.get('plundered')
+        if type(plundered) is not int:
+            raise TypeError('A quantia saqueada não é um número inteiro.')
         else:
-            features.append(r_feats)
-
-        if type(report.plundered) is not int:
-            raise TypeError('O valor do target não é um número inteiro.')
-        else:
-            targets.append(report.plundered)
+            targets.append(plundered)
 
     return [numpy.array(features), numpy.array(targets)]
+
+def get_feats_from_deimos_report(report: DeimosReport) -> List[int]:
+    feat_list: List[int] = [
+        report['expected'],
+        report['carry'],
+        report['atk_id'],
+        report['def_id'],
+        report['time']
+    ]
+
+    for feat in feat_list:
+        if type(feat) is not int:
+            raise TypeError('O item no relatório não é um número inteiro.')
+
+    return feat_list

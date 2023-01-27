@@ -1,6 +1,7 @@
 from json import JSONDecodeError
 from threading import Timer
 from aiohttp import web
+from sqlalchemy.exc import IntegrityError
 from dotenv import load_dotenv
 from deimos import get_deimos
 from helpers import get_app_port, quit_app
@@ -37,9 +38,10 @@ async def deimos_save(request: web.Request):
         return web.Response(status=201, text='Operação bem sucedida.')
     except JSONDecodeError:
         return web.Response(status=400, text='Erro ao decodificar o JSON.')
-    except TypeError:
+    except (AttributeError, TypeError):
         return web.Response(status=400, text='Parâmetros inválidos.')
-    
+    except IntegrityError:
+        return web.Response(status=400, text='Violação na integridade do banco de dados.')
 
 # Faz uma previsão usando o Deimos.
 @routes.post('/deimos/predict/{world}')
@@ -58,7 +60,7 @@ async def deimos_predict(request: web.Request):
         return web.Response(status=200, text=str(prediction))
     except JSONDecodeError:
         return web.Response(status=400, text='Erro ao decodificar o JSON.')
-    except TypeError:
+    except (AttributeError, TypeError):
         return web.Response(status=400, text='Parâmetros inválidos.')
 
 
