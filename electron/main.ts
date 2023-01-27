@@ -14,9 +14,7 @@ let pyPort = '8000';
 getPort({ port: 8000 }).then((port) => {
     pyPort = port.toString(10);
     const args = [pyPort, app.getPath('userData')];
-    execFile(aresExe, args, (err) => {
-        MainProcessError.handle(err);
-    });
+    execFile(aresExe, args, (err) => MainProcessError.handle(err));
 
     if (process.env.ARES_MODE === 'dev') console.log('Porta:', pyPort);
 });

@@ -1,5 +1,12 @@
 import os
 import sys
+import signal
+
+def quit_app():
+    """ Encerra a aplicação. """
+    pid = os.getpid()
+    os.kill(pid, signal.SIGINT)
+
 
 # sys.argv
 # 1 - Porta usada pela aplicação.
@@ -10,8 +17,7 @@ def get_user_path():
     try:
         return os.path.normpath(sys.argv[2])
     except IndexError as err:
-        ares_mode = os.environ.get('ARES_MODE')
-        if ares_mode == 'dev':
+        if is_dev():
             user_path = os.environ.get('USER_DATA_PATH')
             if type(user_path) is not str:
                 raise RuntimeError('Não foi possível determinar o diretório padrão.')
@@ -26,3 +32,7 @@ def get_app_port():
         return int(sys.argv[1])
     except IndexError:
         return 8000
+
+
+def is_dev():
+    return os.environ.get('ARES_MODE') == 'dev'
