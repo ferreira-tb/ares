@@ -5,9 +5,9 @@ import { createPinia } from 'pinia';
 import { router } from '$/router/router.js';
 import { setPreloadEvents } from '$/events.js';
 import { ClaustrophobicError, GameDOMError } from '#/error.js';
-import Preload from '$/Preload.vue';
+import Game from '$/Game.vue';
 
-const mainApp = createApp(Preload);
+const mainApp = createApp(Game);
 const pinia = createPinia();
 
 // Plugins.
