@@ -9,13 +9,14 @@ from db import create_deimos_table, engine
 
 
 class DeimosReport(TypedDict):
-    id: NotRequired[int]
-    expected: int
-    carry: int
-    atk_id: int
-    def_id: int
-    time: int
-    plundered: NotRequired[int]
+    id: NotRequired[int] # ID do relatório.
+    time: NotRequired[int] # Data do ataque (em milisegundos).
+    expected: int # Quantidade de recursos que se espera ter na aldeia.
+    carry: int # Capacidade de carga do modelo atacante.
+    atk_id: int # ID da aldeia atacante.
+    def_id: int # ID da aldeia defensora.
+    minutes_since: int # Minutos desde o último ataque.
+    plundered: NotRequired[int] # Quantia saqueada no último ataque (esse valor deve ser previsto pelo Deimos).
 
 
 class Deimos:
@@ -79,7 +80,7 @@ class Deimos:
 
         with Session(engine) as session:
             for report in reports:
-                if len(report) != 7:
+                if len(report) != 8:
                     raise TypeError('O dicionário não possui a quantidade correta de itens.')
                     
                 for value in report.values():
@@ -124,7 +125,7 @@ def get_feats_from_deimos_report(report: DeimosReport) -> List[int]:
         report['carry'],
         report['atk_id'],
         report['def_id'],
-        report['time']
+        report['minutes_since']
     ]
 
     for feat in feat_list:

@@ -28,8 +28,9 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         const textContent = attackResults.assertTextContent();
         const [plundered, carry] = textContent.split('\/').map((item) => Number.assertInteger(item, 10));
 
-        // Minutos desde o ataque.
-        const minutes = Math.ceil((Date.now() - parseReportDate(report)) / 60000);
+        // Data do relatório e minutos desde o ataque.
+        const reportDate = parseReportDate(report);
+        const minutes = Math.ceil((Date.now() - reportDate) / 60000);
 
         // ID da aldeia atacante.
         const attackerField = report.queryAndAssert('#attack_info_att a[href*="screen=info_village"');
@@ -41,7 +42,8 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         const defUrl = new URL(location.origin + defField.assertAttribute('href'));
         const defId = defUrl.searchParams.assertAsInteger('id');
 
-        const deimosReport = new DeimosReport(reportId, expected, carry, attackId, defId, minutes, plundered);
+        const args = [reportId, reportDate, expected, carry, attackId, defId, minutes, plundered] as const;
+        const deimosReport = new DeimosReport(...args);
         deimosReports.push(deimosReport);
     };
 
