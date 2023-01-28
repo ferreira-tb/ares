@@ -4,6 +4,7 @@ import { setPlunderEvents } from '../events/plunder.js';
 import { setGameEvents } from '../events/game.js';
 import { setDeimosEvents } from '../events/deimos.js';
 import { setModuleEvents } from '../events/modules.js';
+import { setErrorEvents } from './error.js';
 import { MainProcessError } from '../error.js';
 import { styleCss } from '../constants.js';
 
@@ -41,4 +42,5 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
     setPlunderEvents(mainWindow, childWindow);
     setDeimosEvents(mainWindow);
     setModuleEvents();
+    setErrorEvents();
 };

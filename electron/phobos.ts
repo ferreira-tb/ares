@@ -1,9 +1,9 @@
 import { BrowserView } from 'electron';
 import { URL } from 'node:url';
 import { phobosJs } from './constants.js';
+import { assertType } from './error.js';
 import type { BrowserWindow } from 'electron';
 import type { PhobosNames, CreatePhobosOptions } from './types.js';
-import { assertType } from './error';
 
 const activePhobos = new Map<PhobosNames, BrowserView>();
 

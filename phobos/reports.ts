@@ -1,5 +1,5 @@
 import { assert, assertType } from "#/error.js";
-import { parseReportDate } from "#/helpers.js";
+import { parseReportDate, assertWorldFromURL } from "#/helpers.js";
 import { DeimosReport } from '#/deimos.js';
 import { ipcInvoke } from "#/ipc.js";
 
@@ -47,8 +47,7 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         deimosReports.push(deimosReport);
     };
 
-    const index = location.hostname.indexOf('.tribalwars');
-    const world = location.hostname.slice(0, index).replace(/www\.?/g, '');
+    const world = assertWorldFromURL();
     const port = await ipcInvoke('deimos-port');
 
     return await fetch(`http://127.0.0.1:${port}/deimos/save/plunder/${world}`, {

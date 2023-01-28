@@ -1,3 +1,6 @@
+import { ipcSend } from "#/ipc.js";
+import type { ErrorLog, DOMErrorLog } from "#/types.js";
+
 export class ClaustrophobicError extends Error {
     override readonly name = 'ClaustrophobicError';
 
@@ -6,7 +9,15 @@ export class ClaustrophobicError extends Error {
     };
 
     public static handle(err: unknown) {
-        if (err instanceof Error) console.error(err);
+        if (!(err instanceof Error)) return;
+
+        const errorLog: ErrorLog = {
+            name: err.name,
+            message: err.message,
+            time: Date.now()
+        };
+
+        ipcSend('log-error', errorLog);
     };
 };
 
@@ -19,7 +30,14 @@ export class GameDOMError extends Error {
 
     /** Esse método deve ser usado para documentar erros relacionados ao DOM. */
     public static reportDOMError(err: GameDOMError) {
-        console.error(err.message);
+        if (!(err instanceof GameDOMError)) return;
+
+        const errorLog: DOMErrorLog = {
+            selector: err.message,
+            time: Date.now()
+        };
+
+        ipcSend('log-dom-error', errorLog);
     };
 };
 

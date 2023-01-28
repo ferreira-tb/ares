@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import getPort from 'get-port';
 import http from 'node:http';
 import { app, BrowserWindow, ipcMain } from 'electron';
-import { execFile } from 'child_process';
+import { execFile } from 'node:child_process';
 import { setAppMenu } from './menu.js';
 import { setEvents } from './events/index.js';
 import { appTitle, deimosExe, gameURL, favicon, indexHtml, gameJs } from './constants.js';
@@ -18,9 +18,6 @@ getPort({ port: 8000 }).then((port) => {
 
     if (process.env.ARES_MODE === 'dev') console.log('Porta:', deimosPort);
 });
-
-/** Título padrão do aplicativo. */
-
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -69,7 +66,8 @@ function createWindow() {
     childWindow.once('ready-to-show', () => childWindow.show());
 };
 
-ipcMain.handle('deimos-port', () => Number.parseInt(deimosPort));
+export const getDeimosPort = () => Number.parseInt(deimosPort);
+ipcMain.handle('deimos-port', () => getDeimosPort());
 
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());

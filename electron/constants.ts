@@ -1,5 +1,5 @@
 import { app } from 'electron';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import type { MenuItemConstructorOptions } from 'electron';
 
 export const appTitle = `${app.getName()} ${app.getVersion()}`;

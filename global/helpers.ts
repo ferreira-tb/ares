@@ -166,3 +166,23 @@ export async function* fetchDocuments(urls: string[]) {
         yield parser.parseFromString(text, 'text/html').documentElement;
     };
 };
+
+/**
+ * Determina o mundo atual a partir da URL passada.
+ * Se omitida, utiliza `location.href` como referência.
+ */
+export function getWorldFromURL(url?: URL) {
+    if (!(url instanceof URL)) url = new URL(location.href);
+
+    const index = url.hostname.indexOf('.tribalwars');
+    if (index === -1) return null;
+    
+    const world = url.hostname.slice(0, index);
+    return world.replace(/www\.?/g, '');
+};
+
+export function assertWorldFromURL(url?: URL) {
+    const world = getWorldFromURL(url);
+    assertType(typeof world === 'string', 'Não foi possível determinar o mundo.');
+    return world;
+};

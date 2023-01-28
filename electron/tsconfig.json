@@ -3,7 +3,7 @@
 
     "compilerOptions": {
         "target": "esnext",
-        "lib": ["esnext"],
+        "lib": ["esnext", "DOM"],
         "paths": {
             "@/*": [
                 "../painel/*"

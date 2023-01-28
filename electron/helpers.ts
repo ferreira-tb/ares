@@ -1,18 +1,28 @@
 import { BrowserWindow, Menu, MenuItem } from 'electron';
-import { URL } from 'url';
+import { URL } from 'node:url';
 import { favicon, moduleHtml, devOptions } from './constants.js';
 import { assertType } from './error.js';
+
+export function getWorldFromURL(url: URL) {
+    const index = url.hostname.indexOf('.tribalwars');
+    if (index === -1) return null;
+    
+    const world = url.hostname.slice(0, index);
+    return world.replace(/www\.?/g, '');
+};
+
+export function assertWorldFromURL(url: URL) {
+    const world = getWorldFromURL(url);
+    assertType(typeof world === 'string', 'Não foi possível determinar o mundo.');
+    return world;
+};
 
 export function getCurrentWorld(mainWindow: BrowserWindow) {
     const currentURL = mainWindow.webContents.getURL();
     if (!currentURL.includes('tribalwars')) return null;
     
-    const urlObject = new URL(currentURL);
-    const index = urlObject.hostname.indexOf('.tribalwars');
-    if (index === -1) return null;
-    
-    const world = urlObject.hostname.slice(0, index);
-    return world.replace(/www\.?/g, '');
+    const url = new URL(currentURL);
+    return getWorldFromURL(url);
 };
 
 export function assertCurrentWorld(mainWindow: BrowserWindow) {

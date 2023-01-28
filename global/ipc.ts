@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron';
 import type { PlunderState, PlunderStateValue } from '#/vue/stores/plunder.js';
 import type { WorldData, UnitData } from '@/config.js';
 import type { ExpectedResources } from '$/farm/resources.js';
-import type { PlunderedAmount } from '#/types.js';
+import type { PlunderedAmount, ErrorLog, DOMErrorLog } from '#/types.js';
 
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;
@@ -23,6 +23,8 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
     return response;
 };
 
+export function ipcSend(channel: 'log-error', err: ErrorLog): void;
+export function ipcSend(channel: 'log-dom-error', err: DOMErrorLog): void;
 export function ipcSend(channel: 'reload-main-window'): void;
 export function ipcSend(channel: 'force-reload-main-window'): void;
 export function ipcSend(channel: 'set-plunder-state', name: keyof PlunderState, value: PlunderStateValue): void;
