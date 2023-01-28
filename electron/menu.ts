@@ -15,39 +15,31 @@ export function setAppMenu(mainWindow: BrowserWindow, childWindow: BrowserWindow
     const helpMenu: MenuItemConstructorOptions[] = [
         { label: 'Autor', click: () => shell.openExternal(authorURL) },
         { label: 'Repositório', click: () => shell.openExternal(repoURL) },
-        { label: 'Suporte', click: () => shell.openExternal(helpURL) }
+        { label: 'Suporte', click: () => shell.openExternal(helpURL) },
+        { type: 'separator' },
+        { label: 'Registro de erros' }
     ];
 
     const mainMenu = Menu.buildFromTemplate([
         { label: 'Opções', submenu: optionsMenu },
         { label: 'Ajuda', submenu: helpMenu }
     ] satisfies MenuItemConstructorOptions[]);
-    
-    const childMenu = Menu.buildFromTemplate([
-        { label: 'Opções', submenu: optionsMenu },
-        { label: 'Ajuda', submenu: helpMenu }
-    ] satisfies MenuItemConstructorOptions[]);
 
     // Opções de desenvolvedor.
     if (process.env.ARES_MODE === 'dev') {
-        const devOnly: MenuItemConstructorOptions[] = [
+        const basicDevOptions: MenuItemConstructorOptions[] = [
             { label: 'Atualizar', accelerator: 'F5', role: 'reload' },
-            { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', role: 'forceReload' },
-            { label: 'Inspecionar', accelerator: 'F1', role: 'toggleDevTools' },
+            { label: 'Inspecionar', accelerator: 'F1', role: 'toggleDevTools' }
         ];
 
-        const mainDevOptions: MenuItemConstructorOptions[] = [...devOnly, { type: 'separator' }];
-        const childDevOptions: MenuItemConstructorOptions[] = [...devOnly];
-
-        const mainDevMenu = new MenuItem({ label: 'Desenvolvedor', submenu: mainDevOptions });
-        const childDevMenu = new MenuItem({ label: 'Desenvolvedor', submenu: childDevOptions });
-
+        const mainDevMenu = new MenuItem({ label: 'Desenvolvedor', submenu: basicDevOptions });
         mainMenu.append(mainDevMenu);
-        childMenu.append(childDevMenu);
+
+        const childMenu = Menu.buildFromTemplate(basicDevOptions);
+        childWindow.setMenu(childMenu);
     };
 
     mainWindow.setMenu(mainMenu);
-    childWindow.setMenu(childMenu);
 
     /** Declarada aqui dentro para ter acesso às variáveis do escopo. */
     function hideOrShowChildWindow() {

@@ -2,7 +2,7 @@
 import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { routeNames, router } from '$/router/router.js';
-import { useAresStore } from '@/stores/store.js';
+import { useAresStore } from '#/vue/stores/store.js';
 
 const aresStore = useAresStore();
 

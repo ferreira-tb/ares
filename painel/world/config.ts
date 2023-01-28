@@ -1,4 +1,4 @@
-import { useAresStore } from "@/stores/store.js";
+import { useAresStore } from "#/vue/stores/store.js";
 import { ipcInvoke } from '#/ipc.js';
 import { assert } from "#/error.js";
 import { queryXMLTags } from "#/helpers.js";
@@ -21,7 +21,7 @@ export class WorldData {
 
         this.speed = getValue('speed');
         this.unitSpeed = getValue('unit_speed');
-        this.archer = getValue('archer') === 1 ? true : false;
+        this.archer = getValue('archer') === 1;
     };
 };
 

@@ -1,4 +1,4 @@
-import { usePlunderStore } from '@/stores/plunder.js';
+import { usePlunderStore } from '#/vue/stores/plunder.js';
 import { generateIntegerBetween, wait } from '#/helpers.js';
 import { ipcSend } from '#/ipc.js';
 import type { ExpectedResources } from '$/farm/resources.js';

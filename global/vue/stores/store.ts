@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { gameURL } from '#/constants.js';
-import { useCurrentScreen } from '@/composables/game.js';
+import { useCurrentScreen } from '#/vue/composables/game.js';
 import { ipcInvoke } from '#/ipc.js';
 
 export const useAresStore = defineStore('ares', () => {

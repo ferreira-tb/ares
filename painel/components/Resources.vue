@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePlunderHistoryStore } from '@/stores/plunder.js';
+import { usePlunderHistoryStore } from '#/vue/stores/plunder.js';
 import { ipcInvoke } from '#/ipc.js';
 
 const props = defineProps<{

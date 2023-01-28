@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, watchEffect } from 'vue';
-import { patchPlunderStore, usePlunderStore } from '@/stores/plunder.js';
+import { patchPlunderStore, usePlunderStore } from '#/vue/stores/plunder.js';
 import { queryModelData, attackModel, resources } from '$/farm/models.js';
 import { queryVillagesInfo, villagesInfo } from '$/farm/villages.js';
-import { queryCurrentVillageCoords } from '$/helpers.js';
+import { queryCurrentVillageCoords } from '#/vue/helpers.js';
 import { queryAvailableUnits } from '$/farm/units.js';
 import { ExpectedResources } from '$/farm/resources.js';
 import { prepareAttack, eventTarget as attackEventTarget } from '$/farm/attack.js';

@@ -1,6 +1,6 @@
 import { assertType } from "#/error.js";
 import { parseCoordsFromTextContent } from '#/helpers.js';
-import { useAresStore } from '@/stores/store.js';
+import { useAresStore } from '#/vue/stores/store.js';
 import { ipcSend } from '#/ipc.js';
 
 // As funções aqui presentes dependem do Vue ou do Pinia em algum grau.

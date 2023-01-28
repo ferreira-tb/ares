@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import { assert, assertType } from '#/error.js';
-import { usePlunderStore } from '@/stores/plunder.js';
-import { useAresStore } from '@/stores/store.js';
+import { usePlunderStore } from '#/vue/stores/plunder.js';
+import { useAresStore } from '#/vue/stores/store.js';
 import type { Pinia } from 'pinia';
 
 export function setPreloadEvents(pinia: Pinia) {

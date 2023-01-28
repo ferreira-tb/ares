@@ -21,13 +21,14 @@
     ],
     "scripts": {
         "dev": "vite",
-        "build": "run-p type-check build-only:painel && node dist.mjs && npm run build-only:game && npm run build-only:phobos",
-        "build-only:painel": "vite build --config painel.config.ts",
+        "build": "run-p type-check build-only && node dist.mjs && npm run build-only:game && npm run build-only:phobos",
+        "build-only": "vite build --config vite.config.ts",
         "build-only:game": "vite build --config game.config.ts",
         "build-only:phobos": "vite build --config phobos.config.ts",
         "type-check": "vue-tsc --noEmit",
         "main": "rollup -c && electron .",
         "game": "npm run type-check && npm run build-only:game && electron .",
+        "phobos": "npm run type-check && npm run build-only:phobos && electron .",
         "start": "npm run build && npm run main"
     },
     "dependencies": {

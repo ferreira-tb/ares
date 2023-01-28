@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import { assert, assertInteger, assertType } from '#/error.js';
-import { useAresStore } from '@/stores/store.js';
-import { usePlunderHistoryStore, usePlunderStore } from '@/stores/plunder.js';
+import { useAresStore } from '#/vue/stores/store.js';
+import { usePlunderHistoryStore, usePlunderStore } from '#/vue/stores/plunder.js';
 import { resources as resourceList } from '#/constants.js';
 import type { Pinia } from 'pinia';
 import type { ExpectedResources } from '$/farm/resources.js';

@@ -2,8 +2,8 @@
 import { watch, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { routeNames, router } from '@/router/router.js';
-import { useAresStore, updateCurrentWorld } from '@/stores/store.js';
-import { patchPlunderStore } from '@/stores/plunder.js';
+import { useAresStore, updateCurrentWorld } from '#/vue/stores/store.js';
+import { patchPlunderStore } from '#/vue/stores/plunder.js';
 import { verifyWorldAndUnitData } from '@/world/config.js';
 
 const aresStore = useAresStore();

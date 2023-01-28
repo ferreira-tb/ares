@@ -1,4 +1,4 @@
-import { calcDistance } from '$/helpers.js';
+import { calcDistance } from '#/vue/helpers.js';
 import { parseCoordsFromTextContent, parseGameDate } from '#/helpers.js';
 import { assert, assertDOM, assertElement, assertType, ClaustrophobicError } from '#/error.js';
 import { resources as resourceList } from '#/constants.js';
