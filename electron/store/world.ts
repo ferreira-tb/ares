@@ -1,6 +1,6 @@
 import Store from 'electron-store';
-import { MainProcessError } from '#/error.js';
-import type { JSONSchema, Schema } from '@/types.js';
+import { MainProcessError } from '../error.js';
+import type { JSONSchema, Schema } from '#/types.js';
 
 const worldData: JSONSchema = {
     type: 'object',

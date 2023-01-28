@@ -17,6 +17,15 @@ declare global {
     interface Map<K, V> {
         assert: (key: K) => V;
     }
+
+    interface URLSearchParams {
+        assert: <T extends string>(name: string) => T;
+        assertAsInteger: (name: string, radix?: number) => number;
+    }
+
+    interface NumberConstructor {
+        assertInteger(rawString: string, radix?: number): number
+    }
 }
 
 export {};

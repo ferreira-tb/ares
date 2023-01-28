@@ -3,23 +3,26 @@
     "include": [
         "env.d.ts",
         "global.d.ts",
-        "src/**/*",
-        "src/**/*.vue",
-        "preload/**/*",
-        "preload/**/*.vue",
+        "painel/**/*",
+        "painel/**/*.vue",
+        "game/**/*",
+        "game/**/*.vue",
+        "phobos/**/*",
+        "phobos/**/*.vue",
+        "global/**/*",
         "dev/**/*"
     ],
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
             "@/*": [
-                "./src/*"
+                "./painel/*"
             ],
             "$/*": [
-                "./preload/*"
+                "./game/*"
             ],
             "#/*": [
-                "./main/*"
+                "./global/*"
             ]
         },
 

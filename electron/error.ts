@@ -14,11 +14,13 @@ export function assert(condition: any, message: string): asserts condition {
     if (!condition) throw new MainProcessError(message);
 };
 
-export function assertInteger(item: any, message: string): asserts item is number {
+export function assertInteger(item: any, message?: string): asserts item is number {
+    if (!message) message = 'O número não é um inteiro.';
     if (!Number.isInteger(item)) throw new TypeError(message);
 };
 
-export function assertFinite(item: any, message: string): asserts item is number {
+export function assertFinite(item: any, message?: string): asserts item is number {
+    if (!message) message = 'O número não é finito.';
     if (!Number.isFinite(item)) throw new TypeError(message);
 };
 

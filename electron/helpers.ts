@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import { assertType } from '#/error.js';
+import { assertType } from './error.js';
 import type { BrowserWindow } from 'electron';
 
 export function getCurrentWorld(mainWindow: BrowserWindow) {
@@ -9,7 +9,9 @@ export function getCurrentWorld(mainWindow: BrowserWindow) {
     const urlObject = new URL(currentURL);
     const index = urlObject.hostname.indexOf('.tribalwars');
     if (index === -1) return null;
-    return urlObject.hostname.slice(0, index);
+    
+    const world = urlObject.hostname.slice(0, index);
+    return world.replace(/www\.?/g, '');
 };
 
 export function assertCurrentWorld(mainWindow: BrowserWindow) {

@@ -9,6 +9,7 @@ export const helpURL = 'https://github.com/ferreira-tb/ares/issues';
 // Arquivos
 export const favicon = resolve(__dirname, '../public/favicon.ico');
 export const indexHtml = resolve(__dirname, 'index.html');
-export const preloadJs = resolve(__dirname, 'preload.js');
+export const preloadJs = resolve(__dirname, 'game.js');
+export const phobosJs = resolve(__dirname, 'phobos.js');
 export const styleCss = resolve(__dirname, 'style.css');
-export const aresExe = resolve(__dirname, '../__testpy__/ares.exe');
+export const deimosExe = resolve(__dirname, '../__testpy__/deimos.exe');

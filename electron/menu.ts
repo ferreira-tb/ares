@@ -1,6 +1,6 @@
 import { Menu, MenuItem, shell } from 'electron';
-import { gameURL, authorURL, repoURL, helpURL } from '#/constants.js';
-import { assert } from '#/error.js';
+import { gameURL, authorURL, repoURL, helpURL } from './constants.js';
+import { assert } from './error.js';
 import type { BrowserWindow, MenuItemConstructorOptions } from 'electron';
 
 export function setAppMenu(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
@@ -38,9 +38,6 @@ export function setAppMenu(mainWindow: BrowserWindow, childWindow: BrowserWindow
 
         const mainDevOptions: MenuItemConstructorOptions[] = [...devOnly, { type: 'separator' }];
         const childDevOptions: MenuItemConstructorOptions[] = [...devOnly];
-
-        // Temporário.
-        mainDevOptions.push({ label: 'CSV Dataset', click: () => mainWindow.webContents.send('dev-report-dataset') });
 
         const mainDevMenu = new MenuItem({ label: 'Desenvolvedor', submenu: mainDevOptions });
         const childDevMenu = new MenuItem({ label: 'Desenvolvedor', submenu: childDevOptions });

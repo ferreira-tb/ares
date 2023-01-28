@@ -1,16 +1,18 @@
 import { app, ipcMain } from 'electron';
 import * as fs from 'node:fs/promises';
-import { setPlunderEvents } from '#/events/plunder.js';
-import { setGameEvents } from '#/events/game.js';
-import { setDevEvents } from '#/events/dev.js';
-import { MainProcessError } from '#/error.js';
-import { styleCss } from '#/constants.js';
+import { setPlunderEvents } from '../events/plunder.js';
+import { setGameEvents } from '../events/game.js';
+import { setDeimosEvents } from '../events/deimos.js';
+import { MainProcessError } from '../error.js';
+import { styleCss } from '../constants.js';
 import type { BrowserWindow } from 'electron';
 
 export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
     // Informações sobre o Ares.
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
+    ipcMain.handle('user-data-path', () => app.getPath('userData'));
+    ipcMain.handle('ares-mode', () => process.env.ARES_MODE);
 
     ipcMain.on('reload-main-window', () => mainWindow.webContents.reload());
     ipcMain.on('force-reload-main-window', () => mainWindow.webContents.reloadIgnoringCache());
@@ -37,6 +39,5 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
     // Outros eventos.
     setGameEvents(mainWindow, childWindow);
     setPlunderEvents(mainWindow, childWindow);
-
-    if (process.env.ARES_MODE === 'dev') setDevEvents();
+    setDeimosEvents(mainWindow);
 };

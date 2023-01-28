@@ -1,22 +1,22 @@
 import dotenv from 'dotenv';
 import getPort from 'get-port';
 import http from 'node:http';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import { execFile } from 'child_process';
-import { setAppMenu } from '#/menu.js';
-import { setEvents } from '#/events/index.js';
-import { aresExe, gameURL, favicon, indexHtml, preloadJs } from '#/constants.js';
-import { MainProcessError } from '#/error.js';
+import { setAppMenu } from './menu.js';
+import { setEvents } from './events/index.js';
+import { deimosExe, gameURL, favicon, indexHtml, preloadJs } from './constants.js';
+import { MainProcessError } from './error.js';
 
 dotenv.config();
 
-let pyPort = '8000';
+let deimosPort = '8000';
 getPort({ port: 8000 }).then((port) => {
-    pyPort = port.toString(10);
-    const args = [pyPort, app.getPath('userData')];
-    execFile(aresExe, args, (err) => MainProcessError.handle(err));
+    deimosPort = port.toString(10);
+    const args = [deimosPort, app.getPath('userData')];
+    execFile(deimosExe, args, (err) => MainProcessError.handle(err));
 
-    if (process.env.ARES_MODE === 'dev') console.log('Porta:', pyPort);
+    if (process.env.ARES_MODE === 'dev') console.log('Porta:', deimosPort);
 });
 
 /** Título padrão do aplicativo. */
@@ -69,6 +69,8 @@ function createWindow() {
     childWindow.once('ready-to-show', () => childWindow.show());
 };
 
+ipcMain.handle('deimos-port', () => Number.parseInt(deimosPort));
+
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
-app.on('will-quit', () => http.get(`http://127.0.0.1:${pyPort}/ares/quit`));
+app.on('will-quit', () => http.get(`http://127.0.0.1:${deimosPort}/deimos/quit`));
