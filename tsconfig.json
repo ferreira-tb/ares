@@ -3,12 +3,14 @@
     "include": [
         "env.d.ts",
         "global.d.ts",
-        "painel/**/*",
-        "painel/**/*.vue",
+        "panel/**/*",
+        "panel/**/*.vue",
         "game/**/*",
         "game/**/*.vue",
         "phobos/**/*",
         "phobos/**/*.vue",
+        "modules/**/*",
+        "modules/**/*.vue",
         "global/**/*",
         "dev/**/*"
     ],
@@ -16,7 +18,7 @@
         "baseUrl": ".",
         "paths": {
             "@/*": [
-                "./painel/*"
+                "./panel/*"
             ],
             "$/*": [
                 "./game/*"

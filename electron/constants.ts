@@ -1,4 +1,8 @@
+import { app } from 'electron';
 import { resolve } from 'path';
+import type { MenuItemConstructorOptions } from 'electron';
+
+export const appTitle = `${app.getName()} ${app.getVersion()}`;
 
 // URL
 export const gameURL = 'https://www.tribalwars.com.br/';
@@ -9,7 +13,14 @@ export const helpURL = 'https://github.com/ferreira-tb/ares/issues';
 // Arquivos
 export const favicon = resolve(__dirname, '../public/favicon.ico');
 export const indexHtml = resolve(__dirname, 'index.html');
-export const preloadJs = resolve(__dirname, 'game.js');
+export const gameJs = resolve(__dirname, 'game.js');
 export const phobosJs = resolve(__dirname, 'phobos.js');
 export const styleCss = resolve(__dirname, 'style.css');
+export const moduleHtml = resolve(__dirname, 'modules.html');
 export const deimosExe = resolve(__dirname, '../__testpy__/deimos.exe');
+
+// Menu
+export const devOptions: MenuItemConstructorOptions[] = [
+    { label: 'Forçar atualização', accelerator: 'F6', role: 'forceReload' },
+    { label: 'Inspecionar', accelerator: 'F1', role: 'toggleDevTools' }
+];

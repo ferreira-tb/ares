@@ -1,8 +1,9 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
+    plugins: [vue()],
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./panel', import.meta.url)),
@@ -14,14 +15,14 @@ export default defineConfig({
         target: 'esnext',
         outDir: '__dist__',
         emptyOutDir: false,
-        lib: {
-            entry: resolve(__dirname, 'phobos/phobos.ts'),
-            fileName: 'phobos',
-            name: 'phobos',
-            formats: ['cjs']
-        },
         rollupOptions: {
-            external: ['electron']
+            external: ['electron'],
+            input: 'modules.html',
+            output: {
+                format: 'cjs',
+                generatedCode: 'es2015',
+                interop: 'auto'
+            }
         }
     }
 });

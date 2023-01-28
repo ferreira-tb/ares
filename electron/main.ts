@@ -5,7 +5,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import { execFile } from 'child_process';
 import { setAppMenu } from './menu.js';
 import { setEvents } from './events/index.js';
-import { deimosExe, gameURL, favicon, indexHtml, preloadJs } from './constants.js';
+import { appTitle, deimosExe, gameURL, favicon, indexHtml, gameJs } from './constants.js';
 import { MainProcessError } from './error.js';
 
 dotenv.config();
@@ -20,7 +20,7 @@ getPort({ port: 8000 }).then((port) => {
 });
 
 /** Título padrão do aplicativo. */
-const appTitle = `${app.getName()} ${app.getVersion()}`;
+
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -30,7 +30,7 @@ function createWindow() {
         title: appTitle,
         icon: favicon,
         webPreferences: {
-            preload: preloadJs
+            preload: gameJs
         }
     });
     
@@ -61,7 +61,7 @@ function createWindow() {
     
     mainWindow.maximize();
     mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-
+    
     mainWindow.loadURL(gameURL);
     childWindow.loadFile(indexHtml);
 
@@ -73,4 +73,4 @@ ipcMain.handle('deimos-port', () => Number.parseInt(deimosPort));
 
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
-app.on('will-quit', () => http.get(`http://127.0.0.1:${deimosPort}/deimos/quit`));
+app.on('before-quit', () => http.get(`http://127.0.0.1:${deimosPort}/deimos/quit`));

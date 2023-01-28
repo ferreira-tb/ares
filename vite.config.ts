@@ -6,7 +6,7 @@ export default defineConfig({
     plugins: [vue()],
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./painel', import.meta.url)),
+            '@': fileURLToPath(new URL('./panel', import.meta.url)),
             '$': fileURLToPath(new URL('./game', import.meta.url)),
             '#': fileURLToPath(new URL('./global', import.meta.url))
         }

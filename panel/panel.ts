@@ -1,24 +1,24 @@
-import '@/assets/style.css';
+import '#/assets/style.css';
 import '#/prototype.js';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '@/router/router.js';
 import { setChildWindowEvents } from '@/events.js';
 import { ClaustrophobicError } from '#/error.js';
-import Painel from '@/Painel.vue';
+import Panel from '@/Panel.vue';
 
-const childApp = createApp(Painel);
+const panel = createApp(Panel);
 const pinia = createPinia();
 
 // Plugins.
-childApp.use(pinia);
-childApp.use(router);
+panel.use(pinia);
+panel.use(router);
 
 // Error handler.
-childApp.config.errorHandler = ClaustrophobicError.handle;
+panel.config.errorHandler = ClaustrophobicError.handle;
 
 // Eventos.
 setChildWindowEvents(pinia);
 
 router.push('/');
-childApp.mount('#app');
+panel.mount('#app');

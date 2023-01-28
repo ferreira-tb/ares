@@ -1,11 +1,11 @@
-import { app, ipcMain } from 'electron';
 import * as fs from 'node:fs/promises';
+import { app, ipcMain, type BrowserWindow } from 'electron';
 import { setPlunderEvents } from '../events/plunder.js';
 import { setGameEvents } from '../events/game.js';
 import { setDeimosEvents } from '../events/deimos.js';
+import { setModuleEvents } from '../events/modules.js';
 import { MainProcessError } from '../error.js';
 import { styleCss } from '../constants.js';
-import type { BrowserWindow } from 'electron';
 
 export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
     // Informações sobre o Ares.
@@ -40,4 +40,5 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
     setGameEvents(mainWindow, childWindow);
     setPlunderEvents(mainWindow, childWindow);
     setDeimosEvents(mainWindow);
+    setModuleEvents();
 };
