@@ -115,7 +115,13 @@ export function generateIntegerBetween(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min);
 };
 
-export function parseReportDate(report: Element) {
+/**
+ * Analisa um relatório e retorna a data de quando ele foi gerado.
+ * @param report Elemento HTML onde o relatório está contido.
+ * @param ms Indica se o resultado deve ser retornado em milisegundos.
+ * Se `false`, o resultado será retornado em segundos.
+ */
+export function parseReportDate(report: Element, ms: boolean = true) {
     const selector = 'td.nopad table:has([class="report_ReportAttack" i]) tr:nth-of-type(2) td:nth-of-type(2)';
     const dateField = report.queryAndAssert(selector);
 
@@ -154,6 +160,7 @@ export function parseReportDate(report: Element) {
     const date = new Date(fullYear).setHours(hour, minute, second, millisec);
     assertInteger(date, 'A data obtida é inválida.');
 
+    if (ms === false) return Math.ceil(date / 1000);
     return date;
 };
 

@@ -1,23 +1,12 @@
 import dotenv from 'dotenv';
-import getPort from 'get-port';
 import http from 'node:http';
 import { app, BrowserWindow, ipcMain } from 'electron';
-import { execFile } from 'node:child_process';
 import { setAppMenu } from './menu.js';
 import { setEvents } from './events/index.js';
-import { appTitle, deimosExe, gameURL, favicon, indexHtml, gameJs } from './constants.js';
-import { MainProcessError } from './error.js';
+import { appTitle, gameURL, favicon, indexHtml, gameJs } from './constants.js';
+import { getDeimosPort } from './helpers.js';
 
 dotenv.config();
-
-let deimosPort = '8000';
-getPort({ port: 8000 }).then((port) => {
-    deimosPort = port.toString(10);
-    const args = [deimosPort, app.getPath('userData')];
-    execFile(deimosExe, args, (err) => MainProcessError.handle(err));
-
-    if (process.env.ARES_MODE === 'dev') console.log('Porta:', deimosPort);
-});
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -66,9 +55,8 @@ function createWindow() {
     childWindow.once('ready-to-show', () => childWindow.show());
 };
 
-export const getDeimosPort = () => Number.parseInt(deimosPort);
 ipcMain.handle('deimos-port', () => getDeimosPort());
 
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
-app.on('before-quit', () => http.get(`http://127.0.0.1:${deimosPort}/deimos/quit`));
+app.on('before-quit', () => http.get(`http://127.0.0.1:${getDeimosPort(true)}/deimos/quit`));

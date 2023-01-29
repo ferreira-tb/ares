@@ -1,8 +1,7 @@
 import { ipcMain } from 'electron';
 import { URL } from 'node:url';
 import { assert, assertInteger, assertType, MainProcessError } from '../error.js';
-import { getWorldFromURL } from '../helpers.js';
-import { getDeimosPort } from '../main.js';
+import { getWorldFromURL, getDeimosPort } from '../helpers.js';
 import type { ErrorLog, DOMErrorLog } from '#/types.js';
 import type { ErrorLogForDeimos, DOMErrorLogForDeimos } from '../types.js';
 
@@ -21,7 +20,7 @@ export function setErrorEvents() {
                 electron: process.versions.electron
             };
     
-            const port = getDeimosPort().toString(10);
+            const port = getDeimosPort(true);
             const response = await fetch(`http://127.0.0.1:${port}/deimos/error/normal`, {
                 method: 'post',
                 body: JSON.stringify(errorLog)
@@ -51,7 +50,7 @@ export function setErrorEvents() {
                 electron: process.versions.electron
             };
 
-            const port = getDeimosPort().toString(10);
+            const port = getDeimosPort(true);
             const response = await fetch(`http://127.0.0.1:${port}/deimos/error/dom`, {
                 method: 'post',
                 body: JSON.stringify(errorLog)

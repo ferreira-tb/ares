@@ -9,7 +9,7 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
 
     const parser = new DOMParser();
     const deimosReports: DeimosReport[] = [];
-
+    
     for (const url of urls) {
         const urlObject = new URL(url);
         const reportId = urlObject.searchParams.assertAsInteger('view');
@@ -17,6 +17,9 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         const response = await fetch(urlObject.href);
         const text = await response.text();
         const report = parser.parseFromString(text, 'text/html').documentElement;
+
+        // Mundo.
+        const world = assertWorldFromURL(urlObject);
 
         // Informação dos exploradores sobre os recursos esperados para o próximo ataque.
         const resourcesFields = report.queryAsArray('#attack_spy_resources .res-icons-separated > .nowrap > .res');
@@ -29,7 +32,7 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         const [plundered, carry] = textContent.split('\/').map((item) => Number.assertInteger(item, 10));
 
         // Data do relatório e minutos desde o ataque.
-        const reportDate = parseReportDate(report);
+        const reportDate = parseReportDate(report, false);
         const minutes = Math.ceil((Date.now() - reportDate) / 60000);
 
         // ID da aldeia atacante.
@@ -42,15 +45,14 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         const defUrl = new URL(location.origin + defField.assertAttribute('href'));
         const defId = defUrl.searchParams.assertAsInteger('id');
 
-        const args = [reportId, reportDate, expected, carry, attackId, defId, minutes, plundered] as const;
+        const args = [world, reportId, reportDate, expected, carry, attackId, defId, minutes, plundered] as const;
         const deimosReport = new DeimosReport(...args);
         deimosReports.push(deimosReport);
     };
 
-    const world = assertWorldFromURL();
+    
     const port = await ipcInvoke('deimos-port');
-
-    return await fetch(`http://127.0.0.1:${port}/deimos/save/plunder/${world}`, {
+    return await fetch(`http://127.0.0.1:${port}/deimos/save/plunder`, {
         method: 'post',
         body: JSON.stringify(deimosReports)
     });

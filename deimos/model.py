@@ -1,16 +1,19 @@
 import os
-from typing import ClassVar, Dict, List, TypedDict, Self, NotRequired
+from time import time
+from typing import ClassVar, TypedDict, Self, Dict, List, NotRequired
 import joblib
 import numpy
+from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
 from sklearn import linear_model
 from helpers import get_user_path
-from db import create_deimos_table, engine
+from db import engine, DeimosTable
 
 
-class DeimosReport(TypedDict):
+class DeimosTableType(TypedDict):
     id: NotRequired[int] # ID do relatório.
-    time: NotRequired[int] # Data do ataque (em milisegundos).
+    time: NotRequired[int] # Data do ataque (em segundos desde a época UNIX).
+    world: NotRequired[str] # Mundo onde ocorreu a batalha.
     expected: int # Quantidade de recursos que se espera ter na aldeia.
     carry: int # Capacidade de carga do modelo atacante.
     atk_id: int # ID da aldeia atacante.
@@ -27,14 +30,12 @@ class Deimos:
     # Será False caso não hajam dados o suficiente para treiná-lo.
     ready = True
 
-
     def __init__(self, world: str):
         if type(world) is not str:
             raise TypeError('É preciso indicar a qual mundo o modelo deve ser associado.')
 
         user_path = get_user_path()
         self.path = os.path.join(user_path, f'deimos_{world}.joblib')
-        self.table = create_deimos_table(world)
 
         try:
             # Tenta carregar um modelo já treinado.
@@ -43,54 +44,84 @@ class Deimos:
             
         except FileNotFoundError:
             # Se não houver, verifica se é possível treinar um novo.
-            with Session(engine) as session:
-                amount = session.query(self.table).count()
-                if amount > 100:
-                    raw_reports = session.query(self.table).all()
-                    features, targets = parse_reports(raw_reports) # type: ignore 
-                   
-                    self.model = linear_model.ElasticNet()
-                    self.model.fit(features, targets)
+            with Session(engine, autobegin=True) as session:
+                stmt = select(DeimosTable).where(DeimosTable.world == world)
+                raw_reports = session.scalars(stmt).all()
 
-                    joblib.dump(self.model, self.path)
+                if len(raw_reports) > 100:
+                    now = int(time())
+                    reports: List[DeimosTableType] = []
+
+                    for raw in raw_reports:
+                        # Elimina o relatório caso ele tenha mais de dois meses.
+                        if ((now - raw.time) > 5184000):
+                            del_stmt = delete(DeimosTable).where(DeimosTable.id == raw.id)
+                            session.execute(del_stmt)
+                            continue
+                        # Do contrário, adiciona-o à lista.
+                        else:
+                            report: DeimosTableType = {
+                                'expected': raw.expected,
+                                'carry': raw.carry,
+                                'atk_id': raw.atk_id,
+                                'def_id': raw.def_id,
+                                'minutes_since': raw.minutes_since
+                            }
+                            reports.append(report)
+
+                    # Só treina o modelo se ainda houverem relatórios o suficiente.
+                    if len(reports) > 100:
+                        features, targets = parse_reports(reports)
+                    
+                        self.model = linear_model.ElasticNet()
+                        self.model.fit(features, targets)
+
+                        joblib.dump(self.model, self.path)
+
                 else:
                     self.ready = False
 
             Deimos.active[world] = self
         
 
-    def predict(self, features: DeimosReport) -> int:
+    def predict(self, features: DeimosTableType) -> int:
         """ Faz uma previsão usando o modelo pertinente ao mundo. """
 
         if len(features) != 5:
             raise TypeError('O dicionário não possui a quantidade adequada de parâmetros.')
 
-        feat_list = get_feats_from_deimos_report(features)
+        # Precisa ser envelopada em outra lista.
+        feat_list = get_features_from_report(features)
+        prediction = self.model.predict([feat_list]) 
+        return int(prediction[0], base=10)
 
-        # A lista precisa ser envelopada em outra lista.
-        prediction = self.model.predict([feat_list])
-        return int(prediction[0])
 
+def save_reports(reports: List[DeimosTableType]) -> None:
+    """ Salva informações sobre ataques no banco de dados do Deimos. """
 
-    def save(self, reports: List[DeimosReport]) -> None:
-        """ Salva informações sobre ataques no banco de dados do Deimos. """
+    if type(reports) is not list:
+        raise TypeError('O objeto não é uma lista.')
 
-        if type(reports) is not list:
-            raise TypeError('O objeto não é uma lista.')
+    with Session(engine, autobegin=True) as session:
+        for report in reports:
+            if not isinstance(report, dict):
+                raise TypeError('O objeto não é um dicionário.')
+            elif len(report) != 9:
+                raise TypeError('O dicionário não possui a quantidade correta de itens.')
+                
+            for key, value in report.items():
+                if key != 'world' and type(value) is not int:
+                    raise TypeError('Um dos valores no dicionário não é um número inteiro.')
+                elif key == 'world' and type(value) is not str:
+                    raise TypeError('O mundo é inválido.')
 
-        with Session(engine) as session:
-            for report in reports:
-                if len(report) != 8:
-                    raise TypeError('O dicionário não possui a quantidade correta de itens.')
-                    
-                for value in report.values():
-                    if type(value) is not int:
-                        raise TypeError('Um dos valores no dicionário não é um número inteiro.')
-
-                new_row = self.table(**report)
+            stmt = select(DeimosTable).where(DeimosTable.id == report['id'])
+            results = session.scalars(stmt).all()
+            if len(results) == 0:
+                new_row = DeimosTable(**report)
                 session.add(new_row)
 
-            session.commit()
+        session.commit()
 
 
 def get_deimos(world: str) -> Deimos:
@@ -102,25 +133,25 @@ def get_deimos(world: str) -> Deimos:
         return Deimos(world)
 
 
-def parse_reports(reports: List[DeimosReport]):
-    features: List[List[int]] = []
-    targets: List[int] = []
+def parse_reports(reports: List[DeimosTableType]):
+    all_features: List[List[int]] = []
+    all_targets: List[int] = []
 
     for report in reports:
-        r_feats = get_feats_from_deimos_report(report)
-        features.append(r_feats)
+        features = get_features_from_report(report)
+        all_features.append(features)
 
-        plundered = report.get('plundered')
-        if type(plundered) is not int:
+        target = report.get('plundered')
+        if type(target) is not int:
             raise TypeError('A quantia saqueada não é um número inteiro.')
         else:
-            targets.append(plundered)
+            all_targets.append(target)
 
-    return [numpy.array(features), numpy.array(targets)]
+    return [numpy.array(all_features), numpy.array(all_targets)]
 
 
-def get_feats_from_deimos_report(report: DeimosReport) -> List[int]:
-    feat_list: List[int] = [
+def get_features_from_report(report: DeimosTableType) -> List[int]:
+    features: List[int] = [
         report['expected'],
         report['carry'],
         report['atk_id'],
@@ -128,8 +159,8 @@ def get_feats_from_deimos_report(report: DeimosReport) -> List[int]:
         report['minutes_since']
     ]
 
-    for feat in feat_list:
+    for feat in features:
         if type(feat) is not int:
             raise TypeError('O item no relatório não é um número inteiro.')
 
-    return feat_list
+    return features

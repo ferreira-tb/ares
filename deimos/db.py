@@ -1,27 +1,51 @@
 import os
-from sqlalchemy import create_engine, Column, Integer
-from sqlalchemy.orm import registry
+from typing import Optional
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, MappedAsDataclass, mapped_column
 from helpers import get_user_path, is_dev
 
 db_path = os.path.join(get_user_path(), 'ares.db')
+engine = create_engine(f'sqlite+pysqlite:///{db_path}', echo=is_dev())
 
-engine = create_engine(f'sqlite+pysqlite:///{db_path}', echo=is_dev(), future=True)
-mapper_registry = registry()
-Base = mapper_registry.generate_base()
+class Base(DeclarativeBase):
+    pass
 
-def create_deimos_table(world: str):
-    table_name = f'deimos_{world}'
-    new_table = type(table_name, (Base, ), {
-        '__tablename__': table_name,
-        'id': Column(Integer, primary_key=True), # ID do relatório.
-        'time': Column(Integer, nullable=False), # Data do ataque (em milisegundos).
-        'expected': Column(Integer, nullable=False), # Quantidade de recursos que se espera ter na aldeia.
-        'carry': Column(Integer, nullable=False), # Capacidade de carga do modelo atacante.
-        'atk_id': Column(Integer, nullable=False), # ID da aldeia atacante.
-        'def_id': Column(Integer, nullable=False), # ID da aldeia defensora.
-        'minutes_since': Column(Integer, nullable=False), # Minutos desde o último ataque.
-        'plundered': Column(Integer, nullable=False) # Quantia saqueada no último ataque (esse valor deve ser previsto pelo Deimos).
-    })
 
-    mapper_registry.metadata.create_all(engine, checkfirst=True)
-    return new_table
+class DeimosTable(MappedAsDataclass, Base):
+    __tablename__ = 'deimos_table'
+
+    id: Mapped[int] = mapped_column(primary_key=True) # ID do relatório.
+    time: Mapped[int] # Data do ataque (em segundos desde a época UNIX).
+    world: Mapped[str] # Mundo onde ocorreu a batalha.
+    expected: Mapped[int] # Quantidade de recursos que se espera ter na aldeia.
+    carry: Mapped[int] # Capacidade de carga do modelo atacante.
+    atk_id: Mapped[int] # ID da aldeia atacante.
+    def_id: Mapped[int] # ID da aldeia defensora.
+    minutes_since: Mapped[int] # Minutos desde o último ataque.
+    plundered: Mapped[int] # Quantia saqueada no último ataque (esse valor deve ser previsto pelo Deimos).
+
+
+class ErrorLog(MappedAsDataclass, Base):
+    __tablename__ = 'error_log'
+
+    id: Mapped[Optional[int]] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] # Nome do erro.
+    message: Mapped[str] # Mensagem do erro.
+    time: Mapped[int] # Hora.
+    electron: Mapped[str] # Versão do Electron.
+    chrome: Mapped[str] # Versão do Chrome.
+
+
+class DOMErrorLog(MappedAsDataclass, Base):
+    __tablename__ = 'dom_error_log'
+
+    id: Mapped[Optional[int]] = mapped_column(primary_key=True, autoincrement=True)
+    selector: Mapped[str] # Seletor CSS.
+    url: Mapped[str] # URL da página onde ocorreu o erro.
+    world: Mapped[Optional[str]] # Mundo onde ocorreu o erro.
+    time: Mapped[int] # Hora.
+    electron: Mapped[str] # Versão do Electron.
+    chrome: Mapped[str] # Versão do Chrome.
+
+
+Base.metadata.create_all(engine, checkfirst=True)
