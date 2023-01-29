@@ -6,7 +6,7 @@ import type { MenuItemConstructorOptions } from 'electron';
 
 export function setAppMenu(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
     const optionsMenu: MenuItemConstructorOptions[] = [
-        { label: 'Início', click: () => mainWindow.webContents.loadURL(gameURL) },
+        { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
         { label: 'Atualizar', accelerator: 'F5', role: 'reload' },
         { label: 'Ocultar painel', id: 'hide-child', click: hideOrShowChildWindow },
         { label: 'Mostrar painel', id: 'show-child', visible: false, click: hideOrShowChildWindow },
