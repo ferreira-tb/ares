@@ -1,6 +1,8 @@
-from typing import TypedDict, Optional
+from time import time
+from typing import List, TypedDict, Optional
+from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
-from db import engine, ErrorLog, DOMErrorLog
+from db import engine, ErrorLogTable, DOMErrorLogTable
 
 class ErrorLogType(TypedDict):
     name: str # Nome do erro.
@@ -32,7 +34,7 @@ def save_error_log(error_log: ErrorLogType):
             raise TypeError('O valor de TIME não possui a quantidade correta de itens.')
 
     with Session(engine, autobegin=True) as session:
-        new_row = ErrorLog(id=None, **error_log)
+        new_row = ErrorLogTable(id=None, **error_log)
         session.add(new_row)
         session.commit()
 
@@ -53,6 +55,81 @@ def save_dom_error_log(dom_error_log: DOMErrorLogType):
             raise TypeError('O valor de TIME não possui a quantidade correta de itens.')
 
     with Session(engine, autobegin=True) as session:
-        new_row = DOMErrorLog(id=None, **dom_error_log)
+        new_row = DOMErrorLogTable(id=None, **dom_error_log)
         session.add(new_row)
         session.commit()
+
+
+def get_error_logs() -> list[ErrorLogType]:
+    now = int(time())
+    logs_to_return: List[ErrorLogType] = []
+    with Session(engine, autobegin=True) as session:
+        stmt = select(ErrorLogTable)
+        error_logs = session.scalars(stmt).all()
+
+        for error_log in error_logs:
+            # Apaga o registro caso tenha sido feito há mais de um mês.
+            if ((now - error_log.time) > 2592000):
+                del_stmt = delete(ErrorLogTable).where(ErrorLogTable.id == error_log.id)
+                session.execute(del_stmt)
+                continue
+            else:
+                parsed_error_log = parse_error_log_table_row(error_log)
+                logs_to_return.append(parsed_error_log)
+
+        session.commit()
+
+    return logs_to_return
+
+
+def get_dom_logs() -> list[DOMErrorLogType]:
+    now = int(time())
+    logs_to_return: List[DOMErrorLogType] = []
+    with Session(engine, autobegin=True) as session:
+        stmt = select(DOMErrorLogTable)
+        dom_logs = session.scalars(stmt).all()
+
+        for dom_log in dom_logs:
+            if ((now - dom_log.time) > 2592000):
+                del_stmt = delete(DOMErrorLogTable).where(DOMErrorLogTable.id == dom_log.id)
+                session.execute(del_stmt)
+                continue
+            else:
+                parsed_dom_log = parse_dom_log_table_row(dom_log)
+                logs_to_return.append(parsed_dom_log)
+
+        session.commit()
+    
+    return logs_to_return
+
+
+def get_all_error_logs() -> list[ErrorLogType | DOMErrorLogType]:
+    error_logs = get_error_logs()
+    dom_logs = get_dom_logs()
+
+    return [*error_logs, *dom_logs]
+
+
+def parse_error_log_table_row(row: ErrorLogTable) -> ErrorLogType:
+    parsed: ErrorLogType = {
+        'name': row.name,
+        'message': row.message,
+        'time': row.time,
+        'electron': row.electron,
+        'chrome': row.chrome
+    }
+
+    return parsed
+
+
+def parse_dom_log_table_row(row: DOMErrorLogTable) -> DOMErrorLogType:
+    parsed: DOMErrorLogType = {
+        'selector': row.selector,
+        'url': row.url,
+        'world': row.world,
+        'time': row.time,
+        'electron': row.electron,
+        'chrome': row.chrome
+    }
+
+    return parsed

@@ -25,7 +25,7 @@ class DeimosTable(MappedAsDataclass, Base):
     plundered: Mapped[int] # Quantia saqueada no último ataque (esse valor deve ser previsto pelo Deimos).
 
 
-class ErrorLog(MappedAsDataclass, Base):
+class ErrorLogTable(MappedAsDataclass, Base):
     __tablename__ = 'error_log'
 
     id: Mapped[Optional[int]] = mapped_column(primary_key=True, autoincrement=True)
@@ -36,7 +36,7 @@ class ErrorLog(MappedAsDataclass, Base):
     chrome: Mapped[str] # Versão do Chrome.
 
 
-class DOMErrorLog(MappedAsDataclass, Base):
+class DOMErrorLogTable(MappedAsDataclass, Base):
     __tablename__ = 'dom_error_log'
 
     id: Mapped[Optional[int]] = mapped_column(primary_key=True, autoincrement=True)
