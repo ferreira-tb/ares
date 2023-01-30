@@ -3,7 +3,7 @@ import http from 'node:http';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { setAppMenu } from './menu.js';
 import { setEvents } from './events/index.js';
-import { appTitle, gameURL, favicon, indexHtml, gameJs } from './constants.js';
+import { gameURL, favicon, indexHtml, gameJs } from './constants.js';
 import { getDeimosPort } from './helpers.js';
 
 dotenv.config();
@@ -13,7 +13,7 @@ function createWindow() {
         width: 1200,
         height: 1000,
         show: false,
-        title: appTitle,
+        title: 'Ares',
         icon: favicon,
         webPreferences: {
             preload: gameJs
@@ -31,9 +31,10 @@ function createWindow() {
         useContentSize: true,
         show: false,
         closable: false,
-        minimizable: true,
+        minimizable: false,
         maximizable: false,
-        title: appTitle,
+        fullscreenable: false,
+        title: 'Ares',
         autoHideMenuBar: true,
         icon: favicon,
         webPreferences: {

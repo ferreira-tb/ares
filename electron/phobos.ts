@@ -3,7 +3,7 @@ import { URL } from 'node:url';
 import { phobosJs } from './constants.js';
 import { assertType } from './error.js';
 import type { BrowserWindow } from 'electron';
-import type { PhobosNames, CreatePhobosOptions } from './types.js';
+import type { PhobosNames, PhobosOptions } from '@/electron.js';
 
 const activePhobos = new Map<PhobosNames, BrowserView>();
 
@@ -15,11 +15,13 @@ const activePhobos = new Map<PhobosNames, BrowserView>();
  * 
  * Uma nova instância deve SEMPRE ser inicializada com alguma URL.
  * @param name Nome da instância.
- * @param mainWindow Janela mãe.
  * @param url URL que será carregada no Phobos.
+ * @param mainWindow Janela mãe.
+ * @param options Opções que determinam o comportamento do `BrowserView`.
+ * É possível passar um objeto `WebPreferences` com uma das opções.
  * @returns `BrowserView`
  */
-export async function createPhobos(name: PhobosNames, url: URL, mainWindow: BrowserWindow, options?: CreatePhobosOptions) {
+export async function createPhobos(name: PhobosNames, url: URL, mainWindow: BrowserWindow, options?: PhobosOptions) {
     assertType(typeof name === 'string', 'Nome inválido.');
     assertType(url instanceof URL, 'URL inválida');
 
@@ -39,14 +41,26 @@ export async function createPhobos(name: PhobosNames, url: URL, mainWindow: Brow
     };
 
     const phobos = new BrowserView({
-        webPreferences: { preload: phobosJs }
+        webPreferences: options?.webPreferences ?? { preload: phobosJs }
     });
 
     mainWindow.addBrowserView(phobos);
-    phobos.setBounds({ x: 0, y: 0, width: 0, height: 0 });
-    phobos.setAutoResize({ width: false, height: false, horizontal: false, vertical: false });
-    activePhobos.set(name, phobos);
 
+    phobos.setBounds(options?.bounds ?? {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0
+    });
+
+    phobos.setAutoResize(options?.autoResize ?? {
+        width: false,
+        height: false,
+        horizontal: false,
+        vertical: false
+    });
+
+    activePhobos.set(name, phobos);
     await phobos.webContents.loadURL(url.href);
 
     return phobos;

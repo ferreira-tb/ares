@@ -1,12 +1,15 @@
 {
-    "include": ["./**/*"],
+    "include": [
+        "./**/*",
+        "../types/**/*"
+    ],
 
     "compilerOptions": {
         "target": "esnext",
         "lib": ["esnext", "DOM"],
         "paths": {
             "@/*": [
-                "../painel/*"
+                "../types/*"
             ],
             "$/*": [
                 "../game/*"

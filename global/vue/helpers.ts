@@ -2,6 +2,7 @@ import { assertType } from "#/error.js";
 import { parseCoordsFromTextContent } from '#/helpers.js';
 import { useAresStore } from '#/vue/stores/store.js';
 import { ipcSend } from '#/ipc.js';
+import type { RouteRecordRaw } from 'vue-router';
 
 // As funções aqui presentes dependem do Vue ou do Pinia em algum grau.
 
@@ -31,4 +32,18 @@ export function calcDistance(destX: number, destY: number, originX?: number, ori
     if (typeof originY !== 'number') originY = aresStore.currentY;
 
     return Math.sqrt(((destX - originX) ** 2) + ((destY - originY) ** 2));
+};
+
+export function getRouteNames(routes: RouteRecordRaw[]) {
+    const names: string[] = [];
+
+    for (const route of routes) {
+        if (typeof route.name === 'string') {
+            names.push(route.name)
+        } else if (Array.isArray(route.children)) {
+            names.push(...getRouteNames(route.children))
+        };
+    };
+
+    return names;
 };

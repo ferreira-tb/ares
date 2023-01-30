@@ -5,14 +5,14 @@ import { URL } from 'node:url';
 import { favicon, moduleHtml, devOptions, deimosExe } from './constants.js';
 import { assertType, MainProcessError } from './error.js';
 
-/** Inicia o Deimos e retorna uma função que permite obter a porta à qual ele está conectado. */
+// Inicia o Deimos e retorna uma função que permite obter a porta à qual ele está conectado.
 function openDeimos() {
     let deimosPort = '8000';
 
     getPort({ port: 8000 }).then((port) => {
         deimosPort = port.toString(10);
         const args = [deimosPort, app.getPath('userData')];
-        execFile(deimosExe, args, (err) => MainProcessError.handle(err));
+        execFile(deimosExe, args, (err) => MainProcessError.handleDeimosError(err));
     
         if (process.env.ARES_MODE === 'dev') console.log('Porta:', deimosPort);
     });
@@ -83,6 +83,10 @@ export function showErrorLog(mainWindow: BrowserWindow) {
         height: 600,
         useContentSize: true,
         show: false,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        fullscreenable: false,
         title: 'Registro de erros',
         icon: favicon,
         autoHideMenuBar: true,

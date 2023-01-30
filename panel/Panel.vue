@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { watch, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
-import { routeNames, router } from '@/router/router.js';
+import { routeNames, router } from './router/router.js';
 import { useAresStore, updateCurrentWorld } from '#/vue/stores/store.js';
 import { patchPlunderStore } from '#/vue/stores/plunder.js';
-import { verifyWorldAndUnitData } from '@/config.js';
+import { verifyWorldAndUnitData } from './config.js';
 
 const aresStore = useAresStore();
 
@@ -33,14 +33,16 @@ watch(() => aresStore.currentWorld, async () => {
 </script>
 
 <template>
-    <RouterView v-slot="{ Component, route }">
-        <Transition name="fade" mode="out-in">
-            <Suspense>
-                <component :is="Component" :key="route.path" />
-                <template #fallback class="to-center green-text bold">
-                    Carregando...
-                </template>
-            </Suspense>
-        </Transition>
+    <RouterView v-slot="{ Component }">
+        <template v-if="Component">
+            <Transition name="fade" mode="out-in">
+                <Suspense>
+                    <component :is="Component" />
+                    <template #fallback class="to-center green-text bold">
+                        Carregando...
+                    </template>
+                </Suspense>
+            </Transition>
+        </template>
     </RouterView>
 </template>

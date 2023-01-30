@@ -17,9 +17,11 @@ watchEffect(() => {
 </script>
 
 <template>
-    <RouterView v-slot="{ Component, route }">
-        <Suspense>
-            <component :is="Component" :key="route.path" />
-        </Suspense>
+    <RouterView v-slot="{ Component }">
+        <template v-if="Component">
+            <Suspense>
+                <component :is="Component" />
+            </Suspense>
+        </template>
     </RouterView>
 </template>

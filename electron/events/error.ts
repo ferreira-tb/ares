@@ -1,9 +1,9 @@
-import { ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
 import { URL } from 'node:url';
 import { assert, assertInteger, assertType, MainProcessError } from '../error.js';
 import { getWorldFromURL, getDeimosPort } from '../helpers.js';
-import type { ErrorLog, DOMErrorLog } from '#/types.js';
-import type { ErrorLogForDeimos, DOMErrorLogForDeimos } from '../types.js';
+import type { ErrorLog, DOMErrorLog } from '@/error.js';
+import type { ErrorLogRequest, DOMErrorLogRequest } from '@/electron.js';
 
 export function setErrorEvents() {
     ipcMain.on('log-error', async (_e, err: ErrorLog) => {
@@ -12,10 +12,11 @@ export function setErrorEvents() {
             assertType(typeof err.message === 'string', 'Não há uma mensagem válida no relatório de erro.');
             assertInteger(err.time, 'A hora informada no relatório de erro é inválida.');
     
-            const errorLog: ErrorLogForDeimos = {
+            const errorLog: ErrorLogRequest = {
                 name: err.name,
                 message: err.message,
                 time: err.time,
+                ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron
             };
@@ -41,11 +42,12 @@ export function setErrorEvents() {
             const url = new URL(e.sender.getURL());
             const world = getWorldFromURL(url);
 
-            const errorLog: DOMErrorLogForDeimos = {
+            const errorLog: DOMErrorLogRequest = {
                 url: url.href,
                 world: world,
                 selector: err.selector,
                 time: err.time,
+                ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron
             };

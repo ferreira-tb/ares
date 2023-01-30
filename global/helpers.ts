@@ -1,6 +1,6 @@
 import { assert, assertArrayIncludes, assertInteger, assertType, ClaustrophobicError } from "#/error.js";
-import { months } from "#/constants";
-import type { XMLTags } from '#/types.js';
+import { months } from "#/constants.js";
+import type { XMLTags } from '@/game.js';
 
 /**
  * Analisa o texto contido num elemento a procura de coordenadas válidas.
@@ -192,4 +192,28 @@ export function assertWorldFromURL(url?: URL) {
     const world = getWorldFromURL(url);
     assertType(typeof world === 'string', 'Não foi possível determinar o mundo.');
     return world;
+};
+
+export function getLocaleDateString(raw?: number, includeTime: boolean = false) {
+    if (typeof raw !== 'number') raw = Date.now();
+    assertInteger(raw);
+    
+    const dateObject = new Date(raw);
+    const date = dateObject.toLocaleDateString('pt-br', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+
+    if (includeTime === false) {
+        return date;
+
+    } else {
+        const time = dateObject.toLocaleTimeString('pt-br', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        return `${date} ${time}`;
+    };
 };

@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { ipcInvoke } from '#/ipc.js';
-import type { PlunderedAmount } from '#/types.js';
+import type { PlunderedAmount } from '@/game.js';
 
 export type PlunderState = {
     /** Indica se o Plunder está ativado. */

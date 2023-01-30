@@ -17,10 +17,6 @@
 
     --color-red: #e61001;
 
-    --blur-bg-background: rgba(0, 0, 0, 0.600);
-    --blur-bg-index: 999998;
-    --blur-bg-over-index: 999999;
-
     --main-font-size: 15px;
 }
 
@@ -54,6 +50,27 @@ main {
 }
 
 /** CLASSES */
+.scrollbar::-webkit-scrollbar {
+    width: 20px;
+}
+
+.scrollbar::-webkit-scrollbar-corner {
+    background: var(--color-background);
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    background-color: var(--color-background);
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    background-color: var(--color-background-mute);
+    border-radius: 6px;
+    border: 4px solid var(--color-background);
+    background-clip: content-box;
+    min-width: 32px;
+    min-height: 32px;
+}
+
 .bold {
     font-weight: bold;
 }
@@ -78,16 +95,16 @@ main {
 }
 
 .icon {
-	width: 18px;
-	height: 18px;
-	display: inline-block;
+    width: 18px;
+    height: 18px;
+    display: inline-block;
     margin-top: auto;
     margin-right: 5px;
     margin-bottom: auto;
     margin-left: 0;
-	overflow: hidden;
-	background-repeat: no-repeat;
-	vertical-align: -4px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    vertical-align: -4px;
 }
 
 .wood {

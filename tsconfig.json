@@ -3,6 +3,7 @@
     "include": [
         "env.d.ts",
         "global.d.ts",
+        "types/**/*",
         "panel/**/*",
         "panel/**/*.vue",
         "game/**/*",
@@ -18,7 +19,7 @@
         "baseUrl": ".",
         "paths": {
             "@/*": [
-                "./panel/*"
+                "./types/*"
             ],
             "$/*": [
                 "./game/*"

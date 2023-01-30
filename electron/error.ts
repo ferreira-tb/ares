@@ -8,6 +8,10 @@ export class MainProcessError extends Error {
     public static handle(err: unknown) {
         if (err instanceof Error) console.error(err);
     };
+
+    public static handleDeimosError(err: unknown) {
+        if (err instanceof Error) console.error(err);
+    };
 };
 
 export function assert(condition: any, message: string): asserts condition {

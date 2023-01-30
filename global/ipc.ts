@@ -1,8 +1,9 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderState, PlunderStateValue } from '#/vue/stores/plunder.js';
-import type { WorldData, UnitData } from '@/config.js';
+import type { WorldData, UnitData } from '../panel/config.js';
 import type { ExpectedResources } from '$/farm/resources.js';
-import type { PlunderedAmount, ErrorLog, DOMErrorLog } from '#/types.js';
+import type { PlunderedAmount } from '@/game.js';
+import type { ErrorLog, DOMErrorLog } from '@/error.js';
 
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;

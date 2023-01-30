@@ -3,7 +3,7 @@ import { ipcInvoke } from '#/ipc.js';
 import { assert } from "#/error.js";
 import { queryXMLTags } from "#/helpers.js";
 import { allUnits } from '#/constants.js';
-import type { UnitDetails } from '#/types.js';
+import type { UnitDetails } from '@/game.js';
 
 export class WorldData {
     /** Data do último fetch. */

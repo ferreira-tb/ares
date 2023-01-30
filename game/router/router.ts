@@ -1,4 +1,5 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
+import { getRouteNames } from '#/vue/helpers.js';
 import Default from '$/views/Default.vue';
 import Plunder from '$/views/Plunder.vue';
 
@@ -20,4 +21,4 @@ export const router = createRouter({
     routes: routes
 });
 
-export const routeNames = routes.map((route) => route.name as string);
+export const routeNames = getRouteNames(routes);

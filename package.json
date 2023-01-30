@@ -20,16 +20,17 @@
         "electron"
     ],
     "scripts": {
-        "dev": "vite",
+        "type-check": "vue-tsc --noEmit",
         "build": "npm run type-check && npm-run-all build:* && node dist.mjs",
         "build:panel": "vite build --config vite.config.ts",
         "build:mod": "vite build --config mod.config.ts",
         "build:game": "vite build --config game.config.ts",
         "build:phobos": "vite build --config phobos.config.ts",
-        "type-check": "vue-tsc --noEmit",
+        "panel": "npm run type-check && npm run build:panel && node dist.mjs",
+        "mod": "npm run type-check && npm run build:mod && node dist.mjs",
+        "game": "npm run type-check && npm run build:game",
+        "phobos": "npm run type-check && npm run build:phobos.",
         "main": "rollup -c && electron .",
-        "game": "npm run type-check && npm run build-game && electron .",
-        "phobos": "npm run type-check && npm run build-phobos && electron .",
         "start": "npm run build && npm run main"
     },
     "dependencies": {

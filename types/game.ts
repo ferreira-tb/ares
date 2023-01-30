@@ -1,5 +1,3 @@
-import type { Schema as StoreSchema } from 'electron-store';
-
 export type Resources = 'wood' | 'stone' | 'iron';
 
 /** Unidades que podem ser usadas no assistente de saque. */
@@ -35,9 +33,6 @@ export type GameScreen =
     | 'place'
     | 'report';
 
-export type Schema = StoreSchema<Record<string, unknown>>;
-export type JSONSchema = Schema[keyof Schema];
-
 export type XMLTags =
     | 'speed'
     | 'unit_speed'
@@ -56,15 +51,4 @@ export type PlunderedAmount = {
     iron: number;
     total: number;
     attackAmount: number;
-};
-
-export type ErrorLog = {
-    readonly name: string;
-    readonly message: string;
-    readonly time: number;
-};
-
-export type DOMErrorLog = {
-    readonly selector: string;
-    readonly time: number;
 };

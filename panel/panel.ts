@@ -2,10 +2,10 @@ import '#/assets/style.css';
 import '#/prototype.js';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { router } from '@/router/router.js';
-import { setChildWindowEvents } from '@/events.js';
+import { router } from './router/router.js';
+import { setChildWindowEvents } from './events.js';
 import { ClaustrophobicError } from '#/error.js';
-import Panel from '@/Panel.vue';
+import Panel from './Panel.vue';
 
 const panel = createApp(Panel);
 const pinia = createPinia();

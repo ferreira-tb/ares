@@ -2,7 +2,7 @@ import { computed, ref, watchSyncEffect } from 'vue';
 import { assert } from '#/error.js';
 import { units } from '$/farm/units.js';
 import { farmUnits } from '#/constants.js';
-import type { FarmUnits } from '#/types.js';
+import type { FarmUnits } from '@/game.js';
 
 export class PlunderModel {
     /** Tipo do modelo. */

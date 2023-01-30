@@ -1,5 +1,5 @@
 import { ipcSend } from "#/ipc.js";
-import type { ErrorLog, DOMErrorLog } from "#/types.js";
+import type { ErrorLog, DOMErrorLog } from "@/error.js";
 
 export class ClaustrophobicError extends Error {
     override readonly name = 'ClaustrophobicError';

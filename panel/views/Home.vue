@@ -3,9 +3,10 @@ import { ref } from 'vue';
 import { shell } from 'electron';
 import { ipcInvoke } from '#/ipc.js';
 import { authorURL, repoURL, helpURL } from '#/constants.js';
-import Button from '@/components/Button.vue';
+import Button from '#/vue/components/Button.vue';
 
 const appName = ref<string>(await ipcInvoke('app-name'));
+const appVersion = ref<string>(await ipcInvoke('app-version'));
 </script>
 
 <template>
@@ -18,6 +19,9 @@ const appName = ref<string>(await ipcInvoke('app-name'));
             <Button @click="shell.openExternal(authorURL)">Autor</Button>
             <Button @click="shell.openExternal(repoURL)">Repositório</Button>
             <Button @click="shell.openExternal(helpURL)">Suporte</Button>
+        </div>
+        <div class="footer-area">
+            <span>{{ appVersion }}</span>
         </div>
     </main>
 </template>

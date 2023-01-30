@@ -32,6 +32,7 @@ class ErrorLogTable(MappedAsDataclass, Base):
     name: Mapped[str] # Nome do erro.
     message: Mapped[str] # Mensagem do erro.
     time: Mapped[int] # Hora.
+    ares: Mapped[str] # Versão do Ares.
     electron: Mapped[str] # Versão do Electron.
     chrome: Mapped[str] # Versão do Chrome.
 
@@ -44,6 +45,7 @@ class DOMErrorLogTable(MappedAsDataclass, Base):
     url: Mapped[str] # URL da página onde ocorreu o erro.
     world: Mapped[Optional[str]] # Mundo onde ocorreu o erro.
     time: Mapped[int] # Hora.
+    ares: Mapped[str] # Versão do Ares.
     electron: Mapped[str] # Versão do Electron.
     chrome: Mapped[str] # Versão do Chrome.
 
