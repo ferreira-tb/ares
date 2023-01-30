@@ -8,8 +8,8 @@ import { RouterView } from 'vue-router';
             <Transition name="fade" mode="out-in">
                 <Suspense>
                     <component :is="Component" />
-                    <template #fallback class="to-center green-text bold">
-                        Carregando...
+                    <template #fallback>
+                        <span class="to-center green-text bold">Carregando...</span>
                     </template>
                 </Suspense>
             </Transition>

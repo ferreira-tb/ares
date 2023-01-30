@@ -28,8 +28,8 @@ router.push({ name: 'normal-errors' });
                     <KeepAlive>
                         <Suspense>
                             <component :is="Component" />
-                            <template #fallback class="to-center green-text bold">
-                                Carregando...
+                            <template #fallback>
+                                <span class="to-center green-text bold">Carregando...</span>
                             </template>
                         </Suspense>
                     </KeepAlive>
