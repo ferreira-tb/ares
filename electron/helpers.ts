@@ -1,6 +1,6 @@
 import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { URL } from 'node:url';
-import { favicon, moduleHtml, devOptions } from './constants.js';
+import { devOptions } from './constants.js';
 import { assertType } from './error.js';
 
 export function getWorldFromURL(url: URL) {
@@ -52,34 +52,4 @@ export function setBasicDevMenu(browserWindow: BrowserWindow, setNull: boolean =
 
     const menu = Menu.buildFromTemplate(devOptions);
     browserWindow.setMenu(menu);
-};
-
-export function showErrorLog(mainWindow: BrowserWindow) {
-    const errorLogWindow = new BrowserWindow({
-        parent: mainWindow,
-        width: 500,
-        height: 600,
-        useContentSize: true,
-        show: false,
-        minimizable: false,
-        maximizable: false,
-        resizable: false,
-        fullscreenable: false,
-        title: 'Registro de erros',
-        icon: favicon,
-        autoHideMenuBar: true,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false
-        }
-    });
-
-    setBasicDevMenu(errorLogWindow, true);
-    errorLogWindow.loadFile(moduleHtml);
-    errorLogWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-
-    errorLogWindow.once('ready-to-show', () =>  {
-        errorLogWindow.webContents.send('set-module-route', 'error-log');
-        errorLogWindow.show();
-    });
 };

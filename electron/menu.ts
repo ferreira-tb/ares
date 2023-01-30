@@ -1,7 +1,8 @@
 import { Menu, MenuItem, shell, BrowserWindow } from 'electron';
 import { gameURL, authorURL, repoURL, helpURL } from './constants.js';
 import { assert } from './error.js';
-import { appendBasicDevMenu, setBasicDevMenu, showErrorLog } from './helpers.js';
+import { showErrorLog } from './modules.js';
+import { appendBasicDevMenu, setBasicDevMenu } from './helpers.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
 export function setAppMenu(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
