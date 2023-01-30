@@ -1,8 +1,8 @@
 import { Menu, MenuItem, shell, BrowserWindow } from 'electron';
-import { gameURL, authorURL, repoURL, helpURL } from './constants.js';
+import { gameURL, authorURL, repoURL, helpURL, devOptions } from './constants.js';
 import { assert } from './error.js';
-import { showErrorLog } from './modules.js';
-import { appendBasicDevMenu, setBasicDevMenu } from './helpers.js';
+import { showErrorLog, showSwaggerUI } from './modules.js';
+import { setBasicDevMenu } from './helpers.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
 export function setAppMenu(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
@@ -28,9 +28,18 @@ export function setAppMenu(mainWindow: BrowserWindow, childWindow: BrowserWindow
         { label: 'Ajuda', submenu: helpMenu }
     ] satisfies MenuItemConstructorOptions[]);
 
-    appendBasicDevMenu(mainMenu);
-    mainWindow.setMenu(mainMenu);
+    if (process.env.ARES_MODE === 'dev') {
+        const submenu: MenuItemConstructorOptions[] = [
+            ...devOptions,
+            { type: 'separator' },
+            { label: 'Deimos', click: () => showSwaggerUI() }
+        ];
 
+        const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu });
+        mainMenu.append(menuItem);
+    };
+
+    mainWindow.setMenu(mainMenu);
     setBasicDevMenu(childWindow);
 
     /** Declarada aqui dentro para ter acesso às variáveis do escopo. */

@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, MenuItem } from 'electron';
+import { BrowserWindow, Menu } from 'electron';
 import { URL } from 'node:url';
 import { devOptions } from './constants.js';
 import { assertType } from './error.js';
@@ -29,14 +29,6 @@ export function assertCurrentWorld(mainWindow: BrowserWindow) {
     const world = getCurrentWorld(mainWindow);
     assertType(typeof world === 'string', 'O mundo é inválido.');
     return world;
-};
-
-export function appendBasicDevMenu(menu: Menu) {
-    assertType(menu instanceof Menu, 'O item não é um menu.');
-    if (process.env.ARES_MODE !== 'dev') return;
-    
-    const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu: devOptions });
-    menu.append(menuItem);
 };
 
 /**
