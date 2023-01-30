@@ -1,0 +1,249 @@
+openapi: 3.0.0
+info:
+  title: Deimos API
+  version: 1.0.0
+  contact:
+    name: Andrew Ferreira
+    url: https://github.com/ferreira-tb
+    email: andrew.shien2@gmail.com
+
+paths:
+  /deimos/quit:
+    get:
+      summary: Força o fechamento da aplicação.
+      tags:
+        - Deimos
+
+      responses:
+        "200":
+          description: A operação foi bem sucedida.
+
+  /deimos/error/all:
+    get:
+      summary: Obtêm informações sobre todos os erros registrados no banco de dados.
+      tags:
+        - Erros
+
+      responses:
+        "200":
+          description: A operação foi bem sucedida.
+        "500":
+          description: Erro interno do servidor.
+
+  /deimos/error/normal:
+    get:
+      summary: Obtêm informações sobre os erros comuns registrados no banco de dados.
+      tags:
+        - Erros
+
+      responses:
+        "200":
+          description: A operação foi bem sucedida.
+        "500":
+          description: Erro interno do servidor.
+
+    post:
+      summary: Salva informações sobre erros comuns.
+      tags:
+        - Erros
+
+      requestBody:
+        description: Registro de erro que será salvo no banco de dados.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NormalError"
+
+      responses:
+        "201":
+          description: A operação foi bem sucedida.
+        "400":
+          description: Há algum problema no corpo da requisição.
+        "500":
+          description: Erro interno do servidor.
+
+  /deimos/error/dom:
+    get:
+      summary: Obtêm informações sobre os erros relacionados ao DOM registrados no banco de dados.
+      tags:
+        - Erros
+
+      responses:
+        "200":
+          description: A operação foi bem sucedida.
+        "500":
+          description: Erro interno do servidor.
+
+    post:
+      summary: Salva informações sobre erros relacionados ao DOM.
+      tags:
+        - Erros
+
+      requestBody:
+        description: Registro de erro que será salvo no banco de dados.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DOMError"
+
+      responses:
+        "201":
+          description: A operação foi bem sucedida.
+        "400":
+          description: Há algum problema no corpo da requisição.
+        "500":
+          description: Erro interno do servidor.
+
+  /deimos/plunder/save:
+    post:
+      summary: Salva os relatórios de saque no banco de dados do Deimos.
+      tags:
+        - Saque
+
+      requestBody:
+        description: Relatório que será usada para o treinamento do Deimos.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlunderReport"
+      
+      responses:
+        "201":
+          description: A operação foi bem sucedida.
+        "400":
+          description: Há algum problema no corpo da requisição.
+        "500":
+          description: Erro interno do servidor.
+
+  /deimos/plunder/predict/{world}:
+    post:
+      summary: Faz uma previsão de saque usando o Deimos.
+      parameters:
+        - in: path
+          name: world
+          example: br117
+          required: true
+          description: Mundo onde ocorrerá o ataque.
+          schema:
+            type: string
+      tags:
+        - Saque
+
+      requestBody:
+        description: Informações necessárias para que o Deimos tente prever o resultado do saque.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlunderPredict"
+
+      responses:
+        "200":
+          description: A previsão foi feita com sucesso.
+        "400":
+          description: Há algum problema no corpo da requisição.
+        "418":
+          description: Ainda não há dados suficientes para a predição.
+
+components:
+  schemas:
+    NormalError:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nome do erro.
+        message:
+          type: string
+          description: Mensagem do erro.
+        time:
+          type: integer
+          description: Hora do ocorrido.
+        ares:
+          type: string
+          description: Versão do Ares.
+        electron:
+          type: string
+          description: Versão do Electron.
+        chrome:
+          type: string
+          description: Versão do Chrome.
+
+    DOMError:
+      type: object
+      properties:
+        selector:
+          type: string
+          description: Seletor CSS.
+        url:
+          type: string
+          description: URL da página onde ocorreu o erro.
+        world:
+          type: string
+          nullable: true
+          description: Mundo onde ocorreu o erro.
+        time:
+          type: integer
+          description: Hora do ocorrido.
+        ares:
+          type: string
+          description: Versão do Ares.
+        electron:
+          type: string
+          description: Versão do Electron.
+        chrome:
+          type: string
+          description: Versão do Chrome.
+
+    PlunderReport:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID do relatório.
+        time:
+          type: integer
+          description: Data do ataque (em segundos desde a época UNIX).
+        world:
+          type: string
+          description: Mundo onde ocorreu a batalha.
+        expected:
+          type: integer
+          description: Quantidade de recursos que se espera ter na aldeia.
+        carry:
+          type: integer
+          description: Capacidade de carga do modelo atacante.
+        atk_id:
+          type: integer
+          description: ID da aldeia atacante.
+        def_id:
+          type: integer
+          description: ID da aldeia defensora.
+        minutes_since:
+          type: integer
+          description: Minutos desde o último ataque.
+        plundered:
+          type: integer
+          description: Quantia saqueada no último ataque (esse valor deve ser previsto pelo Deimos).
+
+    PlunderPredict:
+      type: object
+      properties:
+        expected:
+          type: integer
+          description: Quantidade de recursos que se espera ter na aldeia.
+        carry:
+          type: integer
+          description: Capacidade de carga do modelo atacante.
+        atk_id:
+          type: integer
+          description: ID da aldeia atacante.
+        def_id:
+          type: integer
+          description: ID da aldeia defensora.
+        minutes_since:
+          type: integer
+          description: Minutos desde o último ataque.
