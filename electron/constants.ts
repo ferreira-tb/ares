@@ -10,7 +10,7 @@ export const helpURL = 'https://github.com/ferreira-tb/ares/issues';
 // Arquivos
 export const favicon = resolve(__dirname, '../public/favicon.ico');
 export const indexHtml = resolve(__dirname, 'index.html');
-export const gameJs = resolve(__dirname, 'game.js');
+export const browserJs = resolve(__dirname, 'browser.js');
 export const phobosJs = resolve(__dirname, 'phobos.js');
 export const styleCss = resolve(__dirname, 'style.css');
 export const moduleHtml = resolve(__dirname, 'modules.html');

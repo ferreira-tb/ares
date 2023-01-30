@@ -3,7 +3,7 @@ import http from 'node:http';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { setAppMenu } from './menu.js';
 import { setEvents } from './events/index.js';
-import { gameURL, favicon, indexHtml, gameJs } from './constants.js';
+import { gameURL, favicon, indexHtml, browserJs } from './constants.js';
 import { getDeimosPort } from './deimos.js';
 
 dotenv.config();
@@ -16,7 +16,7 @@ function createWindow() {
         title: 'Ares',
         icon: favicon,
         webPreferences: {
-            preload: gameJs
+            preload: browserJs
         }
     });
     

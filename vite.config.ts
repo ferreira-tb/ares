@@ -7,7 +7,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./panel', import.meta.url)),
-            '$': fileURLToPath(new URL('./game', import.meta.url)),
+            '$': fileURLToPath(new URL('./browser', import.meta.url)),
             '#': fileURLToPath(new URL('./global', import.meta.url))
         }
     },

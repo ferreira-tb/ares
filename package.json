@@ -24,11 +24,11 @@
         "build": "npm run type-check && npm-run-all build:* && node scripts/html.mjs",
         "build:panel": "vite build --config vite.config.ts",
         "build:mod": "vite build --config mod.config.ts",
-        "build:game": "vite build --config game.config.ts",
+        "build:browser": "vite build --config browser.config.ts",
         "build:phobos": "vite build --config phobos.config.ts",
         "panel": "npm run type-check && npm run build:panel && node scripts/html.mjs",
         "mod": "npm run type-check && npm run build:mod && node scripts/html.mjs",
-        "game": "npm run type-check && npm run build:game",
+        "browser": "npm run type-check && npm run build:browser",
         "phobos": "npm run type-check && npm run build:phobos.",
         "main": "rollup -c && electron .",
         "start": "npm run build && npm run main"

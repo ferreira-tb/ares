@@ -8,7 +8,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./panel', import.meta.url)),
-            '$': fileURLToPath(new URL('./game', import.meta.url)),
+            '$': fileURLToPath(new URL('./browser', import.meta.url)),
             '#': fileURLToPath(new URL('./global', import.meta.url))
         }
     },
@@ -17,9 +17,9 @@ export default defineConfig({
         outDir: '__dist__',
         emptyOutDir: false,
         lib: {
-            entry: resolve(__dirname, 'game/game.ts'),
-            fileName: 'game',
-            name: 'game',
+            entry: resolve(__dirname, 'browser/browser.ts'),
+            fileName: 'browser',
+            name: 'browser',
             formats: ['cjs']
         },
         rollupOptions: {

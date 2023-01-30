@@ -5,17 +5,17 @@ import { createPinia } from 'pinia';
 import { router } from '$/router/router.js';
 import { setPreloadEvents } from '$/events.js';
 import { ClaustrophobicError, GameDOMError } from '#/error.js';
-import Game from '$/Game.vue';
+import Browser from '$/Browser.vue';
 
-const mainApp = createApp(Game);
+const app = createApp(Browser);
 const pinia = createPinia();
 
 // Plugins.
-mainApp.use(pinia);
-mainApp.use(router);
+app.use(pinia);
+app.use(router);
 
 // Error handler.
-mainApp.config.errorHandler = (err) => {
+app.config.errorHandler = (err) => {
     if (err instanceof GameDOMError) {
         GameDOMError.reportDOMError(err);
     } else {
@@ -29,5 +29,5 @@ setPreloadEvents(pinia);
 window.addEventListener('DOMContentLoaded', () => {
     router.push('/');
     const ares = document.createElement('ares');
-    mainApp.mount(ares);
+    app.mount(ares);
 }, { once: true });

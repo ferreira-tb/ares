@@ -6,8 +6,8 @@
         "types/**/*",
         "panel/**/*",
         "panel/**/*.vue",
-        "game/**/*",
-        "game/**/*.vue",
+        "browser/**/*",
+        "browser/**/*.vue",
         "phobos/**/*",
         "phobos/**/*.vue",
         "modules/**/*",
@@ -22,7 +22,7 @@
                 "./types/*"
             ],
             "$/*": [
-                "./game/*"
+                "./browser/*"
             ],
             "#/*": [
                 "./global/*"
