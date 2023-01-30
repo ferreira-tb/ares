@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { usePlunderHistoryStore } from '#/vue/stores/plunder.js';
 import { ipcInvoke } from '#/ipc.js';
+import WoodIcon from '#/vue/components/images/WoodIcon.vue';
+import StoneIcon from '#/vue/components/images/StoneIcon.vue';
+import IronIcon from '#/vue/components/images/IronIcon.vue';
+import StorageIcon from '#/vue/components/images/StorageIcon.vue';
 
 const props = defineProps<{
     plunderStatus: boolean;
@@ -23,19 +27,19 @@ if (props.plunderStatus === true) {
 <template>
     <div class="res-area">
         <div>
-            <span class="wood icon"></span>
+            <WoodIcon />
             <span>{{ history.wood }}</span>
         </div>
         <div>
-            <span class="stone icon"></span>
+            <StoneIcon />
             <span>{{ history.stone }}</span>
         </div>
         <div>
-            <span class="iron icon"></span>
+            <IronIcon />
             <span>{{ history.iron }}</span>
         </div>
         <div>
-            <span class="storage icon"></span>
+            <StorageIcon />
             <span>{{ history.total }}</span>
         </div>
     </div>

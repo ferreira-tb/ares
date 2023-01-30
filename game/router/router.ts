@@ -1,6 +1,6 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
 import { getRouteNames } from '#/vue/helpers.js';
-import Default from '$/views/Default.vue';
+import Default from '#/vue/views/Default.vue';
 import Plunder from '$/views/Plunder.vue';
 
 const routes: RouteRecordRaw[] = [

@@ -107,26 +107,6 @@ main {
     vertical-align: -4px;
 }
 
-.wood {
-    background-image: url("../../public/images/wood-18.png");
-}
-
-.stone {
-    background-image: url("../../public/images/stone-18.png");
-}
-
-.iron {
-    background-image: url("../../public/images/iron-18.png");
-}
-
-.storage {
-    background-image: url("../../public/images/buildings/storage-18.png");
-}
-
-.wall {
-    background-image: url("../../public/images/buildings/wall-16.png");
-}
-
 /** TRANSIÇÕES */
 .fade-enter-active,
 .fade-leave-active {
