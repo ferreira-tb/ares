@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { usePlunderHistoryStore } from '#/vue/stores/plunder.js';
 import { ipcInvoke } from '#/ipc.js';
-import WoodIcon from '#/vue/components/images/WoodIcon.vue';
-import StoneIcon from '#/vue/components/images/StoneIcon.vue';
-import IronIcon from '#/vue/components/images/IronIcon.vue';
-import StorageIcon from '#/vue/components/images/StorageIcon.vue';
+import WoodIcon from '#/vue/components/icons/WoodIcon.vue';
+import StoneIcon from '#/vue/components/icons/StoneIcon.vue';
+import IronIcon from '#/vue/components/icons/IronIcon.vue';
+import StorageIcon from '#/vue/components/icons/StorageIcon.vue';
 
 const props = defineProps<{
     plunderStatus: boolean;

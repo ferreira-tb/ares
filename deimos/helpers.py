@@ -2,6 +2,11 @@ import os
 import sys
 import signal
 
+
+class TooOldError(Exception):
+    pass
+
+
 def quit_app():
     """ Encerra a aplicação. """
     pid = os.getpid()

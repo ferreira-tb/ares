@@ -4,7 +4,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import { setAppMenu } from './menu.js';
 import { setEvents } from './events/index.js';
 import { gameURL, favicon, indexHtml, gameJs } from './constants.js';
-import { getDeimosPort } from './helpers.js';
+import { getDeimosPort } from './deimos.js';
 
 dotenv.config();
 

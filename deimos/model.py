@@ -1,13 +1,14 @@
 import os
 from time import time
-from typing import ClassVar, TypedDict, Self, Dict, List, NotRequired
+from typing import ClassVar, Tuple, TypedDict, Self, Dict, List, NotRequired
 import joblib
 import numpy
 from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
-from sklearn import linear_model
-from helpers import get_user_path
-from db import engine, DeimosTable
+from sklearn.linear_model import ElasticNet
+from sklearn.model_selection import train_test_split
+from helpers import get_user_path, TooOldError
+from db import engine, DeimosTable, DeimosTableHistory
 
 
 class DeimosTableType(TypedDict):
@@ -21,6 +22,18 @@ class DeimosTableType(TypedDict):
     minutes_since: int # Minutos desde o último ataque.
     plundered: NotRequired[int] # Quantia saqueada no último ataque (esse valor deve ser previsto pelo Deimos).
 
+
+class FitModelReturnType(TypedDict):
+    time: int # Data do treino (em segundos desde a época UNIX).
+    estimator: str # Nome do modelo usado para as estimativas.
+    report_amount: int # Quantidade de relatórios usados.
+    train_score: float # Pontuação do modelo no treinamento.
+    test_score: float # Pontuação do modelo no teste.
+
+
+class DeimosTableHistoryType(FitModelReturnType):
+    world: str # Mundo no qual o modelo será usado.
+    
 
 class Deimos:
     # Cache.
@@ -38,11 +51,24 @@ class Deimos:
         self.path = os.path.join(user_path, f'deimos_{world}.joblib')
 
         try:
-            # Tenta carregar um modelo já treinado.
+            with Session(engine, autobegin=True) as session:
+                stmt = select(DeimosTableHistory).where(DeimosTableHistory.world == world)
+                order_stmt = stmt.order_by(DeimosTableHistory.time.desc())
+                history = session.scalars(order_stmt).all()
+
+                # Refaz o treinamento se o último tiver sido há mais de um dia.
+                if len(history) > 0:
+                    now = int(time())
+                    if (now - history[0].time) > 86400:
+                        raise TooOldError()
+
+                session.rollback()
+
+            # Tenta carregar o último modelo treinado.
             self.model = joblib.load(self.path)
             Deimos.active[world] = self
             
-        except FileNotFoundError:
+        except (FileNotFoundError, TooOldError):
             # Se não houver, verifica se é possível treinar um novo.
             with Session(engine, autobegin=True) as session:
                 stmt = select(DeimosTable).where(DeimosTable.world == world)
@@ -54,7 +80,7 @@ class Deimos:
 
                     for raw in raw_reports:
                         # Elimina o relatório caso ele tenha mais de dois meses.
-                        if ((now - raw.time) > 5184000):
+                        if (now - raw.time) > 5184000:
                             del_stmt = delete(DeimosTable).where(DeimosTable.id == raw.id)
                             session.execute(del_stmt)
                             continue
@@ -65,21 +91,24 @@ class Deimos:
                                 'carry': raw.carry,
                                 'atk_id': raw.atk_id,
                                 'def_id': raw.def_id,
-                                'minutes_since': raw.minutes_since
+                                'minutes_since': raw.minutes_since,
+                                'plundered': raw.plundered
                             }
                             reports.append(report)
 
                     # Só treina o modelo se ainda houverem relatórios o suficiente.
                     if len(reports) > 100:
-                        features, targets = parse_reports(reports)
-                    
-                        self.model = linear_model.ElasticNet()
-                        self.model.fit(features, targets)
+                        self.model, model_info = fit_model(reports)
+
+                        new_row = DeimosTableHistory(world=world, **model_info)
+                        session.add(new_row)
 
                         joblib.dump(self.model, self.path)
 
                 else:
                     self.ready = False
+
+                session.commit()
 
             Deimos.active[world] = self
         
@@ -93,7 +122,27 @@ class Deimos:
         # Precisa ser envelopada em outra lista.
         feat_list = get_features_from_report(features)
         prediction = self.model.predict([feat_list]) 
-        return int(prediction[0], base=10)
+        return int(prediction[0])
+
+
+def fit_model(reports: list[DeimosTableType]) -> Tuple[ElasticNet, FitModelReturnType]:
+    X, y = parse_reports(reports)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+
+    model = ElasticNet()
+    model.fit(X_train, y_train)
+    train_score = model.score(X_train, y_train)
+    test_score = model.score(X_test, y_test)
+
+    model_info: FitModelReturnType = {
+        'time': int(time()),
+        'estimator': 'ElasticNet',
+        'report_amount': len(reports),
+        'train_score': float(train_score),
+        'test_score': float(test_score)
+    }
+
+    return (model, model_info)
 
 
 def save_reports(reports: List[DeimosTableType]) -> None:

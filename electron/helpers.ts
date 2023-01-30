@@ -1,29 +1,7 @@
-import getPort from 'get-port';
-import { app, BrowserWindow, Menu, MenuItem } from 'electron';
-import { execFile } from 'node:child_process';
+import { BrowserWindow, Menu, MenuItem } from 'electron';
 import { URL } from 'node:url';
-import { favicon, moduleHtml, devOptions, deimosExe } from './constants.js';
-import { assertType, MainProcessError } from './error.js';
-
-// Inicia o Deimos e retorna uma função que permite obter a porta à qual ele está conectado.
-function openDeimos() {
-    let deimosPort = '8000';
-
-    getPort({ port: 8000 }).then((port) => {
-        deimosPort = port.toString(10);
-        const args = [deimosPort, app.getPath('userData')];
-        execFile(deimosExe, args, (err) => MainProcessError.handleDeimosError(err));
-    
-        if (process.env.ARES_MODE === 'dev') console.log('Porta:', deimosPort);
-    });
-
-    return function(returnAsString: boolean = false) {
-        if (returnAsString === true) return deimosPort;
-        return Number.parseInt(deimosPort, 10);
-    };
-};
-
-export const getDeimosPort = openDeimos();
+import { favicon, moduleHtml, devOptions } from './constants.js';
+import { assertType } from './error.js';
 
 export function getWorldFromURL(url: URL) {
     const index = url.hostname.indexOf('.tribalwars');

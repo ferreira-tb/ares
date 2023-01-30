@@ -1,5 +1,5 @@
 from time import time
-from typing import List, NotRequired, TypedDict, Optional
+from typing import List, TypedDict, Optional
 from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
 from db import engine, ErrorLogTable, DOMErrorLogTable

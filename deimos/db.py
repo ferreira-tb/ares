@@ -25,6 +25,17 @@ class DeimosTable(MappedAsDataclass, Base):
     plundered: Mapped[int] # Quantia saqueada no último ataque (esse valor deve ser previsto pelo Deimos).
 
 
+class DeimosTableHistory(MappedAsDataclass, Base):
+    __tablename__ = 'deimos_table_history'
+
+    world: Mapped[str] = mapped_column(primary_key=True)
+    time: Mapped[int] # Data do treino (em segundos desde a época UNIX).
+    report_amount: Mapped[int] # Quantidade de relatórios usados.
+    estimator: Mapped[str] # Nome do modelo usado para as estimativas.
+    train_score: Mapped[float] # Pontuação do modelo no treinamento.
+    test_score: Mapped[float] # Pontuação do modelo no teste.
+
+
 class ErrorLogTable(MappedAsDataclass, Base):
     __tablename__ = 'error_log'
 

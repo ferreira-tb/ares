@@ -1,7 +1,8 @@
 import { app, ipcMain } from 'electron';
 import { URL } from 'node:url';
 import { assert, assertInteger, assertType, MainProcessError } from '../error.js';
-import { getWorldFromURL, getDeimosPort } from '../helpers.js';
+import { getWorldFromURL } from '../helpers.js';
+import { getDeimosPort } from '../deimos.js';
 import type { ErrorLog, DOMErrorLog } from '@/error.js';
 import type { ErrorLogRequest, DOMErrorLogRequest } from '@/electron.js';
 
