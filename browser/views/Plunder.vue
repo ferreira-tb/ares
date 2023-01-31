@@ -41,8 +41,10 @@ queryAvailableUnits();
 queryVillagesInfo();
 
 watchEffect(() => {
+    // Interrompe qualquer ataque em andamento.
     attackEventTarget.dispatchEvent(new Event('stop'));
 
+    // Começa a atacar se o Plunder estiver ativado.
     if (store.status === true) {
         handleAttack();
         setPlunderTimeout();

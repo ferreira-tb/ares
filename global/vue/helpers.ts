@@ -21,7 +21,7 @@ export function queryCurrentVillageCoords() {
     aresStore.currentX = coords[0];
     aresStore.currentY = coords[1];
 
-    // Notificado o processo principal, que então notificará a janela filha.
+    // Notifica o processo principal, que então notificará a janela do painel.
     ipcSend('update-current-coords', coords[0], coords[1]);
 };
 

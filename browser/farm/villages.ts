@@ -49,8 +49,7 @@ export function queryVillagesInfo() {
     const plunderListRows = document.queryAsArray('#plunder_list tbody tr[id^="village_"]');
     for (const row of plunderListRows) {
         if (row.hasAttribute('data-tb-village')) continue;
-
-        // A coerção à string é válida pois já foi verificada a existência do id ao usar querySelectorAll();
+ 
         const villageId = row.assertAttribute('id').replace(/\D/g, '');
 
         // Facilita o acesso ao id da aldeia.

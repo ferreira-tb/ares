@@ -39,6 +39,12 @@ paths:
       responses:
         "200":
           description: A operação foi bem sucedida.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NormalError"
         "500":
           description: Erro interno do servidor.
 
@@ -72,6 +78,12 @@ paths:
       responses:
         "200":
           description: A operação foi bem sucedida.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DOMError"
         "500":
           description: Erro interno do servidor.
 
@@ -119,6 +131,27 @@ paths:
           description: Erro interno do servidor.
 
   /deimos/plunder/predict/{world}:
+    get:
+      summary: Indica se o Deimos é capaz de fazer previsões no mundo indicado.
+      parameters:
+        - in: path
+          name: world
+          example: br117
+          required: true
+          description: Mundo onde ocorrerá o ataque.
+          schema:
+            type: string
+      tags:
+        - Saque
+
+      responses:
+        "200":
+          description: A operação foi bem sucedida.
+          content:
+            application/json:
+              schema:
+                type: boolean
+
     post:
       summary: Faz uma previsão de saque usando o Deimos.
       parameters:
@@ -143,6 +176,10 @@ paths:
       responses:
         "200":
           description: A previsão foi feita com sucesso.
+          content:
+            application/json:
+              schema:
+                type: integer
         "400":
           description: Há algum problema no corpo da requisição.
         "418":
@@ -153,6 +190,9 @@ components:
     NormalError:
       type: object
       properties:
+        id:
+          type: integer
+          description: ID no banco de dados.
         name:
           type: string
           description: Nome do erro.
@@ -175,6 +215,9 @@ components:
     DOMError:
       type: object
       properties:
+        id:
+          type: integer
+          description: ID no banco de dados.
         selector:
           type: string
           description: Seletor CSS.

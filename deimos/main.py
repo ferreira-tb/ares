@@ -86,6 +86,17 @@ async def save_plunder_reports(request: web.Request):
         return web.Response(status=500, text=repr(err))
 
 
+@routes.get('/deimos/plunder/predict/{world}')
+async def can_predict_resources(request: web.Request):
+    world = request.match_info['world']
+    if type(world) is not str:
+        return web.Response(status=400, text='Mundo inválido.')
+
+    deimos = get_deimos(world)
+    status = deimos.ready
+    return json_response(status, status=200)
+
+
 @routes.post('/deimos/plunder/predict/{world}')
 async def predict_resources(request: web.Request):
     world = request.match_info['world']
@@ -99,7 +110,7 @@ async def predict_resources(request: web.Request):
     try:
         features = await request.json()
         prediction = deimos.predict(features)
-        return web.Response(status=200, text=str(prediction))
+        return json_response(prediction, status=200)
     except (AttributeError, TypeError, JSONDecodeError) as err:
         return web.Response(status=400, text=repr(err))
 
