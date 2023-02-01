@@ -37,7 +37,7 @@
         "dotenv": "^16.0.3",
         "electron-store": "^8.1.0",
         "get-port": "^6.1.2",
-        "pinia": "^2.0.29",
+        "pinia": "^2.0.30",
         "vue": "^3.2.45",
         "vue-router": "^4.1.6"
     },
