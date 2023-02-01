@@ -16,10 +16,15 @@ function openDeimos() {
         if (process.env.ARES_MODE === 'dev') console.log('Porta:', deimosPort);
     });
 
-    return function(returnAsString: boolean = false) {
+    function port(): number;
+    function port(returnAsString: true): string;
+    function port(returnAsString: false): number;
+    function port(returnAsString: boolean = false): number | string {
         if (returnAsString === true) return deimosPort;
         return Number.parseInt(deimosPort, 10);
     };
+
+    return port;
 };
 
 export const getDeimosPort = openDeimos();
