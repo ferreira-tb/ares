@@ -4,17 +4,19 @@ import { execFile } from 'node:child_process';
 import { deimosExe } from './constants.js';
 import { MainProcessError } from './error.js';
 
-// Inicia o Deimos e retorna uma função que permite obter a porta à qual ele está conectado.
-function openDeimos() {
-    let deimosPort = '8000';
+function openDeimos(port: number) {
+    const deimosPort = port.toString(10);
+    const args = [deimosPort, app.getPath('userData')];
+    execFile(deimosExe, args, (err) => MainProcessError.handleDeimosError(err));
 
-    getPort({ port: 8000 }).then((port) => {
-        deimosPort = port.toString(10);
-        const args = [deimosPort, app.getPath('userData')];
-        execFile(deimosExe, args, (err) => MainProcessError.handleDeimosError(err));
-    
-        if (process.env.ARES_MODE === 'dev') console.log('Porta:', deimosPort);
-    });
+    if (process.env.ARES_MODE === 'dev') console.log('Porta:', deimosPort);
+
+    return deimosPort;
+};
+
+function setDeimosPort() {
+    let deimosPort = '8000';
+    getPort({ port: 8000 }).then((port) => deimosPort = openDeimos(port));
 
     function port(): string;
     function port(asInt: true): number;
@@ -27,12 +29,13 @@ function openDeimos() {
     return port;
 };
 
-export const getDeimosPort = openDeimos();
+export const getDeimosPort = setDeimosPort();
 
 /** Verifica se o Deimos já foi iniciado e pode responder à requisições. */
 export async function isDeimosOn() {
     try {
-        const response = await fetch(`http://127.0.0.1:${getDeimosPort()}/deimos`);
+        const port = getDeimosPort();
+        const response = await fetch(`http://127.0.0.1:${port}/deimos`);
         if (response.status === 200) return true;
         return false;
     } catch {
