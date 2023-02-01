@@ -8,6 +8,16 @@ info:
     email: andrew.shien2@gmail.com
 
 paths:
+  /deimos:
+    get:
+      summary: Indica se o Deimos está pronto.
+      tags:
+        - Deimos
+
+      responses:
+        "200":
+          description: Funcionando!
+
   /deimos/quit:
     get:
       summary: Força o fechamento da aplicação.

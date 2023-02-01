@@ -17,6 +17,11 @@ app = web.Application()
 routes = web.RouteTableDef()
 
 
+@routes.get('/deimos')
+async def is_deimos_on(request):
+    return web.Response(status=200, text='魚')
+
+
 @routes.get('/deimos/quit')
 async def ungracefully_quit_app(request):
     Timer(3, quit_app).start()

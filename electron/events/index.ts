@@ -7,13 +7,15 @@ import { setModuleEvents } from '../events/modules.js';
 import { setErrorEvents } from './error.js';
 import { MainProcessError } from '../error.js';
 import { styleCss } from '../constants.js';
+import { isDeimosOn } from '../deimos.js';
 
 export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
     // Informações sobre o Ares.
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
-    ipcMain.handle('ares-mode', () => process.env.ARES_MODE);
+    ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
+    ipcMain.handle('is-deimos-on', async () => await isDeimosOn());
 
     ipcMain.on('reload-main-window', () => mainWindow.webContents.reload());
     ipcMain.on('force-reload-main-window', () => mainWindow.webContents.reloadIgnoringCache());

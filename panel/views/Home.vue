@@ -21,7 +21,7 @@ const appVersion = ref<string>(await ipcInvoke('app-version'));
             <Button @click="shell.openExternal(helpURL)">Suporte</Button>
         </div>
         <div class="footer-area">
-            <span>{{ appVersion }}</span>
+            <p>{{ appVersion }}</p>
         </div>
     </main>
 </template>

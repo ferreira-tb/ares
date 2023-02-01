@@ -28,3 +28,14 @@ function openDeimos() {
 };
 
 export const getDeimosPort = openDeimos();
+
+/** Verifica se o Deimos já foi iniciado e pode responder à requisições. */
+export async function isDeimosOn() {
+    try {
+        const response = await fetch(`http://127.0.0.1:${getDeimosPort(true)}/deimos`);
+        if (response.status === 200) return true;
+        return false;
+    } catch {
+        return false;
+    };
+};
