@@ -20,7 +20,7 @@ export class PlunderVillageInfo {
     stone: number = 0;
     /** Estimativa da quantidade de ferro disponível na aldeia. */
     iron: number = 0;
-    /** Total de recursos disponíveis na aldeia. */
+    /** Total de recursos que se espera ter na aldeia. */
     total: number = 0;
 
     /** Botão A do assistente de saque. */

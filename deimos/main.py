@@ -92,7 +92,7 @@ async def save_plunder_reports(request: web.Request):
 
 
 @routes.get('/deimos/plunder/predict/{world}')
-async def can_predict_resources(request: web.Request):
+async def can_predict_plunder(request: web.Request):
     world = request.match_info['world']
     if type(world) is not str:
         return web.Response(status=400, text='Mundo inválido.')
