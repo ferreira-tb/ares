@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import http from 'node:http';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from './menu.js';
 import { setEvents } from './events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from './constants.js';
@@ -56,8 +56,6 @@ function createWindow() {
     childWindow.once('ready-to-show', () => childWindow.show());
 };
 
-ipcMain.handle('deimos-port', () => getDeimosPort());
-
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
-app.on('before-quit', () => http.get(`http://127.0.0.1:${getDeimosPort(true)}/deimos/quit`));
+app.on('before-quit', () => http.get(`http://127.0.0.1:${getDeimosPort()}/deimos/quit`));

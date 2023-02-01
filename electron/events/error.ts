@@ -22,8 +22,7 @@ export function setErrorEvents() {
                 electron: process.versions.electron
             };
     
-            const port = getDeimosPort(true);
-            const response = await fetch(`http://127.0.0.1:${port}/deimos/error/normal`, {
+            const response = await fetch(`http://127.0.0.1:${getDeimosPort()}/deimos/error/normal`, {
                 method: 'post',
                 body: JSON.stringify(errorLog)
             });
@@ -53,8 +52,7 @@ export function setErrorEvents() {
                 electron: process.versions.electron
             };
 
-            const port = getDeimosPort(true);
-            const response = await fetch(`http://127.0.0.1:${port}/deimos/error/dom`, {
+            const response = await fetch(`http://127.0.0.1:${getDeimosPort()}/deimos/error/dom`, {
                 method: 'post',
                 body: JSON.stringify(errorLog)
             });

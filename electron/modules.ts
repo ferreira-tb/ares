@@ -51,7 +51,6 @@ export function showSwaggerUI() {
 
     setBasicDevMenu(swaggerUI, true);
 
-    const port = getDeimosPort(true);
-    swaggerUI.loadURL(`http://127.0.0.1:${port}/deimos/doc`);
+    swaggerUI.loadURL(`http://127.0.0.1:${getDeimosPort()}/deimos/doc`);
     swaggerUI.once('ready-to-show', () =>  swaggerUI.show());
 };

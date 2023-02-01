@@ -5,7 +5,7 @@ import { getLocaleDateString } from '#/helpers.js';
 import { ClaustrophobicError } from '#/error.js';
 import type { ErrorLogResponse } from '@/electron.js';
 
-const port = (await ipcInvoke('deimos-port')).toString(10);
+const port = await ipcInvoke('deimos-port');
 const response = await fetch(`http://127.0.0.1:${port}/deimos/error/normal`);
 
 if (!response.ok) {

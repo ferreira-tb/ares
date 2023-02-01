@@ -7,7 +7,7 @@ import { setModuleEvents } from '../events/modules.js';
 import { setErrorEvents } from './error.js';
 import { MainProcessError } from '../error.js';
 import { styleCss } from '../constants.js';
-import { isDeimosOn } from '../deimos.js';
+import { getDeimosPort, isDeimosOn } from '../deimos.js';
 
 export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
     // Informações sobre o Ares.
@@ -19,6 +19,11 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
 
     ipcMain.on('reload-main-window', () => mainWindow.webContents.reload());
     ipcMain.on('force-reload-main-window', () => mainWindow.webContents.reloadIgnoringCache());
+
+    ipcMain.handle('deimos-port', (_e, asInt: boolean) => {
+        if (asInt !== true) return getDeimosPort();
+        return getDeimosPort(true);
+    });
 
     // Informa às janelas qual é a URL atual sempre que ocorre navegação.
     mainWindow.webContents.on('did-finish-load', async () => {
