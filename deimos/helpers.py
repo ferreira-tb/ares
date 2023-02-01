@@ -1,7 +1,7 @@
 import os
 import sys
 import signal
-
+import math
 
 class TooOldError(Exception):
     pass
@@ -11,6 +11,10 @@ def quit_app():
     """ Encerra a aplicação. """
     pid = os.getpid()
     os.kill(pid, signal.SIGINT)
+
+
+def is_dev():
+    return os.environ.get('ARES_MODE') == 'dev'
 
 
 # sys.argv
@@ -39,5 +43,7 @@ def get_app_port():
         return 8000
 
 
-def is_dev():
-    return os.environ.get('ARES_MODE') == 'dev'
+def calc_distance(*, destX: int, destY: int, originX: int, originY: int):
+    """ Calcula a distância entre duas aldeias. """
+    return math.sqrt(((destX - originX) ** 2) + ((destY - originY) ** 2))
+

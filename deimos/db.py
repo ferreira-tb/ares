@@ -19,8 +19,11 @@ class DeimosTable(MappedAsDataclass, Base):
     world: Mapped[str] # Mundo onde ocorreu a batalha.
     expected: Mapped[int] # Quantidade de recursos que se espera ter na aldeia.
     carry: Mapped[int] # Capacidade de carga do modelo atacante.
-    atk_id: Mapped[int] # ID da aldeia atacante.
-    def_id: Mapped[int] # ID da aldeia defensora.
+    origin_x: Mapped[int] # Coordenadas da aldeia atacante.
+    origin_y: Mapped[int]
+    dest_x: Mapped[int] # Coordenadas da aldeia defensora.
+    dest_y: Mapped[int]
+    distance: Mapped[float] # Distância entre as aldeias.
     minutes_since: Mapped[int] # Minutos desde o último ataque.
     plundered: Mapped[int] # Quantia saqueada no último ataque (esse valor deve ser previsto pelo Deimos).
 

@@ -21,6 +21,12 @@ export function parseCoordsFromTextContent(text: string | null): [number, number
     return coords as [number, number];
 };
 
+export function assertCoordsFromTextContent(text: string | null): [number, number] {
+    const coords = parseCoordsFromTextContent(text);
+    assertType(Array.isArray(coords), 'Não foi possível obter as coordenadas a partir da string.');
+    return coords;
+};
+
 /**
  * Converte uma data para milisegundos.
  * 

@@ -1,7 +1,7 @@
 import { assert, assertType } from "#/error.js";
-import { parseReportDate, assertWorldFromURL } from "#/helpers.js";
-import { DeimosReport } from '#/deimos.js';
+import { parseReportDate, assertWorldFromURL, assertCoordsFromTextContent } from "#/helpers.js";
 import { ipcInvoke } from "#/ipc.js";
+import type { DeimosReport } from '@/deimos.js';
 
 export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Response> {
     assertType(Array.isArray(urls), 'A lista de URLs não é uma array.');
@@ -12,7 +12,7 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
     
     for (const url of urls) {
         const urlObject = new URL(url);
-        const reportId = urlObject.searchParams.assertAsInteger('view');
+        const id = urlObject.searchParams.assertAsInteger('view');
 
         const response = await fetch(urlObject.href);
         const text = await response.text();
@@ -32,21 +32,33 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         const [plundered, carry] = textContent.split('\/').map((item) => Number.assertInteger(item, 10));
 
         // Data do relatório e minutos desde o ataque.
-        const reportDate = parseReportDate(report, false);
-        const minutes = Math.ceil((Date.now() - reportDate) / 60000);
+        const time = parseReportDate(report, false);
+        const minutes_since = Math.ceil((Date.now() - time) / 60000);
 
         // ID da aldeia atacante.
         const attackerField = report.queryAndAssert('#attack_info_att a[href*="screen=info_village"');
-        const attackerUrl = new URL(location.origin + attackerField.assertAttribute('href'));
-        const attackId = attackerUrl.searchParams.assertAsInteger('id');
+        const attackerText = attackerField.assertTextContent();
+        const [origin_x, origin_y] = assertCoordsFromTextContent(attackerText);
 
         // ID da aldeia defensora.
         const defField = report.queryAndAssert('#attack_info_def a[href*="screen=info_village"');
-        const defUrl = new URL(location.origin + defField.assertAttribute('href'));
-        const defId = defUrl.searchParams.assertAsInteger('id');
+        const defText = defField.assertTextContent();
+        const [dest_x, dest_y] = assertCoordsFromTextContent(defText);
 
-        const args = [world, reportId, reportDate, expected, carry, attackId, defId, minutes, plundered] as const;
-        const deimosReport = new DeimosReport(...args);
+        const deimosReport: DeimosReport = {
+            id,
+            time,
+            world,
+            expected,
+            carry,
+            origin_x,
+            origin_y,
+            dest_x,
+            dest_y,
+            minutes_since,
+            plundered
+        };
+
         deimosReports.push(deimosReport);
     };
 
