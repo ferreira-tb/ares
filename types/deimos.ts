@@ -1,6 +1,6 @@
-import type { BaseDeimosReport } from "#/deimos.js";
+import type { DeimosReport } from "#/deimos.js";
 
-export interface DeimosReport extends BaseDeimosReport {
+export interface FullDeimosReport extends DeimosReport {
     /** ID do relatório. */
     readonly id: number;
     /** Data do ataque (em segundos desde a época UNIX). */

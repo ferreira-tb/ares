@@ -1,6 +1,6 @@
 import { assertInteger } from "#/error.js";
 
-export class BaseDeimosReport {
+export class DeimosReport {
     /** Quantidade de recursos que se espera ter na aldeia. */  
     readonly expected: number;
     /** Capacidade de carga do modelo atacante. */

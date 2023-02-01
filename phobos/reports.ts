@@ -1,14 +1,14 @@
 import { assert, assertType } from "#/error.js";
 import { parseReportDate, assertWorldFromURL, assertCoordsFromTextContent } from "#/helpers.js";
 import { ipcInvoke } from "#/ipc.js";
-import type { DeimosReport } from '@/deimos.js';
+import type { FullDeimosReport } from '@/deimos.js';
 
 export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Response> {
     assertType(Array.isArray(urls), 'A lista de URLs não é uma array.');
     assert(/\.?tribalwars/.test(location.hostname), 'Phobos não está na localização correta.');
 
     const parser = new DOMParser();
-    const deimosReports: DeimosReport[] = [];
+    const deimosReports: FullDeimosReport[] = [];
     
     for (const url of urls) {
         const urlObject = new URL(url);
@@ -45,7 +45,7 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         const defText = defField.assertTextContent();
         const [dest_x, dest_y] = assertCoordsFromTextContent(defText);
 
-        const deimosReport: DeimosReport = {
+        const deimosReport: FullDeimosReport = {
             id,
             time,
             world,
@@ -61,7 +61,6 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
 
         deimosReports.push(deimosReport);
     };
-
     
     const port = await ipcInvoke('deimos-port');
     return await fetch(`http://127.0.0.1:${port}/deimos/plunder/save`, {
