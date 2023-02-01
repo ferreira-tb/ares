@@ -82,7 +82,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
         /** O atributo `name` é usado para determinar a unidade referente ao campo. */
         const fieldName = field.assertAttribute('name');
         /** O valor no atributo `name` é algo como `spear[11811]`. */
-        const unitType = fieldName.slice(0, fieldName.indexOf('\['));
+        const unitType = fieldName.replace(/\[\d+\]/g, '');
 
         assert(verify(unitType), `${unitType} não é uma unidade válida.`);
         field.setAttribute(`data-tb-model-${row}`, unitType);

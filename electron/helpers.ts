@@ -19,10 +19,12 @@ export function assertWorldFromURL(url: URL) {
 
 export function getCurrentWorld(mainWindow: BrowserWindow) {
     const currentURL = mainWindow.webContents.getURL();
-    if (!currentURL.includes('tribalwars')) return null;
-    
-    const url = new URL(currentURL);
-    return getWorldFromURL(url);
+    if (/\.?tribalwars/.test(currentURL)) {
+        const url = new URL(currentURL);
+        return getWorldFromURL(url);
+    };
+
+    return null;
 };
 
 export function assertCurrentWorld(mainWindow: BrowserWindow) {

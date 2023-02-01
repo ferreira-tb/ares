@@ -13,8 +13,7 @@ export function setChildWindowEvents(pinia: Pinia) {
 
     ipcRenderer.on('page-url', (_e, url) => {
         assertType(typeof url === 'string', 'A URL é inválida.');
-        if (!url.includes('tribalwars')) return;
-        aresStore.currentURL = url;
+        if (/\.?tribalwars/.test(url)) aresStore.currentURL = url;
     });
 
     ipcRenderer.on('update-current-coords', (_e, currentX: number, currentY: number) => {

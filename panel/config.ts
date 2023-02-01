@@ -66,7 +66,7 @@ const getUnitDataUrl = (world: string) => `https://${world}.tribalwars.com.br/in
  * Se `true`, os dados estão disponíveis no armazenamento e poderão ser acessados normalmente.
  * Se `false`, eles tanto não estão disponíveis quanto não foi possível obtê-los.
  */
-export async function verifyWorldAndUnitData(aresStore?: ReturnType<typeof useAresStore>) {
+export async function verifyWorldAndUnitData(aresStore?: ReturnType<typeof useAresStore>): Promise<boolean> {
     if (!aresStore) aresStore = useAresStore();
     if (typeof aresStore.currentWorld !== 'string') {
         aresStore.currentWorld = await ipcInvoke('get-current-world');

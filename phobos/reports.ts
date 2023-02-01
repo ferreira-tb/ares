@@ -5,7 +5,7 @@ import { ipcInvoke } from "#/ipc.js";
 
 export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Response> {
     assertType(Array.isArray(urls), 'A lista de URLs não é uma array.');
-    assert(location.hostname.includes('.tribalwars'), 'Phobos não está na localização correta.');
+    assert(/\.?tribalwars/.test(location.hostname), 'Phobos não está na localização correta.');
 
     const parser = new DOMParser();
     const deimosReports: DeimosReport[] = [];
