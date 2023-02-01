@@ -12,8 +12,7 @@ export function setPreloadEvents(pinia: Pinia) {
     // Atualiza a URL atual.
     ipcRenderer.on('page-url', (_e, url) => {
         assertType(typeof url === 'string', 'A URL é inválida.');
-        if (!url.includes('tribalwars')) return;
-        aresStore.currentURL = url;
+        if (/\.?tribalwars/.test(url)) aresStore.currentURL = url;
     });
 
     type PlunderKeys = keyof typeof plunderStore;
