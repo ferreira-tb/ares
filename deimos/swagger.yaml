@@ -225,9 +225,6 @@ components:
     DOMError:
       type: object
       properties:
-        id:
-          type: integer
-          description: ID no banco de dados.
         selector:
           type: string
           description: Seletor CSS.
@@ -254,9 +251,6 @@ components:
     PlunderReport:
       type: object
       properties:
-        id:
-          type: integer
-          description: ID do relatório.
         time:
           type: integer
           description: Data do ataque (em segundos desde a época UNIX).
