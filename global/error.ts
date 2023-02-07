@@ -1,23 +1,23 @@
 import { ipcSend } from "#/ipc.js";
 import type { ErrorLog, DOMErrorLog } from "@/error.js";
 
-export class ClaustrophobicError extends Error {
-    override readonly name = 'ClaustrophobicError';
+export class AresError extends Error {
+    override name = 'AresError';
 
     constructor(message: string) {
         super(message);
     };
 
     public static handle(err: unknown) {
-        if (!(err instanceof Error)) return;
-
-        const errorLog: ErrorLog = {
-            name: err.name,
-            message: err.message,
-            time: Date.now()
+        if (err instanceof Error) {
+            const errorLog: ErrorLog = {
+                name: err.name,
+                message: err.message,
+                time: Date.now()
+            };
+    
+            ipcSend('log-error', errorLog);
         };
-
-        ipcSend('log-error', errorLog);
     };
 };
 
@@ -42,7 +42,7 @@ export class GameDOMError extends Error {
 };
 
 export function assert(condition: any, message: string): asserts condition {
-    if (!condition) throw new ClaustrophobicError(message);
+    if (!condition) throw new AresError(message);
 };
 
 export function assertArrayIncludes<T>(array: T[], item: any, message: string): asserts item is T {

@@ -4,7 +4,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '$/router/router.js';
 import { setPreloadEvents } from '$/events.js';
-import { ClaustrophobicError, GameDOMError } from '#/error.js';
+import { AresError, GameDOMError } from '#/error.js';
 import Browser from '$/Browser.vue';
 
 const app = createApp(Browser);
@@ -19,7 +19,7 @@ app.config.errorHandler = (err) => {
     if (err instanceof GameDOMError) {
         GameDOMError.reportDOMError(err);
     } else {
-        ClaustrophobicError.handle(err);
+        AresError.handle(err);
     };
 };
 

@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { assert, ClaustrophobicError } from '#/error.js';
+import { assert, AresError } from '#/error.js';
 import { fetchPlunderReportsForDeimos } from './reports.js';
 
 export function setPhobosEvents() {
@@ -8,7 +8,7 @@ export function setPhobosEvents() {
             const response = await fetchPlunderReportsForDeimos(urls);
             assert(response.ok, await response.text());
         } catch (err) {
-            ClaustrophobicError.handle(err);
+            AresError.handle(err);
         };
     });
 };

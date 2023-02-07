@@ -4,11 +4,11 @@ import { useAresStore } from '#/vue/stores/store.js';
 import { ipcSend } from '#/ipc.js';
 import type { RouteRecordRaw } from 'vue-router';
 
-// As funções aqui presentes dependem do Vue ou do Pinia em algum grau.
+// As funções aqui presentes dependem do Vue em algum grau.
 
 /**
  * Obtêm as coordenadas da aldeia atual a partir do DOM e as salva no Pinia.
- * Essa função deve ser chamada apenas no contexto da janela mãe.
+ * Essa função deve ser chamada apenas no contexto do browser.
  */
 export function queryCurrentVillageCoords() {
     const selector = '#header_info tr#menu_row2 td:not(:has(a[href*="screen=overview"])):has(b)';

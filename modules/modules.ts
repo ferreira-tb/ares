@@ -4,7 +4,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from './router/router.js';
 import { setModuleEvents } from './events.js';
-import { ClaustrophobicError } from '#/error.js';
+import { AresError } from '#/error.js';
 import App from './App.vue';
 
 const app = createApp(App);
@@ -15,7 +15,7 @@ app.use(pinia);
 app.use(router);
 
 // Error handler.
-app.config.errorHandler = ClaustrophobicError.handle;
+app.config.errorHandler = AresError.handle;
 
 // Eventos
 setModuleEvents();
