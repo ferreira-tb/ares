@@ -1,39 +1,43 @@
 import { calcDistance } from '#/vue/helpers.js';
-import { parseCoordsFromTextContent, parseGameDate } from '#/helpers.js';
-import { assert, assertDOM, assertElement, assertType, ClaustrophobicError } from '#/error.js';
+import { assertCoordsFromTextContent, parseGameDate } from '#/helpers.js';
+import { assert, assertDOM, assertElement, AresError } from '#/error.js';
 import { resources as resourceList } from '#/constants.js';
 import { ipcSend } from '#/ipc.js';
+import type { Coords } from '@/game.js';
+import type { PlunderTableButtons, PlunderTableResources } from '@/plunder.js';
 
 export class PlunderVillageInfo {
-    /** Data do último ataque contra a aldeia. */
+    /** Data do último ataque contra a aldeia (em milisegundos). */
     lastAttack: number = 0;
+    /** Minutos desde o último ataque. */
+    minutesSince: number = 0;
     /** Indica se há informações obtidas por exploradores. */
     spyInfo: boolean = false;
     /** Nível da muralha. */
     wallLevel: number = 0;
     /** Distância até à aldeia. */
     distance: number = Infinity;
-
-    /** Estimativa da quantidade de madeira disponível na aldeia. */
-    wood: number = 0;
-    /** Estimativa da quantidade de argila disponível na aldeia. */
-    stone: number = 0;
-    /** Estimativa da quantidade de ferro disponível na aldeia. */
-    iron: number = 0;
-    /** Total de recursos que se espera ter na aldeia. */
-    total: number = 0;
-
-    /** Botão A do assistente de saque. */
-    a: HTMLAnchorElement | null = null;
-    /** Botão B do assistente de saque. */
-    b: HTMLAnchorElement | null = null;
-    /** Botão C do assistente de saque. */
-    c: HTMLAnchorElement | null = null;
-    /** Botão para abrir a janela de comandos no assistente de saque. */
-    place: HTMLAnchorElement | null = null;
-
     /** Indica se o botão C está ativo ou não. */
     cStatus: boolean = true;
+
+    coords: Coords = {
+        x: 0,
+        y: 0
+    };
+
+    res: PlunderTableResources = {
+        wood: 0,
+        stone: 0,
+        iron: 0,
+        total: 0
+    };
+    
+    button: PlunderTableButtons = {
+        a: null,
+        b: null,
+        c: null,
+        place: null
+    };
 };
 
 /** Ajuda a controlar o MutationObserver. */
@@ -67,7 +71,7 @@ export function queryVillagesInfo() {
         // Nível da muralha.
         queryWallLevel(resourcesField, info);
         // Botões dos modelos.
-        queryModelButtons(row, info);
+        queryTemplateButtons(row, info);
         // Botão da praça de reunião.
         queryPlaceButton(row, info);
 
@@ -86,9 +90,10 @@ export function queryVillagesInfo() {
 
 function queryReport(row: Element, info: PlunderVillageInfo) {
     const report = row.queryAndAssert('td a[href*="screen=report"]');
-    const coords = parseCoordsFromTextContent(report.textContent);
-    assertType(Array.isArray(coords), 'O valor obtido para as coordenadas da aldeia-alvo não é uma array.');
+    const coords = assertCoordsFromTextContent(report.textContent);
     info.distance = calcDistance(coords[0], coords[1]);
+    info.coords.x = coords[0];
+    info.coords.y = coords[1];
 
     // Envia a URL do relatório para o processo principal.
     // Ela será eventualmente usada para atualizar o banco de dados do Deimos.
@@ -106,11 +111,12 @@ function queryLastAttack(row: Element, info: PlunderVillageInfo) {
         const date = parseGameDate(field.textContent);
         if (date) {
             info.lastAttack = date;
+            info.minutesSince = Math.ceil((Date.now() - date) / 60000);
             return;
         };
     };
 
-    throw new ClaustrophobicError('Não foi possível determinar a data do último ataque');
+    throw new AresError('Não foi possível determinar a data do último ataque');
 };
 
 /**
@@ -138,10 +144,10 @@ function queryResourcesField(row: Element, info: PlunderVillageInfo): Element | 
     [woodField, stoneField, ironField].forEach((resField, index) => {
         // Adiciona o valor à quantia total.
         const resAmount = resField.parseInt();
-        info.total += resAmount;
+        info.res.total += resAmount;
 
         const resName = resourceList[index];
-        info[resName] = resAmount;
+        info.res[resName] = resAmount;
     });
 
     info.spyInfo = true;
@@ -174,15 +180,15 @@ function queryWallLevel(resourcesField: Element | null, info: PlunderVillageInfo
  * @param row Linha da tabela de aldeias.
  * @param info Objeto `PlunderVillageInfo`.
  */
-function queryModelButtons(row: Element, info: PlunderVillageInfo) {
-    info.a = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_a" i]:not([class*="disabled" i])');      
-    info.b = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_b" i]:not([class*="disabled" i])');
-    info.c = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_c" i][onclick*="farm" i]');
+function queryTemplateButtons(row: Element, info: PlunderVillageInfo) {
+    info.button.a = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_a" i]:not([class*="disabled" i])');      
+    info.button.b = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_b" i]:not([class*="disabled" i])');
+    info.button.c = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_c" i][onclick*="farm" i]');
 
-    if (info.c) {
+    if (info.button.c) {
         // Verifica se o botão C está desativado.
-        const cButtonStatus = info.c.assertAttribute('class');
-        if (cButtonStatus.includes('disabled')) info.cStatus = false;
+        const cButtonStatus = info.button.c.assertAttribute('class');
+        if (/disabled/.test(cButtonStatus)) info.cStatus = false;
     };
 };
 
@@ -192,5 +198,5 @@ function queryModelButtons(row: Element, info: PlunderVillageInfo) {
  * @param info Objeto `PlunderVillageInfo`.
  */
 function queryPlaceButton(row: Element, info: PlunderVillageInfo) {
-    info.place = row.queryAndAssert<HTMLAnchorElement>('td a[href*="screen=place" i][onclick]:has(img)');
+    info.button.place = row.queryAndAssert<HTMLAnchorElement>('td a[href*="screen=place" i][onclick]:has(img)');
 };

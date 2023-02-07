@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, watchEffect } from 'vue';
+import { computed, provide, watchEffect } from 'vue';
 import { patchPlunderStore, usePlunderStore } from '#/vue/stores/plunder.js';
-import { queryModelData, attackModel, resources } from '$/farm/models.js';
+import { chooseBestTemplate, queryTemplateData } from '$/farm/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$/farm/villages.js';
 import { queryCurrentVillageCoords } from '#/vue/helpers.js';
 import { queryAvailableUnits } from '$/farm/units.js';
-import { ExpectedResources } from '$/farm/resources.js';
+import { PlunderedResources } from '$/farm/resources.js';
 import { prepareAttack, eventTarget as attackEventTarget } from '$/farm/attack.js';
-import { assert, ClaustrophobicError } from '#/error.js';
-import { ipcSend } from '#/ipc.js';
+import { assert, AresError } from '#/error.js';
+import { ipcInvoke, ipcSend } from '#/ipc.js';
 
 const store = usePlunderStore();
 
@@ -16,6 +16,14 @@ const store = usePlunderStore();
 const eventTarget = new EventTarget();
 /** Título da tabela. */
 const plunderListTitle = document.queryAndAssert('div[id="am_widget_Farm" i] > h4:has(a)');
+
+/** Indica se o Deimos pode fazer previsões. */
+const canPredict = await ipcInvoke('can-predict-plunder');
+provide('can-predict', canPredict);
+/** Endpoint base para a API do Deimos. */
+const endpoint = await ipcInvoke('deimos-endpoint');
+provide('deimos-endpoint', endpoint);
+
 /** Milisegundos entre cada recarregamento automático da página. */
 const plunderTimeout = computed(() => store.minutesUntilReload * 60000);
 /** Data do próximo recarregamento automático. */
@@ -36,7 +44,7 @@ await patchPlunderStore();
 
 // Reune informações necessárias para o funcionamento do Plunder.
 queryCurrentVillageCoords();
-queryModelData();
+queryTemplateData();
 queryAvailableUnits();
 queryVillagesInfo();
 
@@ -64,7 +72,8 @@ async function handleAttack(): Promise<void> {
         const villageId = village.assertAttribute('data-tb-village');
 
         // Ignora a linha caso ela esteja oculta, removendo-a da tabela.
-        if (village.getAttribute('style')?.includes('display: none')) {
+        const style = village.getAttribute('style') ?? '';
+        if (/display:\s*none/.test(style)) {
             village.remove();
             villagesInfo.delete(villageId);
             continue;
@@ -72,18 +81,20 @@ async function handleAttack(): Promise<void> {
 
         /** Informações sobre a aldeia. */
         const info = villagesInfo.assert(villageId);
-        resources.value = info.total;
 
-        if (attackModel.value === null) continue;
+        const attack = await chooseBestTemplate(info);
+        if (attack === null) continue;
 
-        const expectedResources = new ExpectedResources(info, attackModel.value.carry);
-        const attackButton = info[attackModel.value.type];
-        assert(attackButton, `O botão do modelo ${attackModel.value.type.toUpperCase()} não foi encontrado.`);
+        const plunderedResources = new PlunderedResources(info, attack.loot);
 
-        return prepareAttack(expectedResources, attackButton)
+        // A coerção para A ou B é temporária.
+        const attackButton = info.button[attack.type as 'a', 'b'];
+        assert(attackButton, `O botão do modelo ${attack.type.toUpperCase()} não foi encontrado.`);
+
+        return prepareAttack(plunderedResources, attackButton)
             .then(() => village.remove())
             .then(() => handleAttack())
-            .catch((err: unknown) => ClaustrophobicError.handle(err));
+            .catch((err: unknown) => AresError.handle(err));
     };
 };
 
