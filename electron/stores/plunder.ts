@@ -9,7 +9,7 @@ const stateChema: JSONSchema = {
         ignoreWall: { type: 'boolean', default: false },
         destroyWall: { type: 'boolean', default: false },
         groupAttack: { type: 'boolean', default: false },
-        useC: { type: 'boolean', default: false },
+        useCModel: { type: 'boolean', default: false },
         ignoreDelay: { type: 'boolean', default: false },
         blindAttack: { type: 'boolean', default: false },
         minutesUntilReload: { type: 'number', default: 10 }

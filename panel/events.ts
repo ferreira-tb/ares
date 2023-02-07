@@ -4,7 +4,7 @@ import { useAresStore } from '#/vue/stores/store.js';
 import { usePlunderHistoryStore, usePlunderStore } from '#/vue/stores/plunder.js';
 import { resources as resourceList } from '#/constants.js';
 import type { Pinia } from 'pinia';
-import type { PlunderedResources } from '$/farm/resources.js';
+import type { ExpectedResources } from '$/farm/resources.js';
 
 export function setChildWindowEvents(pinia: Pinia) {
     const aresStore = useAresStore(pinia);
@@ -23,7 +23,7 @@ export function setChildWindowEvents(pinia: Pinia) {
         aresStore.currentY = currentY;
     });
 
-    ipcRenderer.on('update-plundered-amount', (_e, resources: PlunderedResources) => {
+    ipcRenderer.on('update-plundered-amount', (_e, resources: ExpectedResources) => {
         if (plunderStore.status === false) return;
         
         resourceList.forEach((res) => {

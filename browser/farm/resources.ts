@@ -1,8 +1,8 @@
 import { assertInteger } from "#/error.js";
-import { resources } from '#/constants.js';
+import { resources as resourceList } from '#/constants.js';
 import type { PlunderVillageInfo } from "$/farm/villages.js";
 
-export class PlunderedResources {
+export class ExpectedResources {
     wood: number;
     stone: number;
     iron: number;
@@ -21,7 +21,7 @@ export class PlunderedResources {
             if (total > carry) amount = Math.floor((amount / total) * carry);
             assertInteger(amount, 'A quantidade de recursos esperada não é válida.');
 
-            const resName = resources[index];
+            const resName = resourceList[index];
             this[resName] = amount;
             
         }, this);

@@ -2,7 +2,7 @@
 import { reactive, watchEffect } from 'vue';
 import { ipcInvoke } from '#/ipc.js';
 import { getLocaleDateString } from '#/helpers.js';
-import { AresError } from '#/error.js';
+import { ClaustrophobicError } from '#/error.js';
 import type { ErrorLogResponse } from '@/electron.js';
 
 const port = await ipcInvoke('deimos-port');
@@ -10,7 +10,7 @@ const response = await fetch(`http://127.0.0.1:${port}/deimos/error/normal`);
 
 if (!response.ok) {
     const reason = await response.text();
-    throw new AresError(reason);
+    throw new ClaustrophobicError(reason);
 };
 
 const json = await response.json() as ErrorLogResponse[];

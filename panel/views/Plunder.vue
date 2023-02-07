@@ -11,7 +11,7 @@ const history = usePlunderHistoryStore();
 watch(() => store.ignoreWall, (value) => ipcSend('set-plunder-state', 'ignoreWall', value));
 watch(() => store.destroyWall, (value) => ipcSend('set-plunder-state', 'destroyWall', value));
 watch(() => store.groupAttack, (value) => ipcSend('set-plunder-state', 'groupAttack', value));
-watch(() => store.useC, (value) => ipcSend('set-plunder-state', 'useC', value));
+watch(() => store.useCModel, (value) => ipcSend('set-plunder-state', 'useCModel', value));
 watch(() => store.ignoreDelay, (value) => ipcSend('set-plunder-state', 'ignoreDelay', value));
 watch(() => store.blindAttack, (value) => ipcSend('set-plunder-state', 'blindAttack', value));
 
@@ -58,7 +58,7 @@ const plunderButtonText = computed(() => store.status === false ? 'Saquear' : 'P
                 <span>Usar grupo</span>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" v-model="store.useC" />
+                <input type="checkbox" v-model="store.useCModel" />
                 <span>Usar modelo C</span>
             </label>
             <label class="checkbox-label">

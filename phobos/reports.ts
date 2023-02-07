@@ -62,8 +62,8 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         deimosReports.push(deimosReport);
     };
     
-    const endpoint = await ipcInvoke('deimos-endpoint');
-    return await fetch(`${endpoint}/plunder/save`, {
+    const port = await ipcInvoke('deimos-port');
+    return await fetch(`http://127.0.0.1:${port}/deimos/plunder/save`, {
         method: 'post',
         body: JSON.stringify(deimosReports)
     });

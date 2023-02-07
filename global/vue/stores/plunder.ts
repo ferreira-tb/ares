@@ -13,7 +13,7 @@ export type PlunderState = {
     /** Determina se o Plunder deve utilizar o grupo Insidious ao atacar. */
     groupAttack: boolean;
     /** Determina se o Plunder deve atacar usando o modelo C. */
-    useC: boolean;
+    useCModel: boolean;
     /** Se ativado, o Plunder não terá delay entre os ataques. */
     ignoreDelay: boolean;
     /** Se ativado, o Plunder não levará em consideração as informações dos exploradores. */
@@ -30,7 +30,7 @@ export const usePlunderStore = defineStore('plunder', () => {
     const ignoreWall = ref<boolean>(false);
     const destroyWall = ref<boolean>(false);
     const groupAttack = ref<boolean>(false);
-    const useC = ref<boolean>(false);
+    const useCModel = ref<boolean>(false);
     const ignoreDelay = ref<boolean>(false);
     const blindAttack = ref<boolean>(false);
 
@@ -41,7 +41,7 @@ export const usePlunderStore = defineStore('plunder', () => {
         ignoreWall,
         destroyWall,
         groupAttack,
-        useC,
+        useCModel,
         ignoreDelay,
         blindAttack,
         minutesUntilReload

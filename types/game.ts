@@ -52,8 +52,3 @@ export type PlunderedAmount = {
     total: number;
     attackAmount: number;
 };
-
-export type Coords = {
-    x: number;
-    y: number;
-};

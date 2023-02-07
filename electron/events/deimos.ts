@@ -22,7 +22,7 @@ export function setDeimosEvents(mainWindow: BrowserWindow) {
         return `http://127.0.0.1:${port}/deimos`;
     });
 
-    ipcMain.handle('can-predict-plunder', async (_e, world?: string) => {
+    ipcMain.handle('deimos-can-predict-plunder', async (_e, world?: string) => {
         try {
             const port = getDeimosPort();
             if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
