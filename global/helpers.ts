@@ -1,4 +1,4 @@
-import { assert, assertArrayIncludes, assertInteger, assertType, ClaustrophobicError } from "#/error.js";
+import { assert, assertArrayIncludes, assertInteger, assertType, AresError } from "#/error.js";
 import { months } from "#/constants.js";
 import type { XMLTags } from '@/game.js';
 
@@ -23,7 +23,7 @@ export function parseCoordsFromTextContent(text: string | null): [number, number
 
 export function assertCoordsFromTextContent(text: string | null): [number, number] {
     const coords = parseCoordsFromTextContent(text);
-    assertType(Array.isArray(coords), 'Não foi possível obter as coordenadas a partir da string.');
+    assertType(Array.isArray(coords), 'Não foi possível obter as coordenadas da aldeia.');
     return coords;
 };
 
@@ -91,7 +91,7 @@ export function queryXMLTags(xmlDocument: XMLDocument, type: 'world' | 'unit') {
         if (valueField === null) {
             // Caso não exista campo para arqueiros, assume que o mundo não os possui.
             if (type === 'unit' && tag.includes('archer')) return 0;
-            throw new ClaustrophobicError(`O campo \"${tag}\" não foi encontrado no documento XML.`);
+            throw new AresError(`O campo \"${tag}\" não foi encontrado no documento XML.`);
         };
 
         return valueField.parseFloat();
@@ -190,8 +190,11 @@ export function getWorldFromURL(url?: URL) {
     const index = url.hostname.indexOf('.tribalwars');
     if (index === -1) return null;
     
-    const world = url.hostname.slice(0, index);
-    return world.replace(/www\.?/g, '');
+    let world = url.hostname.slice(0, index);
+    world = world.replace(/www\.?/g, '');
+    
+    if (world.length < 1) return null;
+    return world;
 };
 
 export function assertWorldFromURL(url?: URL) {

@@ -7,8 +7,11 @@ export function getWorldFromURL(url: URL) {
     const index = url.hostname.indexOf('.tribalwars');
     if (index === -1) return null;
     
-    const world = url.hostname.slice(0, index);
-    return world.replace(/www\.?/g, '');
+    let world = url.hostname.slice(0, index);
+    world = world.replace(/www\.?/g, '');
+    
+    if (world.length < 1) return null;
+    return world;
 };
 
 export function assertWorldFromURL(url: URL) {
