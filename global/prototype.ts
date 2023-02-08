@@ -75,9 +75,10 @@ Element.prototype.queryAsArray = function<T extends Element>(selector: string): 
     return Array.from(elements);
 };
 
-Map.prototype.assert = function<K, V>(key: K): V {
+Map.prototype.assert = function<K, V>(key: K, message?: string): V {
     const item = this.get(key);
-    assert(item !== undefined, 'O item não existe no mapa.');
+    if (typeof message !== 'string') message = 'O item não existe no mapa.';
+    assert(item !== undefined, message);
     return item;
 };
 
