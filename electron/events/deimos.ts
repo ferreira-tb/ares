@@ -9,7 +9,7 @@ import type { PhobosOptions } from '$types/electron.js';
 import type { DeimosReportInfo } from '$types/deimos.js';
 
 /** Contêm as URLs dos relatórios que serão usados pelo Deimos. */
-const deimosReportURLs = new Set<string>();
+const plunderReportURLs = new Set<string>();
 
 export function setDeimosEvents(mainWindow: BrowserWindow) {
     ipcMain.handle('is-deimos-on', async () => await isDeimosOn());
@@ -42,14 +42,14 @@ export function setDeimosEvents(mainWindow: BrowserWindow) {
     ipcMain.on('add-deimos-report-url', async (_e, url: string) => {
         try {
             assertType(typeof url === 'string', 'A URL do relatório é inválida');
-            deimosReportURLs.add(url);
+            plunderReportURLs.add(url);
 
-            if (deimosReportURLs.size >= 80) {
+            if (plunderReportURLs.size >= 80) {
                 const urlObject = new URL(url);
                 const options: PhobosOptions = { override: false };
                 const phobos = await createPhobos('deimos-plunder-report', urlObject, mainWindow, options);
-                phobos.webContents.send('fetch-deimos-report-url', Array.from(deimosReportURLs));
-                deimosReportURLs.clear();
+                phobos.webContents.send('fetch-deimos-report-url', Array.from(plunderReportURLs));
+                plunderReportURLs.clear();
             };
 
         } catch (err) {
