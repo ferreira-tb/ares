@@ -18,7 +18,7 @@ export interface PhobosOptions extends BrowserViewConstructorOptions {
     overrideUrl?: boolean;
 }
 
-export type PhobosNames = 'deimos-report';
+export type PhobosNames = 'deimos-plunder-report';
 
 /** Representa o objeto que é enviado ao Deimos ao se fazer uma requisição. */
 export interface ErrorLogRequest extends ErrorLog {

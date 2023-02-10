@@ -47,7 +47,7 @@ export function setDeimosEvents(mainWindow: BrowserWindow) {
             if (deimosReportURLs.size >= 80) {
                 const urlObject = new URL(url);
                 const options: PhobosOptions = { override: false };
-                const phobos = await createPhobos('deimos-report', urlObject, mainWindow, options);
+                const phobos = await createPhobos('deimos-plunder-report', urlObject, mainWindow, options);
                 phobos.webContents.send('fetch-deimos-report-url', Array.from(deimosReportURLs));
                 deimosReportURLs.clear();
             };
