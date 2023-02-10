@@ -8,6 +8,9 @@
         "target": "esnext",
         "lib": ["esnext", "DOM"],
         "paths": {
+            "$electron/*": [
+                "./*"
+            ],
             "$types/*": [
                 "../types/*"
             ],
