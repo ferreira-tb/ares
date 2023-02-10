@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import type { PlunderState, PlunderStateValue } from '#/vue/stores/plunder.js';
+import type { PlunderState, PlunderStateValue } from '@/plunder.js';
 import type { WorldData, UnitData } from '../panel/config.js';
 import type { PlunderedResources } from '$/farm/resources.js';
 import type { PlunderedAmount } from '@/game.js';
