@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, provide, watchEffect } from 'vue';
+import { useEventListener } from '@vueuse/core';
 import { patchPlunderStore, usePlunderStore } from '$vue/stores/plunder.js';
 import { filterTemplates, queryTemplateData } from '$browser/farm/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$browser/farm/villages.js';
@@ -18,6 +19,8 @@ const store = usePlunderStore();
 const eventTarget = new EventTarget();
 /** Título da tabela. */
 const plunderListTitle = document.queryAndAssert('div[id="am_widget_Farm" i] > h4:has(a)');
+/** Tabela do assistente de saque. */
+const plunderList = document.queryAndAssert('#plunder_list:has(tr[id^="village"]) tbody');
 
 /** Indica se o Deimos pode fazer previsões. */
 const canPredict = await ipcInvoke('can-predict-plunder');
@@ -65,10 +68,8 @@ watchEffect(() => {
 async function handleAttack(): Promise<void> {
     if (store.status === false) return;
 
-    // Seleciona todas as aldeias da tabela.
-    const plunderList = document.queryAndAssert('#plunder_list:has(tr[id^="village"]) tbody');
+    // Seleciona todas as aldeias da tabela e itera sobre elas.
     const villages = plunderList.queryAsArray<HTMLTableRowElement>('tr[data-tb-village]');
-
     for (const village of villages) {
         const villageId = village.assertAttribute('data-tb-village');
 
@@ -76,6 +77,13 @@ async function handleAttack(): Promise<void> {
         const style = village.getAttribute('style') ?? '';
         if (/display:\s*none/.test(style)) {
             village.remove();
+            villagesInfo.delete(villageId);
+            continue;
+        };
+
+        // Ignora a linha caso a aldeia esteja sob ataque.
+        const attackIcon = village.querySelector('img[src*="attack.png" i]');
+        if (attackIcon !== null) {
             villagesInfo.delete(villageId);
             continue;
         };
@@ -100,6 +108,7 @@ async function handleAttack(): Promise<void> {
             assert(attackButton, `O botão do modelo ${best.template.type.toUpperCase()} não foi encontrado.`);
 
             return prepareAttack(plunderedResources, attackButton)
+                .then(() => villagesInfo.delete(villageId))
                 .then(() => village.remove())
                 .then(() => handleAttack())
                 .catch((err: unknown) => AresError.handle(err));
@@ -121,7 +130,7 @@ function setPlunderTimeout() {
             resolve();
         }, plunderTimeout.value);
 
-        eventTarget.addEventListener('cancelreload', () => {
+        useEventListener(eventTarget, 'cancelreload', () => {
             clearTimeout(timeout);
             autoReloadCtrl.abort();
             resolve();

@@ -55,9 +55,8 @@ export function queryVillagesInfo() {
     for (const row of plunderListRows) {
         if (row.hasAttribute('data-tb-village')) continue;
  
+        // Registra o ID da aldeia.
         const villageId = row.assertAttribute('id').replace(/\D/g, '');
-
-        // Facilita o acesso ao id da aldeia.
         row.setAttribute('data-tb-village', villageId);
 
         // Objeto onde serão armazenadas as informações sobre a aldeia.
