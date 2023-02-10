@@ -1,3 +1,4 @@
+import { useEventListener, useMutationObserver } from '@vueuse/core';
 import { usePlunderStore } from '$vue/stores/plunder.js';
 import { generateIntegerBetween, wait } from '$global/helpers.js';
 import { ipcSend } from '$global/ipc.js';
@@ -10,6 +11,7 @@ export function prepareAttack(resources: PlunderedResources, button: HTMLAnchorE
     return new Promise<void>((resolve, reject) => {
         const attackCtrl = new AbortController();
         const delay = store.ignoreDelay === true ? 0 : generateIntegerBetween(200, 300);
+
         const attackTimeout = setTimeout(() => {
             sendAttack(button)
                 .then(() => ipcSend('update-plundered-amount', resources))
@@ -19,7 +21,7 @@ export function prepareAttack(resources: PlunderedResources, button: HTMLAnchorE
         // O jogo possui um limite de cinco ações por segundo.
         }, delay);
 
-        eventTarget.addEventListener('stop', () => {
+        useEventListener(eventTarget, 'stop', () => {
             clearTimeout(attackTimeout);
             attackCtrl.abort();
             reject();
@@ -34,18 +36,18 @@ export function prepareAttack(resources: PlunderedResources, button: HTMLAnchorE
  */
 function sendAttack(button: HTMLAnchorElement) {
     return new Promise<void>((resolve, reject) => {
-        const observeTroops = new MutationObserver(() => {
-            observeTroops.disconnect();
-            resolve();
-        });
+        const selector = '#farm_units #units_home tr:has(td#spear):has(td#sword)';
+        const unitsRow = document.queryAndAssert<HTMLTableRowElement>(selector);
 
-        const unitsRow = document.queryAndAssert('#farm_units #units_home tr:has(td#spear):has(td#sword)');
-        observeTroops.observe(unitsRow, { subtree: true, childList: true });
+        const observer = useMutationObserver(unitsRow, () => {
+            observer.stop();
+            resolve();
+        }, { subtree: true, childList: true });
+
         button.click();
 
         // Caso o observer não perceber mudanças mesmo após três segundos, emite um erro.
-        wait(3000)
-            .then(() => observeTroops.disconnect())
+        wait(3000).then(() => observer.stop())
             .then(() => reject('TIMEOUT: O servidor demorou demais para responder.'));
     });
 };

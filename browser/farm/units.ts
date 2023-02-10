@@ -1,5 +1,6 @@
 import { reactive } from 'vue';
 import { assert } from '$global/error.js';
+import { useMutationObserver } from '@vueuse/core';
 
 class AvailableFarmUnits {
     spear = 0;
@@ -22,11 +23,12 @@ export const availableUnits = reactive(new AvailableFarmUnits());
  * Um `MutationObserver` garante que o objeto esteja sempre atualizado.
  */
 export function queryAvailableUnits() {
-    const unitsRow = document.queryAndAssert('#farm_units #units_home tr:has(td#spear):has(td#sword)');
+    const selector = '#farm_units #units_home tr:has(td#spear):has(td#sword)';
+    const unitsRow = document.queryAndAssert<HTMLTableRowElement>(selector);
     
     queryUnitsRow(unitsRow);
-    const observer = new MutationObserver(() => queryUnitsRow(unitsRow));
-    observer.observe(unitsRow, { subtree: true, childList: true });
+    const options = { subtree: true, childList: true };
+    useMutationObserver(unitsRow, () => queryUnitsRow(unitsRow), options);
 };
 
 function queryUnitsRow(unitsRow: Element) {
