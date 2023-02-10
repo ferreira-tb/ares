@@ -18,7 +18,8 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         // Mundo.
         const world = assertWorldFromURL(urlObject);
 
-        
+        const exists = await ipcInvoke('deimos-report-exists', { report_id, world });
+        if (exists === true) continue;
 
         const response = await fetch(urlObject.href);
         const text = await response.text();

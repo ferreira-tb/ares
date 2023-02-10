@@ -4,7 +4,7 @@ import type { WorldData, UnitData } from '../panel/config.js';
 import type { PlunderedResources } from '$browser/farm/resources.js';
 import type { PlunderedAmount } from '$types/game.js';
 import type { ErrorLog, DOMErrorLog } from '$types/error.js';
-import type { DeimosEndpoint } from '$types/deimos.js';
+import type { DeimosEndpoint, DeimosReportInfo } from '$types/deimos.js';
 
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;
@@ -15,6 +15,7 @@ export async function ipcInvoke(channel: 'deimos-port'): Promise<string>;
 export async function ipcInvoke(channel: 'deimos-port', asInt: false): Promise<string>;
 export async function ipcInvoke(channel: 'deimos-port', asInt: true): Promise<number>;
 export async function ipcInvoke(channel: 'deimos-endpoint'): Promise<DeimosEndpoint>;
+export async function ipcInvoke(channel: 'deimos-report-exists', reportInfo: DeimosReportInfo): Promise<boolean>;
 export async function ipcInvoke(channel: 'can-predict-plunder', world?: string): Promise<boolean>;
 export async function ipcInvoke(channel: 'is-plunder-active', world?: string): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-plunder-state', world?: string): Promise<PlunderState | null>;

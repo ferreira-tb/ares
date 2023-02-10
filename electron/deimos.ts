@@ -3,6 +3,7 @@ import { app } from 'electron';
 import { execFile } from 'node:child_process';
 import { deimosExe } from './constants.js';
 import { MainProcessError } from './error.js';
+import { DeimosEndpoint } from '$types/deimos.js';
 
 function openDeimos(port: number) {
     const deimosPort = port.toString(10);
@@ -30,12 +31,12 @@ function setDeimosPort() {
 };
 
 export const getDeimosPort = setDeimosPort();
+export const getDeimosEndpoint = (): DeimosEndpoint => `http://127.0.0.1:${getDeimosPort()}/deimos`;
 
 /** Verifica se o Deimos já foi iniciado e pode responder à requisições. */
 export async function isDeimosOn() {
     try {
-        const port = getDeimosPort();
-        const response = await fetch(`http://127.0.0.1:${port}/deimos`);
+        const response = await fetch(getDeimosEndpoint());
         if (response.status === 200) return true;
         return false;
     } catch {
