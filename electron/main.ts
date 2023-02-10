@@ -1,10 +1,9 @@
 import dotenv from 'dotenv';
-import http from 'node:http';
 import { app, BrowserWindow } from 'electron';
-import { setAppMenu } from './menu.js';
-import { setEvents } from './events/index.js';
-import { gameURL, favicon, indexHtml, browserJs } from './constants.js';
-import { getDeimosPort } from './deimos.js';
+import { setAppMenu } from '$electron/menu.js';
+import { setEvents } from '$electron/events/index.js';
+import { gameURL, favicon, indexHtml, browserJs } from '$electron/constants.js';
+import { getDeimosEndpoint } from '$electron/deimos.js';
 
 dotenv.config();
 
@@ -52,10 +51,20 @@ function createWindow() {
     mainWindow.loadURL(gameURL);
     childWindow.loadFile(indexHtml);
 
-    mainWindow.once('ready-to-show', () =>  mainWindow.show());
+    mainWindow.once('ready-to-show', async () => {
+        while (true) {
+            try {
+                const response = await fetch(getDeimosEndpoint());
+                if (response.ok) return mainWindow.show();
+            } catch {
+                await new Promise((resolve) => setTimeout(resolve, 50));
+            };
+        };
+    });
+    
     childWindow.once('ready-to-show', () => childWindow.show());
 };
 
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
-app.on('before-quit', () => http.get(`http://127.0.0.1:${getDeimosPort()}/deimos/quit`));
+app.on('before-quit', async () => await fetch(`${getDeimosEndpoint()}/quit`));
