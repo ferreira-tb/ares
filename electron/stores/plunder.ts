@@ -12,6 +12,7 @@ const stateChema: JSONSchema = {
         useC: { type: 'boolean', default: false },
         ignoreDelay: { type: 'boolean', default: false },
         blindAttack: { type: 'boolean', default: false },
+        resourceRatio: { type: 'number', default: 0.8 },
         minutesUntilReload: { type: 'number', default: 10 }
     }
 };

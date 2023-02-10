@@ -3,28 +3,6 @@ import { defineStore } from 'pinia';
 import { ipcInvoke } from '#/ipc.js';
 import type { PlunderedAmount } from '@/game.js';
 
-export type PlunderState = {
-    /** Indica se o Plunder está ativado. */
-    status: boolean;
-    /** Determina se o Plunder deve atacar aldeias com muralha. */
-    ignoreWall: boolean;
-    /** Determina se o Plunder deve demolir a muralha das aldeias. */
-    destroyWall: boolean;
-    /** Determina se o Plunder deve utilizar o grupo Insidious ao atacar. */
-    groupAttack: boolean;
-    /** Determina se o Plunder deve atacar usando o modelo C. */
-    useC: boolean;
-    /** Se ativado, o Plunder não terá delay entre os ataques. */
-    ignoreDelay: boolean;
-    /** Se ativado, o Plunder não levará em consideração as informações dos exploradores. */
-    blindAttack: boolean;
-
-    /** Minutos até que a página seja recarregada automaticamente. */
-    minutesUntilReload: number;
-};
-
-export type PlunderStateValue = PlunderState[keyof PlunderState];
-
 export const usePlunderStore = defineStore('plunder', () => {
     const status = ref<boolean>(false);
     const ignoreWall = ref<boolean>(false);
@@ -34,6 +12,7 @@ export const usePlunderStore = defineStore('plunder', () => {
     const ignoreDelay = ref<boolean>(false);
     const blindAttack = ref<boolean>(false);
 
+    const resourceRatio = ref<number>(0.8);
     const minutesUntilReload = ref<number>(10);
 
     return {
@@ -44,6 +23,7 @@ export const usePlunderStore = defineStore('plunder', () => {
         useC,
         ignoreDelay,
         blindAttack,
+        resourceRatio,
         minutesUntilReload
     };
 });
