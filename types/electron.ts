@@ -1,6 +1,6 @@
 import type { AutoResizeOptions, Rectangle, BrowserViewConstructorOptions } from 'electron';
 import type { Schema as StoreSchema } from 'electron-store';
-import type { ErrorLog, DOMErrorLog } from '@/error.js';
+import type { ErrorLog, DOMErrorLog } from '$types/error.js';
 
 export type Schema = StoreSchema<Record<string, unknown>>;
 export type JSONSchema = Schema[keyof Schema];

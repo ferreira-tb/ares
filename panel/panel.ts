@@ -1,11 +1,11 @@
-import '#/assets/style.css';
-import '#/prototype.js';
+import '$global/assets/style.css';
+import '$global/prototype.js';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { router } from './router/router.js';
-import { setChildWindowEvents } from './events.js';
-import { AresError } from '#/error.js';
-import Panel from './Panel.vue';
+import { router } from '$panel/router/router.js';
+import { setChildWindowEvents } from '$panel/events.js';
+import { AresError } from '$global/error.js';
+import Panel from '$panel/Panel.vue';
 
 const panel = createApp(Panel);
 const pinia = createPinia();

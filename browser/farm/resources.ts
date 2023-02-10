@@ -1,6 +1,6 @@
-import { assertInteger } from "#/error.js";
-import { resources } from '#/constants.js';
-import type { PlunderVillageInfo } from "$/farm/villages.js";
+import { assertInteger } from "$global/error.js";
+import { resources } from '$global/constants.js';
+import type { PlunderVillageInfo } from "$browser/farm/villages.js";
 
 export class PlunderedResources {
     wood: number;
@@ -8,9 +8,9 @@ export class PlunderedResources {
     iron: number;
 
     constructor(info: PlunderVillageInfo, carry: number) {
-        this.wood = info.wood;
-        this.stone = info.stone;
-        this.iron = info.iron;
+        this.wood = info.res.wood;
+        this.stone = info.res.stone;
+        this.iron = info.res.iron;
 
         // Atribuir Infinity impede divisões por zero.
         let total = this.wood + this.stone + this.iron;

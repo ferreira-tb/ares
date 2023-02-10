@@ -1,5 +1,5 @@
 import Store from 'electron-store';
-import type { JSONSchema, Schema } from '@/electron.js';
+import type { JSONSchema, Schema } from '$types/electron.js';
 
 const stateChema: JSONSchema = {
     type: 'object',

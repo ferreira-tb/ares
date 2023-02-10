@@ -1,10 +1,10 @@
 import { ipcRenderer } from 'electron';
-import type { PlunderState, PlunderStateValue } from '@/plunder.js';
+import type { PlunderState, PlunderStateValue } from '$types/plunder.js';
 import type { WorldData, UnitData } from '../panel/config.js';
-import type { PlunderedResources } from '$/farm/resources.js';
-import type { PlunderedAmount } from '@/game.js';
-import type { ErrorLog, DOMErrorLog } from '@/error.js';
-import type { DeimosEndpoint } from '@/deimos.js';
+import type { PlunderedResources } from '$browser/farm/resources.js';
+import type { PlunderedAmount } from '$types/game.js';
+import type { ErrorLog, DOMErrorLog } from '$types/error.js';
+import type { DeimosEndpoint } from '$types/deimos.js';
 
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;

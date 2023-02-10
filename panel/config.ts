@@ -1,9 +1,9 @@
-import { useAresStore } from "#/vue/stores/store.js";
-import { ipcInvoke } from '#/ipc.js';
-import { assert } from "#/error.js";
-import { queryXMLTags } from "#/helpers.js";
-import { allUnits } from '#/constants.js';
-import type { UnitDetails } from '@/game.js';
+import { useAresStore } from "$vue/stores/store.js";
+import { ipcInvoke } from '$global/ipc.js';
+import { assert } from "$global/error.js";
+import { queryXMLTags } from "$global/helpers.js";
+import { allUnits } from '$global/constants.js';
+import type { UnitDetails } from '$types/game.js';
 
 export class WorldData {
     /** Data do último fetch. */

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
-import { routeNames, router } from '$/router/router.js';
-import { useAresStore } from '#/vue/stores/store.js';
+import { routeNames, router } from '$browser/router/router.js';
+import { useAresStore } from '$vue/stores/store.js';
 
 const aresStore = useAresStore();
 

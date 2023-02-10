@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { ipcInvoke } from '#/ipc.js';
-import type { PlunderedAmount } from '@/game.js';
+import { ipcInvoke } from '$global/ipc.js';
+import type { PlunderedAmount } from '$types/game.js';
 
 export const usePlunderStore = defineStore('plunder', () => {
     const status = ref<boolean>(false);

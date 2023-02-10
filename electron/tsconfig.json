@@ -8,10 +8,10 @@
         "target": "esnext",
         "lib": ["esnext", "DOM"],
         "paths": {
-            "@/*": [
+            "$types/*": [
                 "../types/*"
             ],
-            "#/*": [
+            "$global/*": [
                 "../global/*"
             ]
         },

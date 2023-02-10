@@ -1,7 +1,7 @@
-import { assertType } from "#/error.js";
-import { parseCoordsFromTextContent } from '#/helpers.js';
-import { useAresStore } from '#/vue/stores/store.js';
-import { ipcSend } from '#/ipc.js';
+import { assertType } from "$global/error.js";
+import { parseCoordsFromTextContent } from '$global/helpers.js';
+import { useAresStore } from '$vue/stores/store.js';
+import { ipcSend } from '$global/ipc.js';
 import type { RouteRecordRaw } from 'vue-router';
 
 // As funções aqui presentes dependem do Vue em algum grau.

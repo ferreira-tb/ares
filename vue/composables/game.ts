@@ -1,7 +1,7 @@
 import { computed } from 'vue';
-import { assertType } from "#/error.js";
+import { assertType } from "$global/error.js";
 import type { ComputedRef, Ref } from 'vue';
-import type { GameScreen } from '@/game.js';
+import type { GameScreen } from '$types/game.js';
 
 /** Obtém o valor de algum campo da URL. */
 type CurrentFieldReturnType<T extends string> = (url: Ref<string>) => ComputedRef<T | null>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { reactive, watchEffect } from 'vue';
-import { ipcInvoke } from '#/ipc.js';
-import { getLocaleDateString } from '#/helpers.js';
-import { AresError } from '#/error.js';
-import type { DOMErrorLogResponse } from '@/electron.js';
+import { ipcInvoke } from '$global/ipc.js';
+import { getLocaleDateString } from '$global/helpers.js';
+import { AresError } from '$global/error.js';
+import type { DOMErrorLogResponse } from '$types/electron.js';
 
 const port = await ipcInvoke('deimos-port');
 const response = await fetch(`http://127.0.0.1:${port}/deimos/error/dom`);

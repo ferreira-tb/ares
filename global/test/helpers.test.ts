@@ -4,7 +4,7 @@ import {
     assertCoordsFromTextContent,
     parseCoordsFromTextContent,
     isFarmUnit
-} from '#/helpers.js';
+} from '$global/helpers.js';
 
 // Testa se o mundo atual é obtido corretamente.
 test('mundo atual', () => {

@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { computed, provide, watchEffect } from 'vue';
-import { patchPlunderStore, usePlunderStore } from '#/vue/stores/plunder.js';
-import { chooseBestTemplate, queryTemplateData } from '$/farm/templates.js';
-import { queryVillagesInfo, villagesInfo } from '$/farm/villages.js';
-import { queryCurrentVillageCoords } from '#/vue/helpers.js';
-import { queryAvailableUnits } from '$/farm/units.js';
-import { PlunderedResources } from '$/farm/resources.js';
-import { prepareAttack, eventTarget as attackEventTarget } from '$/farm/attack.js';
-import { assert, AresError } from '#/error.js';
-import { ipcInvoke, ipcSend } from '#/ipc.js';
+import { patchPlunderStore, usePlunderStore } from '$vue/stores/plunder.js';
+import { filterTemplates, queryTemplateData } from '$browser/farm/templates.js';
+import { queryVillagesInfo, villagesInfo } from '$browser/farm/villages.js';
+import { queryCurrentVillageCoords } from '$vue/helpers.js';
+import { queryAvailableUnits } from '$browser/farm/units.js';
+import { PlunderedResources } from '$browser/farm/resources.js';
+import { prepareAttack, eventTarget as attackEventTarget } from '$browser/farm/attack.js';
+import { assert, AresError } from '$global/error.js';
+import { ipcInvoke, ipcSend } from '$global/ipc.js';
+import { predictBestTemplate } from '$browser/farm/prediction.js';
+import type { TemplateLoot } from '$browser/types.js';
 
 const store = usePlunderStore();
 
@@ -19,7 +21,6 @@ const plunderListTitle = document.queryAndAssert('div[id="am_widget_Farm" i] > h
 
 /** Indica se o Deimos pode fazer previsões. */
 const canPredict = await ipcInvoke('can-predict-plunder');
-provide('can-predict', canPredict);
 /** Endpoint base para a API do Deimos. */
 const endpoint = await ipcInvoke('deimos-endpoint');
 provide('deimos-endpoint', endpoint);
@@ -82,19 +83,31 @@ async function handleAttack(): Promise<void> {
         /** Informações sobre a aldeia. */
         const info = villagesInfo.assert(villageId);
 
-        const attack = await chooseBestTemplate(info);
-        if (attack === null) continue;
+        const templates = filterTemplates(info.res.total);
+        if (templates.length === 0) continue;
 
-        const plunderedResources = new PlunderedResources(info, attack.loot);
+        // Seleciona o modelo a partir do qual se espera obter mais recursos.
+        // Se for impossível prever, usa o primeiro modelo da lista, que já foi previamente ordenada.
+        // Além disso, se não houve previsão, considera que o modelo saqueará um valor igual sua capacidade de carga.
+        const best: TemplateLoot = canPredict === true
+            ? await predictBestTemplate(templates, info)
+            : { template: templates[0], loot: templates[0].carry };
 
-        // A coerção para A ou B é temporária.
-        const attackButton = info.button[attack.type as 'a', 'b'];
-        assert(attackButton, `O botão do modelo ${attack.type.toUpperCase()} não foi encontrado.`);
+        const plunderedResources = new PlunderedResources(info, best.loot);
 
-        return prepareAttack(plunderedResources, attackButton)
-            .then(() => village.remove())
-            .then(() => handleAttack())
-            .catch((err: unknown) => AresError.handle(err));
+        if (best.template.type === 'a' || best.template.type === 'b') {
+            const attackButton = info.button[best.template.type];
+            assert(attackButton, `O botão do modelo ${best.template.type.toUpperCase()} não foi encontrado.`);
+
+            return prepareAttack(plunderedResources, attackButton)
+                .then(() => village.remove())
+                .then(() => handleAttack())
+                .catch((err: unknown) => AresError.handle(err));
+
+        } else {
+            // TODO: implementar ataque com modelos personalizados.
+            continue;
+        };
     };
 };
 

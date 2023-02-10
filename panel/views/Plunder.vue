@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
-import { usePlunderStore, usePlunderHistoryStore } from '#/vue/stores/plunder.js';
-import { ipcSend } from '#/ipc.js';
-import Button from '#/vue/components/Button.vue';
-import Resources from '../components/Resources.vue';
+import { usePlunderStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
+import { ipcSend } from '$global/ipc.js';
+import Button from '$vue/components/Button.vue';
+import Resources from '$panel/components/Resources.vue';
 
 const store = usePlunderStore();
 const history = usePlunderHistoryStore();

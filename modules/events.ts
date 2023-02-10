@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { routeNames, router } from './router/router.js';
-import { assertArrayIncludes } from '#/error.js';
+import { assertArrayIncludes } from '$global/error.js';
 
 export function setModuleEvents() {
     ipcRenderer.once('set-module-route', (_e, routeName: string) => {

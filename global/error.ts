@@ -1,5 +1,5 @@
-import { ipcSend } from "#/ipc.js";
-import type { ErrorLog, DOMErrorLog } from "@/error.js";
+import { ipcSend } from "$global/ipc.js";
+import type { ErrorLog, DOMErrorLog } from "$types/error.js";
 
 export class AresError extends Error {
     override name = 'AresError';

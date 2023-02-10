@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import { assert } from '#/error.js';
+import { assert } from '$global/error.js';
 
 class AvailableFarmUnits {
     spear = 0;
@@ -15,7 +15,7 @@ class AvailableFarmUnits {
 };
 
 /** Quantidade de unidades disponíveis no assistente de saque. */
-export const units = reactive(new AvailableFarmUnits());
+export const availableUnits = reactive(new AvailableFarmUnits());
 
 /**
  * Analisa a linha com as tropas disponíveis e armazena as informações num objeto reativo.
@@ -36,8 +36,8 @@ function queryUnitsRow(unitsRow: Element) {
     for (const field of unitFields) {
         const unitType = field.assertAttribute<keyof AvailableFarmUnits>('id');
         const amount = field.parseInt();
-        if (unitType in units && units[unitType] !== amount) {
-            units[unitType] = amount;
+        if (unitType in availableUnits && availableUnits[unitType] !== amount) {
+            availableUnits[unitType] = amount;
         };
     };
 };

@@ -1,14 +1,16 @@
 import { inject } from 'vue';
 import { storeToRefs } from 'pinia';
-import { assertType } from '#/error.js';
-import { useAresStore } from '#/vue/stores/store.js';
-import type { DeimosEndpoint, DeimosReport } from '@/deimos.js';
-import type { PlunderVillageInfo } from '$/farm/villages';
+import { assertType } from '$global/error.js';
+import { useAresStore } from '$vue/stores/store.js';
+import type { PlunderTemplate } from '$browser/farm/templates.js';
+import type { DeimosEndpoint, DeimosReport } from '$types/deimos.js';
+import type { PlunderVillageInfo } from '$browser/farm/villages.js';
+import type { TemplateLoot } from '$browser/types.js';
 
-const aresStore = useAresStore();
-const { currentX, currentY, currentWorld } = storeToRefs(aresStore);
+async function predict(carry: number, villageInfo: PlunderVillageInfo): Promise<number> {
+    const aresStore = useAresStore();
+    const { currentX, currentY, currentWorld } = storeToRefs(aresStore);
 
-export async function predict(carry: number, villageInfo: PlunderVillageInfo): Promise<number> {
     assertType(typeof currentWorld.value === 'string', 'É preciso indicar o mundo ao se fazer previsões.');
 
     const deimos: DeimosReport = {
@@ -21,7 +23,9 @@ export async function predict(carry: number, villageInfo: PlunderVillageInfo): P
         minutes_since: villageInfo.minutesSince
     };
     
-    const endpoint = inject<DeimosEndpoint>('deimos-endpoint', 'http://127.0.0.1:8000/deimos');
+    const endpoint = inject<DeimosEndpoint>('deimos-endpoint');
+    assertType(typeof endpoint === 'string', 'É preciso indicar o endpoint do Deimos.');
+
     const response = await fetch(`${endpoint}/plunder/predict/${currentWorld.value}`, {
         method: 'post',
         body: JSON.stringify(deimos)
@@ -30,4 +34,19 @@ export async function predict(carry: number, villageInfo: PlunderVillageInfo): P
     const prediction = await response.json() as unknown;
     assertType(typeof prediction === 'number', 'Erro ao prever o saque.');
     return prediction;
+};
+
+export async function predictBestTemplate(templates: PlunderTemplate[], info: PlunderVillageInfo): Promise<TemplateLoot> {
+    assert(templates.length > 0, 'Não há modelos de saque disponíveis.');
+
+    // Prevê o saque para cada modelo.
+    const predictions = await Promise.all(templates.map(async (template) => {
+        const loot = await predict(template.carry, info);
+        return { template, loot };
+    }));
+    
+    // Obtêm o modelo com a melhor previsão.
+    return predictions.reduce((prev, curr) => {
+        return prev.loot > curr.loot ? prev : curr;
+    });
 };

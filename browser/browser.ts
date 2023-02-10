@@ -1,11 +1,11 @@
-import '$/assets/style.css';
-import '#/prototype.js';
+import '$browser/assets/style.css';
+import '$global/prototype.js';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { router } from '$/router/router.js';
-import { setPreloadEvents } from '$/events.js';
-import { AresError, GameDOMError } from '#/error.js';
-import Browser from '$/Browser.vue';
+import { router } from '$browser/router/router.js';
+import { setPreloadEvents } from '$browser/events.js';
+import { AresError, GameDOMError } from '$global/error.js';
+import Browser from '$browser/Browser.vue';
 
 const app = createApp(Browser);
 const pinia = createPinia();

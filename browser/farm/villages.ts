@@ -1,10 +1,10 @@
-import { calcDistance } from '#/vue/helpers.js';
-import { assertCoordsFromTextContent, parseGameDate } from '#/helpers.js';
-import { assert, assertDOM, assertElement, AresError } from '#/error.js';
-import { resources as resourceList } from '#/constants.js';
-import { ipcSend } from '#/ipc.js';
-import type { Coords } from '@/game.js';
-import type { PlunderTableButtons, PlunderTableResources } from '@/plunder.js';
+import { calcDistance } from '$vue/helpers.js';
+import { assertCoordsFromTextContent, parseGameDate } from '$global/helpers.js';
+import { assert, assertDOM, assertElement, AresError } from '$global/error.js';
+import { resources as resourceList } from '$global/constants.js';
+import { ipcSend } from '$global/ipc.js';
+import type { Coords } from '$types/game.js';
+import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder.js';
 
 export class PlunderVillageInfo {
     /** Data do último ataque contra a aldeia (em milisegundos). */

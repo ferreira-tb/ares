@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { shell } from 'electron';
-import { ipcInvoke } from '#/ipc.js';
-import { authorURL, repoURL, helpURL } from '#/constants.js';
-import Button from '#/vue/components/Button.vue';
+import { ipcInvoke } from '$global/ipc.js';
+import { authorURL, repoURL, helpURL } from '$global/constants.js';
+import Button from '$vue/components/Button.vue';
 
 const appName = ref<string>(await ipcInvoke('app-name'));
 const appVersion = ref<string>(await ipcInvoke('app-version'));

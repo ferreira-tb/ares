@@ -1,6 +1,6 @@
-import { assert, assertArrayIncludes, assertInteger, assertType, AresError } from "#/error.js";
-import { farmUnits, months } from "#/constants.js";
-import type { FarmUnits, XMLTags } from '@/game.js';
+import { assert, assertArrayIncludes, assertInteger, assertType, AresError } from "$global/error.js";
+import { farmUnits, months } from "$global/constants.js";
+import type { FarmUnits, XMLTags } from '$types/game.js';
 
 /**
  * Analisa o texto contido num elemento a procura de coordenadas válidas.

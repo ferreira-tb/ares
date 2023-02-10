@@ -1,7 +1,7 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
-import { getRouteNames } from '#/vue/helpers.js';
-import Home from '../views/Home.vue';
-import Plunder from '../views/Plunder.vue';
+import { getRouteNames } from '$vue/helpers.js';
+import Home from '$panel/views/Home.vue';
+import Plunder from '$panel/views/Plunder.vue';
 
 // Os componentes devem ser passados diretamente.
 // Importá-los gera problemas ao compilar.

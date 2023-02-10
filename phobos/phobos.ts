@@ -1,4 +1,4 @@
-import '#/prototype.js';
-import { setPhobosEvents } from './events.js';
+import '$global/prototype.js';
+import { setPhobosEvents } from '$phobos/events.js';
 
 setPhobosEvents();

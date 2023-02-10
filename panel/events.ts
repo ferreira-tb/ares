@@ -1,10 +1,10 @@
 import { ipcRenderer } from 'electron';
-import { assert, assertInteger, assertType } from '#/error.js';
-import { useAresStore } from '#/vue/stores/store.js';
-import { usePlunderHistoryStore, usePlunderStore } from '#/vue/stores/plunder.js';
-import { resources as resourceList } from '#/constants.js';
+import { assert, assertInteger, assertType } from '$global/error.js';
+import { useAresStore } from '$vue/stores/store.js';
+import { usePlunderHistoryStore, usePlunderStore } from '$vue/stores/plunder.js';
+import { resources as resourceList } from '$global/constants.js';
 import type { Pinia } from 'pinia';
-import type { PlunderedResources } from '$/farm/resources.js';
+import type { PlunderedResources } from '$browser/farm/resources.js';
 
 export function setChildWindowEvents(pinia: Pinia) {
     const aresStore = useAresStore(pinia);

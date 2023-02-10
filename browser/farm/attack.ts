@@ -1,27 +1,11 @@
-import { usePlunderStore } from '#/vue/stores/plunder.js';
-import { generateIntegerBetween, wait } from '#/helpers.js';
-import { ipcSend } from '#/ipc.js';
-import type { PlunderedResources } from '$/farm/resources.js';
+import { usePlunderStore } from '$vue/stores/plunder.js';
+import { generateIntegerBetween, wait } from '$global/helpers.js';
+import { ipcSend } from '$global/ipc.js';
+import type { PlunderedResources } from '$browser/farm/resources.js';
 
 export const eventTarget = new EventTarget();
 
-export class PlunderAttack {
-    /** Tipo do modelo ("a" ou "b", por exemplo). */
-    readonly type: string;
-    /**
-     * Quantidade de recursos que se estima obter com o ataque.
-     * Se o Deimos puder fazer previsões no mundo, o valor dessa propriedade será a previsão feita por ele.
-     * Do contrário, é usada a capacidade de carga do modelo.
-     */
-    readonly loot: number;
-
-    constructor(type: string, loot: number) {
-        this.type = type;
-        this.loot = loot;
-    };
-};
-
-export async function prepareAttack(resources: PlunderedResources, button: HTMLAnchorElement) {
+export function prepareAttack(resources: PlunderedResources, button: HTMLAnchorElement) {
     const store = usePlunderStore();
     return new Promise<void>((resolve, reject) => {
         const attackCtrl = new AbortController();

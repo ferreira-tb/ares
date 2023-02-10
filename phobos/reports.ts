@@ -1,7 +1,7 @@
-import { assert, assertType } from "#/error.js";
-import { parseReportDate, assertWorldFromURL, assertCoordsFromTextContent } from "#/helpers.js";
-import { ipcInvoke } from "#/ipc.js";
-import type { FullDeimosReport } from '@/deimos.js';
+import { assert, assertType } from "$global/error.js";
+import { parseReportDate, assertWorldFromURL, assertCoordsFromTextContent } from "$global/helpers.js";
+import { ipcInvoke } from "$global/ipc.js";
+import type { FullDeimosReport } from '$types/deimos.js';
 
 export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Response> {
     assertType(Array.isArray(urls), 'A lista de URLs não é uma array.');

@@ -3,8 +3,8 @@ import { URL } from 'node:url';
 import { assert, assertInteger, assertType, MainProcessError } from '../error.js';
 import { getWorldFromURL } from '../helpers.js';
 import { getDeimosPort } from '../deimos.js';
-import type { ErrorLog, DOMErrorLog } from '@/error.js';
-import type { ErrorLogRequest, DOMErrorLogRequest } from '@/electron.js';
+import type { ErrorLog, DOMErrorLog } from '$types/error.js';
+import type { ErrorLogRequest, DOMErrorLogRequest } from '$types/electron.js';
 
 export function setErrorEvents() {
     ipcMain.on('log-error', async (_e, err: ErrorLog) => {

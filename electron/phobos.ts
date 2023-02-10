@@ -3,7 +3,7 @@ import { URL } from 'node:url';
 import { phobosJs } from './constants.js';
 import { assertType } from './error.js';
 import type { BrowserWindow } from 'electron';
-import type { PhobosNames, PhobosOptions } from '@/electron.js';
+import type { PhobosNames, PhobosOptions } from '$types/electron.js';
 
 const activePhobos = new Map<PhobosNames, BrowserView>();
 
@@ -19,7 +19,6 @@ const activePhobos = new Map<PhobosNames, BrowserView>();
  * @param mainWindow Janela mãe.
  * @param options Opções que determinam o comportamento do `BrowserView`.
  * É possível passar um objeto `WebPreferences` com uma das opções.
- * @returns `BrowserView`
  */
 export async function createPhobos(name: PhobosNames, url: URL, mainWindow: BrowserWindow, options?: PhobosOptions) {
     assertType(typeof name === 'string', 'Nome inválido.');

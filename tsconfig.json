@@ -13,19 +13,32 @@
         "modules/**/*",
         "modules/**/*.vue",
         "global/**/*",
-        "dev/**/*"
+        "dev/**/*",
+        "vue/**/*"
     ],
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@/*": [
+            "$types/*": [
                 "./types/*"
             ],
-            "$/*": [
+            "$browser/*": [
                 "./browser/*"
             ],
-            "#/*": [
+            "$global/*": [
                 "./global/*"
+            ],
+            "$vue/*": [
+                "./vue/*"
+            ],
+            "$phobos/*": [
+                "./phobos/*"
+            ],
+            "$modules/*": [
+                "./modules/*"
+            ],
+            "$panel/*": [
+                "./panel/*"
             ]
         },
 

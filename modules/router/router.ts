@@ -1,6 +1,6 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
-import { getRouteNames } from '#/vue/helpers.js';
-import Default from '#/vue/views/Default.vue';
+import { getRouteNames } from '$vue/helpers.js';
+import Default from '$vue/views/Default.vue';
 import ErrorLog from '../views/ErrorLog.vue';
 import ErrorList from '../components/ErrorList.vue';
 import DomErrorList from '../components/DomErrorList.vue';

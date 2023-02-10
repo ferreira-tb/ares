@@ -1,11 +1,9 @@
-import { computed, inject, reactive, ref, watchSyncEffect } from 'vue';
-import { assert } from '#/error.js';
-import { units } from '$/farm/units.js';
-import { farmUnits } from '#/constants.js';
-import { PlunderAttack } from '$/farm/attack.js';
-import { predict } from '$/farm/prediction.js';
-import type { FarmUnits } from '@/game.js';
-import type { PlunderVillageInfo } from '$/farm/villages';
+import { computed, reactive } from 'vue';
+import { storeToRefs } from 'pinia';
+import { assert } from '$global/error.js';
+import { availableUnits } from '$browser/farm/units.js';
+import { usePlunderStore } from '$vue/stores/plunder.js';
+import { isFarmUnit } from '$global/helpers.js';
 
 export class PlunderTemplate {
     /** Tipo do modelo. */
@@ -13,8 +11,8 @@ export class PlunderTemplate {
     /** Capacidade de carga. */
     carry = 0;
     /** Indica se há tropas o suficiente para o modelo ser usado. */
-    ok = computed(() => {
-        for (const [key, value] of Object.entries(units) as [keyof typeof units, number][]) {
+    readonly ok = computed(() => {
+        for (const [key, value] of Object.entries(availableUnits) as [keyof typeof availableUnits, number][]) {
             if (key === 'ram') continue;
             if (value < this.units[key]) return false;
         };
@@ -22,7 +20,7 @@ export class PlunderTemplate {
         return true;
     });
 
-    units = reactive({
+    readonly units = reactive({
         spear: 0,
         sword: 0,
         axe: 0,
@@ -42,10 +40,19 @@ export class PlunderTemplate {
 const templateA = new PlunderTemplate('a');
 const templateB = new PlunderTemplate('b');
 
-/** Representa o total de recursos disponíveis na aldeia-alvo. */
-export const resources = ref<number>(0);
-const bestTemplate = ref<PlunderTemplate | null>(null);
-const otherTemplate = ref<PlunderTemplate | null>(null);
+/** Representa todos os modelos de saque. */
+const allTemplates = new Map<string, PlunderTemplate>();
+allTemplates.set(templateA.type, templateA);
+allTemplates.set(templateB.type, templateB);
+
+/** Representa os modelos de saque com tropas disponíveis. */
+const availableTemplates = computed(() => {
+    const templates: PlunderTemplate[] = [];
+    for (const template of allTemplates.values()) {
+        if (template.ok.value) templates.push(template);
+    };
+    return templates;
+});
 
 /** Obtêm informações sobre os modelos de saque. */
 export function queryTemplateData() {
@@ -79,7 +86,6 @@ export function queryTemplateData() {
  */
 function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
     const template = row === 'a' ? templateA : templateB;
-    const verify = (unit: string): unit is FarmUnits => farmUnits.includes(unit as FarmUnits);
 
     for (const field of fields) {
         /** O atributo `name` é usado para determinar a unidade referente ao campo. */
@@ -87,7 +93,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
         /** O valor no atributo `name` é algo como `spear[11811]`. */
         const unitType = fieldName.replace(/\[\d+\]/g, '');
 
-        assert(verify(unitType), `${unitType} não é uma unidade válida.`);
+        assert(isFarmUnit(unitType), `${unitType} não é uma unidade válida.`);
         field.setAttribute(`data-tb-template-${row}`, unitType);
         
         /** Contém a quantidade de unidades. */
@@ -95,87 +101,35 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
     };
 };
 
-/** Filtra todos os modelos, retornando apenas aqueles que possuem tropas disponíveis para atacar. */
-function filterAvailableTemplates() {
-    const templates: PlunderTemplate[] = [templateA, templateB];
-    return templates.filter((template) => template.ok.value);
-};
-
 /**
- * 
- * @param resources Quantidade de recursos que se espera ter na aldeia.
- * @param attacks 
+ * Filtra todos os modelos de saque disponíveis de acordo com a quantidade de recursos na aldeia-alvo.
+ * Caso a função retorne uma lista vazia, o ataque não deve ser enviado.
+ * Ao fim, os modelos são ordenados de acordo com a capacidade de carga.
+ * @param resources - Recursos disponíveis na aldeia-alvo.
  */
-function pickBestAttack(resources: number, attacks: PlunderAttack[]): PlunderAttack | null {
-    // attacks.sort((a, b) => b.loot - a.loot);
-    const moreThan = [];
-    const lessThan = [];
+export function filterTemplates(resources: number): PlunderTemplate[] {
+    const store = usePlunderStore();
+    const { resourceRatio } = storeToRefs(store);
 
-    for (const attack of attacks) {
-        if (attack.loot >= resources) moreThan.push(attack);
-        if (attack.loot < resources) lessThan.push(attack);
-    };
-};
+    // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.
+    // Os modelos com maior capacidade de carga maior que a quantidade de recursos são colocados no grupo `bigger`.
+    // Os demais são colocados no grupo `smaller`.
+    let bigger: PlunderTemplate[] = [];
+    const smaller: PlunderTemplate[] = [];
 
-export async function chooseBestTemplate(villageInfo: PlunderVillageInfo) {
-    const templates = filterAvailableTemplates();
-    if (templates.length === 0) return null;
-
-    const attacks: PlunderAttack[] = [];
-    const canPredict = inject<boolean>('can-predict', false);
-    
-    for (const template of templates) {
-        let attack: PlunderAttack;
-
-        // Se for possível fazer previsões, o modelo será selecionado com base no resultado delas.
-        if (canPredict === true) {
-            const prediction = await predict(template.carry, villageInfo);
-            attack = new PlunderAttack(template.type, prediction);
-
-        // Do contrário assumirá que todos os modelos conseguirão saquear o máximo possível.
+    for (const template of availableTemplates.value) {
+        if (template.carry > resources) {
+            bigger.push(template);
         } else {
-            attack = new PlunderAttack(template.type, template.carry);
-        };
-
-        attacks.push(attack);
-    };
-
-    return pickBestAttack(villageInfo.res.total, attacks);
-};
-
-watchSyncEffect(() => {
-    const bigger = templateA.carry >= templateB.carry ? templateA : templateB;
-    const smaller = templateA.carry < templateB.carry ? templateA : templateB;
-
-    // Se ambos são menores que a quantidade de recursos, o maior entre eles prevalecerá.
-    // A diferença entre a carga do maior e a quantidade de recursos não é relevante nesse caso.
-    if (resources.value >= bigger.carry) {
-        bestTemplate.value = bigger;
-        otherTemplate.value = smaller;
-
-    // Se os dois são maiores, descartam-se aqueles que estejam fora da zona aceitável.
-    // Se todos forem descartados, não haverá ataque.
-    } else if (resources.value <= smaller.carry) {
-        bestTemplate.value = resources.value / smaller.carry >= 0.8 ? smaller : null;
-        otherTemplate.value = resources.value / bigger.carry >= 0.8 ? bigger : null;
-
-    // Nesse caso, a quantidade de recursos é maior que a carga de um, mas menor que a de outro.
-    } else {
-        // Razão em relação ao maior (será sempre MENOR que 1).
-        const ratioBigger = resources.value / bigger.carry;
-        // Razão em relação ao menor (será sempre MAIOR que 1).
-        const ratioSmaller = resources.value / smaller.carry;
-
-        // O de maior carga é descartado caso seja grande demais.
-        // O menor é dado como válido pois valores menores são sempre adequados.
-        if (ratioBigger < 0.8) {
-            bestTemplate.value = smaller;
-            otherTemplate.value = null;
-
-        // Caso o maior seja válido, verifica-se qual está mais próximo da quantidade de recursos.
-        } else {
-            bestTemplate.value = (1 - ratioBigger) <= (ratioSmaller - 1) ? bigger : smaller;
-            otherTemplate.value = (1 - ratioBigger) > (ratioSmaller - 1) ? bigger : smaller;
+            smaller.push(template);
         };
     };
-});
+
+    // Filtra os modelos com capacidade de carga maior que a quantidade de recursos.
+    // Remove aqueles cuja razão entre a quantidade de recursos e a capacidade de carga é menor que o valor definido pelo usuário.
+    // Não é necessário filtrar os modelos com capacidade de carga menor que a quantidade de recursos, pois eles sempre são válidos.
+    bigger = bigger.filter((template) => resources / template.carry >= resourceRatio.value);
+
+    // Ordena os modelos de acordo com a capacidade de carga.
+    return [...smaller, ...bigger].sort((a, b) => b.carry - a.carry);
+};
