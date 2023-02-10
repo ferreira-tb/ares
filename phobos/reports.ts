@@ -37,7 +37,8 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
 
         // Data do relatório e minutos desde o ataque.
         const time = parseReportDate(report, false);
-        const minutes_since = Math.ceil((Date.now() - time) / 60000);
+        const secondsNow = Math.ceil(Date.now() / 1000);
+        const minutes_since = Math.ceil((secondsNow - time) / 60);
 
         // ID da aldeia atacante.
         const attackerField = report.queryAndAssert('#attack_info_att a[href*="screen=info_village"');
