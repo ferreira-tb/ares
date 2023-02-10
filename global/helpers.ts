@@ -1,6 +1,6 @@
 import { assert, assertArrayIncludes, assertInteger, assertType, AresError } from "#/error.js";
-import { months } from "#/constants.js";
-import type { XMLTags } from '@/game.js';
+import { farmUnits, months } from "#/constants.js";
+import type { FarmUnits, XMLTags } from '@/game.js';
 
 /**
  * Analisa o texto contido num elemento a procura de coordenadas válidas.
@@ -127,7 +127,7 @@ export function generateIntegerBetween(min: number, max: number) {
  * @param ms Indica se o resultado deve ser retornado em milisegundos.
  * Se `false`, o resultado será retornado em segundos.
  */
-export function parseReportDate(report: Element, ms: boolean = true) {
+export function parseReportDate(report: Element, ms: boolean = true): number {
     const selector = 'td.nopad table:has([class="report_ReportAttack" i]) tr:nth-of-type(2) td:nth-of-type(2)';
     const dateField = report.queryAndAssert(selector);
 
@@ -142,12 +142,12 @@ export function parseReportDate(report: Element, ms: boolean = true) {
 
     const dateFields = rawDateFields.map((field, index) => {
         if (index === 0) {
-            const month = field.replace(/\W/g, '').slice(0, 3);
-            assertType(month && typeof month === 'string', 'O mês obtido é inválido.');
-            assertArrayIncludes((months as unknown) as string[], month, 'O mês obtido é inválido.');
+            const rawMonth: string = field.replace(/\W/g, '').slice(0, 3);
+            assertType(rawMonth && typeof rawMonth === 'string', 'O mês obtido é inválido.');
+            assertArrayIncludes((months as unknown) as string[], rawMonth, 'O mês obtido é inválido.');
             
             // Date.prototype.setFullYear() usa índice zero para os meses.
-            return ((months as unknown) as string[]).indexOf(month as any);
+            return ((months as unknown) as string[]).indexOf(rawMonth);
 
         } else if (index === 3) {
             return field.split(':').map((value) => getDigits(value));
@@ -197,13 +197,18 @@ export function getWorldFromURL(url?: URL) {
     return world;
 };
 
-export function assertWorldFromURL(url?: URL) {
+export function assertWorldFromURL(url?: URL): string {
     const world = getWorldFromURL(url);
     assertType(typeof world === 'string', 'Não foi possível determinar o mundo.');
     return world;
 };
 
-export function getLocaleDateString(raw?: number, includeTime: boolean = false) {
+/**
+ * Transforma um número em uma string com o formato de data local.
+ * @param raw Número representando a data. Se omitido, utiliza `Date.now()`.
+ * @param includeTime Indica se a string resultante deve incluir a hora.
+ */
+export function getLocaleDateString(raw?: number, includeTime: boolean = false): string {
     if (typeof raw !== 'number') raw = Date.now();
     assertInteger(raw);
     
@@ -225,4 +230,12 @@ export function getLocaleDateString(raw?: number, includeTime: boolean = false) 
 
         return `${date} ${time}`;
     };
+};
+
+/**
+ * Verifica se a string passada é um nome de unidade válido.
+ * @param unit Nome da unidade.
+ */
+export function isFarmUnit(unit: string): unit is FarmUnits {
+    return farmUnits.includes(unit as FarmUnits);
 };
