@@ -57,7 +57,7 @@ export function setDeimosEvents(mainWindow: BrowserWindow) {
         };
     });
 
-    ipcMain.on('deimos-report-exists', async (_e, reportInfo: DeimosReportInfo) => {
+    ipcMain.handle('deimos-report-exists', async (_e, reportInfo: DeimosReportInfo) => {
         try {
             assertType(typeof reportInfo.world === 'string', 'O nome do mundo é inválido');
             assertInteger(reportInfo.report_id, 'O ID do relatório é inválido');
