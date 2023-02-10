@@ -1,10 +1,11 @@
 import { ipcMain } from 'electron';
 import { URL } from 'node:url';
-import { createPhobos } from '../phobos.js';
-import { assert, assertType, MainProcessError } from '../error.js';
-import { getDeimosPort, isDeimosOn } from '../deimos.js';
-import { assertCurrentWorld } from '../helpers.js';
+import { createPhobos } from '$electron/phobos.js';
+import { assert, assertType, MainProcessError } from '$electron/error.js';
+import { getDeimosPort, isDeimosOn } from '$electron/deimos.js';
+import { assertCurrentWorld } from '$electron/helpers.js';
 import type { BrowserWindow } from 'electron';
+import type { PhobosOptions } from '$types/electron.js';
 
 /** Contêm as URLs dos relatórios que serão usados pelo Deimos. */
 const deimosReportURLs = new Set<string>();
@@ -45,10 +46,11 @@ export function setDeimosEvents(mainWindow: BrowserWindow) {
         try {
             assertType(typeof url === 'string', 'A URL do relatório é inválida');
             deimosReportURLs.add(url);
-    
-            if (deimosReportURLs.size >= 100) {
+
+            if (deimosReportURLs.size >= 80) {
                 const urlObject = new URL(url);
-                const phobos = await createPhobos('deimos-report', urlObject, mainWindow);
+                const options: PhobosOptions = { override: false };
+                const phobos = await createPhobos('deimos-report', urlObject, mainWindow, options);
                 phobos.webContents.send('fetch-deimos-report-url', Array.from(deimosReportURLs));
                 deimosReportURLs.clear();
             };
