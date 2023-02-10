@@ -6,7 +6,7 @@ from aiohttp.web import json_response
 from aiohttp_swagger import setup_swagger
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from dotenv import load_dotenv
-from model import get_deimos, save_reports
+from model import get_deimos, save_reports, report_exists
 from helpers import get_app_port, quit_app
 from error import save_error_log, save_dom_error_log
 from error import get_error_logs, get_dom_logs, get_all_error_logs
@@ -118,6 +118,17 @@ async def predict_resources(request: web.Request):
         return json_response(prediction, status=200)
     except (AttributeError, TypeError, JSONDecodeError) as err:
         return web.Response(status=400, text=repr(err))
+
+
+@routes.post('/deimos/plunder/verify')
+async def verify_if_report_exists(request: web.Request):
+    try:
+        report_info = await request.json()
+        return json_response(report_exists(report_info), status=200)
+    except (AttributeError, TypeError, JSONDecodeError) as err:
+        return web.Response(status=400, text=repr(err))
+    except (IntegrityError, InvalidRequestError) as err:
+        return web.Response(status=500, text=repr(err))
 
 
 app.add_routes(routes)

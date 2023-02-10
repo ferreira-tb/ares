@@ -195,6 +195,39 @@ paths:
         "418":
           description: Ainda não há dados suficientes para a predição.
 
+  /deimos/plunder/verify:
+    post:
+      summary: Verifica se o relatório já está salvo no banco de dados.
+      tags:
+        - Saque
+
+      requestBody:
+        description: ID do relatório e mundo onde a batalha ocorreu.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: ID do relatório.
+                world:
+                  type: string
+                  description: Mundo onde ocorreu a batalha.
+      
+      responses:
+        "200":
+          description: A operação foi bem sucedida.
+          content:
+            application/json:
+              schema:
+                type: boolean
+        "400":
+          description: Há algum problema no corpo da requisição.
+        "500":
+          description: Erro interno do servidor.
+
 components:
   schemas:
     NormalError:

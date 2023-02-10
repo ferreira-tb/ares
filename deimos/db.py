@@ -14,7 +14,8 @@ class Base(DeclarativeBase):
 class DeimosTable(MappedAsDataclass, Base):
     __tablename__ = 'deimos_table'
 
-    id: Mapped[int] = mapped_column(primary_key=True) # ID do relatório.
+    id: Mapped[Optional[int]] = mapped_column(primary_key=True, autoincrement=True)
+    report_id: Mapped[int] # ID do relatório.
     time: Mapped[int] # Data do ataque (em segundos desde a época UNIX).
     world: Mapped[str] # Mundo onde ocorreu a batalha.
     expected: Mapped[int] # Quantidade de recursos que se espera ter na aldeia.

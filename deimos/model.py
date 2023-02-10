@@ -1,6 +1,6 @@
 import os
 from time import time
-from typing import ClassVar, Tuple, TypedDict, Self, Dict, List, NotRequired
+from typing import ClassVar, Tuple, Self, TypedDict, Dict, List, NotRequired
 import joblib
 import numpy
 from sqlalchemy import select, delete
@@ -12,7 +12,7 @@ from db import engine, DeimosTable, DeimosTableHistory
 
 
 class DeimosTableType(TypedDict):
-    id: NotRequired[int] # ID do relatório.
+    report_id: NotRequired[int] # ID do relatório.
     time: NotRequired[int] # Data do ataque (em segundos desde a época UNIX).
     world: NotRequired[str] # Mundo onde ocorreu a batalha.
     plundered: NotRequired[int] # Quantia saqueada no último ataque (esse valor deve ser previsto pelo Deimos).
@@ -37,7 +37,12 @@ class FitModelReturnType(TypedDict):
 
 class DeimosTableHistoryType(FitModelReturnType):
     world: str # Mundo no qual o modelo será usado.
-    
+
+
+class ReportType(TypedDict):
+    report_id: int # ID do relatório.
+    world: str # Mundo onde ocorreu a batalha.
+
 
 class Deimos:
     # Cache.
@@ -160,6 +165,27 @@ def fit_model(reports: list[DeimosTableType]) -> Tuple[ElasticNet, FitModelRetur
     return (model, model_info)
 
 
+def report_exists(report_info: ReportType) -> bool:
+    if not isinstance(report_info, dict):
+        raise TypeError('O objeto não é um dicionário.')
+
+    report_id = report_info['report_id']
+    world = report_info['world']
+
+    if type(report_id) is not int:
+        raise TypeError('O ID não é um número inteiro.')
+    elif type(world) is not str:
+        raise TypeError('O mundo não é uma string.')
+
+    with Session(engine, autobegin=True) as session:
+        stmt = select(DeimosTable).where(DeimosTable.report_id == report_id).where(DeimosTable.world == world)
+        result = session.execute(stmt).scalar_one_or_none()
+        session.rollback()
+        
+    # Se o resultado for None, o relatório não existe.
+    return result is not None
+
+
 def save_reports(reports: List[DeimosTableType]) -> None:
     """ Salva informações sobre ataques no banco de dados do Deimos. """
 
@@ -170,7 +196,7 @@ def save_reports(reports: List[DeimosTableType]) -> None:
         for report in reports:
             if not isinstance(report, dict):
                 raise TypeError('O objeto não é um dicionário.')
-            # id, time, world, plundered, minutes_since, expected, carry, origin_x, origin_y, dest_x, dest_y.
+            # report_id, time, world, plundered, minutes_since, expected, carry, origin_x, origin_y, dest_x, dest_y.
             elif len(report) != 11:
                 raise TypeError('O dicionário não possui a quantidade correta de itens.')
                 
@@ -187,10 +213,10 @@ def save_reports(reports: List[DeimosTableType]) -> None:
                 destY=report['dest_y']
             )
 
-            stmt = select(DeimosTable).where(DeimosTable.id == report['id'])
+            stmt = select(DeimosTable).where(DeimosTable.report_id == report['report_id']).where(DeimosTable.world == report['world'])
             results = session.scalars(stmt).all()
             if len(results) == 0:
-                new_row = DeimosTable(**report)
+                new_row = DeimosTable(id=None, **report)
                 session.add(new_row)
 
         session.commit()
