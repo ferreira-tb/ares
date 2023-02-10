@@ -12,14 +12,17 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
     
     for (const url of urls) {
         const urlObject = new URL(url);
-        const id = urlObject.searchParams.assertAsInteger('view');
+
+        // ID do relatório.
+        const report_id = urlObject.searchParams.assertAsInteger('view');
+        // Mundo.
+        const world = assertWorldFromURL(urlObject);
+
+        
 
         const response = await fetch(urlObject.href);
         const text = await response.text();
         const report = parser.parseFromString(text, 'text/html').documentElement;
-
-        // Mundo.
-        const world = assertWorldFromURL(urlObject);
 
         // Informação dos exploradores sobre os recursos esperados para o próximo ataque.
         const resourcesFields = report.queryAsArray('#attack_spy_resources .res-icons-separated > .nowrap > .res');
@@ -46,7 +49,7 @@ export async function fetchPlunderReportsForDeimos(urls: string[]): Promise<Resp
         const [dest_x, dest_y] = assertCoordsFromTextContent(defText);
 
         const deimosReport: FullDeimosReport = {
-            id,
+            report_id,
             time,
             world,
             expected,

@@ -17,7 +17,7 @@ export interface DeimosReport {
 
 export interface FullDeimosReport extends DeimosReport {
     /** ID do relatório. */
-    readonly id: number;
+    readonly report_id: number;
     /** Data do ataque (em segundos desde a época UNIX). */
     readonly time: number;
     /** Mundo onde ocorreu a batalha. */
@@ -25,3 +25,5 @@ export interface FullDeimosReport extends DeimosReport {
     /** Quantia saqueada no último ataque (esse valor deve ser previsto pelo Deimos). */
     readonly plundered: number;
 }
+
+export type DeimosReportInfo = Pick<FullDeimosReport, 'report_id' | 'world'>;
