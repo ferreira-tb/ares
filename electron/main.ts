@@ -3,7 +3,7 @@ import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/constants.js';
-import { getDeimosEndpoint } from '$electron/deimos.js';
+import { getDeimosEndpoint } from '$electron/ares/deimos.js';
 
 dotenv.config();
 

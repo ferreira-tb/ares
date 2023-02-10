@@ -1,7 +1,7 @@
 import { BrowserView } from 'electron';
 import { URL } from 'node:url';
-import { phobosJs } from './constants.js';
-import { assertType } from './error.js';
+import { phobosJs } from '$electron/constants.js';
+import { assertType } from '$electron/error.js';
 import type { BrowserWindow } from 'electron';
 import type { PhobosNames, PhobosOptions } from '$types/electron.js';
 

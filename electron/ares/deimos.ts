@@ -1,8 +1,8 @@
 import getPort from 'get-port';
 import { app } from 'electron';
 import { execFile } from 'node:child_process';
-import { deimosExe } from './constants.js';
-import { MainProcessError } from './error.js';
+import { deimosExe } from '$electron/constants.js';
+import { MainProcessError } from '$electron/error.js';
 import { DeimosEndpoint } from '$types/deimos.js';
 
 function openDeimos(port: number) {

@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron';
 import { URL } from 'node:url';
-import { createPhobos } from '$electron/phobos.js';
+import { createPhobos } from '$electron/ares/phobos.js';
 import { assert, assertInteger, assertType, MainProcessError } from '$electron/error.js';
-import { getDeimosPort, getDeimosEndpoint, isDeimosOn } from '$electron/deimos.js';
+import { getDeimosPort, getDeimosEndpoint, isDeimosOn } from '$electron/ares/deimos.js';
 import { assertCurrentWorld } from '$electron/helpers.js';
 import type { BrowserWindow } from 'electron';
 import type { PhobosOptions } from '$types/electron.js';

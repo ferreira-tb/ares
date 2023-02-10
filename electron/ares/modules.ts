@@ -1,7 +1,7 @@
 import { BrowserWindow } from "electron";
-import { favicon, moduleHtml } from "./constants";
-import { setBasicDevMenu } from "./helpers";
-import { getDeimosPort } from "./deimos.js";
+import { favicon, moduleHtml } from "$electron/constants";
+import { setBasicDevMenu } from "$electron/helpers";
+import { getDeimosPort } from "$electron/ares/deimos.js";
 
 export function showErrorLog(mainWindow: BrowserWindow) {
     const errorLogWindow = new BrowserWindow({
