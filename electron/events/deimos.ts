@@ -59,7 +59,7 @@ export function setDeimosEvents(mainWindow: BrowserWindow) {
 
     ipcMain.handle('deimos-report-exists', async (_e, reportInfo: DeimosReportInfo) => {
         try {
-            assertType(typeof reportInfo.world === 'string', 'O nome do mundo é inválido');
+            assertType(typeof reportInfo.world === 'string', 'O mundo é inválido');
             assertInteger(reportInfo.report_id, 'O ID do relatório é inválido');
 
             const response = await fetch(`${getDeimosEndpoint()}/plunder/verify`, {

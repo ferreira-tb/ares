@@ -5,16 +5,19 @@ import { assertCurrentWorld } from '../helpers.js';
 import type { BrowserWindow } from 'electron';
 
 export function setPlunderEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
+    // Verifica se o Plunder está ativo ou não.
     ipcMain.handle('is-plunder-active', (_e, world?: string) => {
         if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
         return plunderStore.get(`plunder-state.${world}.status`, false);
     });
 
+    // Obtém o estado atual do Plunder.
     ipcMain.handle('get-plunder-state', (_e, world?: string) => {
         if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
         return plunderStore.get(`plunder-state.${world}`, null);
     });
 
+    // Salva o estado do Plunder.
     ipcMain.on('set-plunder-state', (_e, stateName: unknown, value: unknown, world?: string) => {
         if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
         assertType(typeof stateName === 'string', 'O nome do estado é inválido.');
@@ -23,12 +26,14 @@ export function setPlunderEvents(mainWindow: BrowserWindow, childWindow: Browser
         mainWindow.webContents.send('plunder-state-update', stateName, value);
     });
 
-    // Emitido pela janela mãe após cada ataque realizado pelo Plunder.
+    // Emitido pelo browser após cada ataque realizado pelo Plunder.
+    // Atualiza a quantidade de recursos saqueados no painel.
     ipcMain.on('update-plundered-amount', (_e, resources: unknown) => {
         if (resources) childWindow.webContents.send('update-plundered-amount', resources);
     });
 
-    // Emitido pela janela filha quando o Plunder é desativado.
+    // Emitido pelo browser quando o Plunder é desativado.
+    // Salva a quantidade de recursos saqueados durante a última execução do Plunder.
     ipcMain.on('save-plundered-amount', (_e, resources: unknown, world?: string) => {
         if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
 
@@ -41,11 +46,13 @@ export function setPlunderEvents(mainWindow: BrowserWindow, childWindow: Browser
         plunderStore.set(`history.${world}.total`, plundered);
     });
 
+    // Obtém a quantidade de recursos saqueados durante a última execução do Plunder.
     ipcMain.handle('get-last-plundered-amount', (_e, world?: string) => {
         if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
         return plunderStore.get(`history.${world}.last`, null);
     });
 
+    // Obtém a quantidade total de recursos saqueados em determinado mundo.
     ipcMain.handle('get-total-plundered-amount', (_e, world?: string) => {
         if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
         return plunderStore.get(`history.${world}.total`, null);
