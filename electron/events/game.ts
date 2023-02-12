@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
-import { assertType, MainProcessError } from '../error.js';
-import { getCurrentWorld } from '../helpers.js';
-import { worldStore, setIntoWorldStore } from '../stores/world.js';
+import { assertType, MainProcessError } from '$electron/error.js';
+import { getCurrentWorld } from '$electron/helpers.js';
+import { worldStore, setIntoWorldStore } from '$electron/stores/world.js';
 import type { BrowserWindow } from 'electron';
 
 export function setGameEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {

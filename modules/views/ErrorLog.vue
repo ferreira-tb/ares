@@ -71,15 +71,15 @@ router.push({ name: 'normal-errors' });
     overflow-y: auto;
 }
 
-.error-log-nav-bar>a:first-of-type {
+.error-log-nav-bar > a:first-of-type {
     margin-left: 0.5em;
 }
 
-.error-log-nav-bar>a:not(:last-of-type) {
+.error-log-nav-bar > a:not(:last-of-type) {
     margin-right: 1em;
 }
 
-.error-log-nav-bar>.current-page {
+.error-log-nav-bar > .current-page {
     font-weight: bold;
 }
 </style>

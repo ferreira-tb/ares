@@ -1,5 +1,5 @@
 import { BrowserWindow, Menu } from 'electron';
-import { URL } from 'node:url';
+import { URL } from 'url';
 import { devOptions } from '$electron/constants.js';
 import { assertType } from '$electron/error.js';
 

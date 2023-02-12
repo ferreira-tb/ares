@@ -1,4 +1,4 @@
-import { resolve } from 'node:path';
+import { resolve } from 'path';
 import type { MenuItemConstructorOptions } from 'electron';
 
 // URL

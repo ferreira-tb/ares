@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
-import { assertInteger, assertObjectHasSameProps, assertType } from '../error.js';
-import { plunderStore } from '../stores/plunder.js';
-import { assertCurrentWorld } from '../helpers.js';
+import { assertInteger, assertObjectHasSameProps, assertType } from '$electron/error.js';
+import { plunderStore } from '$electron/stores/plunder.js';
+import { assertCurrentWorld } from '$electron/helpers.js';
 import type { BrowserWindow } from 'electron';
 
 export function setPlunderEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {

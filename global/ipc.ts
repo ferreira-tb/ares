@@ -3,11 +3,14 @@ import type { PlunderState, PlunderStateValue } from '$types/plunder.js';
 import type { WorldData, UnitData } from '../panel/config.js';
 import type { PlunderedResources } from '$browser/farm/resources.js';
 import type { PlunderedAmount } from '$types/game.js';
+import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;
 export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
+export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorLogType[] | null>;
 export async function ipcInvoke(channel: 'is-plunder-active', world?: string): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-plunder-state', world?: string): Promise<PlunderState | null>;
 export async function ipcInvoke(channel: 'get-current-world'): Promise<string | null>;
@@ -22,6 +25,8 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
     return response;
 };
 
+export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
+export function ipcSend(channel: 'set-dom-error-log', err: DOMErrorLogBase): void;
 export function ipcSend(channel: 'reload-main-window'): void;
 export function ipcSend(channel: 'force-reload-main-window'): void;
 export function ipcSend(channel: 'set-plunder-state', name: keyof PlunderState, value: PlunderStateValue, world?: string): void;

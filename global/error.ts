@@ -1,3 +1,6 @@
+import { ipcSend } from "$global/ipc";
+import type { ErrorLogBase, DOMErrorLogBase } from "$types/error.js";
+
 export class AresError extends Error {
     override name = 'AresError';
 
@@ -6,7 +9,12 @@ export class AresError extends Error {
     };
 
     public static handle(err: unknown) {
-        if (err instanceof Error) console.error(err);
+        if (err instanceof Error) {
+            ipcSend('set-error-log', {
+                name: err.name,
+                message: err.message
+            } satisfies ErrorLogBase);
+        };
     };
 };
 
@@ -18,7 +26,11 @@ export class GameDOMError extends Error {
     };
 
     public static handle(err: GameDOMError) {
-        if (err instanceof GameDOMError) console.error(err);
+        if (err instanceof GameDOMError) {
+            ipcSend('set-dom-error-log', {
+                selector: err.message
+            } satisfies DOMErrorLogBase);
+        };
     };
 };
 

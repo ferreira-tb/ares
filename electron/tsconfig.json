@@ -11,6 +11,9 @@
             "$electron/*": [
                 "./*"
             ],
+            "$tables/*": [
+                "./database/tables/*"
+            ],
             "$types/*": [
                 "../types/*"
             ],
