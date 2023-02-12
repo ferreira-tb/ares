@@ -46,3 +46,17 @@ watch(() => aresStore.currentWorld, async () => {
         </template>
     </RouterView>
 </template>
+
+<style scoped>
+:global(html) {
+    overflow: hidden;
+}
+
+:global(body) {
+    -webkit-app-region: drag;
+}
+
+:global(button) {
+    -webkit-app-region: no-drag;
+}
+</style>

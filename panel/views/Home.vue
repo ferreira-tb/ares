@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { shell } from 'electron';
 import { ipcInvoke } from '$global/ipc.js';
 import { authorURL, repoURL, helpURL } from '$global/constants.js';
-import Button from '$vue/components/Button.vue';
+import { VBtn as Button } from 'vuetify/components/VBtn';
 
 const appName = ref<string>(await ipcInvoke('app-name'));
 const appVersion = ref<string>(await ipcInvoke('app-version'));
@@ -12,13 +12,13 @@ const appVersion = ref<string>(await ipcInvoke('app-version'));
 <template>
     <main>
         <div class="title-area">
-            <h1 class="green-text bold">{{ appName }}</h1>
+            <h1 class="green-text bold">{{ appName.toUpperCase() }}</h1>
             <h2>Uma ferramenta para Tribal Wars</h2>
         </div>
-        <div class="link-area">
-            <Button @click="shell.openExternal(authorURL)">Autor</Button>
-            <Button @click="shell.openExternal(repoURL)">Repositório</Button>
-            <Button @click="shell.openExternal(helpURL)">Suporte</Button>
+        <div class="button-area">
+            <Button size="small" @click="shell.openExternal(repoURL)">Site</Button>
+            <Button size="small" @click="shell.openExternal(authorURL)">Autor</Button>
+            <Button size="small" @click="shell.openExternal(helpURL)">Suporte</Button>
         </div>
         <div class="footer-area">
             <p>{{ appVersion }}</p>
@@ -37,22 +37,21 @@ main {
 }
 
 h1 {
-    font-size: 1.5em;
+    font-size: 2em;
 }
 
 h2 {
     font-size: 1.2em;
 }
 
-.link-area {
+.button-area {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     justify-items: center;
 }
-
-.link-area > button {
-    width: 90%;
+.button-area > button {
+    width: 95%;
     max-width: 150px;
 }
 

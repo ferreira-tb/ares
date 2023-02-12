@@ -2,7 +2,8 @@
 import { computed, watch } from 'vue';
 import { usePlunderStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcSend } from '$global/ipc.js';
-import Button from '$vue/components/Button.vue';
+import { VBtn as Button } from 'vuetify/components/VBtn';
+import { VTooltip as Tooltip } from 'vuetify/components/VTooltip';
 import Resources from '$panel/components/Resources.vue';
 
 const store = usePlunderStore();
@@ -48,26 +49,44 @@ const plunderButtonText = computed(() => store.status === false ? 'Saquear' : 'P
             <label class="checkbox-label">
                 <input type="checkbox" v-model="store.ignoreWall" />
                 <span>Ignorar muralha</span>
+                <Tooltip>
+                    Determina se o Ares deve ignorar as aldeias com muralha.
+                </Tooltip>
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" v-model="store.destroyWall" />
                 <span>Destruir muralha</span>
+                <Tooltip>
+                    Determina se o Ares deve destruir as muralhas das aldeias.
+                </Tooltip>
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" v-model="store.groupAttack" />
                 <span>Usar grupo</span>
+                <Tooltip>
+                    Permite enviar ataques de mais de uma aldeia.
+                </Tooltip>
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" v-model="store.useC" />
                 <span>Usar modelo C</span>
+                <Tooltip>
+                    Determina se o Ares deve usar o modelo C para atacar.
+                </Tooltip>
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" v-model="store.ignoreDelay" />
                 <span>Ignorar delay</span>
+                <Tooltip>
+                    Diminui o intervalo entre os ataques.
+                </Tooltip>
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" v-model="store.blindAttack" />
                 <span>Ataque às cegas</span>
+                <Tooltip>
+                    Ataca mesmo se não houver informações sobre a aldeia.
+                </Tooltip>
             </label>
         </div>
     </main>
@@ -88,6 +107,7 @@ main {
     grid-template-columns: 1fr 1fr;
     align-items: center;
     justify-items: center;
+    -webkit-app-region: no-drag;
 }
 
 .checkbox-label {

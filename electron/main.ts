@@ -27,15 +27,10 @@ function createWindow() {
         height: 200,
         minHeight: 200,
         maxHeight: 500,
-        useContentSize: true,
         show: false,
-        closable: false,
-        minimizable: false,
-        maximizable: false,
         fullscreenable: false,
-        title: 'Ares',
-        autoHideMenuBar: true,
-        icon: favicon,
+        frame: false,
+        titleBarStyle: 'hidden',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false

@@ -1,20 +1,20 @@
 export type PlunderState = {
-    /** Indica se o Plunder está ativado. */
+    /** Indica se o Ares está ativado. */
     status: boolean;
-    /** Determina se o Plunder deve atacar aldeias com muralha. */
+    /** Determina se o Ares deve atacar aldeias com muralha. */
     ignoreWall: boolean;
-    /** Determina se o Plunder deve demolir a muralha das aldeias. */
+    /** Determina se o Ares deve demolir a muralha das aldeias. */
     destroyWall: boolean;
-    /** Determina se o Plunder deve utilizar o grupo Insidious ao atacar. */
+    /** Determina se o Ares deve utilizar o grupo Insidious ao atacar. */
     groupAttack: boolean;
-    /** Determina se o Plunder deve atacar usando o modelo C. */
+    /** Determina se o Ares deve atacar usando o modelo C. */
     useC: boolean;
-    /** Se ativado, o Plunder não terá delay entre os ataques. */
+    /** Se ativado, o Ares não terá delay entre os ataques. */
     ignoreDelay: boolean;
-    /** Se ativado, o Plunder não levará em consideração as informações dos exploradores. */
+    /** Se ativado, o Ares não levará em consideração as informações dos exploradores. */
     blindAttack: boolean;
 
-    /** Razão de recursos que o Plunder deve levar em consideração. */
+    /** Razão de recursos que o Ares deve levar em consideração. */
     resourceRatio: number;
     /** Minutos até que a página seja recarregada automaticamente. */
     minutesUntilReload: number;
