@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { RouterLink, RouterView, type RouteRecordName } from 'vue-router';
-import { router } from '../router/router.js';
+import { router } from '$modules/router/router.js';
 
 const currentRoute = ref<RouteRecordName | null>(null);
 const normalClass = computed(() => ({ 'current-page': currentRoute.value === 'normal-errors' }));

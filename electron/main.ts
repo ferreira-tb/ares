@@ -3,7 +3,6 @@ import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/constants.js';
-import { getDeimosEndpoint } from '$electron/ares/deimos.js';
 
 dotenv.config();
 
@@ -19,7 +18,7 @@ function createWindow() {
         }
     });
     
-    const childWindow = new BrowserWindow({
+    const panelWindow = new BrowserWindow({
         parent: mainWindow,
         width: 300,
         minWidth: 300,
@@ -37,29 +36,18 @@ function createWindow() {
         }
     });
 
-    setEvents(mainWindow, childWindow);
-    setAppMenu(mainWindow, childWindow);
+    setEvents(mainWindow, panelWindow);
+    setAppMenu(mainWindow, panelWindow);
     
     mainWindow.maximize();
     mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
     
     mainWindow.loadURL(gameURL);
-    childWindow.loadFile(indexHtml);
+    panelWindow.loadFile(indexHtml);
 
-    mainWindow.once('ready-to-show', async () => {
-        while (true) {
-            try {
-                const response = await fetch(getDeimosEndpoint());
-                if (response.ok) return mainWindow.show();
-            } catch {
-                await new Promise((resolve) => setTimeout(resolve, 50));
-            };
-        };
-    });
-    
-    childWindow.once('ready-to-show', () => childWindow.show());
+    mainWindow.once('ready-to-show', () => mainWindow.show());
+    panelWindow.once('ready-to-show', () => panelWindow.show());
 };
 
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
-app.on('before-quit', async () => await fetch(`${getDeimosEndpoint()}/quit`));

@@ -3,7 +3,6 @@ import { calcDistance } from '$vue/helpers.js';
 import { assertCoordsFromTextContent, parseGameDate } from '$global/helpers.js';
 import { assert, assertDOM, assertElement, AresError } from '$global/error.js';
 import { resources as resourceList } from '$global/constants.js';
-import { ipcSend } from '$global/ipc.js';
 import type { Coords } from '$types/game.js';
 import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder.js';
 
@@ -94,12 +93,6 @@ function queryReport(row: Element, info: PlunderVillageInfo) {
     info.distance = calcDistance(coords[0], coords[1]);
     info.coords.x = coords[0];
     info.coords.y = coords[1];
-
-    // Envia a URL do relatório para o processo principal.
-    // Ela será eventualmente usada para atualizar o banco de dados do Deimos.
-    const hrefAttr = report.assertAttribute('href');
-    const reportUrl = new URL(hrefAttr, location.origin);
-    ipcSend('add-deimos-report-url', reportUrl.href);
 };
 
 function queryLastAttack(row: Element, info: PlunderVillageInfo) {

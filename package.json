@@ -14,7 +14,7 @@
         "email": "andrew.shien2@gmail.com"
     },
     "license": "MIT",
-    "main": "__dist__/ares.js",
+    "main": "dist/ares.js",
     "keywords": [
         "tribal-wars",
         "electron"

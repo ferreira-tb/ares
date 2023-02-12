@@ -9,23 +9,23 @@ export const eventTarget = new EventTarget();
 export function prepareAttack(resources: PlunderedResources, button: HTMLAnchorElement) {
     const store = usePlunderStore();
     return new Promise<void>((resolve, reject) => {
-        const attackCtrl = new AbortController();
+        // O jogo possui um limite de cinco ações por segundo.
         const delay = store.ignoreDelay === true ? 0 : generateIntegerBetween(200, 300);
+        const attackTimeout = setTimeout(attack, delay);
+        const cleanup = useEventListener(eventTarget, 'stop', stop, { once: true });
 
-        const attackTimeout = setTimeout(() => {
+        function attack() {
             sendAttack(button)
                 .then(() => ipcSend('update-plundered-amount', resources))
                 .then(() => resolve())
                 .catch((err: unknown) => reject(err))
-                .finally(() => attackCtrl.abort());
-        // O jogo possui um limite de cinco ações por segundo.
-        }, delay);
+                .finally(() => cleanup());
+        };
 
-        useEventListener(eventTarget, 'stop', () => {
+        function stop() {
             clearTimeout(attackTimeout);
-            attackCtrl.abort();
             reject();
-        }, { signal: attackCtrl.signal });
+        };
     });
 };
 

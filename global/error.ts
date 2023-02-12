@@ -1,6 +1,3 @@
-import { ipcSend } from "$global/ipc.js";
-import type { ErrorLog, DOMErrorLog } from "$types/error.js";
-
 export class AresError extends Error {
     override name = 'AresError';
 
@@ -9,15 +6,7 @@ export class AresError extends Error {
     };
 
     public static handle(err: unknown) {
-        if (err instanceof Error) {
-            const errorLog: ErrorLog = {
-                name: err.name,
-                message: err.message,
-                time: Date.now()
-            };
-    
-            ipcSend('log-error', errorLog);
-        };
+        if (err instanceof Error) console.error(err);
     };
 };
 
@@ -28,16 +17,8 @@ export class GameDOMError extends Error {
         super(message);
     };
 
-    /** Esse método deve ser usado para documentar erros relacionados ao DOM. */
-    public static reportDOMError(err: GameDOMError) {
-        if (!(err instanceof GameDOMError)) return;
-
-        const errorLog: DOMErrorLog = {
-            selector: err.message,
-            time: Date.now()
-        };
-
-        ipcSend('log-dom-error', errorLog);
+    public static handle(err: GameDOMError) {
+        if (err instanceof GameDOMError) console.error(err);
     };
 };
 

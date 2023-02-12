@@ -17,7 +17,7 @@ app.use(router);
 // Error handler.
 app.config.errorHandler = (err) => {
     if (err instanceof GameDOMError) {
-        GameDOMError.reportDOMError(err);
+        GameDOMError.handle(err);
     } else {
         AresError.handle(err);
     };

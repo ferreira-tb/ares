@@ -5,7 +5,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { createVuetify } from 'vuetify';
 import { router } from '$panel/router/router.js';
-import { setChildWindowEvents } from '$panel/events.js';
+import { setPanelWindowEvents } from '$panel/events.js';
 import { AresError } from '$global/error.js';
 import Panel from '$panel/Panel.vue';
 
@@ -32,7 +32,7 @@ panel.use(vuetify);
 panel.config.errorHandler = AresError.handle;
 
 // Eventos.
-setChildWindowEvents(pinia);
+setPanelWindowEvents(pinia);
 
 router.push('/');
 panel.mount('#app');
