@@ -1,5 +1,5 @@
 import Store from 'electron-store';
-import { MainProcessError } from '../error.js';
+import { MainProcessError } from '$electron/error.js';
 import type { JSONSchema, Schema } from '$types/electron.js';
 
 const worldData: JSONSchema = {

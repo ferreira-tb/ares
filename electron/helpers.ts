@@ -1,7 +1,7 @@
 import { BrowserWindow, Menu } from 'electron';
 import { URL } from 'node:url';
-import { devOptions } from './constants.js';
-import { assertType } from './error.js';
+import { devOptions } from '$electron/constants.js';
+import { assertType } from '$electron/error.js';
 
 export function getWorldFromURL(url: URL) {
     const index = url.hostname.indexOf('.tribalwars');

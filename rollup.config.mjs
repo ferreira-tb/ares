@@ -11,8 +11,8 @@ export default {
         generatedCode: 'es2015'
     },
     plugins: [
-        nodeResolve({ extensions: ['.mjs', '.js', '.mts', '.ts', '.json'] }),
-        commonjs(),
+        nodeResolve({ extensions: ['.mjs', '.js', '.mts', '.ts', '.json'], exportConditions: ['node'] }),
+        commonjs({ ignoreDynamicRequires: true }),
         json(),
         typescript({ tsconfig: 'electron/tsconfig.json' })
     ],
@@ -21,6 +21,7 @@ export default {
     onwarn(warning, show) {
         if (warning.code === 'CIRCULAR_DEPENDENCY') {
             if (warning.message.includes('node_modules/conf/node_modules')) return;
+            if (warning.message.includes('node_modules/wkx/lib')) return;
         };
 
         show(warning);
