@@ -2,6 +2,7 @@ import * as fs from 'fs/promises';
 import { app, ipcMain, type BrowserWindow } from 'electron';
 import { setPlunderEvents } from '$electron/events/plunder.js';
 import { setGameEvents } from '$electron/events/game.js';
+import { setErrorEvents } from '$electron/events/error.js';
 import { MainProcessError } from '$electron/error.js';
 import { styleCss } from '$electron/constants.js';
 
@@ -37,4 +38,5 @@ export function setEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow)
     // Outros eventos.
     setGameEvents(mainWindow, panelWindow);
     setPlunderEvents(mainWindow, panelWindow);
+    setErrorEvents();
 };

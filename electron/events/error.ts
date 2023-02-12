@@ -25,7 +25,7 @@ export function setErrorEvents() {
         };
     });
 
-    ipcMain.handle('get-error-log', async (_e) => {
+    ipcMain.handle('get-error-log', async () => {
         try {
             // Elimina do registro os erros que tenham mais de 30 dias.
             const expiration = Date.now() - 2592000;
@@ -60,7 +60,7 @@ export function setErrorEvents() {
         }; 
     });
 
-    ipcMain.handle('get-dom-error-log', async (_e) => {
+    ipcMain.handle('get-dom-error-log', async () => {
         try {
             // Elimina do registro os erros que tenham mais de 30 dias.
             const expiration = Date.now() - 2592000;
