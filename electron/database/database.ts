@@ -1,8 +1,8 @@
 import { app } from 'electron';
 import { join } from 'path';
-import { Sequelize } from '@sequelize/core';
+import { Sequelize } from 'sequelize';
 
-export const db = new Sequelize({
+export const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: join(app.getPath('userData'), 'ares.db')
 });

@@ -1,8 +1,8 @@
 import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu.js';
+import { sequelize } from '$electron/database/database.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/constants.js';
-import { db } from '$electron/database/database.js';
 
 process.env.ARES_MODE = 'dev';
 
@@ -52,4 +52,4 @@ function createWindow() {
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
 
-db.sync().catch((err: unknown) => console.error(err));
+sequelize.sync().catch((err: unknown) => console.error(err));

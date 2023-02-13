@@ -1,6 +1,6 @@
-import { DataTypes, Model } from '@sequelize/core';
-import { db } from '$electron/database/database.js';
-import type { InferAttributes, InferCreationAttributes, CreationOptional } from '@sequelize/core';
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '$electron/database/database.js';
+import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import type { ErrorLogType, DOMErrorLogType } from '$types/error.js';
 
 export class ErrorLog extends Model<InferAttributes<ErrorLog>, InferCreationAttributes<ErrorLog>> implements ErrorLogType {
@@ -43,7 +43,7 @@ ErrorLog.init({
         type: DataTypes.STRING,
         allowNull: false
     }
-}, { sequelize: db, tableName: 'error_log', timestamps: false });
+}, { sequelize, tableName: 'error_log', timestamps: false });
 
 export class DOMErrorLog extends Model<InferAttributes<DOMErrorLog>, InferCreationAttributes<DOMErrorLog>> implements DOMErrorLogType {
     declare readonly id: CreationOptional<number>;
@@ -90,4 +90,4 @@ DOMErrorLog.init({
         type: DataTypes.STRING,
         allowNull: false
     }
-}, { sequelize: db, tableName: 'dom_error_log', timestamps: false });
+}, { sequelize, tableName: 'dom_error_log', timestamps: false });
