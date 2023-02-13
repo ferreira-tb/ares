@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { shell } from 'electron';
 import { ipcInvoke } from '$global/ipc.js';
-import { authorURL, repoURL, helpURL } from '$global/constants.js';
+import { aresURL, repoURL, discordURL } from '$global/constants.js';
 import { VBtn as Button } from 'vuetify/components/VBtn';
 
 const appName = ref<string>(await ipcInvoke('app-name'));
@@ -16,9 +16,9 @@ const appVersion = ref<string>(await ipcInvoke('app-version'));
             <h2>Uma ferramenta para Tribal Wars</h2>
         </div>
         <div class="button-area">
-            <Button size="small" @click="shell.openExternal(repoURL)">Site</Button>
-            <Button size="small" @click="shell.openExternal(authorURL)">Autor</Button>
-            <Button size="small" @click="shell.openExternal(helpURL)">Suporte</Button>
+            <Button size="small" @click="shell.openExternal(aresURL)">Site</Button>
+            <Button size="small" @click="shell.openExternal(repoURL)">GitHub</Button>
+            <Button size="small" @click="shell.openExternal(discordURL)">Discord</Button>
         </div>
         <div class="footer-area">
             <p>{{ appVersion }}</p>

@@ -1,5 +1,5 @@
 import { Menu, MenuItem, shell, BrowserWindow } from 'electron';
-import { gameURL, authorURL, repoURL, helpURL, devOptions } from '$electron/constants.js';
+import { aresURL, gameURL, repoURL, discordURL, devOptions } from '$electron/constants.js';
 import { assert } from '$electron/error.js';
 import { showErrorLog } from '$electron/ares/modules.js';
 import { setBasicDevMenu } from '$electron/helpers.js';
@@ -16,9 +16,9 @@ export function setAppMenu(mainWindow: BrowserWindow, panelWindow: BrowserWindow
     ];
     
     const helpMenu: MenuItemConstructorOptions[] = [
-        { label: 'Site', click: () => shell.openExternal(repoURL) },
-        { label: 'Autor', click: () => shell.openExternal(authorURL) },
-        { label: 'Suporte', click: () => shell.openExternal(helpURL) },
+        { label: 'Site', click: () => shell.openExternal(aresURL) },
+        { label: 'Discord', click: () => shell.openExternal(discordURL) },
+        { label: 'Repositório', click: () => shell.openExternal(repoURL) },
         { type: 'separator' },
         { label: 'Registro de erros', click: () => showErrorLog(mainWindow) }
     ];

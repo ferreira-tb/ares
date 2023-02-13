@@ -2,10 +2,12 @@ import { resolve } from 'path';
 import type { MenuItemConstructorOptions } from 'electron';
 
 // URL
+export const aresURL = 'https://tb.dev.br/ares';
 export const gameURL = 'https://www.tribalwars.com.br/';
 export const authorURL = 'https://github.com/ferreira-tb';
 export const repoURL = 'https://github.com/ferreira-tb/ares';
-export const helpURL = 'https://github.com/ferreira-tb/ares/issues';
+export const issuesURL = 'https://github.com/ferreira-tb/ares/issues';
+export const discordURL = 'https://discord.gg/tNQbrqbmdK';
 
 // Arquivos
 export const favicon = resolve(__dirname, '../public/favicon.ico');
