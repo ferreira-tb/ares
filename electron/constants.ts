@@ -19,6 +19,6 @@ export const moduleHtml = resolve(__dirname, 'modules.html');
 
 // Menu
 export const devOptions: MenuItemConstructorOptions[] = [
-    { label: 'Forçar atualização', accelerator: 'F6', role: 'forceReload' },
+    { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', role: 'forceReload' },
     { label: 'Inspecionar', accelerator: 'F1', role: 'toggleDevTools' }
 ];

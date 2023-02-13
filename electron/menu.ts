@@ -1,18 +1,20 @@
 import { Menu, MenuItem, shell, BrowserWindow } from 'electron';
 import { aresURL, gameURL, repoURL, discordURL, devOptions } from '$electron/constants.js';
-import { assert } from '$electron/error.js';
 import { showErrorLog } from '$electron/ares/modules.js';
-import { setBasicDevMenu } from '$electron/helpers.js';
+import { togglePanelWindow } from '$electron/helpers.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
 export function setAppMenu(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
     const optionsMenu: MenuItemConstructorOptions[] = [
         { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
         { label: 'Atualizar', accelerator: 'F5', role: 'reload' },
-        { label: 'Ocultar painel', id: 'hide-child', click: hideOrShowPanelWindow },
-        { label: 'Mostrar painel', id: 'show-child', visible: false, click: hideOrShowPanelWindow },
         { type: 'separator' },
-        { label: 'Sair', accelerator: 'Esc', role: 'quit' }
+        { label: 'Configurações', accelerator: 'F3', enabled: false },
+        { type: 'separator' },
+        { label: 'Sair', accelerator: 'Esc', role: 'quit' },
+
+        // Não-visíveis.
+        { label: 'Painel', visible: false, accelerator: 'F2', click: () => togglePanelWindow(mainWindow, panelWindow) }
     ];
     
     const helpMenu: MenuItemConstructorOptions[] = [
@@ -28,29 +30,19 @@ export function setAppMenu(mainWindow: BrowserWindow, panelWindow: BrowserWindow
         { label: 'Ajuda', submenu: helpMenu }
     ] satisfies MenuItemConstructorOptions[]);
 
+    const panelMenu = Menu.buildFromTemplate([
+        { label: 'Início', visible: false, accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
+        { label: 'Painel', visible: false, accelerator: 'F2', click: () => togglePanelWindow(mainWindow, panelWindow) },
+        { label: 'Configurações', visible: false, accelerator: 'F3', enabled: false },
+        { label: 'Atualizar', visible: false, accelerator: 'F5', click: () => mainWindow.webContents.reload() },
+    ] satisfies MenuItemConstructorOptions[]);
+
     if (process.env.ARES_MODE === 'dev') {
         const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu: devOptions });
         mainMenu.append(menuItem);
+        panelMenu.append(menuItem);
     };
 
     mainWindow.setMenu(mainMenu);
-    setBasicDevMenu(panelWindow);
-
-    /** Declarada aqui dentro para ter acesso às variáveis do escopo. */
-    function hideOrShowPanelWindow() {
-        const hideChild = mainMenu.getMenuItemById('hide-child');
-        assert(hideChild instanceof MenuItem, '\"hide-child\" não foi encontrado no menu.');
-
-        const showChild = mainMenu.getMenuItemById('show-child');
-        assert(showChild instanceof MenuItem, '\"show-child\" não foi encontrado no menu.');
-
-        if (panelWindow.isVisible()) {
-            panelWindow.hide();
-        } else {
-            panelWindow.show();
-        };
-
-        hideChild.visible = !hideChild.visible;
-        showChild.visible = !showChild.visible;
-    };
+    panelWindow.setMenu(panelMenu);
 };

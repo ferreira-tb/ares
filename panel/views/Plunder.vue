@@ -47,28 +47,28 @@ const plunderButtonText = computed(() => store.status === false ? 'Saquear' : 'P
         
         <div class="checkbox-area">
             <label class="checkbox-label">
-                <input type="checkbox" v-model="store.ignoreWall" />
+                <input type="checkbox" v-model="store.ignoreWall" disabled="true" />
                 <span>Ignorar muralha</span>
                 <Tooltip>
                     Determina se o Ares deve ignorar as aldeias com muralha.
                 </Tooltip>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" v-model="store.destroyWall" />
+                <input type="checkbox" v-model="store.destroyWall" disabled="true" />
                 <span>Destruir muralha</span>
                 <Tooltip>
                     Determina se o Ares deve destruir as muralhas das aldeias.
                 </Tooltip>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" v-model="store.groupAttack" />
+                <input type="checkbox" v-model="store.groupAttack" disabled="true" />
                 <span>Usar grupo</span>
                 <Tooltip>
                     Permite enviar ataques de mais de uma aldeia.
                 </Tooltip>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" v-model="store.useC" />
+                <input type="checkbox" v-model="store.useC" disabled="true" />
                 <span>Usar modelo C</span>
                 <Tooltip>
                     Determina se o Ares deve usar o modelo C para atacar.
@@ -82,7 +82,7 @@ const plunderButtonText = computed(() => store.status === false ? 'Saquear' : 'P
                 </Tooltip>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" v-model="store.blindAttack" />
+                <input type="checkbox" v-model="store.blindAttack" disabled="true" />
                 <span>Ataque às cegas</span>
                 <Tooltip>
                     Ataca mesmo se não houver informações sobre a aldeia.

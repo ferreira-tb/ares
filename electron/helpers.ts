@@ -50,3 +50,16 @@ export function setBasicDevMenu(browserWindow: BrowserWindow, setNull: boolean =
     const menu = Menu.buildFromTemplate(devOptions);
     browserWindow.setMenu(menu);
 };
+
+export function togglePanelWindow(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
+    if (panelWindow.isVisible()) {
+        panelWindow.hide();
+
+        if (mainWindow.isVisible() && !mainWindow.isFocused()) {
+            mainWindow.focus();
+        };
+
+    } else {
+        panelWindow.show();
+    };
+};
