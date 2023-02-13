@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu.js';
 import { sequelize } from '$electron/database/database.js';
+import { UserConfig } from '$tables/config.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/constants.js';
 
@@ -46,7 +47,10 @@ function createWindow() {
     panelWindow.loadFile(indexHtml);
 
     mainWindow.once('ready-to-show', () => mainWindow.show());
-    panelWindow.once('ready-to-show', () => panelWindow.show());
+    panelWindow.once('ready-to-show', async () => {
+        await UserConfig.setPanelBounds(panelWindow);
+        panelWindow.show();
+    });
 };
 
 app.whenReady().then(() => createWindow());

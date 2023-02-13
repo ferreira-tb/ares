@@ -4,8 +4,11 @@ import { getCurrentWorld } from '$electron/helpers.js';
 import { worldStore, setIntoWorldStore } from '$electron/stores/world.js';
 import type { BrowserWindow } from 'electron';
 
-export function setGameEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
-    // Recebe as coordenadas da janela mãe e então as envia para a janela filha.
+export function setBrowserEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
+    ipcMain.on('reload-browser-window', () => mainWindow.webContents.reload());
+    ipcMain.on('force-reload-browser-window', () => mainWindow.webContents.reloadIgnoringCache());
+
+    // Recebe as coordenadas da janela do browser e então as envia para o painel.
     ipcMain.on('update-current-coords', (_e, currentX: unknown, currentY: unknown) => {
         try {
             assertType(typeof currentX === 'number', 'A coordenada X é inválida.');

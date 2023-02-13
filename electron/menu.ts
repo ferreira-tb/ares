@@ -16,8 +16,8 @@ export function setAppMenu(mainWindow: BrowserWindow, panelWindow: BrowserWindow
     ];
     
     const helpMenu: MenuItemConstructorOptions[] = [
+        { label: 'Site', click: () => shell.openExternal(repoURL) },
         { label: 'Autor', click: () => shell.openExternal(authorURL) },
-        { label: 'Repositório', click: () => shell.openExternal(repoURL) },
         { label: 'Suporte', click: () => shell.openExternal(helpURL) },
         { type: 'separator' },
         { label: 'Registro de erros', click: () => showErrorLog(mainWindow) }
