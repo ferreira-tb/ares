@@ -6,7 +6,7 @@
 
     "compilerOptions": {
         "target": "esnext",
-        "lib": ["esnext", "DOM"],
+        "lib": ["esnext", "dom"],
         "paths": {
             "$electron/*": [
                 "./*"

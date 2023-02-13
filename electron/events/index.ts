@@ -4,6 +4,7 @@ import { setPlunderEvents } from '$electron/events/plunder.js';
 import { setBrowserEvents } from '$electron/events/browser.js';
 import { setErrorEvents } from '$electron/events/error.js';
 import { setPanelEvents } from '$electron/events/panel.js';
+import { setDeimosEvents } from '$electron/events/deimos.js';
 import { MainProcessError } from '$electron/error.js';
 import { browserCss } from '$electron/constants.js';
 
@@ -38,4 +39,5 @@ export function setEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow)
     setPanelEvents(panelWindow);
     setPlunderEvents(mainWindow, panelWindow);
     setErrorEvents();
+    setDeimosEvents();
 };

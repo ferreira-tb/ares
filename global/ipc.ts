@@ -9,6 +9,7 @@ export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;
 export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
+export async function ipcInvoke(channel: 'get-deimos'): Promise<string | null>;
 export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
 export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorLogType[] | null>;
 export async function ipcInvoke(channel: 'is-plunder-active', world?: string): Promise<boolean>;

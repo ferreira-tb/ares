@@ -3,6 +3,7 @@ import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { routeNames, router } from '$browser/router/router.js';
 import { useAresStore } from '$vue/stores/store.js';
+import ScriptTag from '$browser/components/ScriptTag.vue';
 
 const aresStore = useAresStore();
 
@@ -17,6 +18,10 @@ watchEffect(() => {
 </script>
 
 <template>
+    <Suspense>
+        <ScriptTag />
+    </Suspense>
+
     <RouterView v-slot="{ Component }">
         <template v-if="Component">
             <Suspense>
