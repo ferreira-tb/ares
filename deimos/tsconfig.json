@@ -2,11 +2,13 @@
     "include": [
         "./**/*",
         "../types/**/*",
-        "../global/**/*",
-        "../global.d.ts"
+        "../global/**/*"
     ],
     "exclude": [
         "../global/test/*"
+    ],
+    "files": [
+        "../global.d.ts"
     ],
 
     "compilerOptions": {

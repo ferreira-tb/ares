@@ -28,7 +28,7 @@ export class Deimos {
                 if (e.data.channel === channel && e.data.message[0] === handlerUUID) {
                     window.removeEventListener('message', request);
                     e.data.message.shift();
-                    resolve(e.data.message);
+                    resolve(e.data.message[0]);
                 };
             };
 
@@ -52,7 +52,6 @@ export class Deimos {
     public static readonly on = this.#listener(false);
     public static readonly once = this.#listener(true);
 
-    public static handle(channel: 'ping', listener: (a: number, b: number) => number): void;
     public static handle(channel: string, listener: (...args: any[]) => unknown): void {
         channel = this.#handleKey(channel);
         window.addEventListener('message', async (e: MessageEvent<Deimos>) => {

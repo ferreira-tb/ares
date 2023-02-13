@@ -1,4 +1,6 @@
 export type Resources = 'wood' | 'stone' | 'iron';
+export type ResourcesPTBR = 'Madeira' | 'Argila' | 'Ferro';
+export type ResourceAmount = { [key in Resources]: number };
 
 /** Unidades que podem ser usadas no assistente de saque. */
 export type FarmUnits =
