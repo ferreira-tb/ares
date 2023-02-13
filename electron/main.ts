@@ -15,7 +15,8 @@ function createWindow() {
         title: 'Ares',
         icon: favicon,
         webPreferences: {
-            preload: browserJs
+            preload: browserJs,
+            devTools: process.env.ARES_MODE === 'dev'
         }
     });
     
@@ -33,7 +34,8 @@ function createWindow() {
         titleBarStyle: 'hidden',
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            devTools: process.env.ARES_MODE === 'dev'
         }
     });
 

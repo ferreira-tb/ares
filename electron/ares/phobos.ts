@@ -40,7 +40,10 @@ export async function createPhobos(name: PhobosNames, url: URL, mainWindow: Brow
     };
 
     const phobos = new BrowserView({
-        webPreferences: options?.webPreferences ?? { preload: phobosJs }
+        webPreferences: options?.webPreferences ?? {
+            preload: phobosJs,
+            devTools: process.env.ARES_MODE === 'dev'
+        }
     });
 
     mainWindow.addBrowserView(phobos);

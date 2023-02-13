@@ -10,6 +10,7 @@ export default defineConfig({
             '$browser': fileURLToPath(new URL('./browser', import.meta.url)),
             '$global': fileURLToPath(new URL('./global', import.meta.url)),
             '$vue': fileURLToPath(new URL('./vue', import.meta.url)),
+            '$deimos': fileURLToPath(new URL('./deimos', import.meta.url)),
             '$phobos': fileURLToPath(new URL('./phobos', import.meta.url)),
             '$modules': fileURLToPath(new URL('./modules', import.meta.url)),
             '$panel': fileURLToPath(new URL('./panel', import.meta.url))

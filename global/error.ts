@@ -1,4 +1,4 @@
-import { ipcSend } from "$global/ipc";
+import { ipcSend } from "$global/ipc.js";
 import type { ErrorLogBase, DOMErrorLogBase } from "$types/error.js";
 
 export class AresError extends Error {

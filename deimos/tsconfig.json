@@ -1,7 +1,12 @@
 {
     "include": [
         "./**/*",
-        "../types/**/*"
+        "../types/**/*",
+        "../global/**/*",
+        "../global.d.ts"
+    ],
+    "exclude": [
+        "../global/test/*"
     ],
 
     "compilerOptions": {
@@ -10,6 +15,27 @@
         "paths": {
             "$types/*": [
                 "../types/*"
+            ],
+            "$global/*": [
+                "../global/*"
+            ],
+            "$phobos/*": [
+                "../phobos/*"
+            ],
+            "$browser/*": [
+                "../browser/*"
+            ],
+            "$vue/*": [
+                "../vue/*"
+            ],
+            "$modules/*": [
+                "../modules/*"
+            ],
+            "$panel/*": [
+                "../panel/*"
+            ],
+            "$deimos/*": [
+                "./*"
             ]
         },
         

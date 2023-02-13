@@ -18,7 +18,8 @@ export function showErrorLog(mainWindow: BrowserWindow) {
         autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            devTools: process.env.ARES_MODE === 'dev'
         }
     });
 
