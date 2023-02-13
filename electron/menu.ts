@@ -17,8 +17,8 @@ export function setAppMenu(mainWindow: BrowserWindow, panelWindow: BrowserWindow
     
     const helpMenu: MenuItemConstructorOptions[] = [
         { label: 'Site', click: () => shell.openExternal(aresURL) },
+        { label: 'Git Hub', click: () => shell.openExternal(repoURL) },
         { label: 'Discord', click: () => shell.openExternal(discordURL) },
-        { label: 'Repositório', click: () => shell.openExternal(repoURL) },
         { type: 'separator' },
         { label: 'Registro de erros', click: () => showErrorLog(mainWindow) }
     ];

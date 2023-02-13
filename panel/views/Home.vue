@@ -17,7 +17,7 @@ const appVersion = ref<string>(await ipcInvoke('app-version'));
         </div>
         <div class="button-area">
             <Button size="small" @click="shell.openExternal(aresURL)">Site</Button>
-            <Button size="small" @click="shell.openExternal(repoURL)">GitHub</Button>
+            <Button size="small" @click="shell.openExternal(repoURL)">Git Hub</Button>
             <Button size="small" @click="shell.openExternal(discordURL)">Discord</Button>
         </div>
         <div class="footer-area">
