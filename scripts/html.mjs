@@ -12,14 +12,14 @@ try {
 
     console.log('Editando o arquivo index.html do painel.');
     
-    const indexFile = path.resolve(distDir, 'index.html');
+    const indexFile = path.join(distDir, 'index.html');
     let indexContent = await fs.readFile(indexFile, { encoding: 'utf-8' });
     indexContent = indexContent.replace(/\"\/assets\//g, '\"assets\/');
     await fs.writeFile(indexFile, indexContent, { encoding: 'utf-8' });
 
     console.log('Editando o arquivo index.html dos módulos.');
 
-    const moduleFile = path.resolve(distDir, 'modules.html');
+    const moduleFile = path.join(distDir, 'modules.html');
     let moduleContent = await fs.readFile(moduleFile, { encoding: 'utf-8' });
     moduleContent = moduleContent.replace(/\"\/assets\//g, '\"assets\/');
     await fs.writeFile(moduleFile, moduleContent, { encoding: 'utf-8' });

@@ -1,7 +1,7 @@
 {
     "name": "ares",
     "productName": "Ares",
-    "version": "1.0.0-alpha.6",
+    "version": "1.0.0-alpha.7",
     "description": "Ferramenta para Tribal Wars",
     "author": {
         "name": "Andrew Ferreira",
@@ -21,16 +21,17 @@
     ],
     "scripts": {
         "type-check": "vue-tsc --noEmit",
-        "build": "npm run type-check && npm-run-all build:* && node scripts/html.mjs",
+        "build": "npm run type-check && npm-run-all build:* && npm run script",
         "build:panel": "vite build --config vite.config.ts",
         "build:mod": "vite build --config modules.config.ts",
         "build:browser": "vite build --config browser.config.ts",
-        "build:phobos": "vite build --config phobos.config.ts",
         "panel": "npm run type-check && npm run build:panel && node scripts/html.mjs",
         "mod": "npm run type-check && npm run build:mod && node scripts/html.mjs",
-        "browser": "npm run type-check && npm run build:browser",
-        "phobos": "npm run type-check && npm run build:phobos.",
+        "browser": "npm run type-check && npm run build:browser && node scripts/css.mjs",
         "main": "rollup -c && electron .",
+        "script": "npm-run-all script:*",
+        "script:css": "node scripts/css.mjs",
+        "script:html": "node scripts/html.mjs",
         "start": "npm run build && npm run main",
         "test": "vitest",
         "test:ui": "vitest --ui"

@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 import type { MenuItemConstructorOptions } from 'electron';
 
 // URL
@@ -11,11 +11,12 @@ export const discordURL = 'https://discord.gg/tNQbrqbmdK';
 
 // Arquivos
 export const favicon = resolve(__dirname, '../public/favicon.ico');
-export const indexHtml = resolve(__dirname, 'index.html');
-export const browserJs = resolve(__dirname, 'browser.js');
-export const phobosJs = resolve(__dirname, 'phobos.js');
-export const styleCss = resolve(__dirname, 'style.css');
-export const moduleHtml = resolve(__dirname, 'modules.html');
+export const indexHtml = join(__dirname, 'index.html');
+export const browserJs = join(__dirname, 'browser.js');
+export const browserCss = join(__dirname, 'browser.css');
+export const deimosJs = join(__dirname, 'deimos.js');
+export const phobosJs = join(__dirname, 'phobos.js');
+export const moduleHtml = join(__dirname, 'modules.html');
 
 // Menu
 export const devOptions: MenuItemConstructorOptions[] = [

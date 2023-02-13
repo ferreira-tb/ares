@@ -1,0 +1,43 @@
+{
+    "include": [
+        "./**/*",
+        "../types/**/*"
+    ],
+
+    "compilerOptions": {
+        "target": "esnext",
+        "lib": ["esnext", "DOM"],
+        "paths": {
+            "$types/*": [
+                "../types/*"
+            ]
+        },
+        
+        // Modo estrito
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "useUnknownInCatchVariables": true,
+        
+        // Código não utilizado
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "allowUnusedLabels": false,
+        "allowUnreachableCode": false,
+
+        // Código implícito
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+
+        // Outros
+        "exactOptionalPropertyTypes": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        "removeComments": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true
+    }
+}

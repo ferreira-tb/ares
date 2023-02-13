@@ -5,7 +5,7 @@ import { setBrowserEvents } from '$electron/events/browser.js';
 import { setErrorEvents } from '$electron/events/error.js';
 import { setPanelEvents } from '$electron/events/panel.js';
 import { MainProcessError } from '$electron/error.js';
-import { styleCss } from '$electron/constants.js';
+import { browserCss } from '$electron/constants.js';
 
 export function setEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
     // Informações sobre o Ares.
@@ -21,7 +21,7 @@ export function setEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow)
         panelWindow.webContents.send('page-url', currentURL);
 
         try {
-            const style = await fs.readFile(styleCss, { encoding: 'utf8' });
+            const style = await fs.readFile(browserCss, { encoding: 'utf8' });
             await mainWindow.webContents.insertCSS(style);
         } catch (err) {
             MainProcessError.handle(err);

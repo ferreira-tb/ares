@@ -1,44 +1,36 @@
 {
-    "extends": "@vue/tsconfig/tsconfig.web.json",
     "include": [
-        "env.d.ts",
-        "global.d.ts",
-        "types/**/*",
-        "panel/**/*",
-        "panel/**/*.vue",
-        "browser/**/*",
-        "browser/**/*.vue",
-        "modules/**/*",
-        "modules/**/*.vue",
-        "global/**/*",
-        "dev/**/*",
-        "vue/**/*"
+        "./**/*",
+        "../types/**/*",
+        "../global.d.ts"
     ],
+
     "compilerOptions": {
-        "baseUrl": ".",
+        "target": "esnext",
+        "lib": ["esnext", "DOM"],
         "paths": {
             "$types/*": [
-                "./types/*"
-            ],
-            "$browser/*": [
-                "./browser/*"
+                "../types/*"
             ],
             "$global/*": [
-                "./global/*"
+                "../global/*"
+            ],
+            "$phobos/*": [
+                "./*"
+            ],
+            "$browser/*": [
+                "../browser/*"
             ],
             "$vue/*": [
-                "./vue/*"
+                "../vue/*"
             ],
             "$modules/*": [
-                "./modules/*"
+                "../modules/*"
             ],
             "$panel/*": [
-                "./panel/*"
+                "../panel/*"
             ]
         },
-
-        "lib": ["esnext", "dom"],
-        "target": "esnext",
         
         // Modo estrito
         "alwaysStrict": true,
@@ -64,12 +56,7 @@
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
         "removeComments": true,
-        "types": ["node", "vitest/globals"],
+        "moduleResolution": "node",
         "esModuleInterop": true
-    },
-    "references": [
-        {
-            "path": "./tsconfig.config.json"
-        }
-    ]
+    }
 }
