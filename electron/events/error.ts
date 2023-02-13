@@ -5,9 +5,10 @@ import { assertType, MainProcessError } from '$electron/error.js';
 import { getWorldFromURL } from '$electron/helpers.js';
 import { sequelize } from '$electron/database/database.js';
 import { ErrorLog, DOMErrorLog } from '$tables/error.js';
+import { ErrorLogType, DOMErrorLogType } from '$types/error.js';
 
 export function setErrorEvents() {
-    ipcMain.on('set-error-log', async (_e, err: ErrorLog) => {
+    ipcMain.on('set-error-log', async (_e, err: ErrorLogType) => {
         try {
             assertType(typeof err.name === 'string', 'O nome do erro é inválido.');
             assertType(typeof err.message === 'string', 'Não há uma mensagem válida no relatório de erro.');
@@ -45,7 +46,7 @@ export function setErrorEvents() {
         };
     });
 
-    ipcMain.on('set-dom-error-log', async (e, err: DOMErrorLog) => {
+    ipcMain.on('set-dom-error-log', async (e, err: DOMErrorLogType) => {
         try {
             assertType(typeof err.selector === 'string', 'O seletor informado no relatório de erro é inválido.');
 
