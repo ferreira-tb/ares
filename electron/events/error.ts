@@ -1,7 +1,7 @@
 import { app, ipcMain } from 'electron';
 import { URL } from 'url';
 import { Op } from 'sequelize';
-import { assertType, MainProcessError } from '$electron/error.js';
+import { assertInteger, assertType, MainProcessError } from '$electron/error.js';
 import { getWorldFromURL } from '$electron/helpers.js';
 import { sequelize } from '$electron/database/database.js';
 import { ErrorLog, DOMErrorLog } from '$tables/error.js';
@@ -29,11 +29,23 @@ export function setErrorEvents() {
         };
     });
 
+    ipcMain.on('delete-error-log', async (_e, id: number) => {
+        try {
+            assertInteger(id, 'O ID do registro de erro é inválido.');
+            await sequelize.transaction(async (transaction) => {
+                await ErrorLog.destroy({ where: { id }, transaction });
+            });
+
+        } catch (err) {
+            MainProcessError.handle(err);
+        };
+    });
+
     ipcMain.handle('get-error-log', async () => {
         try {
             const result = await sequelize.transaction(async (transaction) => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
-                const expiration = Date.now() - 2592000;
+                const expiration = Date.now() - 2592000000;
                 await ErrorLog.destroy({ where: { time: { [Op.lte]: expiration } }, transaction });
                 return await ErrorLog.findAll({ raw: true, transaction });
             });
@@ -70,11 +82,23 @@ export function setErrorEvents() {
         }; 
     });
 
+    ipcMain.on('delete-dom-error-log', async (_e, id: number) => {
+        try {
+            assertInteger(id, 'O ID do registro de erro é inválido.');
+            await sequelize.transaction(async (transaction) => {
+                await DOMErrorLog.destroy({ where: { id }, transaction });
+            });
+            
+        } catch (err) {
+            MainProcessError.handle(err);
+        };
+    });
+
     ipcMain.handle('get-dom-error-log', async () => {
         try {
             const result = await sequelize.transaction(async (transaction) => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
-                const expiration = Date.now() - 2592000;
+                const expiration = Date.now() - 2592000000;
                 await DOMErrorLog.destroy({ where: { time: { [Op.lte]: expiration } }, transaction });
                 return await DOMErrorLog.findAll({ raw: true, transaction });
             });

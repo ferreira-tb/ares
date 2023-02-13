@@ -1,21 +1,44 @@
 <script setup lang="ts">
 import { useSorted } from '@vueuse/core';
-import { ipcInvoke } from '$global/ipc.js';
+import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { getLocaleDateString } from '$global/helpers.js';
-import { assertType } from '$global/error.js';
+import { assertInteger, assertType } from '$global/error.js';
+import { VBtn as Button } from 'vuetify/components/VBtn';
+import {
+    VCard as Card,
+    VCardItem as CardItem,
+    VCardTitle as CardTitle,
+    VCardSubtitle as CardSubtitle,
+    VCardText as CardText,
+    VCardActions as CardAction
+} from 'vuetify/components/VCard';
 
 const raw = await ipcInvoke('get-dom-error-log');
 assertType(Array.isArray(raw), 'Houve um erro durante a conexão com o banco de dados.');
 const errors = useSorted(raw, (a, b) => b.time - a.time);
+
+const getOrigin = (url: string) => new URL(url).origin;
+
+function deleteError(id: number) {
+    assertInteger(id, 'O ID do erro deve ser um número inteiro.');
+    ipcSend('delete-dom-error-log', id);
+    errors.value = errors.value.filter((error) => error.id !== id);
+};
 </script>
 
 <template>
     <section>
         <template v-if="errors.length > 0">
-            <div v-for="error of errors" :key="error.id" class="error-log">
-                <p class="bold">{{ error.selector }} <span>{{ getLocaleDateString(error.time, true) }}</span></p>
-                <p>{{ error.url }}</p>
-            </div>
+            <Card v-for="error of errors" :key="error.id" class="error-log rounded">
+                <CardItem>
+                    <CardTitle>{{ getOrigin(error.url) }}</CardTitle>
+                    <CardSubtitle>{{ getLocaleDateString(error.time, true) }}</CardSubtitle>
+                </CardItem>
+                <CardText>{{ error.selector }}</CardText>
+                <CardAction>
+                    <Button @click="deleteError(error.id)">Excluir</Button>
+                </CardAction>
+            </Card>
         </template>
         <div v-else class="no-errors green-text bold">
             Nenhum erro registrado :)
@@ -28,14 +51,8 @@ const errors = useSorted(raw, (a, b) => b.time - a.time);
     margin-bottom: 0.5em;
 }
 
-.error-log p:nth-of-type(2) {
-    margin-top: 0.3em;
-}
-
-.error-log p>span {
-    margin-left: 1em;
-    font-weight: normal;
-    font-size: smaller;
+.error-log:last-of-type {
+    margin-bottom: 1em;
 }
 
 .no-errors {

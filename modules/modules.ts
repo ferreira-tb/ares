@@ -11,7 +11,20 @@ import App from '$modules/App.vue';
 
 const app = createApp(App);
 const pinia = createPinia();
-const vuetify = createVuetify();
+const vuetify = createVuetify({
+    defaults: {
+        VBtn: {
+            variant: 'tonal'
+        },
+        VCard: {
+            variant: 'tonal'
+        },
+        VTooltip: {
+            activator: 'parent',
+            location: 'bottom'
+        }
+    }
+});
 
 // Plugins.
 app.use(pinia);

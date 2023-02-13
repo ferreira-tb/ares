@@ -1,24 +1,17 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { RouterLink, RouterView, type RouteRecordName } from 'vue-router';
+import { RouterView } from 'vue-router';
+import { VTabs as Tabs, VTab as Tab } from 'vuetify/components/VTabs';
 import { router } from '$modules/router/router.js';
-
-const currentRoute = ref<RouteRecordName | null>(null);
-const normalClass = computed(() => ({ 'current-page': currentRoute.value === 'normal-errors' }));
-const domClass = computed(() => ({ 'current-page': currentRoute.value === 'dom-errors' }));
-
-watch(router.currentRoute, () => {
-    const routeName = router.currentRoute.value.name
-    if (routeName) currentRoute.value = routeName;
-});
 
 router.push({ name: 'normal-errors' });
 </script>
 
 <template>
-    <nav class="error-log-nav-bar">
-        <RouterLink :class="normalClass" :to="({ name: 'normal-errors' })">Geral</RouterLink>
-        <RouterLink :class="domClass" :to="({ name: 'dom-errors' })">DOM</RouterLink>
+    <nav>
+        <Tabs height="30px" :mandatory="true">
+            <Tab :to="({ name: 'normal-errors' })">Geral</Tab>
+            <Tab :to="({ name: 'dom-errors' })">DOM</Tab>
+        </Tabs>
     </nav>
 
     <div class="error-log-content">
@@ -40,19 +33,6 @@ router.push({ name: 'normal-errors' });
 </template>
 
 <style scoped>
-.error-log-nav-bar {
-    display: flex;
-    justify-content: start;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 30px;
-    width: 100%;
-    border-bottom: 1px solid var(--color-border);
-    user-select: none;
-}
-
 .error-log-content {
     position: absolute;
     top: 30px;
@@ -69,17 +49,5 @@ router.push({ name: 'normal-errors' });
     width: 100%;
     overflow-x: hidden;
     overflow-y: auto;
-}
-
-.error-log-nav-bar > a:first-of-type {
-    margin-left: 0.5em;
-}
-
-.error-log-nav-bar > a:not(:last-of-type) {
-    margin-right: 1em;
-}
-
-.error-log-nav-bar > .current-page {
-    font-weight: bold;
 }
 </style>

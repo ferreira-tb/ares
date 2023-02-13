@@ -27,6 +27,8 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
 
 export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
 export function ipcSend(channel: 'set-dom-error-log', err: DOMErrorLogBase): void;
+export function ipcSend(channel: 'delete-error-log', id: number): void;
+export function ipcSend(channel: 'delete-dom-error-log', id: number): void;
 export function ipcSend(channel: 'reload-main-window'): void;
 export function ipcSend(channel: 'force-reload-main-window'): void;
 export function ipcSend(channel: 'set-plunder-state', name: keyof PlunderState, value: PlunderStateValue, world?: string): void;

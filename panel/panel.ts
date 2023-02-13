@@ -16,6 +16,9 @@ const vuetify = createVuetify({
         VBtn: {
             variant: 'tonal'
         },
+        VCard: {
+            variant: 'tonal'
+        },
         VTooltip: {
             activator: 'parent',
             location: 'bottom'
