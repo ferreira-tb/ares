@@ -1,10 +1,10 @@
 import { ipcMain } from 'electron';
-import { assertInteger, assertObjectHasSameProps, assertType } from '../error.js';
-import { plunderStore } from '../stores/plunder.js';
-import { assertCurrentWorld } from '../helpers.js';
+import { assertInteger, assertObjectHasSameProps, assertType } from '$electron/error.js';
+import { plunderStore } from '$electron/stores/plunder.js';
+import { assertCurrentWorld } from '$electron/helpers.js';
 import type { BrowserWindow } from 'electron';
 
-export function setPlunderEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
+export function setPlunderEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
     // Verifica se o Plunder está ativo ou não.
     ipcMain.handle('is-plunder-active', (_e, world?: string) => {
         if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
@@ -29,7 +29,7 @@ export function setPlunderEvents(mainWindow: BrowserWindow, childWindow: Browser
     // Emitido pelo browser após cada ataque realizado pelo Plunder.
     // Atualiza a quantidade de recursos saqueados no painel.
     ipcMain.on('update-plundered-amount', (_e, resources: unknown) => {
-        if (resources) childWindow.webContents.send('update-plundered-amount', resources);
+        if (resources) panelWindow.webContents.send('update-plundered-amount', resources);
     });
 
     // Emitido pelo browser quando o Plunder é desativado.

@@ -1,16 +1,16 @@
 import { ipcMain } from 'electron';
-import { assertType, MainProcessError } from '../error.js';
-import { getCurrentWorld } from '../helpers.js';
-import { worldStore, setIntoWorldStore } from '../stores/world.js';
+import { assertType, MainProcessError } from '$electron/error.js';
+import { getCurrentWorld } from '$electron/helpers.js';
+import { worldStore, setIntoWorldStore } from '$electron/stores/world.js';
 import type { BrowserWindow } from 'electron';
 
-export function setGameEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
+export function setGameEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
     // Recebe as coordenadas da janela mãe e então as envia para a janela filha.
     ipcMain.on('update-current-coords', (_e, currentX: unknown, currentY: unknown) => {
         try {
             assertType(typeof currentX === 'number', 'A coordenada X é inválida.');
             assertType(typeof currentY === 'number', 'A coordenada Y é inválida.');
-            childWindow.webContents.send('update-current-coords', currentX, currentY);
+            panelWindow.webContents.send('update-current-coords', currentX, currentY);
 
         } catch (err) {
             MainProcessError.handle(err);

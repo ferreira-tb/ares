@@ -1,66 +1,88 @@
 import { app, ipcMain } from 'electron';
-import { URL } from 'node:url';
-import { assert, assertInteger, assertType, MainProcessError } from '$electron/error.js';
+import { URL } from 'url';
+import { Op } from 'sequelize';
+import { assertType, MainProcessError } from '$electron/error.js';
 import { getWorldFromURL } from '$electron/helpers.js';
-import { getDeimosPort } from '$electron/ares/deimos.js';
-import type { ErrorLog, DOMErrorLog } from '$types/error.js';
-import type { ErrorLogRequest, DOMErrorLogRequest } from '$types/electron.js';
+import { sequelize } from '$electron/database/database.js';
+import { ErrorLog, DOMErrorLog } from '$tables/error.js';
 
 export function setErrorEvents() {
-    ipcMain.on('log-error', async (_e, err: ErrorLog) => {
+    ipcMain.on('set-error-log', async (_e, err: ErrorLog) => {
         try {
             assertType(typeof err.name === 'string', 'O nome do erro é inválido.');
             assertType(typeof err.message === 'string', 'Não há uma mensagem válida no relatório de erro.');
-            assertInteger(err.time, 'A hora informada no relatório de erro é inválida.');
     
-            const errorLog: ErrorLogRequest = {
-                name: err.name,
-                message: err.message,
-                time: err.time,
-                ares: app.getVersion(),
-                chrome: process.versions.chrome,
-                electron: process.versions.electron
-            };
-    
-            const response = await fetch(`http://127.0.0.1:${getDeimosPort()}/deimos/error/normal`, {
-                method: 'post',
-                body: JSON.stringify(errorLog)
+            await sequelize.transaction(async (transaction) => {
+                await ErrorLog.create({
+                    name: err.name,
+                    message: err.message,
+                    time: Date.now(),
+                    ares: app.getVersion(),
+                    chrome: process.versions.chrome,
+                    electron: process.versions.electron
+                }, { transaction });
             });
-    
-            assert(response.ok, await response.text());
 
         } catch (err) {
             MainProcessError.handle(err);
         };
     });
 
-    ipcMain.on('log-dom-error', async (e, err: DOMErrorLog) => {
+    ipcMain.handle('get-error-log', async () => {
+        try {
+            const result = await sequelize.transaction(async (transaction) => {
+                // Elimina do registro os erros que tenham mais de 30 dias.
+                const expiration = Date.now() - 2592000;
+                await ErrorLog.destroy({ where: { time: { [Op.lte]: expiration } }, transaction });
+                return await ErrorLog.findAll({ raw: true, transaction });
+            });
+            
+            return result;
+
+        } catch (err) {
+            MainProcessError.handle(err);
+            return null;
+        };
+    });
+
+    ipcMain.on('set-dom-error-log', async (e, err: DOMErrorLog) => {
         try {
             assertType(typeof err.selector === 'string', 'O seletor informado no relatório de erro é inválido.');
-            assertInteger(err.time, 'A hora informada no relatório de erro é inválida.');
 
             const url = new URL(e.sender.getURL());
             const world = getWorldFromURL(url);
 
-            const errorLog: DOMErrorLogRequest = {
-                url: url.href,
-                world: world,
-                selector: err.selector,
-                time: err.time,
-                ares: app.getVersion(),
-                chrome: process.versions.chrome,
-                electron: process.versions.electron
-            };
-
-            const response = await fetch(`http://127.0.0.1:${getDeimosPort()}/deimos/error/dom`, {
-                method: 'post',
-                body: JSON.stringify(errorLog)
+            await sequelize.transaction(async (transaction) => {
+                await DOMErrorLog.create({
+                    url: url.href,
+                    world: world,
+                    selector: err.selector,
+                    time: Date.now(),
+                    ares: app.getVersion(),
+                    chrome: process.versions.chrome,
+                    electron: process.versions.electron
+                }, { transaction });
             });
-
-            assert(response.ok, await response.text());
 
         } catch (err) {
             MainProcessError.handle(err);
         }; 
+    });
+
+    ipcMain.handle('get-dom-error-log', async () => {
+        try {
+            const result = await sequelize.transaction(async (transaction) => {
+                // Elimina do registro os erros que tenham mais de 30 dias.
+                const expiration = Date.now() - 2592000;
+                await DOMErrorLog.destroy({ where: { time: { [Op.lte]: expiration } }, transaction });
+                return await DOMErrorLog.findAll({ raw: true, transaction });
+            });
+            
+            return result;
+
+        } catch (err) {
+            MainProcessError.handle(err);
+            return null;
+        };
     });
 };

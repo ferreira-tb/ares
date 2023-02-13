@@ -1,14 +1,12 @@
-import * as fs from 'node:fs/promises';
+import * as fs from 'fs/promises';
 import { app, ipcMain, type BrowserWindow } from 'electron';
-import { setPlunderEvents } from '../events/plunder.js';
-import { setGameEvents } from '../events/game.js';
-import { setDeimosEvents } from '../events/deimos.js';
-import { setModuleEvents } from '../events/modules.js';
-import { setErrorEvents } from './error.js';
-import { MainProcessError } from '../error.js';
-import { styleCss } from '../constants.js';
+import { setPlunderEvents } from '$electron/events/plunder.js';
+import { setGameEvents } from '$electron/events/game.js';
+import { setErrorEvents } from '$electron/events/error.js';
+import { MainProcessError } from '$electron/error.js';
+import { styleCss } from '$electron/constants.js';
 
-export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow) {
+export function setEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
     // Informações sobre o Ares.
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
@@ -22,7 +20,7 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
     mainWindow.webContents.on('did-finish-load', async () => {
         const currentURL = mainWindow.webContents.getURL();
         mainWindow.webContents.send('page-url', currentURL);
-        childWindow.webContents.send('page-url', currentURL);
+        panelWindow.webContents.send('page-url', currentURL);
 
         try {
             const style = await fs.readFile(styleCss, { encoding: 'utf8' });
@@ -38,9 +36,7 @@ export function setEvents(mainWindow: BrowserWindow, childWindow: BrowserWindow)
     });
 
     // Outros eventos.
-    setGameEvents(mainWindow, childWindow);
-    setPlunderEvents(mainWindow, childWindow);
-    setDeimosEvents(mainWindow);
-    setModuleEvents();
+    setGameEvents(mainWindow, panelWindow);
+    setPlunderEvents(mainWindow, panelWindow);
     setErrorEvents();
 };

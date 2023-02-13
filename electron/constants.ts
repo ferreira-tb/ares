@@ -1,4 +1,4 @@
-import { resolve } from 'node:path';
+import { resolve } from 'path';
 import type { MenuItemConstructorOptions } from 'electron';
 
 // URL
@@ -14,7 +14,6 @@ export const browserJs = resolve(__dirname, 'browser.js');
 export const phobosJs = resolve(__dirname, 'phobos.js');
 export const styleCss = resolve(__dirname, 'style.css');
 export const moduleHtml = resolve(__dirname, 'modules.html');
-export const deimosExe = resolve(__dirname, '../__testpy__/deimos.exe');
 
 // Menu
 export const devOptions: MenuItemConstructorOptions[] = [

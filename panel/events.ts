@@ -6,7 +6,7 @@ import { resources as resourceList } from '$global/constants.js';
 import type { Pinia } from 'pinia';
 import type { PlunderedResources } from '$browser/farm/resources.js';
 
-export function setChildWindowEvents(pinia: Pinia) {
+export function setPanelWindowEvents(pinia: Pinia) {
     const aresStore = useAresStore(pinia);
     const plunderStore = usePlunderStore(pinia);
     const plunderHistoryStore = usePlunderHistoryStore(pinia);

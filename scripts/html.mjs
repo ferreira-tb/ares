@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 try {
     const startTime = Date.now();
 
-    const distDir = path.resolve(__dirname, '../__dist__');
+    const distDir = path.resolve(__dirname, '../dist');
 
     console.log('Editando o arquivo index.html do painel.');
     

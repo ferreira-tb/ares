@@ -10,7 +10,7 @@ import type { FarmUnits, XMLTags } from '$types/game.js';
 export function parseCoordsFromTextContent(text: string | null): [number, number] | null {
     if (!text) return null;
 
-    const targetCoords = text.trim().match(/\d\d\d\|\d\d\d/m);
+    const targetCoords = text.trim().match(/\d{3}\|\d{3}/m);
     if (!targetCoords) return null;
 
     const coords = targetCoords[0].split('\|')
@@ -90,7 +90,7 @@ export function queryXMLTags(xmlDocument: XMLDocument, type: 'world' | 'unit') {
         const valueField = xmlDocument.querySelector(tag);
         if (valueField === null) {
             // Caso não exista campo para arqueiros, assume que o mundo não os possui.
-            if (type === 'unit' && tag.includes('archer')) return 0;
+            if (type === 'unit' && /archer/.test(tag)) return 0;
             throw new AresError(`O campo \"${tag}\" não foi encontrado no documento XML.`);
         };
 

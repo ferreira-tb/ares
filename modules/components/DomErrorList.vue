@@ -1,28 +1,18 @@
 <script setup lang="ts">
-import { reactive, watchEffect } from 'vue';
+import { useSorted } from '@vueuse/core';
 import { ipcInvoke } from '$global/ipc.js';
 import { getLocaleDateString } from '$global/helpers.js';
-import { AresError } from '$global/error.js';
-import type { DOMErrorLogResponse } from '$types/electron.js';
+import { assertType } from '$global/error.js';
 
-const port = await ipcInvoke('deimos-port');
-const response = await fetch(`http://127.0.0.1:${port}/deimos/error/dom`);
-
-if (!response.ok) {
-    const reason = await response.text();
-    throw new AresError(reason);
-};
-
-const json = await response.json() as DOMErrorLogResponse[];
-const errorList = reactive(json);
-
-watchEffect(() => errorList.sort((a, b) => b.time - a.time));
+const raw = await ipcInvoke('get-dom-error-log');
+assertType(Array.isArray(raw), 'Houve um erro durante a conexão com o banco de dados.');
+const errors = useSorted(raw, (a, b) => b.time - a.time);
 </script>
 
 <template>
     <section>
-        <template v-if="errorList.length > 0">
-            <div v-for="error of errorList" :key="error.id" class="error-log">
+        <template v-if="errors.length > 0">
+            <div v-for="error of errors" :key="error.id" class="error-log">
                 <p class="bold">{{ error.selector }} <span>{{ getLocaleDateString(error.time, true) }}</span></p>
                 <p>{{ error.url }}</p>
             </div>
@@ -42,7 +32,7 @@ watchEffect(() => errorList.sort((a, b) => b.time - a.time));
     margin-top: 0.3em;
 }
 
-.error-log p > span {
+.error-log p>span {
     margin-left: 1em;
     font-weight: normal;
     font-size: smaller;

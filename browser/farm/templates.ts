@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue';
+import { computed, reactive, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { assert } from '$global/error.js';
 import { availableUnits } from '$browser/farm/units.js';
@@ -107,15 +107,18 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * Ao fim, os modelos são ordenados de acordo com a capacidade de carga.
  * @param resources - Recursos disponíveis na aldeia-alvo.
  */
-export function filterTemplates(resources: number): PlunderTemplate[] {
+export async function filterTemplates(resources: number): Promise<PlunderTemplate[]> {
     const store = usePlunderStore();
     const { resourceRatio } = storeToRefs(store);
 
     // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.
-    // Os modelos com maior capacidade de carga maior que a quantidade de recursos são colocados no grupo `bigger`.
+    // Os modelos com capacidade de carga maior que a quantidade de recursos são colocados no grupo `bigger`.
     // Os demais são colocados no grupo `smaller`.
     let bigger: PlunderTemplate[] = [];
     const smaller: PlunderTemplate[] = [];
+
+    // Aguarda para certificar-se de que a lista de modelos foi atualizada.
+    await nextTick();
 
     for (const template of availableTemplates.value) {
         if (template.carry > resources) {
@@ -125,11 +128,17 @@ export function filterTemplates(resources: number): PlunderTemplate[] {
         };
     };
 
-    // Filtra os modelos com capacidade de carga maior que a quantidade de recursos.
-    // Remove aqueles cuja razão entre a quantidade de recursos e a capacidade de carga é menor que o valor definido pelo usuário.
+    // Remove os modelos cuja razão entre a quantidade de recursos e a capacidade de carga é menor que o valor definido pelo usuário.
+    // Isso impede que sejam enviadas tropas em excesso para a aldeia-alvo.
+    // Quanto menor for a razão, maior a quantidade de tropas sendo enviada desnecessariamente.
     // Não é necessário filtrar os modelos com capacidade de carga menor que a quantidade de recursos, pois eles sempre são válidos.
     bigger = bigger.filter((template) => resources / template.carry >= resourceRatio.value);
 
-    // Ordena os modelos de acordo com a capacidade de carga.
-    return [...smaller, ...bigger].sort((a, b) => b.carry - a.carry);
+    return [...smaller, ...bigger];
+};
+
+export function pickBestTemplate(templates: PlunderTemplate[]): PlunderTemplate {
+    assert(templates.length > 0, 'Não há modelos de saque disponíveis.');
+    // Seleciona o modelo com maior capacidade de carga.
+    return templates.reduce((prev, curr) => prev.carry > curr.carry ? prev : curr);
 };

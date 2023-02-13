@@ -18,7 +18,7 @@ export default defineConfig({
     },
     build: {
         target: 'esnext',
-        outDir: '__dist__',
+        outDir: 'dist',
         emptyOutDir: false,
         lib: {
             entry: resolve(__dirname, 'browser/browser.ts'),

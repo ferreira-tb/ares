@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { RouterLink, RouterView, type RouteRecordName } from 'vue-router';
-import { router } from '../router/router.js';
+import { router } from '$modules/router/router.js';
 
 const currentRoute = ref<RouteRecordName | null>(null);
 const normalClass = computed(() => ({ 'current-page': currentRoute.value === 'normal-errors' }));
@@ -71,15 +71,15 @@ router.push({ name: 'normal-errors' });
     overflow-y: auto;
 }
 
-.error-log-nav-bar>a:first-of-type {
+.error-log-nav-bar > a:first-of-type {
     margin-left: 0.5em;
 }
 
-.error-log-nav-bar>a:not(:last-of-type) {
+.error-log-nav-bar > a:not(:last-of-type) {
     margin-right: 1em;
 }
 
-.error-log-nav-bar>.current-page {
+.error-log-nav-bar > .current-page {
     font-weight: bold;
 }
 </style>

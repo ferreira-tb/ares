@@ -22,8 +22,7 @@ export class PlunderedResources {
             assertInteger(amount, 'A quantidade de recursos esperada não é válida.');
 
             const resName = resources[index];
-            this[resName] = amount;
-            
-        }, this);
+            this[resName] = amount;     
+        });
     };
 };
