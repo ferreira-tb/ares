@@ -30,7 +30,7 @@ export default [
         }
     },
     {
-        input: 'deimos/deimos.ts',
+        input: 'deimos/index.ts',
         output: {
             file: 'dist/deimos.js',
             format: 'iife',
@@ -44,7 +44,7 @@ export default [
         ]
     },
     {
-        input: 'phobos/phobos.ts',
+        input: 'phobos/index.ts',
         output: {
             file: 'dist/phobos.js',
             format: 'cjs',

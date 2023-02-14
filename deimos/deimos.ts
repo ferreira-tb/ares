@@ -1,1 +1,0 @@
-import '$deimos/ipc.js';
