@@ -1,14 +1,11 @@
-import { BrowserWindow, ipcMain } from 'electron';
+import { ipcMain } from 'electron';
 import { plunderStore } from '$electron/electron-store/plunder.js';
 import { assertInteger, assertObjectHasSameProps, assertType } from '$electron/utils/assert.js';
-import { assertCurrentWorld, getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
+import { assertCurrentWorld, assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
 
 export function setPlunderEvents() {
-    const mainWindow = getMainWindow();
-    const panelWindow = getPanelWindow();
-
-    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
-    assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+    const mainWindow = assertMainWindow();
+    const panelWindow = assertPanelWindow();
 
     // Verifica se o Plunder está ativo ou não.
     ipcMain.handle('is-plunder-active', (_e, world?: string) => {

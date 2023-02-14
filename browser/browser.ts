@@ -3,7 +3,7 @@ import '$global/prototype.js';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '$browser/router/router.js';
-import { setPreloadEvents } from '$browser/events.js';
+import { setBrowserEvents } from '$browser/events.js';
 import { AresError, GameDOMError } from '$global/error.js';
 import Browser from '$browser/Browser.vue';
 
@@ -24,7 +24,7 @@ app.config.errorHandler = (err) => {
 };
 
 // Eventos.
-setPreloadEvents(pinia);
+setBrowserEvents(pinia);
 
 window.addEventListener('DOMContentLoaded', () => {
     router.push('/');

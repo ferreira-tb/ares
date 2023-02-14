@@ -8,9 +8,21 @@ export const getMainWindow = () => {
     return BrowserWindow.fromId(id);
 };
 
+export const assertMainWindow = () => {
+    const mainWindow = getMainWindow();
+    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+    return mainWindow;
+};
+
 export const getPanelWindow = () => {
     const id = Number.assertInteger(process.env.PANEL_WINDOW_ID ?? '', 10);
     return BrowserWindow.fromId(id);
+};
+
+export const assertPanelWindow = () => {
+    const panelWindow = getPanelWindow();
+    assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+    return panelWindow;
 };
 
 export function getWorldFromURL(url: URL) {
@@ -31,9 +43,7 @@ export function assertWorldFromURL(url: URL) {
 };
 
 export function getCurrentWorld() {
-    const mainWindow = getMainWindow();
-    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
-
+    const mainWindow = assertMainWindow();
     const currentURL = mainWindow.webContents.getURL();
     if (/\.?tribalwars/.test(currentURL)) {
         const url = new URL(currentURL);
@@ -65,11 +75,8 @@ export function setBasicDevMenu(browserWindow: BrowserWindow, setNull: boolean =
 };
 
 export function togglePanelWindow() {
-    const mainWindow = getMainWindow();
-    const panelWindow = getPanelWindow();
-
-    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
-    assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+    const mainWindow = assertMainWindow();
+    const panelWindow = assertPanelWindow();
 
     if (panelWindow.isVisible()) {
         panelWindow.hide();

@@ -5,7 +5,7 @@ export function setDeimosEvents() {
     /** Conteúdo do arquivo `deimos.js`. */
     let deimos: string | null = null;
 
-    ipcMain.handle('get-deimos', async () => {
+    ipcMain.handle('get-deimos-file', async () => {
         deimos ??= await readDeimosFile();
         return deimos;
     });

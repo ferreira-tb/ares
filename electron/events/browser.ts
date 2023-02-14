@@ -1,15 +1,12 @@
-import { BrowserWindow, ipcMain } from 'electron';
+import { ipcMain } from 'electron';
 import { assertType } from '$electron/utils/assert.js';
 import { MainProcessError } from '$electron/error.js';
-import { getCurrentWorld, getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
+import { getCurrentWorld, assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
 import { worldStore, setIntoWorldStore } from '$electron/electron-store/world.js';
 
 export function setBrowserEvents() {
-    const mainWindow = getMainWindow();
-    const panelWindow = getPanelWindow();
-
-    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
-    assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+    const mainWindow = assertMainWindow();
+    const panelWindow = assertPanelWindow();
 
     ipcMain.on('reload-browser-window', () => mainWindow.webContents.reload());
     ipcMain.on('force-reload-browser-window', () => mainWindow.webContents.reloadIgnoringCache());
