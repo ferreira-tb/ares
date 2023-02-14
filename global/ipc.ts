@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderState, PlunderStateValue } from '$types/plunder.js';
-import type { WorldData, UnitData } from '../panel/config.js';
-import type { PlunderedResources } from '$browser/farm/resources.js';
+import type { WorldData, UnitData } from '$panel/config.js';
+import type { PlunderedResources } from '$lib/farm/resources.js';
 import type { PlunderedAmount } from '$types/game.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 

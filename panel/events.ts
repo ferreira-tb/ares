@@ -4,7 +4,7 @@ import { useAresStore } from '$vue/stores/ares.js';
 import { usePlunderHistoryStore, usePlunderStore } from '$vue/stores/plunder.js';
 import { resources as resourceList } from '$global/constants.js';
 import type { Pinia } from 'pinia';
-import type { PlunderedResources } from '$browser/farm/resources.js';
+import type { PlunderedResources } from '$lib/farm/resources.js';
 
 export function setPanelWindowEvents(pinia: Pinia) {
     const aresStore = useAresStore(pinia);
