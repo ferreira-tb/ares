@@ -2,7 +2,7 @@
 import { watch, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { routeNames, router } from './router/router.js';
-import { useAresStore, updateCurrentWorld } from '$vue/stores/store.js';
+import { useAresStore, updateCurrentWorld } from '$vue/stores/ares.js';
 import { patchPlunderStore } from '$vue/stores/plunder.js';
 import { verifyWorldAndUnitData } from './config.js';
 

@@ -2,7 +2,7 @@
 import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { routeNames, router } from '$browser/router/router.js';
-import { useAresStore } from '$vue/stores/store.js';
+import { useAresStore } from '$vue/stores/ares.js';
 import ScriptTag from '$browser/components/ScriptTag.vue';
 
 const aresStore = useAresStore();

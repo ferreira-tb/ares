@@ -1,4 +1,4 @@
-import { assert, assertElement, assertFinite, assertInteger, assertType } from "$global/error.js";
+import { assert, assertElement, assertFinite, assertInteger, assertType } from '$global/error.js';
 
 Document.prototype.queryAndAssert = function<T extends Element>(selector: string): T {
     const element = this.querySelector<T>(selector);

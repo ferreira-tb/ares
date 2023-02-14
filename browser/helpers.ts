@@ -1,4 +1,4 @@
-import { useAresStore } from '$vue/stores/store.js';
+import { useAresStore } from '$vue/stores/ares.js';
 import { assertType } from "$global/error.js";
 import { parseCoordsFromTextContent } from '$global/helpers.js';
 import { ipcSend } from '$global/ipc.js';

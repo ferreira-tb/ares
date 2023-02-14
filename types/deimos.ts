@@ -1,4 +1,4 @@
-import type { AllUnits, Resources, ResourcesPTBR, ResourceAmount } from '$types/game.js';
+import type { Resources, ResourcesPTBR } from '$types/game.js';
 
 export type ActivePossible = {
     active: boolean,
@@ -118,124 +118,15 @@ export interface TribalWarsGameData {
     readonly world: string;
 };
 
-export interface TribalWarsType {
-    getGameData(): TribalWarsGameData;
-    getIdleTime(): number;
-}
-
-export interface TimingType {
-    readonly added_server_time: number;
-    readonly initial_server_time: number;
-    readonly is_ready: boolean;
-    readonly offset_from_server: number;
-    readonly offset_to_server: number;
-    readonly paused: boolean;
-    readonly tick_interval: number;
-
-    getCurrentServerTime(): number;
-    getElapsedTimeSinceData(): number;
-    getElapsedTimeSinceLoad(): number;
-    getReturnTimeFromServer(): number;
-}
-
-export interface PremiumExchangeType {
-    readonly TYPE_BUY: 'buy';
-    readonly TYPE_SELL: 'sell';
-
-    init(): void;
-    inputChanged(): void;
-    updateUI(): void;
-
-    readonly data: PremiumExchangeData;
-    readonly graph: PremiumExchangeGraph;
-}
-
-export type PremiumExchangeData = {
-    readonly capacity: ResourceAmount;
-
-    readonly constants: {
-        readonly resource_base_price: number;
-        readonly resource_price_elasticity: number;
-        readonly stock_size_modifier: number;
-    };
-
-    readonly duration: number;
-    readonly merchants: number;
-    readonly rates: ResourceAmount;
-    readonly status_bar: string;
-    readonly stock: ResourceAmount;
-
-    readonly tax: {
-        readonly buy: number;
-        readonly sell: number;
-    };
+export type MarketDataTrader = {
+    readonly amount: number;
+    readonly carry: number;
+    readonly total: number;
 };
 
-export interface PremiumExchangeGraph {
-    readonly type: string;
-
-    readonly ResourceData: {
-        color: string;
-        data: [number, string][];
-        details: { res_type: Resources }[]
-        label: ResourcesPTBR;
-    };
-
-    readonly data: [
-        PremiumExchangeGraph['ResourceData'],
-        PremiumExchangeGraph['ResourceData'],
-        PremiumExchangeGraph['ResourceData']
-    ];
-    
-    graph(): void;
-    invertYAxis(): void;
-    plot(): void;
-}
-
-export interface MarketType {
-    data: MarketDataType
-}
-
-export interface MarketDataType {
-    readonly MarketTrader: {
-        amount: number;
-        carry: number;
-        total: number;
-    };
-
-    readonly Res: ResourceAmount;
-    readonly Trader: MarketDataType['MarketTrader'];
-}
-
-export interface AccountManagerType {
-    readonly farm: AccountManagerFarmType
-}
-
-export interface AccountManagerFarmType {
-    readonly current_units: {
-        [index in AllUnits]: string;
-    };
-
-    readonly extended: boolean;
-    readonly hide_attacked: boolean;
-    readonly last_click: number;
-    readonly page: number;
-    readonly page_size: number;
-    readonly plunders_exhausted: boolean;
-    readonly should_update_queue: boolean;
-    readonly waiting_for_display_queue_load: boolean;
-
-    init(): void;
-    setPageSize(size: number): boolean;
-}
-
-export interface InfoPlayerType {
-    readonly player_id: number;
-    init(): void;
-}
-
-export interface UIType {
-    ErrorMessage(message: string): void;
-    InfoMessage(message: string): void;
-    SuccessMessage(message: string): void;
-}
+export type PremiumExchangeGraphResourceData = {
+    color: string;
+    data: [number, string][];
+    details: { res_type: Resources }[]
+    label: ResourcesPTBR;
+};

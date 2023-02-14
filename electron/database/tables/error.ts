@@ -11,6 +11,7 @@ export class ErrorLog extends Model<InferAttributes<ErrorLog>, InferCreationAttr
     declare readonly ares: string;
     declare readonly electron: string;
     declare readonly chrome: string;
+    declare readonly tribal: string | null;
 };
 
 ErrorLog.init({
@@ -42,6 +43,10 @@ ErrorLog.init({
     chrome: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    tribal: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, { sequelize, tableName: 'error_log', timestamps: false });
 
@@ -54,6 +59,7 @@ export class DOMErrorLog extends Model<InferAttributes<DOMErrorLog>, InferCreati
     declare readonly ares: string;
     declare readonly electron: string;
     declare readonly chrome: string;
+    declare readonly tribal: string | null;
 };
 
 DOMErrorLog.init({
@@ -89,5 +95,9 @@ DOMErrorLog.init({
     chrome: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    tribal: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, { sequelize, tableName: 'dom_error_log', timestamps: false });

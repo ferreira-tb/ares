@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { readDeimosFile } from '$electron/ares/deimos.js';
+import { readDeimosFile } from '$electron/app/deimos.js';
 
 export function setDeimosEvents() {
     /** Conteúdo do arquivo `deimos.js`. */

@@ -1,20 +1,21 @@
-import type { AutoResizeOptions, Rectangle, BrowserViewConstructorOptions } from 'electron';
 import type { Schema as StoreSchema } from 'electron-store';
+import type { Village } from '$types/deimos.js';
 
 export type Schema = StoreSchema<Record<string, unknown>>;
 export type JSONSchema = Schema[keyof Schema];
 
-export interface PhobosOptions extends BrowserViewConstructorOptions {
-    autoResize?: AutoResizeOptions;
-    bounds?: Rectangle;
-    
-    /** Define se um Phobos já ativo será destruido ao se tentar criar um novo com o mesmo nome.  */
-    override?: boolean;
-    /**
-     * Se for usado um Phobos já ativo, define se a URL dele deve ser alterada.
-     * Ela SEMPRE será alterada caso sua origem for diferente da URL passada ao Phobos.
-     */
-    overrideUrl?: boolean;
-}
+export type BrowserStoreVillageKeys = 'x' | 'y';
+export type BrowserStoreVillageType = Pick<Village, BrowserStoreVillageKeys>;
 
-export type PhobosNames = '';
+export type BrowserStoreType = {
+    /** Versão do Tribal Wars. */
+    version: string | null;
+    /** Mundo atual. */
+    world: string | null;
+    /** Nome do jogador ativo. */
+    player: string | null;
+    /** ID do jogador ativo. */
+    playerId: number | null;
+    /** Grupo de aldeias atual. */
+    groupId: string | null;
+};

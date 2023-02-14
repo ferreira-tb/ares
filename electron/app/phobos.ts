@@ -3,7 +3,7 @@ import { URL } from 'node:url';
 import { phobosJs } from '$electron/constants.js';
 import { assertType } from '$electron/error.js';
 import type { BrowserWindow } from 'electron';
-import type { PhobosNames, PhobosOptions } from '$types/electron.js';
+import type { PhobosNames, PhobosOptions } from '$types/phobos.js';
 
 const activePhobos = new Map<PhobosNames, BrowserView>();
 

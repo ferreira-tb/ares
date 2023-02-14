@@ -1,4 +1,4 @@
-import { useAresStore } from "$vue/stores/store.js";
+import { useAresStore } from "$vue/stores/ares.js";
 import { ipcInvoke } from '$global/ipc.js';
 import { assert } from "$global/error.js";
 import { queryXMLTags } from "$global/helpers.js";

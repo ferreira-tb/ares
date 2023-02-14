@@ -1,6 +1,6 @@
 import { Menu, MenuItem, shell, BrowserWindow } from 'electron';
 import { aresURL, gameURL, repoURL, discordURL, devOptions } from '$electron/constants.js';
-import { showErrorLog } from '$electron/ares/modules.js';
+import { showErrorLog } from '$electron/app/modules.js';
 import { togglePanelWindow } from '$electron/helpers.js';
 import type { MenuItemConstructorOptions } from 'electron';
 

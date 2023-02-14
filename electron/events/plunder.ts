@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { assertInteger, assertObjectHasSameProps, assertType } from '$electron/error.js';
-import { plunderStore } from '$electron/stores/plunder.js';
+import { plunderStore } from '$electron/electron-store/plunder.js';
 import { assertCurrentWorld } from '$electron/helpers.js';
 import type { BrowserWindow } from 'electron';
 

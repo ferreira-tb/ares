@@ -1,3 +1,4 @@
+import '$electron/prototype.js';
 import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu.js';
 import { sequelize } from '$electron/database/database.js';
@@ -38,6 +39,9 @@ function createWindow() {
             devTools: process.env.ARES_MODE === 'dev'
         }
     });
+
+    process.env.MAIN_WINDOW_ID = mainWindow.id.toString(10);
+    process.env.PANEL_WINDOW_ID = panelWindow.id.toString(10);
 
     setEvents(mainWindow, panelWindow);
     setAppMenu(mainWindow, panelWindow);

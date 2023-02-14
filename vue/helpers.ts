@@ -1,4 +1,4 @@
-import { useAresStore } from '$vue/stores/store.js';
+import { useAresStore } from '$vue/stores/ares.js';
 import type { RouteRecordRaw } from 'vue-router';
 
 // As funções aqui presentes dependem do Vue em algum grau.

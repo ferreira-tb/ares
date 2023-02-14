@@ -6,13 +6,14 @@ import { getWorldFromURL } from '$electron/helpers.js';
 import { sequelize } from '$electron/database/database.js';
 import { ErrorLog, DOMErrorLog } from '$tables/error.js';
 import { ErrorLogType, DOMErrorLogType } from '$types/error.js';
+import { browserStore } from '$electron/stores/browser.js';
 
 export function setErrorEvents() {
     ipcMain.on('set-error-log', async (_e, err: ErrorLogType) => {
         try {
             assertType(typeof err.name === 'string', 'O nome do erro é inválido.');
             assertType(typeof err.message === 'string', 'Não há uma mensagem válida no relatório de erro.');
-    
+
             await sequelize.transaction(async (transaction) => {
                 await ErrorLog.create({
                     name: err.name,
@@ -20,7 +21,8 @@ export function setErrorEvents() {
                     time: Date.now(),
                     ares: app.getVersion(),
                     chrome: process.versions.chrome,
-                    electron: process.versions.electron
+                    electron: process.versions.electron,
+                    tribal: browserStore.version
                 }, { transaction });
             });
 
@@ -73,7 +75,8 @@ export function setErrorEvents() {
                     time: Date.now(),
                     ares: app.getVersion(),
                     chrome: process.versions.chrome,
-                    electron: process.versions.electron
+                    electron: process.versions.electron,
+                    tribal: browserStore.version
                 }, { transaction });
             });
 

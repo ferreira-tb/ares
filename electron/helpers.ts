@@ -3,6 +3,16 @@ import { URL } from 'url';
 import { devOptions } from '$electron/constants.js';
 import { assertType } from '$electron/error.js';
 
+export const getMainWindow = () => {
+    const id = Number.assertInteger(process.env.MAIN_WINDOW_ID ?? '', 10);
+    return BrowserWindow.fromId(id);
+};
+
+export const getPanelWindow = () => {
+    const id = Number.assertInteger(process.env.PANEL_WINDOW_ID ?? '', 10);
+    return BrowserWindow.fromId(id);
+};
+
 export function getWorldFromURL(url: URL) {
     const index = url.hostname.indexOf('.tribalwars');
     if (index === -1) return null;
