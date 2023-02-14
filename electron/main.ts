@@ -4,7 +4,7 @@ import { setAppMenu } from '$electron/menu.js';
 import { sequelize } from '$electron/database/database.js';
 import { UserConfig } from '$tables/config.js';
 import { setEvents } from '$electron/events/index.js';
-import { gameURL, favicon, indexHtml, browserJs } from '$electron/constants.js';
+import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants.js';
 import { MainProcessError } from '$electron/error.js';
 
 process.env.ARES_MODE = 'dev';

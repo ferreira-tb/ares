@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { gameURL } from '$global/constants.js';
+import { gameURL } from '$global/utils/constants.js';
 import { useCurrentScreen } from '$vue/composables/game.js';
 import { ipcInvoke } from '$global/ipc.js';
 

@@ -1,6 +1,6 @@
-import { assertInteger } from "$global/error.js";
-import { resources } from '$global/constants.js';
-import type { PlunderVillageInfo } from "$lib/farm/villages.js";
+import { assertInteger } from '$global/utils/assert.js';
+import { resources } from '$global/utils/constants.js';
+import type { PlunderVillageInfo } from '$lib/farm/villages.js';
 
 export class PlunderedResources {
     wood: number;

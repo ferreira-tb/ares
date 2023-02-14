@@ -1,7 +1,7 @@
 import { BrowserWindow, ipcMain } from 'electron';
 import { plunderStore } from '$electron/electron-store/plunder.js';
-import { assertInteger, assertObjectHasSameProps, assertType } from '$electron/error.js';
-import { assertCurrentWorld, getMainWindow, getPanelWindow } from '$electron/helpers.js';
+import { assertInteger, assertObjectHasSameProps, assertType } from '$electron/utils/assert.js';
+import { assertCurrentWorld, getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 
 export function setPlunderEvents() {
     const mainWindow = getMainWindow();

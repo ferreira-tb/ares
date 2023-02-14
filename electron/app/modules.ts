@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
-import { favicon, moduleHtml } from '$electron/constants.js';
-import { getMainWindow, setBasicDevMenu } from '$electron/helpers.js';
-import { assertType } from '$electron/error.js';
+import { favicon, moduleHtml } from '$electron/utils/constants.js';
+import { getMainWindow, setBasicDevMenu } from '$electron/utils/helpers.js';
+import { assertType } from '$electron/utils/assert.js';
 
 export function showErrorLog() {
     const mainWindow = getMainWindow();

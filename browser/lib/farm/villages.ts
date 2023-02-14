@@ -1,8 +1,9 @@
 import { useMutationObserver, useEventListener } from '@vueuse/core'
-import { calcDistance } from '$vue/helpers.js';
-import { assertCoordsFromTextContent, parseGameDate } from '$global/helpers.js';
-import { assert, assertDOM, assertElement, AresError } from '$global/error.js';
-import { resources as resourceList } from '$global/constants.js';
+import { calcDistance } from '$vue/utils/helpers.js';
+import { assertCoordsFromTextContent, parseGameDate } from '$global/utils/parser.js';
+import { assert, assertDOM, assertElement } from '$global/utils/assert.js';
+import { AresError } from '$global/error.js';
+import { resources as resourceList } from '$global/utils/constants.js';
 import type { Coords } from '$types/game.js';
 import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder.js';
 

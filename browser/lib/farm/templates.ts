@@ -1,9 +1,9 @@
 import { computed, reactive, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
-import { assert } from '$global/error.js';
+import { assert } from '$global/utils/assert.js';
 import { availableUnits } from '$lib/farm/units.js';
 import { usePlunderStore } from '$vue/stores/plunder.js';
-import { isFarmUnit } from '$global/helpers.js';
+import { isFarmUnit } from '$global/utils/helpers.js';
 
 export class PlunderTemplate {
     /** Tipo do modelo. */

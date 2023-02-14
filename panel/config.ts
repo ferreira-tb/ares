@@ -1,8 +1,8 @@
 import { useAresStore } from "$vue/stores/ares.js";
 import { ipcInvoke } from '$global/ipc.js';
-import { assert } from "$global/error.js";
-import { queryXMLTags } from "$global/helpers.js";
-import { allUnits } from '$global/constants.js';
+import { assert } from '$global/utils/assert.js';
+import { queryXMLTags } from '$global/utils/helpers.js';
+import { allUnits } from '$global/utils/constants.js';
 import type { UnitDetails } from '$types/game.js';
 
 export class WorldData {

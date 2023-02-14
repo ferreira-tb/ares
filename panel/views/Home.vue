@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { shell } from 'electron';
 import { ipcInvoke } from '$global/ipc.js';
-import { aresURL, repoURL, discordURL } from '$global/constants.js';
+import { aresURL, repoURL, discordURL } from '$global/utils/constants.js';
 import { VBtn as Button } from 'vuetify/components/VBtn';
 
 const appName = ref<string>(await ipcInvoke('app-name'));

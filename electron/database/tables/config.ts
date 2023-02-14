@@ -1,8 +1,9 @@
 import { BrowserWindow } from 'electron';
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database/database.js';
-import { MainProcessError, assertType } from '$electron/error.js';
-import { getPanelWindow } from '$electron/helpers.js';
+import { MainProcessError } from '$electron/error.js';
+import { getPanelWindow } from '$electron/utils/helpers.js';
+import { assertType } from '$electron/utils/assert.js';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { Rectangle } from 'electron';
 

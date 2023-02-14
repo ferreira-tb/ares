@@ -1,9 +1,9 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
-import { getRouteNames } from '$vue/helpers.js';
+import { getRouteNames } from '$vue/utils/helpers.js';
 import Default from '$vue/views/Default.vue';
-import ErrorLog from '../views/ErrorLog.vue';
-import ErrorList from '../components/ErrorList.vue';
-import DomErrorList from '../components/DomErrorList.vue';
+import ErrorLog from '$modules/views/ErrorLog.vue';
+import ErrorList from '$modules/components/ErrorList.vue';
+import DomErrorList from '$modules/components/DomErrorList.vue';
 
 // Os componentes devem ser passados diretamente.
 // Importá-los gera problemas ao compilar.

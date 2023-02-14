@@ -1,6 +1,6 @@
 import { useEventListener, useMutationObserver } from '@vueuse/core';
 import { usePlunderStore } from '$vue/stores/plunder.js';
-import { generateIntegerBetween, wait } from '$global/helpers.js';
+import { generateIntegerBetween, wait } from '$global/utils/helpers.js';
 import { ipcSend } from '$global/ipc.js';
 import type { PlunderedResources } from '$lib/farm/resources.js';
 

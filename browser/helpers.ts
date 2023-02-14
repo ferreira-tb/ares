@@ -1,6 +1,6 @@
 import { useAresStore } from '$vue/stores/ares.js';
-import { assertType } from "$global/error.js";
-import { parseCoordsFromTextContent } from '$global/helpers.js';
+import { assertType } from '$global/utils/assert.js';
+import { parseCoordsFromTextContent } from '$global/utils/parser.js';
 import { ipcSend } from '$global/ipc.js';
 
 /** Obtêm as coordenadas da aldeia atual a partir do DOM e as salva no Pinia. */

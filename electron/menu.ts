@@ -1,8 +1,8 @@
 import { Menu, MenuItem, shell, BrowserWindow } from 'electron';
 import { showErrorLog } from '$electron/app/modules.js';
-import { assertType } from '$electron/error.js';
-import { aresURL, gameURL, repoURL, discordURL, devOptions } from '$electron/constants.js';
-import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/helpers.js';
+import { assertType } from '$electron/utils/assert.js';
+import { aresURL, gameURL, repoURL, discordURL, devOptions } from '$electron/utils/constants.js';
+import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
 export function setAppMenu() {

@@ -1,4 +1,4 @@
-import { assert, assertInteger } from '$electron/error.js';
+import { assert, assertInteger } from '$electron/utils/assert.js';
 
 Map.prototype.assert = function<K, V>(key: K, message?: string): V {
     const item = this.get(key);

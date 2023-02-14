@@ -1,8 +1,8 @@
 import { BrowserWindow, BrowserView, type WebPreferences } from 'electron';
 import { URL } from 'url';
-import { getMainWindow } from '$electron/helpers.js';
-import { phobosJs } from '$electron/constants.js';
-import { assertType } from '$electron/error.js';
+import { getMainWindow } from '$electron/utils/helpers.js';
+import { phobosJs } from '$electron/utils/constants.js';
+import { assertType } from '$electron/utils/assert.js';
 import type { PhobosNames, PhobosOptions } from '$types/phobos.js';
 
 const activePhobos = new Map<PhobosNames, BrowserView>();

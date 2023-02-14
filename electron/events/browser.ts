@@ -1,6 +1,7 @@
 import { BrowserWindow, ipcMain } from 'electron';
-import { assertType, MainProcessError } from '$electron/error.js';
-import { getCurrentWorld, getMainWindow, getPanelWindow } from '$electron/helpers.js';
+import { assertType } from '$electron/utils/assert.js';
+import { MainProcessError } from '$electron/error.js';
+import { getCurrentWorld, getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 import { worldStore, setIntoWorldStore } from '$electron/electron-store/world.js';
 
 export function setBrowserEvents() {

@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { assertType } from "$global/error.js";
+import { assertType } from '$global/utils/assert.js';
 import type { ComputedRef, Ref } from 'vue';
 import type { GameScreen } from '$types/game.js';
 

@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
-import { deimosJs } from '$electron/constants.js';
-import { MainProcessError, assertType } from '$electron/error.js';
+import { deimosJs } from '$electron/utils/constants.js';
+import { MainProcessError } from '$electron/error.js';
+import { assertType } from '$electron/utils/assert.js';
 
 export async function readDeimosFile() {
     try {

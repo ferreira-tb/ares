@@ -1,8 +1,9 @@
 import { app, ipcMain } from 'electron';
 import { URL } from 'url';
 import { Op } from 'sequelize';
-import { assertInteger, assertType, MainProcessError } from '$electron/error.js';
-import { getWorldFromURL } from '$electron/helpers.js';
+import { MainProcessError } from '$electron/error.js';
+import { assertInteger, assertType } from '$electron/utils/assert.js';
+import { getWorldFromURL } from '$electron/utils/helpers.js';
 import { sequelize } from '$electron/database/database.js';
 import { ErrorLog, DOMErrorLog } from '$tables/error.js';
 import { ErrorLogType, DOMErrorLogType } from '$types/error.js';

@@ -1,4 +1,5 @@
-import { assert, assertType, DeimosError } from '$deimos/error.js';
+import { DeimosError } from '$deimos/error.js';
+import { assert, assertType } from '$deimos/utils/assert.js';
 import type { TribalWarsGameData } from '$types/deimos.js';
 
 export class Deimos {

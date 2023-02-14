@@ -5,9 +5,10 @@ import { setBrowserEvents } from '$electron/events/browser.js';
 import { setErrorEvents } from '$electron/events/error.js';
 import { setPanelEvents } from '$electron/events/panel.js';
 import { setDeimosEvents } from '$electron/events/deimos.js';
-import { assertType, MainProcessError } from '$electron/error.js';
-import { getMainWindow, getPanelWindow } from '$electron/helpers.js';
-import { browserCss } from '$electron/constants.js';
+import { MainProcessError } from '$electron/error.js';
+import { assertType } from '$electron/utils/assert.js';
+import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
+import { browserCss } from '$electron/utils/constants.js';
 
 export function setEvents() {
     const mainWindow = getMainWindow();

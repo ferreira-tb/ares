@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import { assert } from '$global/error.js';
+import { assert } from '$global/utils/assert.js';
 import { useMutationObserver } from '@vueuse/core';
 
 class AvailableFarmUnits {

@@ -1,5 +1,5 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
-import { getRouteNames } from '$vue/helpers.js';
+import { getRouteNames } from '$vue/utils/helpers.js';
 import Home from '$panel/views/Home.vue';
 import Plunder from '$panel/views/Plunder.vue';
 

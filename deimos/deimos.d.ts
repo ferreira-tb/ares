@@ -5,7 +5,7 @@ declare global {
     const AccountManager: {
         readonly farm: {
             readonly current_units: {
-                [index in AllUnits]: string;
+                readonly [index in AllUnits]: string;
             };
         
             readonly extended: boolean;
@@ -28,7 +28,7 @@ declare global {
     };
 
     const Market: {
-        data: {
+        readonly data: {
             readonly Res: ResourceAmount;
             readonly Trader: MarketDataTrader;
         }

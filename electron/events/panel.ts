@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
 import { UserConfig } from '$tables/config.js';
-import { getPanelWindow } from '$electron/helpers.js';
-import { assertType } from '$electron/error.js';
+import { getPanelWindow } from '$electron/utils/helpers.js';
+import { assertType } from '$electron/utils/assert.js';
 
 export function setPanelEvents() {
     const panelWindow = getPanelWindow();

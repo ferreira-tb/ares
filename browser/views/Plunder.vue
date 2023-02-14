@@ -8,7 +8,8 @@ import { queryCurrentVillageCoords } from '$browser/helpers.js';
 import { queryAvailableUnits } from '$lib/farm/units.js';
 import { PlunderedResources } from '$lib/farm/resources.js';
 import { prepareAttack, eventTarget as attackEventTarget } from '$lib/farm/attack.js';
-import { assert, AresError } from '$global/error.js';
+import { AresError } from '$global/error.js';
+import { assert } from '$global/utils/assert.js';
 import { ipcSend } from '$global/ipc.js';
 
 const store = usePlunderStore();

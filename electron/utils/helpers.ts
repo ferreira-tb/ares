@@ -1,7 +1,7 @@
 import { BrowserWindow, Menu } from 'electron';
 import { URL } from 'url';
-import { devOptions } from '$electron/constants.js';
-import { assertType } from '$electron/error.js';
+import { devOptions } from '$electron/utils/constants.js';
+import { assertType } from '$electron/utils/assert.js';
 
 export const getMainWindow = () => {
     const id = Number.assertInteger(process.env.MAIN_WINDOW_ID ?? '', 10);
