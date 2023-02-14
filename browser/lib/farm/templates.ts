@@ -1,7 +1,7 @@
 import { computed, reactive, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { assert } from '$global/error.js';
-import { availableUnits } from '$browser/farm/units.js';
+import { availableUnits } from '$lib/farm/units.js';
 import { usePlunderStore } from '$vue/stores/plunder.js';
 import { isFarmUnit } from '$global/helpers.js';
 
