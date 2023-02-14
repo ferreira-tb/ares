@@ -1,10 +1,17 @@
 import { Menu, MenuItem, shell, BrowserWindow } from 'electron';
-import { aresURL, gameURL, repoURL, discordURL, devOptions } from '$electron/constants.js';
 import { showErrorLog } from '$electron/app/modules.js';
-import { togglePanelWindow } from '$electron/helpers.js';
+import { assertType } from '$electron/error.js';
+import { aresURL, gameURL, repoURL, discordURL, devOptions } from '$electron/constants.js';
+import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/helpers.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
-export function setAppMenu(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
+export function setAppMenu() {
+    const mainWindow = getMainWindow();
+    const panelWindow = getPanelWindow();
+
+    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+    assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+
     const optionsMenu: MenuItemConstructorOptions[] = [
         { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
         { label: 'Atualizar', accelerator: 'F5', role: 'reload' },
@@ -14,7 +21,7 @@ export function setAppMenu(mainWindow: BrowserWindow, panelWindow: BrowserWindow
         { label: 'Sair', accelerator: 'Esc', role: 'quit' },
 
         // Não-visíveis.
-        { label: 'Painel', visible: false, accelerator: 'F2', click: () => togglePanelWindow(mainWindow, panelWindow) }
+        { label: 'Painel', visible: false, accelerator: 'F2', click: togglePanelWindow }
     ];
     
     const helpMenu: MenuItemConstructorOptions[] = [
@@ -22,7 +29,7 @@ export function setAppMenu(mainWindow: BrowserWindow, panelWindow: BrowserWindow
         { label: 'Git Hub', click: () => shell.openExternal(repoURL) },
         { label: 'Discord', click: () => shell.openExternal(discordURL) },
         { type: 'separator' },
-        { label: 'Registro de erros', click: () => showErrorLog(mainWindow) }
+        { label: 'Registro de erros', click: showErrorLog }
     ];
 
     const mainMenu = Menu.buildFromTemplate([
@@ -32,7 +39,7 @@ export function setAppMenu(mainWindow: BrowserWindow, panelWindow: BrowserWindow
 
     const panelMenu = Menu.buildFromTemplate([
         { label: 'Início', visible: false, accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
-        { label: 'Painel', visible: false, accelerator: 'F2', click: () => togglePanelWindow(mainWindow, panelWindow) },
+        { label: 'Painel', visible: false, accelerator: 'F2', click: togglePanelWindow },
         { label: 'Configurações', visible: false, accelerator: 'F3', enabled: false },
         { label: 'Atualizar', visible: false, accelerator: 'F5', click: () => mainWindow.webContents.reload() },
     ] satisfies MenuItemConstructorOptions[]);

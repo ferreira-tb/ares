@@ -5,6 +5,7 @@ import { sequelize } from '$electron/database/database.js';
 import { UserConfig } from '$tables/config.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/constants.js';
+import { MainProcessError } from '$electron/error.js';
 
 process.env.ARES_MODE = 'dev';
 
@@ -43,8 +44,8 @@ function createWindow() {
     process.env.MAIN_WINDOW_ID = mainWindow.id.toString(10);
     process.env.PANEL_WINDOW_ID = panelWindow.id.toString(10);
 
-    setEvents(mainWindow, panelWindow);
-    setAppMenu(mainWindow, panelWindow);
+    setEvents();
+    setAppMenu();
     
     mainWindow.maximize();
     mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
@@ -54,7 +55,7 @@ function createWindow() {
 
     mainWindow.once('ready-to-show', () => mainWindow.show());
     panelWindow.once('ready-to-show', async () => {
-        await UserConfig.setPanelBounds(panelWindow);
+        await UserConfig.setPanelBounds();
         panelWindow.show();
     });
 };
@@ -62,4 +63,4 @@ function createWindow() {
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
 
-sequelize.sync().catch((err: unknown) => console.error(err));
+sequelize.sync().catch((err: unknown) => MainProcessError.handle(err));

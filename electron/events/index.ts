@@ -1,14 +1,21 @@
 import * as fs from 'fs/promises';
-import { app, ipcMain, type BrowserWindow } from 'electron';
+import { app, ipcMain, BrowserWindow } from 'electron';
 import { setPlunderEvents } from '$electron/events/plunder.js';
 import { setBrowserEvents } from '$electron/events/browser.js';
 import { setErrorEvents } from '$electron/events/error.js';
 import { setPanelEvents } from '$electron/events/panel.js';
 import { setDeimosEvents } from '$electron/events/deimos.js';
-import { MainProcessError } from '$electron/error.js';
+import { assertType, MainProcessError } from '$electron/error.js';
+import { getMainWindow, getPanelWindow } from '$electron/helpers.js';
 import { browserCss } from '$electron/constants.js';
 
-export function setEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
+export function setEvents() {
+    const mainWindow = getMainWindow();
+    const panelWindow = getPanelWindow();
+
+    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+    assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+
     // Informações sobre o Ares.
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
@@ -35,9 +42,9 @@ export function setEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow)
     });
 
     // Outros eventos.
-    setBrowserEvents(mainWindow, panelWindow);
-    setPanelEvents(panelWindow);
-    setPlunderEvents(mainWindow, panelWindow);
+    setBrowserEvents();
+    setPanelEvents();
+    setPlunderEvents();
     setErrorEvents();
     setDeimosEvents();
 };

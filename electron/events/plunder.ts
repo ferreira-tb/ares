@@ -1,25 +1,30 @@
-import { ipcMain } from 'electron';
-import { assertInteger, assertObjectHasSameProps, assertType } from '$electron/error.js';
+import { BrowserWindow, ipcMain } from 'electron';
 import { plunderStore } from '$electron/electron-store/plunder.js';
-import { assertCurrentWorld } from '$electron/helpers.js';
-import type { BrowserWindow } from 'electron';
+import { assertInteger, assertObjectHasSameProps, assertType } from '$electron/error.js';
+import { assertCurrentWorld, getMainWindow, getPanelWindow } from '$electron/helpers.js';
 
-export function setPlunderEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
+export function setPlunderEvents() {
+    const mainWindow = getMainWindow();
+    const panelWindow = getPanelWindow();
+
+    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+    assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+
     // Verifica se o Plunder está ativo ou não.
     ipcMain.handle('is-plunder-active', (_e, world?: string) => {
-        if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
+        if (typeof world !== 'string') world = assertCurrentWorld();
         return plunderStore.get(`plunder-state.${world}.status`, false);
     });
 
     // Obtém o estado atual do Plunder.
     ipcMain.handle('get-plunder-state', (_e, world?: string) => {
-        if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
+        if (typeof world !== 'string') world = assertCurrentWorld();
         return plunderStore.get(`plunder-state.${world}`, null);
     });
 
     // Salva o estado do Plunder.
     ipcMain.on('set-plunder-state', (_e, stateName: unknown, value: unknown, world?: string) => {
-        if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
+        if (typeof world !== 'string') world = assertCurrentWorld();
         assertType(typeof stateName === 'string', 'O nome do estado é inválido.');
         
         plunderStore.set(`plunder-state.${world}.${stateName}`, value);
@@ -35,7 +40,7 @@ export function setPlunderEvents(mainWindow: BrowserWindow, panelWindow: Browser
     // Emitido pelo browser quando o Plunder é desativado.
     // Salva a quantidade de recursos saqueados durante a última execução do Plunder.
     ipcMain.on('save-plundered-amount', (_e, resources: unknown, world?: string) => {
-        if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
+        if (typeof world !== 'string') world = assertCurrentWorld();
 
         const plundered = new PlunderedAmount(resources);
         plunderStore.set(`history.${world}.last`, plundered);
@@ -48,13 +53,13 @@ export function setPlunderEvents(mainWindow: BrowserWindow, panelWindow: Browser
 
     // Obtém a quantidade de recursos saqueados durante a última execução do Plunder.
     ipcMain.handle('get-last-plundered-amount', (_e, world?: string) => {
-        if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
+        if (typeof world !== 'string') world = assertCurrentWorld();
         return plunderStore.get(`history.${world}.last`, null);
     });
 
     // Obtém a quantidade total de recursos saqueados em determinado mundo.
     ipcMain.handle('get-total-plundered-amount', (_e, world?: string) => {
-        if (typeof world !== 'string') world = assertCurrentWorld(mainWindow);
+        if (typeof world !== 'string') world = assertCurrentWorld();
         return plunderStore.get(`history.${world}.total`, null);
     });
 };

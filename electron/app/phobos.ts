@@ -1,8 +1,8 @@
-import { BrowserView } from 'electron';
-import { URL } from 'node:url';
+import { BrowserWindow, BrowserView, type WebPreferences } from 'electron';
+import { URL } from 'url';
+import { getMainWindow } from '$electron/helpers.js';
 import { phobosJs } from '$electron/constants.js';
 import { assertType } from '$electron/error.js';
-import type { BrowserWindow } from 'electron';
 import type { PhobosNames, PhobosOptions } from '$types/phobos.js';
 
 const activePhobos = new Map<PhobosNames, BrowserView>();
@@ -20,9 +20,12 @@ const activePhobos = new Map<PhobosNames, BrowserView>();
  * @param options Opções que determinam o comportamento do `BrowserView`.
  * É possível passar um objeto `WebPreferences` com uma das opções.
  */
-export async function createPhobos(name: PhobosNames, url: URL, mainWindow: BrowserWindow, options?: PhobosOptions) {
+export async function createPhobos(name: PhobosNames, url: URL, options?: PhobosOptions) {
     assertType(typeof name === 'string', 'Nome inválido.');
     assertType(url instanceof URL, 'URL inválida');
+
+    const mainWindow = getMainWindow();
+    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
 
     const alivePhobos = activePhobos.get(name);
     if (alivePhobos instanceof BrowserView) {
@@ -39,13 +42,11 @@ export async function createPhobos(name: PhobosNames, url: URL, mainWindow: Brow
         };
     };
 
-    const phobos = new BrowserView({
-        webPreferences: options?.webPreferences ?? {
-            preload: phobosJs,
-            devTools: process.env.ARES_MODE === 'dev'
-        }
-    });
+    const webPreferences: WebPreferences = options?.webPreferences ?? {};
+    webPreferences.preload = phobosJs;
+    webPreferences.devTools = process.env.ARES_MODE === 'dev';
 
+    const phobos = new BrowserView({ webPreferences });
     mainWindow.addBrowserView(phobos);
 
     phobos.setBounds(options?.bounds ?? {

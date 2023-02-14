@@ -1,8 +1,12 @@
-import { BrowserWindow } from "electron";
-import { favicon, moduleHtml } from "$electron/constants";
-import { setBasicDevMenu } from "$electron/helpers";
+import { BrowserWindow } from 'electron';
+import { favicon, moduleHtml } from '$electron/constants.js';
+import { getMainWindow, setBasicDevMenu } from '$electron/helpers.js';
+import { assertType } from '$electron/error.js';
 
-export function showErrorLog(mainWindow: BrowserWindow) {
+export function showErrorLog() {
+    const mainWindow = getMainWindow();
+    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+
     const errorLogWindow = new BrowserWindow({
         parent: mainWindow,
         width: 500,

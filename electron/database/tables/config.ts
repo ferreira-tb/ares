@@ -1,8 +1,10 @@
+import { BrowserWindow } from 'electron';
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database/database.js';
-import { MainProcessError } from '$electron/error.js';
+import { MainProcessError, assertType } from '$electron/error.js';
+import { getPanelWindow } from '$electron/helpers.js';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { BrowserWindow, Rectangle } from 'electron';
+import type { Rectangle } from 'electron';
 
 export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreationAttributes<UserConfig>> {
     declare readonly name: string;
@@ -22,8 +24,11 @@ export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreation
         };
     };
 
-    public static async setPanelBounds(panelWindow: BrowserWindow) {
+    public static async setPanelBounds() {
         try {
+            const panelWindow = getPanelWindow();
+            assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+
             const bounds = await UserConfig.findByPk('panel_bounds');
             if (!bounds || typeof bounds.json !== 'string') return;
 

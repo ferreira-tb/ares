@@ -30,7 +30,10 @@ export function assertWorldFromURL(url: URL) {
     return world;
 };
 
-export function getCurrentWorld(mainWindow: BrowserWindow) {
+export function getCurrentWorld() {
+    const mainWindow = getMainWindow();
+    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+
     const currentURL = mainWindow.webContents.getURL();
     if (/\.?tribalwars/.test(currentURL)) {
         const url = new URL(currentURL);
@@ -40,8 +43,8 @@ export function getCurrentWorld(mainWindow: BrowserWindow) {
     return null;
 };
 
-export function assertCurrentWorld(mainWindow: BrowserWindow) {
-    const world = getCurrentWorld(mainWindow);
+export function assertCurrentWorld() {
+    const world = getCurrentWorld();
     assertType(typeof world === 'string', 'O mundo é inválido.');
     return world;
 };
@@ -61,7 +64,13 @@ export function setBasicDevMenu(browserWindow: BrowserWindow, setNull: boolean =
     browserWindow.setMenu(menu);
 };
 
-export function togglePanelWindow(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
+export function togglePanelWindow() {
+    const mainWindow = getMainWindow();
+    const panelWindow = getPanelWindow();
+
+    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+    assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+
     if (panelWindow.isVisible()) {
         panelWindow.hide();
 

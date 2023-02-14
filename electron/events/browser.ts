@@ -1,10 +1,15 @@
-import { ipcMain } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import { assertType, MainProcessError } from '$electron/error.js';
-import { getCurrentWorld } from '$electron/helpers.js';
+import { getCurrentWorld, getMainWindow, getPanelWindow } from '$electron/helpers.js';
 import { worldStore, setIntoWorldStore } from '$electron/electron-store/world.js';
-import type { BrowserWindow } from 'electron';
 
-export function setBrowserEvents(mainWindow: BrowserWindow, panelWindow: BrowserWindow) {
+export function setBrowserEvents() {
+    const mainWindow = getMainWindow();
+    const panelWindow = getPanelWindow();
+
+    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+    assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+
     ipcMain.on('reload-browser-window', () => mainWindow.webContents.reload());
     ipcMain.on('force-reload-browser-window', () => mainWindow.webContents.reloadIgnoringCache());
 
@@ -21,7 +26,7 @@ export function setBrowserEvents(mainWindow: BrowserWindow, panelWindow: Browser
     });
 
     // Retorna o mundo atual.
-    ipcMain.handle('get-current-world', () => getCurrentWorld(mainWindow));
+    ipcMain.handle('get-current-world', () => getCurrentWorld());
     // Indica se as configurações do mundo ou das unidades estão salvas no armazenamento.
     ipcMain.handle('has-world-data', (_e, world: string) => worldStore.has(`world-info.${world}`));
     ipcMain.handle('has-unit-data', (_e, world: string) => worldStore.has(`unit-info.${world}`));
