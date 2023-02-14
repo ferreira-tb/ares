@@ -2,12 +2,12 @@
 import { computed, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { patchPlunderStore, usePlunderStore } from '$vue/stores/plunder.js';
-import { filterTemplates, pickBestTemplate, queryTemplateData } from '$browser/farm/templates.js';
-import { queryVillagesInfo, villagesInfo } from '$browser/farm/villages.js';
+import { filterTemplates, pickBestTemplate, queryTemplateData } from '$lib/farm/templates.js';
+import { queryVillagesInfo, villagesInfo } from '$lib/farm/villages.js';
 import { queryCurrentVillageCoords } from '$browser/helpers.js';
-import { queryAvailableUnits } from '$browser/farm/units.js';
-import { PlunderedResources } from '$browser/farm/resources.js';
-import { prepareAttack, eventTarget as attackEventTarget } from '$browser/farm/attack.js';
+import { queryAvailableUnits } from '$lib/farm/units.js';
+import { PlunderedResources } from '$lib/farm/resources.js';
+import { prepareAttack, eventTarget as attackEventTarget } from '$lib/farm/attack.js';
 import { assert, AresError } from '$global/error.js';
 import { ipcSend } from '$global/ipc.js';
 

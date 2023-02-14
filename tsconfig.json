@@ -23,6 +23,9 @@
             "$browser/*": [
                 "./browser/*"
             ],
+            "$lib/*": [
+                "./browser/lib/*"
+            ],
             "$global/*": [
                 "./global/*"
             ],
