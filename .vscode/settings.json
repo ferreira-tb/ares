@@ -14,6 +14,7 @@
         { "icon": "ravendb", "extensions": ["phobos"], "format": "FileFormat.svg" },
         { "icon": "paket", "extensions": ["store", "stores"], "format": "FileFormat.svg" },
         { "icon": "nix", "extensions": ["panel"], "format": "FileFormat.svg" },
-        { "icon": "config", "extensions": ["global"], "format": "FileFormat.svg" },
+        { "icon": "www", "extensions": ["global"], "format": "FileFormat.svg" },
+        { "icon": "theme", "extensions": ["composable", "composables"], "format": "FileFormat.svg" }
     ]
 }

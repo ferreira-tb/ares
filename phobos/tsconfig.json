@@ -21,6 +21,9 @@
             "$browser/*": [
                 "../browser/*"
             ],
+            "$lib/*": [
+                "../browser/lib/*"
+            ],
             "$vue/*": [
                 "../vue/*"
             ],

@@ -8,6 +8,7 @@ export default defineConfig({
         alias: {
             '$types': fileURLToPath(new URL('./types', import.meta.url)),
             '$browser': fileURLToPath(new URL('./browser', import.meta.url)),
+            '$lib': fileURLToPath(new URL('./browser/lib', import.meta.url)),
             '$global': fileURLToPath(new URL('./global', import.meta.url)),
             '$vue': fileURLToPath(new URL('./vue', import.meta.url)),
             '$deimos': fileURLToPath(new URL('./deimos', import.meta.url)),
