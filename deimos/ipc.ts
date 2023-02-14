@@ -1,4 +1,5 @@
 import { assert, assertType, DeimosError } from '$deimos/error.js';
+import type { TribalWarsGameData } from '$types/deimos.js';
 
 export class Deimos {
     readonly channel: string;
@@ -15,6 +16,8 @@ export class Deimos {
         window.postMessage(deimos, '*');
     };
 
+    public static invoke(channel: 'get-game-data'): Promise<TribalWarsGameData | null>
+    public static invoke(channel: 'get-world'): Promise<string | null>
     public static invoke(channel: string, ...args: unknown[]): Promise<unknown> {
         return new Promise((resolve) => {
             channel = this.#handleKey(channel);
@@ -37,21 +40,8 @@ export class Deimos {
         });
     };
 
-    static #listener(once: boolean = false) {
-        return (channel: string, listener: (...args: any[]) => void) => {
-            channel = this.#handleKey(channel);
-            window.addEventListener('message', (e: MessageEvent<Deimos>) => {
-                if (e.data.channel === channel) {
-                    Promise.resolve().then(() => listener(...e.data.message))
-                        .catch((err: unknown) => DeimosError.handle(err));
-                };
-            }, { once });
-        };
-    };
-
-    public static readonly on = this.#listener(false);
-    public static readonly once = this.#listener(true);
-
+    public static handle(channel: 'get-game-data', listener: () => TribalWarsGameData | null): void
+    public static handle(channel: 'get-world', listener: () => string | null): void
     public static handle(channel: string, listener: (...args: any[]) => unknown): void {
         channel = this.#handleKey(channel);
         window.addEventListener('message', async (e: MessageEvent<Deimos>) => {
@@ -71,6 +61,21 @@ export class Deimos {
                 window.postMessage(deimos, '*');
             };
         });
+    };
+
+    public static readonly on = this.#listener(false);
+    public static readonly once = this.#listener(true);
+
+    static #listener(once: boolean = false) {
+        return (channel: string, listener: (...args: any[]) => void) => {
+            channel = this.#handleKey(channel);
+            window.addEventListener('message', (e: MessageEvent<Deimos>) => {
+                if (e.data.channel === channel) {
+                    Promise.resolve().then(() => listener(...e.data.message))
+                        .catch((err: unknown) => DeimosError.handle(err));
+                };
+            }, { once });
+        };
     };
 
     static #handleKey(channel: string) {
