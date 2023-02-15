@@ -57,7 +57,7 @@
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@rollup/plugin-typescript": "^11.0.0",
         "@types/jsdom": "^21.1.0",
-        "@types/node": "^18.11.18",
+        "@types/node": "^18.13.0",
         "@vitejs/plugin-vue": "^4.0.0",
         "@vitest/ui": "^0.28.4",
         "@vue/test-utils": "^2.2.10",
