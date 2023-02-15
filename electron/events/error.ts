@@ -1,8 +1,8 @@
 import { app, ipcMain } from 'electron';
 import { URL } from 'url';
 import { Op } from 'sequelize';
+import { assertInteger, assertString } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
-import { assertInteger, assertType } from '$electron/utils/assert.js';
 import { getWorldFromURL } from '$electron/utils/helpers.js';
 import { sequelize } from '$electron/database/database.js';
 import { ErrorLog, DOMErrorLog } from '$tables/error.js';
@@ -12,8 +12,8 @@ import { browserStore } from '$electron/stores/browser.js';
 export function setErrorEvents() {
     ipcMain.on('set-error-log', async (_e, err: ErrorLogType) => {
         try {
-            assertType(typeof err.name === 'string', 'O nome do erro é inválido.');
-            assertType(typeof err.message === 'string', 'Não há uma mensagem válida no relatório de erro.');
+            assertString(err.name, 'O nome do erro é inválido.');
+            assertString(err.message, 'Não há uma mensagem válida no relatório de erro.');
 
             await sequelize.transaction(async (transaction) => {
                 await ErrorLog.create({
@@ -63,7 +63,7 @@ export function setErrorEvents() {
 
     ipcMain.on('set-dom-error-log', async (e, err: DOMErrorLogType) => {
         try {
-            assertType(typeof err.selector === 'string', 'O seletor informado no relatório de erro é inválido.');
+            assertString(err.selector, 'O seletor informado no relatório de erro é inválido.');
 
             const url = new URL(e.sender.getURL());
             const world = getWorldFromURL(url);

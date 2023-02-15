@@ -1,6 +1,7 @@
 import 'vuetify/styles';
 import '$global/assets/style.css';
-import '$global/prototype.js';
+import '@tb-dev/prototype';
+import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { createVuetify } from 'vuetify';

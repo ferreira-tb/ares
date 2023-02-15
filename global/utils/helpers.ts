@@ -1,7 +1,6 @@
-import { assertInteger, assertType } from '$global/utils/assert.js';
-import { farmUnits } from '$global/utils/constants.js';
+import { assertString, isInteger } from '@tb-dev/ts-guard';
 import { AresError } from '$global/error.js';
-import type { FarmUnits, XMLTags } from '$types/game.js';
+import type { XMLTags } from '$types/game.js';
 
 /**
  * Retorna uma função que auxilia na análise dos documentos XML que contêm informações sobre o mundo.
@@ -34,7 +33,7 @@ export function getResponseTime() {
 export function wait(extra?: number) {
     let time = getResponseTime();
     if (time <= 0) time = 500;
-    if (extra && Number.isInteger(extra)) time += extra;
+    if (isInteger(extra)) time += extra;
     
     return new Promise<void>((resolve) => setTimeout(() => resolve(), time));
 };
@@ -47,20 +46,15 @@ export function generateIntegerBetween(min: number, max: number) {
 export async function* fetchDocuments(urls: string[]) {
     const parser = new DOMParser();
     for (const url of urls) {
-        assertType(typeof url === 'string', 'A URL é inválida');
+        assertString(url, 'A URL é inválida');
         const response = await fetch(url);
         const text = await response.text();
         yield parser.parseFromString(text, 'text/html').documentElement;
     };
 };
 
-/**
- * Determina o mundo atual a partir da URL passada.
- * Se omitida, utiliza `location.href` como referência.
- */
-export function getWorldFromURL(url?: URL) {
-    if (!(url instanceof URL)) url = new URL(location.href);
-
+/** Determina o mundo atual a partir da URL passada. */
+export function getWorldFromURL(url: URL): string | null {
     const index = url.hostname.indexOf('.tribalwars');
     if (index === -1) return null;
     
@@ -71,9 +65,9 @@ export function getWorldFromURL(url?: URL) {
     return world;
 };
 
-export function assertWorldFromURL(url?: URL): string {
+export function assertWorldFromURL(url: URL): string {
     const world = getWorldFromURL(url);
-    assertType(typeof world === 'string', 'Não foi possível determinar o mundo.');
+    assertString(world, 'Não foi possível determinar o mundo.');
     return world;
 };
 
@@ -83,8 +77,7 @@ export function assertWorldFromURL(url?: URL): string {
  * @param includeTime Indica se a string resultante deve incluir a hora.
  */
 export function getLocaleDateString(raw?: number, includeTime: boolean = false): string {
-    if (typeof raw !== 'number') raw = Date.now();
-    assertInteger(raw);
+    if (!isInteger(raw)) raw = Date.now();
     
     const dateObject = new Date(raw);
     const date = dateObject.toLocaleDateString('pt-br', {
@@ -104,12 +97,4 @@ export function getLocaleDateString(raw?: number, includeTime: boolean = false):
 
         return `${date} ${time}`;
     };
-};
-
-/**
- * Verifica se a string passada é um nome de unidade válido.
- * @param unit Nome da unidade.
- */
-export function isFarmUnit(unit: string): unit is FarmUnits {
-    return farmUnits.includes(unit as FarmUnits);
 };

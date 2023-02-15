@@ -1,11 +1,9 @@
 import { BrowserWindow } from 'electron';
 import { favicon, moduleHtml } from '$electron/utils/constants.js';
-import { getMainWindow, setBasicDevMenu } from '$electron/utils/helpers.js';
-import { assertType } from '$electron/utils/assert.js';
+import { assertMainWindow, setBasicDevMenu } from '$electron/utils/helpers.js';
 
 export function showErrorLog() {
-    const mainWindow = getMainWindow();
-    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+    const mainWindow = assertMainWindow();
 
     const errorLogWindow = new BrowserWindow({
         parent: mainWindow,

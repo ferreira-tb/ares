@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import { assert } from '$global/utils/assert.js';
+import { assert } from '@tb-dev/ts-guard';
 import { useMutationObserver } from '@vueuse/core';
 
 class AvailableFarmUnits {

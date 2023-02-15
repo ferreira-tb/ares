@@ -1,4 +1,4 @@
-import { assert, assertArrayIncludes, assertInteger, assertType } from '$global/utils/assert.js';
+import { assert, assertInteger, assertString, assertArrayIncludes, assertArray } from '@tb-dev/ts-guard';
 import { months } from '$global/utils/constants.js';
 
 /**
@@ -12,26 +12,22 @@ export function parseCoordsFromTextContent(text: string | null): [number, number
     const targetCoords = text.trim().match(/\d{3}\|\d{3}/m);
     if (!targetCoords) return null;
 
-    const coords = targetCoords[0].split('\|')
-        .map((value) => Number.parseInt(value, 10))
-        .filter((value) => !Number.isNaN(value));
-
+    const coords = targetCoords[0].splitAsIntegerListStrict('\|');
     assert(coords.length === 2, 'As coordenadas são inválidas.');
     return coords as [number, number];
 };
 
 export function assertCoordsFromTextContent(text: string | null): [number, number] {
     const coords = parseCoordsFromTextContent(text);
-    assertType(Array.isArray(coords), 'Não foi possível obter as coordenadas da aldeia.');
+    assertArray(coords, 'Não foi possível obter as coordenadas da aldeia.');
     return coords;
 };
 
 /**
  * Converte uma data para milisegundos.
- * 
  * Exemplos de data: `hoje às 00:05:26`, `ontem às 16:29:50`, `em 21.09. às 12:36:38`.
  * 
- * Relevante: https://github.com/ferreira-tb/insidious/issues/2
+ * @see https://github.com/ferreira-tb/insidious/issues/2
  * @param date - Texto do campo a analisar.
  * @returns Data do último ataque em milisegundos.
  */
@@ -43,7 +39,7 @@ export function parseGameDate(date: string): number | null {
     const splitDate: string | undefined = writtenDate.split(' ').pop();
     if (!splitDate) return null;
 
-    const dateFields = splitDate.split('\:').map(item => Number.parseInt(item, 10));
+    const dateFields = splitDate.splitAsIntegerList('\:');
     if (dateFields.length < 3) return null;
     if (dateFields.some((item) => Number.isNaN(item))) return null;
 
@@ -57,19 +53,15 @@ export function parseGameDate(date: string): number | null {
 
     // Se foi ontem ou se for amanhã, faz a mesma coisa, mas remove ou adiciona 24 horas do resultado.
     } else if (writtenDate.includes('ontem')) {
-        const yesterday = Date.now() - (3600000 * 24);
-        return new Date(yesterday).setHours(hours, minutes, seconds, milliseconds);
+        return Date.yesterday().toDate().setHours(hours, minutes, seconds, milliseconds);
 
     } else if (writtenDate.includes('amanhã')) {
-        const tomorrow = Date.now() + (3600000 * 24);
-        return new Date(tomorrow).setHours(hours, minutes, seconds, milliseconds);
+        return Date.tomorrow().toDate().setHours(hours, minutes, seconds, milliseconds);
 
     } else if (writtenDate.includes('em')) {
         // Em outros cenários, também altera o dia e o mês.
         const dayAndMonth = (writtenDate.split(' '))[1];
-        const [day, month] = dayAndMonth.split('.')
-            .map((item) => Number.parseInt(item, 10))
-            .filter((item) => !Number.isNaN(item));
+        const [day, month] = dayAndMonth.splitAsIntegerListStrict('.');
 
         const anyDay = new Date().setHours(hours, minutes, seconds, milliseconds);
         // O valor para o mês possui índice zero, por isso é preciso diminuí-lo em 1.
@@ -91,17 +83,14 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
 
     // Exemplo: "out. 17, 2022  22:16:46:503".
     const rawDate = dateField.assertTextContent();
-
-    const rawDateFields = rawDate.split(' ')
-        .filter((value) => value)
-        .map((value) => value.trim());
+    const rawDateFields = rawDate.splitAndTrim(' ');
 
     const getDigits = (value: string) => Number.parseInt(value.replace(/\D/g, ''), 10);
 
     const dateFields = rawDateFields.map((field, index) => {
         if (index === 0) {
             const rawMonth: string = field.replace(/\W/g, '').slice(0, 3);
-            assertType(rawMonth && typeof rawMonth === 'string', 'O mês obtido é inválido.');
+            assertString(rawMonth, 'O mês obtido é inválido.');
             assertArrayIncludes((months as unknown) as string[], rawMonth, 'O mês obtido é inválido.');
             
             // Date.prototype.setFullYear() usa índice zero para os meses.

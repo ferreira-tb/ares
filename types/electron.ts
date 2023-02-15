@@ -17,5 +17,13 @@ export type BrowserStoreType = {
     /** ID do jogador ativo. */
     playerId: number | null;
     /** Grupo de aldeias atual. */
-    groupId: string | null;
+    groupId: number | null;
+
+    // Features
+    /** Conta premium. */
+    premium: boolean | null;
+    /** Gerente de conta. */
+    accountManager: boolean | null;
+    /** Assistente de saque. */
+    farmAssistant: boolean | null;
 };

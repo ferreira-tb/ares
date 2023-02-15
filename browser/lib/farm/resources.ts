@@ -1,4 +1,4 @@
-import { assertInteger } from '$global/utils/assert.js';
+import { assertInteger } from '@tb-dev/ts-guard';
 import { resources } from '$global/utils/constants.js';
 import type { PlunderVillageInfo } from '$lib/farm/villages.js';
 

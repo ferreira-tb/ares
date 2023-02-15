@@ -1,7 +1,8 @@
 import { ipcMain } from 'electron';
-import { assertType } from '$electron/utils/assert.js';
+import { assertInteger } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
-import { getCurrentWorld, assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
+import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
+import { browserStore } from '$electron/stores/browser.js';
 import { worldStore, setIntoWorldStore } from '$electron/electron-store/world.js';
 
 export function setBrowserEvents() {
@@ -14,17 +15,16 @@ export function setBrowserEvents() {
     // Recebe as coordenadas da janela do browser e então as envia para o painel.
     ipcMain.on('update-current-coords', (_e, currentX: unknown, currentY: unknown) => {
         try {
-            assertType(typeof currentX === 'number', 'A coordenada X é inválida.');
-            assertType(typeof currentY === 'number', 'A coordenada Y é inválida.');
+            assertInteger(currentX, 'A coordenada X é inválida.');
+            assertInteger(currentY, 'A coordenada Y é inválida.');
             panelWindow.webContents.send('update-current-coords', currentX, currentY);
-
         } catch (err) {
             MainProcessError.handle(err);
         };
     });
 
     // Retorna o mundo atual.
-    ipcMain.handle('get-current-world', () => getCurrentWorld());
+    ipcMain.handle('get-current-world', () => browserStore.world);
     // Indica se as configurações do mundo ou das unidades estão salvas no armazenamento.
     ipcMain.handle('has-world-data', (_e, world: string) => worldStore.has(`world-info.${world}`));
     ipcMain.handle('has-unit-data', (_e, world: string) => worldStore.has(`unit-info.${world}`));

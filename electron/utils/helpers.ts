@@ -1,7 +1,7 @@
-import { BrowserWindow, Menu } from 'electron';
 import { URL } from 'url';
+import { BrowserWindow, Menu } from 'electron';
+import { assert, assertString } from '@tb-dev/ts-guard';
 import { devOptions } from '$electron/utils/constants.js';
-import { assertType } from '$electron/utils/assert.js';
 
 export const getMainWindow = () => {
     const id = Number.assertInteger(process.env.MAIN_WINDOW_ID ?? '', 10);
@@ -10,7 +10,7 @@ export const getMainWindow = () => {
 
 export const assertMainWindow = () => {
     const mainWindow = getMainWindow();
-    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+    assert(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
     return mainWindow;
 };
 
@@ -21,7 +21,7 @@ export const getPanelWindow = () => {
 
 export const assertPanelWindow = () => {
     const panelWindow = getPanelWindow();
-    assertType(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
+    assert(panelWindow instanceof BrowserWindow, 'Não foi possível obter a janela do painel.');
     return panelWindow;
 };
 
@@ -38,24 +38,7 @@ export function getWorldFromURL(url: URL) {
 
 export function assertWorldFromURL(url: URL) {
     const world = getWorldFromURL(url);
-    assertType(typeof world === 'string', 'Não foi possível determinar o mundo.');
-    return world;
-};
-
-export function getCurrentWorld() {
-    const mainWindow = assertMainWindow();
-    const currentURL = mainWindow.webContents.getURL();
-    if (/\.?tribalwars/.test(currentURL)) {
-        const url = new URL(currentURL);
-        return getWorldFromURL(url);
-    };
-
-    return null;
-};
-
-export function assertCurrentWorld() {
-    const world = getCurrentWorld();
-    assertType(typeof world === 'string', 'O mundo é inválido.');
+    assertString(world, 'Não foi possível determinar o mundo a partir da URL.');
     return world;
 };
 
@@ -64,7 +47,7 @@ export function assertCurrentWorld() {
  * Se `setNull` for `true`, a janela ficará sem menu caso o Ares não esteja em modo de desenvolvedor.
  */
 export function setBasicDevMenu(browserWindow: BrowserWindow, setNull: boolean = true) {
-    assertType(browserWindow instanceof BrowserWindow, 'O item não é uma janela.');
+    assert(browserWindow instanceof BrowserWindow, 'O item não é uma janela.');
     if (process.env.ARES_MODE !== 'dev') {
         if (setNull === true) browserWindow.setMenu(null);
         return;

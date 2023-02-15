@@ -1,4 +1,4 @@
-import '$electron/prototype.js';
+import '@tb-dev/prototype';
 import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu.js';
 import { sequelize } from '$electron/database/database.js';

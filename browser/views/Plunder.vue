@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
+import { assertElement } from '@tb-dev/ts-guard-dom';
 import { patchPlunderStore, usePlunderStore } from '$vue/stores/plunder.js';
 import { filterTemplates, pickBestTemplate, queryTemplateData } from '$lib/farm/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$lib/farm/villages.js';
@@ -9,7 +10,6 @@ import { queryAvailableUnits } from '$lib/farm/units.js';
 import { PlunderedResources } from '$lib/farm/resources.js';
 import { prepareAttack, eventTarget as attackEventTarget } from '$lib/farm/attack.js';
 import { AresError } from '$global/error.js';
-import { assert } from '$global/utils/assert.js';
 import { ipcSend } from '$global/ipc.js';
 
 const store = usePlunderStore();
@@ -62,27 +62,25 @@ async function handleAttack(): Promise<void> {
     if (store.status === false) return;
 
     // Seleciona todas as aldeias da tabela e itera sobre elas.
-    const villages = plunderList.queryAsArray<HTMLTableRowElement>('tr[data-tb-village]');
-    for (const village of villages) {
-        const villageId = village.assertAttribute('data-tb-village');
-
+    const villages = plunderList.queryAsMap('tr[data-tb-village]', (e) => e.assertAttribute('data-tb-village'));
+    for (const [id, village] of villages.entries()) {
         // Ignora a linha caso ela esteja oculta, removendo-a da tabela.
         const style = village.getAttribute('style') ?? '';
         if (/display:\s*none/.test(style)) {
             village.remove();
-            villagesInfo.delete(villageId);
+            villagesInfo.delete(id);
             continue;
         };
 
         // Ignora a linha caso a aldeia esteja sob ataque.
         const attackIcon = village.querySelector('img[src*="attack.png" i]');
         if (attackIcon !== null) {
-            villagesInfo.delete(villageId);
+            villagesInfo.delete(id);
             continue;
         };
 
         /** Informações sobre a aldeia. */
-        const info = villagesInfo.assert(villageId);
+        const info = villagesInfo.assert(id);
 
         const templates = await filterTemplates(info.res.total);
         if (templates.length === 0) continue;
@@ -95,10 +93,10 @@ async function handleAttack(): Promise<void> {
 
         if (best.type === 'a' || best.type === 'b') {
             const attackButton = info.button[best.type];
-            assert(attackButton, `O botão do modelo ${best.type.toUpperCase()} não foi encontrado.`);
+            assertElement(attackButton, `O botão do modelo ${best.type.toUpperCase()} não foi encontrado.`);
 
             return prepareAttack(plunderedResources, attackButton)
-                .then(() => villagesInfo.delete(villageId))
+                .then(() => villagesInfo.delete(id))
                 .then(() => village.remove())
                 .then(() => handleAttack())
                 .catch((err: unknown) => AresError.handle(err));

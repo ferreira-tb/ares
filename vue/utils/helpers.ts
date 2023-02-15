@@ -1,3 +1,4 @@
+import { isArray, isInteger, isString } from '@tb-dev/ts-guard';
 import { useAresStore } from '$vue/stores/ares.js';
 import type { RouteRecordRaw } from 'vue-router';
 
@@ -6,8 +7,8 @@ import type { RouteRecordRaw } from 'vue-router';
 /** Calcula distância em campos entre duas coordenadas. */
 export function calcDistance(destX: number, destY: number, originX?: number, originY?: number) {
     const aresStore = useAresStore();
-    if (typeof originX !== 'number') originX = aresStore.currentX;
-    if (typeof originY !== 'number') originY = aresStore.currentY;
+    if (!isInteger(originX)) originX = aresStore.currentX;
+    if (!isInteger(originY)) originY = aresStore.currentY;
 
     return Math.sqrt(((destX - originX) ** 2) + ((destY - originY) ** 2));
 };
@@ -16,9 +17,9 @@ export function getRouteNames(routes: RouteRecordRaw[]) {
     const names: string[] = [];
 
     for (const route of routes) {
-        if (typeof route.name === 'string') {
+        if (isString(route.name)) {
             names.push(route.name)
-        } else if (Array.isArray(route.children)) {
+        } else if (isArray(route.children)) {
             names.push(...getRouteNames(route.children))
         };
     };

@@ -1,7 +1,8 @@
-import { useMutationObserver, useEventListener } from '@vueuse/core'
+import { useMutationObserver, useEventListener } from '@vueuse/core';
+import { assert } from '@tb-dev/ts-guard';
+import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
 import { calcDistance } from '$vue/utils/helpers.js';
 import { assertCoordsFromTextContent, parseGameDate } from '$global/utils/parser.js';
-import { assert, assertDOM, assertElement } from '$global/utils/assert.js';
 import { AresError } from '$global/error.js';
 import { resources as resourceList } from '$global/utils/constants.js';
 import type { Coords } from '$types/game.js';
@@ -97,8 +98,9 @@ function queryReport(row: Element, info: PlunderVillageInfo) {
 };
 
 function queryLastAttack(row: Element, info: PlunderVillageInfo) {
-    const fields = row.queryAsArray('td:not(:has(a)):not(:has(img)):not(:has(span.icon))');
-    assertDOM(fields.length >= 1, 'td:not(:has(a)):not(:has(img)):not(:has(span.icon))');
+    const selector = 'td:not(:has(a)):not(:has(img)):not(:has(span.icon))';
+    const fields = row.queryAsArray(selector);
+    if (fields.length === 0) throw new DOMAssertionError(selector);
 
     for (const field of fields) {
         if (!field.textContent) continue;

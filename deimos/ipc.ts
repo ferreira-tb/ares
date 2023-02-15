@@ -1,5 +1,5 @@
 import { DeimosError } from '$deimos/error.js';
-import { assert, assertType } from '$deimos/utils/assert.js';
+import { assert, assertString } from '@tb-dev/ts-guard';
 import type { TribalWarsGameData } from '$types/deimos.js';
 
 export class Deimos {
@@ -80,7 +80,7 @@ export class Deimos {
     };
 
     static #handleKey(channel: string) {
-        assertType(typeof channel === 'string', 'A chave deve ser uma string');
+        assertString(channel, 'A chave deve ser uma string');
         assert(channel.length > 0, 'A chave não pode ser uma string vazia');
 
         return `deimos-${channel}`;

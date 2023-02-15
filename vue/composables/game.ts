@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { assertType } from '$global/utils/assert.js';
+import { assert } from '@tb-dev/ts-guard';
 import type { ComputedRef, Ref } from 'vue';
 import type { GameScreen } from '$types/game.js';
 
@@ -11,7 +11,7 @@ function useCurrentField(fieldName: 'subtype'): CurrentFieldReturnType<string>;
 function useCurrentField(fieldName: 'village'): CurrentFieldReturnType<string>;
 function useCurrentField(fieldName: string) {
     return function(url: Ref<string>): ComputedRef<string | null> {
-        assertType(typeof url.value === 'string', 'A URL é inválida.');
+        assert(typeof url.value === 'string', 'A URL é inválida.');
 
         return computed(() => {
             const urlObject = new URL(url.value);

@@ -1,10 +1,12 @@
 import '$browser/assets/style.css';
-import '$global/prototype.js';
+import '@tb-dev/prototype';
+import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import { DOMAssertionError } from '@tb-dev/ts-guard-dom';
 import { router } from '$browser/router/router.js';
 import { setBrowserEvents } from '$browser/events.js';
-import { AresError, GameDOMError } from '$global/error.js';
+import { AresError } from '$global/error.js';
 import Browser from '$browser/Browser.vue';
 
 const app = createApp(Browser);
@@ -16,8 +18,8 @@ app.use(router);
 
 // Error handler.
 app.config.errorHandler = (err) => {
-    if (err instanceof GameDOMError) {
-        GameDOMError.handle(err);
+    if (err instanceof DOMAssertionError) {
+        AresError.handleDOMError(err);
     } else {
         AresError.handle(err);
     };

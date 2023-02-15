@@ -2,7 +2,7 @@
 import { useSorted } from '@vueuse/core';
 import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { getLocaleDateString } from '$global/utils/helpers.js';
-import { assertInteger, assertType } from '$global/utils/assert.js';
+import { assertInteger, assertArray } from '@tb-dev/ts-guard';
 import { VBtn as Button } from 'vuetify/components/VBtn';
 import {
     VCard as Card,
@@ -14,7 +14,7 @@ import {
 } from 'vuetify/components/VCard';
 
 const raw = await ipcInvoke('get-dom-error-log');
-assertType(Array.isArray(raw), 'Houve um erro durante a conexão com o banco de dados.');
+assertArray(raw, 'Houve um erro durante a conexão com o banco de dados.');
 const errors = useSorted(raw, (a, b) => b.time - a.time);
 
 const getOrigin = (url: string) => new URL(url).origin;

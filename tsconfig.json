@@ -42,10 +42,11 @@
                 "./deimos/*"
             ]
         },
-
-        "lib": ["esnext", "dom"],
+        "lib": [
+            "esnext",
+            "dom"
+        ],
         "target": "esnext",
-        
         // Modo estrito
         "alwaysStrict": true,
         "noImplicitAny": true,
@@ -54,23 +55,25 @@
         "strictBindCallApply": true,
         "strictPropertyInitialization": true,
         "useUnknownInCatchVariables": true,
-        
         // Código não utilizado
         "noUnusedParameters": true,
         "noUnusedLocals": true,
         "allowUnusedLabels": false,
         "allowUnreachableCode": false,
-
         // Código implícito
         "noImplicitOverride": true,
         "noImplicitReturns": true,
-
         // Outros
         "exactOptionalPropertyTypes": true,
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
         "removeComments": true,
-        "types": ["node", "vitest/globals"],
+        "types": [
+            "node",
+            // "vitest/globals",
+            "@tb-dev/prototype/dist/index",
+            "@tb-dev/prototype-dom/dist/index"
+        ],
         "esModuleInterop": true
     },
     "references": [

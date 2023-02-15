@@ -1,8 +1,8 @@
-import { BrowserWindow, BrowserView, type WebPreferences } from 'electron';
 import { URL } from 'url';
-import { getMainWindow } from '$electron/utils/helpers.js';
+import { BrowserView, type WebPreferences } from 'electron';
+import { assertString, assertInstanceOf } from '@tb-dev/ts-guard';
+import { assertMainWindow } from '$electron/utils/helpers.js';
 import { phobosJs } from '$electron/utils/constants.js';
-import { assertType } from '$electron/utils/assert.js';
 import type { PhobosNames, PhobosOptions } from '$types/phobos.js';
 
 const activePhobos = new Map<PhobosNames, BrowserView>();
@@ -21,11 +21,10 @@ const activePhobos = new Map<PhobosNames, BrowserView>();
  * É possível passar um objeto `WebPreferences` com uma das opções.
  */
 export async function createPhobos(name: PhobosNames, url: URL, options?: PhobosOptions) {
-    assertType(typeof name === 'string', 'Nome inválido.');
-    assertType(url instanceof URL, 'URL inválida');
+    assertString(name, 'Nome inválido.');
+    assertInstanceOf(url, URL, 'URL inválida');
 
-    const mainWindow = getMainWindow();
-    assertType(mainWindow instanceof BrowserWindow, 'Não foi possível obter a janela do browser.');
+    const mainWindow = assertMainWindow();
 
     const alivePhobos = activePhobos.get(name);
     if (alivePhobos instanceof BrowserView) {

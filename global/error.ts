@@ -1,5 +1,6 @@
-import { ipcSend } from "$global/ipc.js";
-import type { ErrorLogBase, DOMErrorLogBase } from "$types/error.js";
+import { ipcSend } from '$global/ipc.js';
+import { DOMAssertionError } from '@tb-dev/ts-guard-dom';
+import type { ErrorLogBase, DOMErrorLogBase } from '$types/error.js';
 
 export class AresError extends Error {
     override name = 'AresError';
@@ -16,17 +17,9 @@ export class AresError extends Error {
             } satisfies ErrorLogBase);
         };
     };
-};
 
-export class GameDOMError extends Error {
-    override readonly name = 'GameDOMError';
-
-    constructor(message: string) {
-        super(message);
-    };
-
-    public static handle(err: GameDOMError) {
-        if (err instanceof GameDOMError) {
+    public static handleDOMError(err: unknown) {
+        if (err instanceof DOMAssertionError) {
             ipcSend('set-dom-error-log', {
                 selector: err.message
             } satisfies DOMErrorLogBase);

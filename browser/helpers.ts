@@ -1,5 +1,5 @@
 import { useAresStore } from '$vue/stores/ares.js';
-import { assertType } from '$global/utils/assert.js';
+import { assertArray } from '@tb-dev/ts-guard';
 import { parseCoordsFromTextContent } from '$global/utils/parser.js';
 import { ipcSend } from '$global/ipc.js';
 
@@ -9,7 +9,7 @@ export function queryCurrentVillageCoords() {
     const coordsField = document.queryAndAssert(selector);
 
     const coords = parseCoordsFromTextContent(coordsField.textContent);
-    assertType(Array.isArray(coords), 'O valor obtido para as coordenadas não é uma array.');
+    assertArray(coords, 'O valor obtido para as coordenadas não é uma array.');
 
     const aresStore = useAresStore();
     aresStore.currentX = coords[0];

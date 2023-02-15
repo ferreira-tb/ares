@@ -47,6 +47,10 @@
         "forceConsistentCasingInFileNames": true,
         "removeComments": true,
         "moduleResolution": "node",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+
+        "types": [
+            "@tb-dev/prototype/dist/index"
+        ]
     }
 }

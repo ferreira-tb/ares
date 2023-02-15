@@ -7,6 +7,12 @@ import { ipcInvoke } from '$global/ipc.js';
 export const useAresStore = defineStore('ares', () => {
     /** URL da página atual. */
     const currentURL = ref<string>(gameURL);
+    /** Jogador logado no momento. */
+    const currentPlayer = ref<string | null>(null);
+    /** ID do jogador. */
+    const currentPlayerId = ref<number | null>(null);
+    /** ID do grupo de aldeia atual. */
+    const currentGroupId = ref<number | null>(null);
     /** Página atual. */
     const currentScreen = useCurrentScreen(currentURL);
     /** Mundo atual. */
@@ -18,6 +24,9 @@ export const useAresStore = defineStore('ares', () => {
 
     return {
         currentURL,
+        currentPlayer,
+        currentPlayerId,
+        currentGroupId,
         currentScreen,
         currentWorld,
         currentX,

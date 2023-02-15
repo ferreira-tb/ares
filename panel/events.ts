@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { assert, assertInteger, assertType } from '$global/utils/assert.js';
+import { assert, assertInteger, assertString } from '@tb-dev/ts-guard';
 import { useAresStore } from '$vue/stores/ares.js';
 import { usePlunderHistoryStore, usePlunderStore } from '$vue/stores/plunder.js';
 import { resources as resourceList } from '$global/utils/constants.js';
@@ -11,14 +11,14 @@ export function setPanelWindowEvents(pinia: Pinia) {
     const plunderStore = usePlunderStore(pinia);
     const plunderHistoryStore = usePlunderHistoryStore(pinia);
 
-    ipcRenderer.on('page-url', (_e, url) => {
-        assertType(typeof url === 'string', 'A URL é inválida.');
-        if (/\.?tribalwars/.test(url)) aresStore.currentURL = url;
+    ipcRenderer.on('page-url', (_e, url: unknown) => {
+        assertString(url, 'A URL é inválida.');
+        aresStore.currentURL = url;
     });
 
     ipcRenderer.on('update-current-coords', (_e, currentX: number, currentY: number) => {
-        assertType(typeof currentX === 'number', 'A coordenada X é inválida.');
-        assertType(typeof currentY === 'number', 'A coordenada Y é inválida.');
+        assertInteger(currentX, 'A coordenada X é inválida.');
+        assertInteger(currentY, 'A coordenada Y é inválida.');
         aresStore.currentX = currentX;
         aresStore.currentY = currentY;
     });

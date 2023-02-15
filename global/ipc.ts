@@ -5,37 +5,62 @@ import type { PlunderedResources } from '$lib/farm/resources.js';
 import type { PlunderedAmount } from '$types/game.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 
+// Geral
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;
 export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-deimos-file'): Promise<string | null>;
-export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
-export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorLogType[] | null>;
-export async function ipcInvoke(channel: 'is-plunder-active', world?: string): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-plunder-state', world?: string): Promise<PlunderState | null>;
-export async function ipcInvoke(channel: 'get-current-world'): Promise<string | null>;
+
+// Mundo
 export async function ipcInvoke(channel: 'has-world-data', world: string): Promise<boolean>;
 export async function ipcInvoke(channel: 'has-unit-data', world: string): Promise<boolean>;
 export async function ipcInvoke(channel: 'set-world-data', world: string, data: WorldData): Promise<boolean>;
 export async function ipcInvoke(channel: 'set-unit-data', world: string, data: UnitData): Promise<boolean>;
+
+// Erros
+export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorLogType[] | null>;
+
+// Plunder
+export async function ipcInvoke(channel: 'is-plunder-active', world?: string): Promise<boolean>;
+export async function ipcInvoke(channel: 'get-plunder-state', world?: string): Promise<PlunderState | null>;
 export async function ipcInvoke(channel: 'get-last-plundered-amount', world?: string): Promise<PlunderedAmount | null>;
 export async function ipcInvoke(channel: 'get-total-plundered-amount', world?: string): Promise<PlunderedAmount | null>;
+
+// Deimos
+export async function ipcInvoke(channel: 'get-current-world'): Promise<string | null>;
+
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
     const response = await ipcRenderer.invoke(channel, ...args);
     return response;
 };
 
+/////////////////////////////////////////
+
+// Geral
+export function ipcSend(channel: 'reload-browser-window'): void;
+export function ipcSend(channel: 'force-reload-browser-window'): void;
+
+// Erros
 export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
 export function ipcSend(channel: 'set-dom-error-log', err: DOMErrorLogBase): void;
 export function ipcSend(channel: 'delete-error-log', id: number): void;
 export function ipcSend(channel: 'delete-dom-error-log', id: number): void;
-export function ipcSend(channel: 'reload-browser-window'): void;
-export function ipcSend(channel: 'force-reload-browser-window'): void;
+
+// Plunder
 export function ipcSend(channel: 'set-plunder-state', name: keyof PlunderState, value: PlunderStateValue, world?: string): void;
-export function ipcSend(channel: 'update-current-coords', x: number, y: number): void;
 export function ipcSend(channel: 'update-plundered-amount', resources: PlunderedResources): void;
 export function ipcSend(channel: 'save-plundered-amount', resources: PlunderedAmount, world?: string): void;
+
+// Deimos
+export function ipcSend(channel: 'update-current-world', world: string | null): void;
+export function ipcSend(channel: 'update-current-major-version', version: string | null): void;
+export function ipcSend(channel: 'update-current-player', playerName: string | null): void;
+export function ipcSend(channel: 'update-current-player-id', playerId: number | null): void;
+export function ipcSend(channel: 'update-current-group-id', groupId: number | null): void;
+export function ipcSend(channel: 'update-current-coords', x: number, y: number): void;
+
 export function ipcSend(channel: string, ...args: any[]) {
     ipcRenderer.send(channel, ...args);
 };

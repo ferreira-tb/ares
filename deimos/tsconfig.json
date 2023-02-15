@@ -7,9 +7,6 @@
     "exclude": [
         "../global/test/*"
     ],
-    "files": [
-        "../global.d.ts"
-    ],
 
     "compilerOptions": {
         "target": "esnext",
