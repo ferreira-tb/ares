@@ -37,7 +37,7 @@
         "test:ui": "vitest --ui"
     },
     "dependencies": {
-        "@tb-dev/prototype": "^1.2.1",
+        "@tb-dev/prototype": "^2.0.0",
         "@tb-dev/prototype-dom": "^1.0.0",
         "@tb-dev/ts-guard": "^1.2.1",
         "@tb-dev/ts-guard-dom": "^1.0.0",
