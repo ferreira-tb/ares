@@ -1,6 +1,6 @@
 import { useAresStore } from "$vue/stores/ares.js";
 import { ipcInvoke } from '$global/ipc.js';
-import { assert } from '@tb-dev/ts-guard';
+import { assert, isString } from '@tb-dev/ts-guard';
 import { queryXMLTags } from '$global/utils/helpers.js';
 import { allUnits } from '$global/utils/constants.js';
 import type { UnitDetails } from '$types/game.js';
@@ -68,10 +68,7 @@ const getUnitDataUrl = (world: string) => `https://${world}.tribalwars.com.br/in
  */
 export async function verifyWorldAndUnitData(aresStore?: ReturnType<typeof useAresStore>): Promise<boolean> {
     if (!aresStore) aresStore = useAresStore();
-    if (typeof aresStore.currentWorld !== 'string') {
-        aresStore.currentWorld = await ipcInvoke('get-current-world');
-        assert(aresStore.currentWorld !== null, 'Não há informação sobre o mundo atual.');
-    };
+    if (!isString(aresStore.currentWorld)) return false;
 
     // Verifica se as informações já estão salvas no armazenamento.
     let worldDataStatus = await ipcInvoke('has-world-data', aresStore.currentWorld);

@@ -82,7 +82,7 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
     const dateField = report.queryAndAssert(selector);
 
     // Exemplo: "out. 17, 2022  22:16:46:503".
-    const rawDate = dateField.assertTextContent();
+    const rawDate = dateField.getTextContentStrict();
     const rawDateFields = rawDate.splitAndTrim(' ');
 
     const getDigits = (value: string) => Number.parseInt(value.replace(/\D/g, ''), 10);

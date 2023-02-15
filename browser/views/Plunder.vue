@@ -62,7 +62,7 @@ async function handleAttack(): Promise<void> {
     if (store.status === false) return;
 
     // Seleciona todas as aldeias da tabela e itera sobre elas.
-    const villages = plunderList.queryAsMap('tr[data-tb-village]', (e) => e.assertAttribute('data-tb-village'));
+    const villages = plunderList.queryAsMap('tr[data-tb-village]', (e) => e.getAttributeStrict('data-tb-village'));
     for (const [id, village] of villages.entries()) {
         // Ignora a linha caso ela esteja oculta, removendo-a da tabela.
         const style = village.getAttribute('style') ?? '';
@@ -80,7 +80,7 @@ async function handleAttack(): Promise<void> {
         };
 
         /** Informações sobre a aldeia. */
-        const info = villagesInfo.assert(id);
+        const info = villagesInfo.getStrict(id);
 
         const templates = await filterTemplates(info.res.total);
         if (templates.length === 0) continue;

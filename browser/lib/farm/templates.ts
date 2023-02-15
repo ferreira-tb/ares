@@ -66,7 +66,7 @@ export function queryTemplateData() {
     parseUnitAmount('a', aFields);
 
     const aCarryField = aRow.queryAndAssert('td:not(:has(input[data-tb-template-a])):not(:has(input[type*="hidden"]))');
-    templateA.carry = aCarryField.parseInt();
+    templateA.carry = aCarryField.parseIntStrict();
 
     // Campos do modelo B.
     const bRow = table.queryAndAssert('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
@@ -75,7 +75,7 @@ export function queryTemplateData() {
     parseUnitAmount('b', bFields);
 
     const bCarryField = bRow.queryAndAssert('td:not(:has(input[data-tb-template-b])):not(:has(input[type*="hidden"]))');
-    templateB.carry = bCarryField.parseInt();
+    templateB.carry = bCarryField.parseIntStrict();
 };
 
 /**
@@ -89,7 +89,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
 
     for (const field of fields) {
         /** O atributo `name` é usado para determinar a unidade referente ao campo. */
-        const fieldName = field.assertAttribute('name');
+        const fieldName = field.getAttributeStrict('name');
         /** O valor no atributo `name` é algo como `spear[11811]`. */
         const unitType = fieldName.replace(/\[\d+\]/g, '');
 
@@ -97,7 +97,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
         field.setAttribute(`data-tb-template-${row}`, unitType);
         
         /** Contém a quantidade de unidades. */
-        template.units[unitType] = field.assertAttributeAsInt('value');
+        template.units[unitType] = field.getAttributeAsIntStrict('value');
     };
 };
 

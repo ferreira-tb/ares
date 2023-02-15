@@ -9,6 +9,7 @@ import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } fro
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;
 export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
+export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-deimos-file'): Promise<string | null>;
 
@@ -29,7 +30,7 @@ export async function ipcInvoke(channel: 'get-last-plundered-amount', world?: st
 export async function ipcInvoke(channel: 'get-total-plundered-amount', world?: string): Promise<PlunderedAmount | null>;
 
 // Deimos
-export async function ipcInvoke(channel: 'get-current-world'): Promise<string | null>;
+
 
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
     const response = await ipcRenderer.invoke(channel, ...args);
@@ -58,8 +59,25 @@ export function ipcSend(channel: 'update-current-world', world: string | null): 
 export function ipcSend(channel: 'update-current-major-version', version: string | null): void;
 export function ipcSend(channel: 'update-current-player', playerName: string | null): void;
 export function ipcSend(channel: 'update-current-player-id', playerId: number | null): void;
+export function ipcSend(channel: 'update-current-player-points', playerPoints: number | null): void;
+export function ipcSend(channel: 'update-village-amount', villageAmount: number | null): void;
 export function ipcSend(channel: 'update-current-group-id', groupId: number | null): void;
-export function ipcSend(channel: 'update-current-coords', x: number, y: number): void;
+export function ipcSend(channel: 'update-current-coords', x: number | null, y: number | null): void;
+export function ipcSend(channel: 'update-premium-status', premium: boolean | null): void;
+export function ipcSend(channel: 'update-account-manager-status', accountManager: boolean | null): void;
+export function ipcSend(channel: 'update-farm-assistant-status', farmAssistant: boolean | null): void;
+export function ipcSend(channel: 'update-current-screen', screen: string | null): void;
+export function ipcSend(channel: 'update-screen-mode', screenMode: string | null): void;
+export function ipcSend(channel: 'update-pregame-status', pregame: boolean | null): void;
+export function ipcSend(channel: 'update-current-village-id', villageId: number | null): void;
+export function ipcSend(channel: 'update-current-village-name', villageName: string | null): void;
+export function ipcSend(channel: 'update-current-village-population', villagePopulation: number | null): void;
+export function ipcSend(channel: 'update-current-village-max-population', villageMaxPopulation: number | null): void;
+export function ipcSend(channel: 'update-current-village-points', villagePoints: number | null): void;
+export function ipcSend(channel: 'update-current-village-wood', villageWood: number | null): void;
+export function ipcSend(channel: 'update-current-village-stone', villageStone: number | null): void;
+export function ipcSend(channel: 'update-current-village-iron', villageIron: number | null): void;
+export function ipcSend(channel: 'update-current-village-max-storage', villageMaxStorage: number | null): void;
 
 export function ipcSend(channel: string, ...args: any[]) {
     ipcRenderer.send(channel, ...args);

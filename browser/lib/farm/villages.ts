@@ -1,10 +1,11 @@
 import { useMutationObserver, useEventListener } from '@vueuse/core';
-import { assert } from '@tb-dev/ts-guard';
+import { assert, assertInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
-import { calcDistance } from '$vue/utils/helpers.js';
+import { calcDistance } from '$global/utils/helpers.js';
 import { assertCoordsFromTextContent, parseGameDate } from '$global/utils/parser.js';
 import { AresError } from '$global/error.js';
 import { resources as resourceList } from '$global/utils/constants.js';
+import { useAresStore } from '$vue/stores/ares.js';
 import type { Coords } from '$types/game.js';
 import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder.js';
 
@@ -57,7 +58,7 @@ export function queryVillagesInfo() {
         if (row.hasAttribute('data-tb-village')) continue;
  
         // Registra o ID da aldeia.
-        const villageId = row.assertAttribute('id').replace(/\D/g, '');
+        const villageId = row.getAttributeStrict('id').replace(/\D/g, '');
         row.setAttribute('data-tb-village', villageId);
 
         // Objeto onde serão armazenadas as informações sobre a aldeia.
@@ -90,9 +91,14 @@ export function queryVillagesInfo() {
 };
 
 function queryReport(row: Element, info: PlunderVillageInfo) {
+    const { currentX, currentY } = useAresStore();
     const report = row.queryAndAssert('td a[href*="screen=report"]');
     const coords = assertCoordsFromTextContent(report.textContent);
-    info.distance = calcDistance(coords[0], coords[1]);
+
+    assertInteger(currentX);
+    assertInteger(currentY);
+
+    info.distance = calcDistance(currentX, currentY, coords[0], coords[1]);
     info.coords.x = coords[0];
     info.coords.y = coords[1];
 };
@@ -139,7 +145,7 @@ function queryResourcesField(row: Element, info: PlunderVillageInfo): Element | 
 
     [woodField, stoneField, ironField].forEach((resField, index) => {
         // Adiciona o valor à quantia total.
-        const resAmount = resField.parseInt();
+        const resAmount = resField.parseIntStrict();
         info.res.total += resAmount;
 
         const resName = resourceList[index];
@@ -162,7 +168,7 @@ function queryWallLevel(resourcesField: Element | null, info: PlunderVillageInfo
     const wallLevelField = resourcesField.nextElementSibling;
     assertElement(wallLevelField, 'O campo com o nível da muralha não foi encontrado');
 
-    const wallLevel = wallLevelField.parseInt();
+    const wallLevel = wallLevelField.parseIntStrict();
     const errorMessage = 'O valor encontrado não corresponde ao nível da muralha';
     assert(wallLevel >= 0, errorMessage);
     assert(wallLevel <= 20, errorMessage);
@@ -183,7 +189,7 @@ function queryTemplateButtons(row: Element, info: PlunderVillageInfo) {
 
     if (info.button.c) {
         // Verifica se o botão C está desativado.
-        const cButtonStatus = info.button.c.assertAttribute('class');
+        const cButtonStatus = info.button.c.getAttributeStrict('class');
         if (/disabled/.test(cButtonStatus)) info.cStatus = false;
     };
 };

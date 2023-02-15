@@ -2,6 +2,11 @@ import { assertString, isInteger } from '@tb-dev/ts-guard';
 import { AresError } from '$global/error.js';
 import type { XMLTags } from '$types/game.js';
 
+/** Calcula distância em campos entre duas coordenadas. */
+export function calcDistance(originX: number, originY: number, destX: number, destY: number) {
+    return Math.sqrt(((destX - originX) ** 2) + ((destY - originY) ** 2));
+};
+
 /**
  * Retorna uma função que auxilia na análise dos documentos XML que contêm informações sobre o mundo.
  * @param xmlDocument Documento XML.
@@ -16,7 +21,7 @@ export function queryXMLTags(xmlDocument: XMLDocument, type: 'world' | 'unit') {
             throw new AresError(`O campo \"${tag}\" não foi encontrado no documento XML.`);
         };
 
-        return valueField.parseFloat();
+        return valueField.parseFloatStrict();
     };
 };
 

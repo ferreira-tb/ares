@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { watch, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
-import { routeNames, router } from './router/router.js';
-import { useAresStore, updateCurrentWorld } from '$vue/stores/ares.js';
+import { routeNames, router } from '$panel/router/router.js';
+import { useAresStore } from '$vue/stores/ares.js';
 import { patchPlunderStore } from '$vue/stores/plunder.js';
 import { verifyWorldAndUnitData } from './config.js';
 
@@ -15,11 +15,6 @@ watchEffect(() => {
     } else {
         router.push('/');
     };
-});
-
-// Atualiza o mundo atual sempre que a URL da página muda.
-watch(() => aresStore.currentURL, async () => {
-    await updateCurrentWorld();
 });
 
 // Atribui as configurações salvas de acordo com o mundo atual.

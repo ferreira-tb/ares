@@ -1,5 +1,5 @@
 import { DeimosError } from '$deimos/error.js';
-import { assert, assertString } from '@tb-dev/ts-guard';
+import { assertString } from '@tb-dev/ts-guard';
 import type { TribalWarsGameData } from '$types/deimos.js';
 
 export class Deimos {
@@ -11,6 +11,9 @@ export class Deimos {
         this.message = args ?? [];
     };
 
+    public static send(channel: 'show-ui-error-message', message: string): void;
+    public static send(channel: 'show-ui-info-message', message: string): void;
+    public static send(channel: 'show-ui-success-message', message: string): void;
     public static send(channel: string, ...args: unknown[]) {
         channel = this.#handleKey(channel);
         const deimos = new Deimos(channel, ...args);
@@ -64,25 +67,22 @@ export class Deimos {
         });
     };
 
-    public static readonly on = this.#listener(false);
-    public static readonly once = this.#listener(true);
-
-    static #listener(once: boolean = false) {
-        return (channel: string, listener: (...args: any[]) => void) => {
-            channel = this.#handleKey(channel);
-            window.addEventListener('message', (e: MessageEvent<Deimos>) => {
-                if (e.data.channel === channel) {
-                    Promise.resolve().then(() => listener(...e.data.message))
-                        .catch((err: unknown) => DeimosError.handle(err));
-                };
-            }, { once });
-        };
+    public static on(channel: 'show-ui-error-message', listener: (message: string) => void): void;
+    public static on(channel: 'show-ui-info-message', listener: (message: string) => void): void;
+    public static on(channel: 'show-ui-success-message', listener: (message: string) => void): void;
+    public static on(channel: string, listener: (...args: any[]) => void) {
+        channel = this.#handleKey(channel);
+        window.addEventListener('message', (e: MessageEvent<Deimos>) => {
+            if (e.data.channel === channel) {
+                Promise.resolve().then(() => listener(...e.data.message))
+                    .catch((err: unknown) => DeimosError.handle(err));
+            };
+        });
     };
 
-    static #handleKey(channel: string) {
-        assertString(channel, 'A chave deve ser uma string');
-        assert(channel.length > 0, 'A chave não pode ser uma string vazia');
 
+    static #handleKey(channel: string) {
+        assertString(channel, 'A chave para o Deimos deve ser uma string');
         return `deimos-${channel}`;
     };
 };

@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
+import { assertInteger, assertString } from '@tb-dev/ts-guard';
 import { plunderStore } from '$electron/electron-store/plunder.js';
-import { assertInteger, assertObjectHasSameKeys, assert } from '@tb-dev/ts-guard';
 import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
 import { browserStore } from '$electron/stores/browser';
 
@@ -23,7 +23,7 @@ export function setPlunderEvents() {
     // Salva o estado do Plunder.
     ipcMain.on('set-plunder-state', (_e, stateName: unknown, value: unknown, world?: string) => {
         world ??= browserStore.world ?? '';
-        assert(typeof stateName === 'string', 'O nome do estado é inválido.');
+        assertString(stateName, 'O nome do estado é inválido.');
         
         plunderStore.set(`plunder-state.${world}.${stateName}`, value);
         mainWindow.webContents.send('plunder-state-update', stateName, value);
@@ -73,8 +73,8 @@ class PlunderedAmount {
         PlunderedAmount.sum(this, resources);
     };
 
+    // TODO: ISSO PRECISA SER REFEITO!!!
     public static sum(base: PlunderedAmount, resources: unknown) {
-        assertObjectHasSameKeys(base, resources);
         for (const key of Object.keys(base) as (keyof PlunderedAmount)[]) {
             assertInteger((resources as PlunderedAmount)[key], 'A quantidade de um dos recursos é inválida.');
             base[key] += (resources as PlunderedAmount)[key];

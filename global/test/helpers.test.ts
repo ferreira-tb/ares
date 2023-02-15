@@ -1,4 +1,5 @@
-import { assertWorldFromURL, getWorldFromURL, isFarmUnit } from '$global/utils/helpers.js';
+import { assertWorldFromURL, getWorldFromURL } from '$global/utils/helpers.js';
+import { isFarmUnit } from '$global/utils/guards.js';
 
 // Testa se o mundo atual é obtido corretamente.
 test('mundo atual', () => {

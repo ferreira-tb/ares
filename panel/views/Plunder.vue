@@ -2,6 +2,7 @@
 import { computed, watch } from 'vue';
 import { usePlunderStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcSend } from '$global/ipc.js';
+import { Deimos } from '$deimos/ipc.js';
 import { VBtn as Button } from 'vuetify/components/VBtn';
 import { VTooltip as Tooltip } from 'vuetify/components/VTooltip';
 import Resources from '$panel/components/Resources.vue';
@@ -18,12 +19,15 @@ watch(() => store.blindAttack, (value) => ipcSend('set-plunder-state', 'blindAtt
 
 watch(() => store.status, (value) => {
     ipcSend('set-plunder-state', 'status', value);
-
+    
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
     if (value === false) {
         const currentHistoryState = history.getState();
         ipcSend('save-plundered-amount', currentHistoryState);
         history.resetState();
+        Deimos.send('show-ui-success-message', 'O saque foi interrompido.');
+    } else {
+        Deimos.send('show-ui-success-message', 'O saque foi iniciado.');
     };
 });
 

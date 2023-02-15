@@ -1,41 +1,102 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { gameURL } from '$global/utils/constants.js';
-import { useCurrentScreen } from '$vue/composables/game.js';
-import { ipcInvoke } from '$global/ipc.js';
 
+/** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export const useAresStore = defineStore('ares', () => {
+    /** Versão do Tribal Wars. */
+    const majorVersion = ref<string | null>(null);
     /** URL da página atual. */
     const currentURL = ref<string>(gameURL);
+    /** Versão do Tribal Wars. */
+    const currentMajorVersion = ref<string | null>(null);
     /** Jogador logado no momento. */
     const currentPlayer = ref<string | null>(null);
     /** ID do jogador. */
     const currentPlayerId = ref<number | null>(null);
+    /** Pontuação do jogador. */
+    const currentPlayerPoints = ref<number | null>(null);
+    /** Quantidade de aldeias que o jogador possui. */
+    const villageAmount = ref<number | null>(null);
     /** ID do grupo de aldeia atual. */
     const currentGroupId = ref<number | null>(null);
     /** Página atual. */
-    const currentScreen = useCurrentScreen(currentURL);
+    const currentScreen = ref<string | null>(null);
     /** Mundo atual. */
     const currentWorld = ref<string | null>(null);
+
+    /** Indica se o jogador possui conta premium. */
+    const premium = ref<boolean | null>(null);
+    /** Indica se o jogador possui gerente de conta. */
+    const accountManager = ref<boolean | null>(null);
+    /** Indica se o jogador possui assistente de saque. */
+    const farmAssistant = ref<boolean | null>(null);
+
+    /** Modo da janela atual. */
+    const screenMode = ref<string | null>(null);
+    /** Indica se está no modo de pré-jogo. */
+    const pregame = ref<boolean | null>(null);
+
     /** Coordenada X da aldeia atual. */
-    const currentX = ref<number>(0);
+    const currentX = ref<number | null>(null);
     /** Coordenada Y da aldeia atual. */
-    const currentY = ref<number>(0);
+    const currentY = ref<number | null>(null);
+    /** Coordenadas da aldeia atual no formato de tupla. */
+    const currentCoords = computed(() => [currentX.value, currentY.value]);
+    /** ID da aldeia atual. */
+    const currentVillageId = ref<number | null>(null);
+    /** Nome da aldeia atual. */
+    const currentVillageName = ref<string | null>(null);
+    /** População da aldeia atual. */
+    const currentVillagePopulation = ref<number | null>(null);
+    /** População máxima da aldeia atual. */
+    const currentVillageMaxPopulation = ref<number | null>(null);
+    /** Pontos da aldeia atual. */
+    const currentVillagePoints = ref<number | null>(null);
+    /** Quantidade de madeira na aldeia atual. */
+    const currentVillageWood = ref<number | null>(null);
+    /** Quantidade de argila na aldeia atual. */
+    const currentVillageStone = ref<number | null>(null);
+    /** Quantidade de ferro na aldeia atual. */
+    const currentVillageIron = ref<number | null>(null);
+    /** Quantidade total de recursos na aldeia atual. */
+    const currentVillageTotalResources = computed(() => {
+        if (currentVillageWood.value === null) return null;
+        if (currentVillageStone.value === null) return null;
+        if (currentVillageIron.value === null) return null;
+        return currentVillageWood.value + currentVillageStone.value + currentVillageIron.value;
+    });
+    /** Capacidade de armazenamento máximo da aldeia atual. */
+    const currentVillageMaxStorage = ref<number | null>(null);
 
     return {
+        majorVersion,
         currentURL,
+        currentMajorVersion,
         currentPlayer,
         currentPlayerId,
+        currentPlayerPoints,
+        villageAmount,
         currentGroupId,
         currentScreen,
         currentWorld,
+        premium,
+        accountManager,
+        farmAssistant,
+        screenMode,
+        pregame,
         currentX,
-        currentY
+        currentY,
+        currentCoords,
+        currentVillageId,
+        currentVillageName,
+        currentVillagePopulation,
+        currentVillageMaxPopulation,
+        currentVillagePoints,
+        currentVillageWood,
+        currentVillageStone,
+        currentVillageIron,
+        currentVillageTotalResources,
+        currentVillageMaxStorage,
     };
 });
-
-export async function updateCurrentWorld() {
-    const world = await ipcInvoke('get-current-world');
-    const aresStore = useAresStore();
-    aresStore.currentWorld = world;
-};

@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises';
+import * as fs from 'fs';
 import { URL } from 'url';
 import { app, ipcMain } from 'electron';
 import { setPlunderEvents } from '$electron/events/plunder.js';
@@ -18,10 +18,12 @@ export function setEvents() {
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
+    ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
 
     // Informa ao painel qual é a URL atual sempre que ocorre navegação.
     // Além disso, insere o CSS e solicita ao browser que atualize o Deimos.
+    const browserStyle = fs.readFileSync(browserCss, { encoding: 'utf8' });
     mainWindow.webContents.on('did-finish-load', async () => {
         mainWindow.webContents.send('update-deimos');
 
@@ -30,8 +32,7 @@ export function setEvents() {
         panelWindow.webContents.send('page-url', currentURL);
 
         try {
-            const style = await fs.readFile(browserCss, { encoding: 'utf8' });
-            await mainWindow.webContents.insertCSS(style);
+            await mainWindow.webContents.insertCSS(browserStyle);
         } catch (err) {
             MainProcessError.handle(err);
         };

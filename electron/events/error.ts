@@ -23,7 +23,7 @@ export function setErrorEvents() {
                     ares: app.getVersion(),
                     chrome: process.versions.chrome,
                     electron: process.versions.electron,
-                    tribal: browserStore.version
+                    tribal: browserStore.majorVersion
                 }, { transaction });
             });
 
@@ -77,7 +77,7 @@ export function setErrorEvents() {
                     ares: app.getVersion(),
                     chrome: process.versions.chrome,
                     electron: process.versions.electron,
-                    tribal: browserStore.version
+                    tribal: browserStore.majorVersion
                 }, { transaction });
             });
 

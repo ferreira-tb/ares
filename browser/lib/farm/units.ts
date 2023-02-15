@@ -36,8 +36,8 @@ function queryUnitsRow(unitsRow: Element) {
     assert(unitFields.length >= 7, 'Não foi possível encontrar os campos com as unidades disponíveis.');
 
     for (const field of unitFields) {
-        const unitType = field.assertAttribute<keyof AvailableFarmUnits>('id');
-        const amount = field.parseInt();
+        const unitType = field.getAttributeStrict<keyof AvailableFarmUnits>('id');
+        const amount = field.parseIntStrict();
         if (unitType in availableUnits && availableUnits[unitType] !== amount) {
             availableUnits[unitType] = amount;
         };
