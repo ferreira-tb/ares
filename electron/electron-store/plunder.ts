@@ -49,7 +49,7 @@ const plunderSchema: Schema = {
     }
 };
 
-export const plunderStore = new Store({
+export const plunderConfigStore = new Store({
     name: 'plunder',
     schema: plunderSchema,
     accessPropertiesByDotNotation: true

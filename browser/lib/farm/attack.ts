@@ -1,5 +1,5 @@
 import { useEventListener, useMutationObserver } from '@vueuse/core';
-import { usePlunderStore } from '$vue/stores/plunder.js';
+import { usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { generateIntegerBetween, wait } from '$global/utils/helpers.js';
 import { ipcSend } from '$global/ipc.js';
 import type { PlunderedResources } from '$lib/farm/resources.js';
@@ -7,7 +7,7 @@ import type { PlunderedResources } from '$lib/farm/resources.js';
 export const eventTarget = new EventTarget();
 
 export function prepareAttack(resources: PlunderedResources, button: HTMLAnchorElement) {
-    const store = usePlunderStore();
+    const store = usePlunderConfigStore();
     return new Promise<void>((resolve, reject) => {
         // O jogo possui um limite de cinco ações por segundo.
         const delay = store.ignoreDelay === true ? 0 : generateIntegerBetween(200, 300);

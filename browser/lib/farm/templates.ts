@@ -2,7 +2,7 @@ import { computed, reactive, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { assert } from '@tb-dev/ts-guard';
 import { availableUnits } from '$lib/farm/units.js';
-import { usePlunderStore } from '$vue/stores/plunder.js';
+import { usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { isFarmUnit } from '$global/utils/guards.js';
 
 export class PlunderTemplate {
@@ -108,7 +108,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * @param resources - Recursos disponíveis na aldeia-alvo.
  */
 export async function filterTemplates(resources: number): Promise<PlunderTemplate[]> {
-    const store = usePlunderStore();
+    const store = usePlunderConfigStore();
     const { resourceRatio } = storeToRefs(store);
 
     // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.

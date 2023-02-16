@@ -1,10 +1,11 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { isObject } from '@tb-dev/ts-guard';
 import { ipcInvoke } from '$global/ipc.js';
 import type { PlunderedAmount } from '$types/game.js';
 
-export const usePlunderStore = defineStore('plunder', () => {
-    const status = ref<boolean>(false);
+export const usePlunderConfigStore = defineStore('plunder', () => {
+    const active = ref<boolean>(false);
     const ignoreWall = ref<boolean>(false);
     const destroyWall = ref<boolean>(false);
     const groupAttack = ref<boolean>(false);
@@ -16,7 +17,7 @@ export const usePlunderStore = defineStore('plunder', () => {
     const minutesUntilReload = ref<number>(10);
 
     return {
-        status,
+        active,
         ignoreWall,
         destroyWall,
         groupAttack,
@@ -65,7 +66,7 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
 
 /** Atualiza os dados da store com base nos valores salvos no armazenamento. */
 export async function patchPlunderStore() {
-    const plunderStore = usePlunderStore();
+    const plunderConfigStore = usePlunderConfigStore();
     const plunderState = await ipcInvoke('get-plunder-state');
-    if (plunderState) plunderStore.$patch({ ...plunderState });
+    if (isObject(plunderState)) plunderConfigStore.$patch(plunderState);
 };

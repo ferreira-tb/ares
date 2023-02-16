@@ -2,7 +2,7 @@
 import { computed, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { assertElement } from '@tb-dev/ts-guard-dom';
-import { patchPlunderStore, usePlunderStore } from '$vue/stores/plunder.js';
+import { patchPlunderStore, usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { filterTemplates, pickBestTemplate, queryTemplateData } from '$lib/farm/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$lib/farm/villages.js';
 import { queryAvailableUnits } from '$lib/farm/units.js';
@@ -11,7 +11,7 @@ import { prepareAttack, eventTarget as attackEventTarget } from '$lib/farm/attac
 import { AresError } from '$global/error.js';
 import { ipcSend } from '$global/ipc.js';
 
-const store = usePlunderStore();
+const config = usePlunderConfigStore();
 
 /** EventTarget interno do componente. */
 const eventTarget = new EventTarget();
@@ -21,10 +21,10 @@ const plunderListTitle = document.queryAndAssert('div[id="am_widget_Farm" i] > h
 const plunderList = document.queryAndAssert('#plunder_list:has(tr[id^="village"]) tbody');
 
 /** Milisegundos entre cada recarregamento automático da página. */
-const plunderTimeout = computed(() => store.minutesUntilReload * 60000);
+const plunderTimeout = computed(() => config.minutesUntilReload * 60000);
 /** Data do próximo recarregamento automático. */
 const nextAutoReload = computed(() => {
-    if (store.status === false) return null;
+    if (config.active === false) return null;
     return new Date(Date.now() + plunderTimeout.value);
 });
 
@@ -48,7 +48,7 @@ watchEffect(() => {
     attackEventTarget.dispatchEvent(new Event('stop'));
 
     // Começa a atacar se o Plunder estiver ativado.
-    if (store.status === true) {
+    if (config.active === true) {
         handleAttack();
         setPlunderTimeout();
     } else {
@@ -57,7 +57,7 @@ watchEffect(() => {
 });
 
 async function handleAttack(): Promise<void> {
-    if (store.status === false) return;
+    if (config.active === false) return;
 
     // Seleciona todas as aldeias da tabela e itera sobre elas.
     const villages = plunderList.queryAsMap('tr[data-tb-village]', (e) => e.getAttributeStrict('data-tb-village'));
@@ -123,7 +123,7 @@ function setPlunderTimeout() {
 <template>
     <Teleport :to="plunderListTitle">
         <Transition name="tb-fade" mode="out-in">
-            <span v-if="store.status && autoReloadMessage" class="auto-reload-message">{{ autoReloadMessage }}</span>
+            <span v-if="config.active && autoReloadMessage" class="auto-reload-message">{{ autoReloadMessage }}</span>
         </Transition>
     </Teleport>
 </template>

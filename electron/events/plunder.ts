@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { assertInteger, assertString } from '@tb-dev/ts-guard';
-import { plunderStore } from '$electron/electron-store/plunder.js';
+import { plunderConfigStore } from '$electron/electron-store/plunder.js';
 import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
 import { browserStore } from '$electron/stores/browser';
 
@@ -11,13 +11,13 @@ export function setPlunderEvents() {
     // Verifica se o Plunder está ativo ou não.
     ipcMain.handle('is-plunder-active', (_e, world?: string) => {
         world ??= browserStore.currentWorld ?? '';
-        return plunderStore.get(`plunder-state.${world}.status`, false);
+        return plunderConfigStore.get(`plunder-state.${world}.status`, false);
     });
 
     // Obtém o estado atual do Plunder.
     ipcMain.handle('get-plunder-state', (_e, world?: string) => {
         world ??= browserStore.currentWorld ?? '';
-        return plunderStore.get(`plunder-state.${world}`, null);
+        return plunderConfigStore.get(`plunder-state.${world}`, null);
     });
 
     // Salva o estado do Plunder.
@@ -25,7 +25,7 @@ export function setPlunderEvents() {
         world ??= browserStore.currentWorld ?? '';
         assertString(stateName, 'O nome do estado é inválido.');
         
-        plunderStore.set(`plunder-state.${world}.${stateName}`, value);
+        plunderConfigStore.set(`plunder-state.${world}.${stateName}`, value);
         mainWindow.webContents.send('plunder-state-update', stateName, value);
     });
 
@@ -41,24 +41,24 @@ export function setPlunderEvents() {
         world ??= browserStore.currentWorld ?? '';
 
         const plundered = new PlunderedAmount(resources);
-        plunderStore.set(`history.${world}.last`, plundered);
+        plunderConfigStore.set(`history.${world}.last`, plundered);
 
-        const totalPlundered = plunderStore.get(`history.${world}.total`, null);
+        const totalPlundered = plunderConfigStore.get(`history.${world}.total`, null);
         if (totalPlundered) PlunderedAmount.sum(plundered, totalPlundered);
         
-        plunderStore.set(`history.${world}.total`, plundered);
+        plunderConfigStore.set(`history.${world}.total`, plundered);
     });
 
     // Obtém a quantidade de recursos saqueados durante a última execução do Plunder.
     ipcMain.handle('get-last-plundered-amount', (_e, world?: string) => {
         world ??= browserStore.currentWorld ?? '';
-        return plunderStore.get(`history.${world}.last`, null);
+        return plunderConfigStore.get(`history.${world}.last`, null);
     });
 
     // Obtém a quantidade total de recursos saqueados em determinado mundo.
     ipcMain.handle('get-total-plundered-amount', (_e, world?: string) => {
         world ??= browserStore.currentWorld ?? '';
-        return plunderStore.get(`history.${world}.total`, null);
+        return plunderConfigStore.get(`history.${world}.total`, null);
     });
 };
 
