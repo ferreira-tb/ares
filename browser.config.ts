@@ -1,13 +1,13 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import { join } from 'path';
 import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
     plugins: [vue()],
     resolve: {
         alias: {
-            '$types': fileURLToPath(new URL('./types', import.meta.url)),
+            '$types': fileURLToPath(new URL('./types', import.meta.url)), 
             '$browser': fileURLToPath(new URL('./browser', import.meta.url)),
             '$lib': fileURLToPath(new URL('./browser/lib', import.meta.url)),
             '$global': fileURLToPath(new URL('./global', import.meta.url)),
@@ -23,7 +23,7 @@ export default defineConfig({
         outDir: 'dist',
         emptyOutDir: false,
         lib: {
-            entry: resolve(__dirname, 'browser/browser.ts'),
+            entry: join(__dirname, 'browser/browser.ts'),
             fileName: 'browser',
             name: 'browser',
             formats: ['cjs']
