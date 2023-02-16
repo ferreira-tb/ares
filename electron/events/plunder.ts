@@ -15,13 +15,13 @@ export function setPlunderEvents() {
     });
 
     // Obtém o estado atual do Plunder.
-    ipcMain.handle('get-plunder-state', (_e, world?: string) => {
+    ipcMain.handle('get-plunder-config', (_e, world?: string) => {
         world ??= browserStore.currentWorld ?? '';
         return plunderConfigStore.get(`plunder-state.${world}`, null);
     });
 
     // Salva o estado do Plunder.
-    ipcMain.on('set-plunder-state', (_e, stateName: unknown, value: unknown, world?: string) => {
+    ipcMain.on('set-plunder-config', (_e, stateName: unknown, value: unknown, world?: string) => {
         world ??= browserStore.currentWorld ?? '';
         assertString(stateName, 'O nome do estado é inválido.');
         

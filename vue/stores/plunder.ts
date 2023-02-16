@@ -65,8 +65,8 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
 });
 
 /** Atualiza os dados da store com base nos valores salvos no armazenamento. */
-export async function patchPlunderStore() {
+export async function patchPlunderConfigStore() {
     const plunderConfigStore = usePlunderConfigStore();
-    const plunderState = await ipcInvoke('get-plunder-state');
+    const plunderState = await ipcInvoke('get-plunder-config');
     if (isObject(plunderState)) plunderConfigStore.$patch(plunderState);
 };

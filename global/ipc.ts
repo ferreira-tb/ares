@@ -26,7 +26,7 @@ export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorL
 
 // Plunder
 export async function ipcInvoke(channel: 'is-plunder-active', world?: string): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-plunder-state', world?: string): Promise<PlunderState | null>;
+export async function ipcInvoke(channel: 'get-plunder-config', world?: string): Promise<PlunderState | null>;
 export async function ipcInvoke(channel: 'get-last-plundered-amount', world?: string): Promise<PlunderedAmount | null>;
 export async function ipcInvoke(channel: 'get-total-plundered-amount', world?: string): Promise<PlunderedAmount | null>;
 
@@ -51,7 +51,7 @@ export function ipcSend(channel: 'delete-error-log', id: number): void;
 export function ipcSend(channel: 'delete-dom-error-log', id: number): void;
 
 // Plunder
-export function ipcSend(channel: 'set-plunder-state', name: keyof PlunderState, value: PlunderStateValue, world?: string): void;
+export function ipcSend(channel: 'set-plunder-config', name: keyof PlunderState, value: PlunderStateValue, world?: string): void;
 export function ipcSend(channel: 'update-plundered-amount', resources: PlunderedResources): void;
 export function ipcSend(channel: 'save-plundered-amount', resources: PlunderedAmount, world?: string): void;
 

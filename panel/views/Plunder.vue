@@ -10,15 +10,15 @@ import Resources from '$panel/components/Resources.vue';
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
 
-watch(() => config.ignoreWall, (value) => ipcSend('set-plunder-state', 'ignoreWall', value));
-watch(() => config.destroyWall, (value) => ipcSend('set-plunder-state', 'destroyWall', value));
-watch(() => config.groupAttack, (value) => ipcSend('set-plunder-state', 'groupAttack', value));
-watch(() => config.useC, (value) => ipcSend('set-plunder-state', 'useC', value));
-watch(() => config.ignoreDelay, (value) => ipcSend('set-plunder-state', 'ignoreDelay', value));
-watch(() => config.blindAttack, (value) => ipcSend('set-plunder-state', 'blindAttack', value));
+watch(() => config.ignoreWall, (value) => ipcSend('set-plunder-config', 'ignoreWall', value));
+watch(() => config.destroyWall, (value) => ipcSend('set-plunder-config', 'destroyWall', value));
+watch(() => config.groupAttack, (value) => ipcSend('set-plunder-config', 'groupAttack', value));
+watch(() => config.useC, (value) => ipcSend('set-plunder-config', 'useC', value));
+watch(() => config.ignoreDelay, (value) => ipcSend('set-plunder-config', 'ignoreDelay', value));
+watch(() => config.blindAttack, (value) => ipcSend('set-plunder-config', 'blindAttack', value));
 
 watch(() => config.active, (value) => {
-    ipcSend('set-plunder-state', 'status', value);
+    ipcSend('set-plunder-config', 'status', value);
     
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
     if (value === false) {

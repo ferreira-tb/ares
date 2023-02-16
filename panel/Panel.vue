@@ -4,7 +4,7 @@ import { RouterView } from 'vue-router';
 import { isString } from '@tb-dev/ts-guard';
 import { routeNames, router } from '$panel/router/router.js';
 import { useAresStore } from '$vue/stores/ares.js';
-import { patchPlunderStore } from '$vue/stores/plunder.js';
+import { patchPlunderConfigStore } from '$vue/stores/plunder.js';
 import { verifyWorldAndUnitData } from './config.js';
 
 const aresStore = useAresStore();
@@ -23,7 +23,7 @@ watch(() => aresStore.currentWorld, async () => {
     if (!isString(aresStore.currentWorld)) return;
     await Promise.all([
         verifyWorldAndUnitData(aresStore),
-        patchPlunderStore()
+        patchPlunderConfigStore()
     ]);
 });
 </script>

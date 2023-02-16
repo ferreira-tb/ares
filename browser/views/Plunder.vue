@@ -2,7 +2,7 @@
 import { computed, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { assertElement } from '@tb-dev/ts-guard-dom';
-import { patchPlunderStore, usePlunderConfigStore } from '$vue/stores/plunder.js';
+import { patchPlunderConfigStore, usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { filterTemplates, pickBestTemplate, queryTemplateData } from '$lib/farm/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$lib/farm/villages.js';
 import { queryAvailableUnits } from '$lib/farm/units.js';
@@ -36,7 +36,7 @@ const autoReloadMessage = computed(() => {
 });
 
 // Atualiza a store do Plunder com os valores salvos no armazenamento.
-await patchPlunderStore();
+await patchPlunderConfigStore();
 
 // Reune informações necessárias para o funcionamento do Plunder.
 queryTemplateData();
