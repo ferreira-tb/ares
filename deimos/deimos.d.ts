@@ -1,4 +1,4 @@
-import type { TribalWarsGameData, MarketDataTrader, PremiumExchangeGraphResourceData } from '$types/deimos.js';
+import type { RawTribalWarsGameData, MarketDataTrader, PremiumExchangeGraphResourceData } from '$types/deimos.js';
 import type { AllUnits, ResourceAmount } from '$types/game.js';
 
 declare global {
@@ -93,7 +93,7 @@ declare global {
     };
 
     const TribalWars: {
-        getGameData(): TribalWarsGameData;
+        getGameData(): RawTribalWarsGameData;
         getIdleTime(): number;
     };
 

@@ -3,7 +3,7 @@
         "./**/*",
         "../types/**/*"
     ],
-
+    
     "compilerOptions": {
         "target": "esnext",
         "lib": ["esnext", "dom"],
@@ -19,7 +19,10 @@
             ],
             "$global/*": [
                 "../global/*"
-            ]
+            ],
+            "$deimos/*": [
+                "../deimos/*"
+            ],
         },
         
         // Modo estrito

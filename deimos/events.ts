@@ -1,11 +1,13 @@
-import { Deimos } from '$deimos/ipc.js';
-import { DeimosError } from '$deimos/error.js';
 import { isString, assertString } from '@tb-dev/ts-guard';
+import { Deimos } from '$deimos/shared/ipc.js';
+import { DeimosError } from '$deimos/shared/error.js';
+import { TribalWarsGameData } from '$deimos/models/data';
 
 export function setDeimosEvents() {
     Deimos.handle('get-game-data', () => {
         try {
-            return TribalWars.getGameData()
+            const rawGameData = TribalWars.getGameData();
+            return new TribalWarsGameData(rawGameData);
         } catch (err) {
             DeimosError.handle(err);
             return null;

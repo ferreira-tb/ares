@@ -2,7 +2,7 @@
 import { computed, watch } from 'vue';
 import { usePlunderStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcSend } from '$global/ipc.js';
-import { Deimos } from '$deimos/ipc.js';
+import { Deimos } from '$deimos/shared/ipc.js';
 import { VBtn as Button } from 'vuetify/components/VBtn';
 import { VTooltip as Tooltip } from 'vuetify/components/VTooltip';
 import Resources from '$panel/components/Resources.vue';

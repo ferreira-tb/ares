@@ -1,6 +1,9 @@
-import { DeimosError } from '$deimos/error.js';
+import { DeimosError } from '$deimos/shared/error.js';
 import { assertString } from '@tb-dev/ts-guard';
-import type { TribalWarsGameData } from '$types/deimos.js';
+import type { TribalWarsGameData } from '$deimos/models/data.js';
+
+// Arquivos no diretório "shared" não podem importar de outras partes do Deimos.
+// Isso é para evitar que a importações dos protótipos feitas no index vazem para o resto do código.
 
 export class Deimos {
     readonly channel: string;
@@ -31,7 +34,7 @@ export class Deimos {
             const deimos = new Deimos(channel, uuid, ...args);
 
             const request = (e: MessageEvent<Deimos>) => {
-                const handlerUUID = uuid.replace(/invoke/g, 'handle');
+                const handlerUUID = uuid.replace(/^invoke/, 'handle');
                 if (e.data.channel === channel && e.data.message[0] === handlerUUID) {
                     window.removeEventListener('message', request);
                     e.data.message.shift();
@@ -60,7 +63,7 @@ export class Deimos {
                 const uuid = e.data.message.shift() as string;
                 const result = await Promise.resolve().then(() => listener(...e.data.message));
 
-                const handlerUUID = uuid.replace(/invoke/g, 'handle');
+                const handlerUUID = uuid.replace(/^invoke/, 'handle');
                 const deimos = new Deimos(channel, handlerUUID, result);
                 window.postMessage(deimos, '*');
             };

@@ -4,12 +4,13 @@ import { gameURL } from '$global/utils/constants.js';
 
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export const useAresStore = defineStore('ares', () => {
-    /** Versão do Tribal Wars. */
-    const majorVersion = ref<string | null>(null);
     /** URL da página atual. */
     const currentURL = ref<string>(gameURL);
+
+    /** Mundo atual. */
+    const currentWorld = ref<string | null>(null);
     /** Versão do Tribal Wars. */
-    const currentMajorVersion = ref<string | null>(null);
+    const majorVersion = ref<string | null>(null);
     /** Jogador logado no momento. */
     const currentPlayer = ref<string | null>(null);
     /** ID do jogador. */
@@ -19,11 +20,7 @@ export const useAresStore = defineStore('ares', () => {
     /** Quantidade de aldeias que o jogador possui. */
     const villageAmount = ref<number | null>(null);
     /** ID do grupo de aldeia atual. */
-    const currentGroupId = ref<number | null>(null);
-    /** Página atual. */
-    const currentScreen = ref<string | null>(null);
-    /** Mundo atual. */
-    const currentWorld = ref<string | null>(null);
+    const groupId = ref<number | null>(null);
 
     /** Indica se o jogador possui conta premium. */
     const premium = ref<boolean | null>(null);
@@ -32,6 +29,8 @@ export const useAresStore = defineStore('ares', () => {
     /** Indica se o jogador possui assistente de saque. */
     const farmAssistant = ref<boolean | null>(null);
 
+    /** Página atual. */
+    const currentScreen = ref<string | null>(null);
     /** Modo da janela atual. */
     const screenMode = ref<string | null>(null);
     /** Indica se está no modo de pré-jogo. */
@@ -72,12 +71,11 @@ export const useAresStore = defineStore('ares', () => {
     return {
         majorVersion,
         currentURL,
-        currentMajorVersion,
         currentPlayer,
         currentPlayerId,
         currentPlayerPoints,
         villageAmount,
-        currentGroupId,
+        groupId,
         currentScreen,
         currentWorld,
         premium,

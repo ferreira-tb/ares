@@ -4,6 +4,7 @@ import type { WorldData, UnitData } from '$panel/config.js';
 import type { PlunderedResources } from '$lib/farm/resources.js';
 import type { PlunderedAmount } from '$types/game.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
+import type { TribalWarsGameData } from '$deimos/models/data.js';
 
 // Geral
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
@@ -55,29 +56,8 @@ export function ipcSend(channel: 'update-plundered-amount', resources: Plundered
 export function ipcSend(channel: 'save-plundered-amount', resources: PlunderedAmount, world?: string): void;
 
 // Deimos
-export function ipcSend(channel: 'update-current-world', world: string | null): void;
-export function ipcSend(channel: 'update-current-major-version', version: string | null): void;
-export function ipcSend(channel: 'update-current-player', playerName: string | null): void;
-export function ipcSend(channel: 'update-current-player-id', playerId: number | null): void;
-export function ipcSend(channel: 'update-current-player-points', playerPoints: number | null): void;
-export function ipcSend(channel: 'update-village-amount', villageAmount: number | null): void;
-export function ipcSend(channel: 'update-current-group-id', groupId: number | null): void;
-export function ipcSend(channel: 'update-current-coords', x: number | null, y: number | null): void;
-export function ipcSend(channel: 'update-premium-status', premium: boolean | null): void;
-export function ipcSend(channel: 'update-account-manager-status', accountManager: boolean | null): void;
-export function ipcSend(channel: 'update-farm-assistant-status', farmAssistant: boolean | null): void;
-export function ipcSend(channel: 'update-current-screen', screen: string | null): void;
-export function ipcSend(channel: 'update-screen-mode', screenMode: string | null): void;
-export function ipcSend(channel: 'update-pregame-status', pregame: boolean | null): void;
-export function ipcSend(channel: 'update-current-village-id', villageId: number | null): void;
-export function ipcSend(channel: 'update-current-village-name', villageName: string | null): void;
-export function ipcSend(channel: 'update-current-village-population', villagePopulation: number | null): void;
-export function ipcSend(channel: 'update-current-village-max-population', villageMaxPopulation: number | null): void;
-export function ipcSend(channel: 'update-current-village-points', villagePoints: number | null): void;
-export function ipcSend(channel: 'update-current-village-wood', villageWood: number | null): void;
-export function ipcSend(channel: 'update-current-village-stone', villageStone: number | null): void;
-export function ipcSend(channel: 'update-current-village-iron', villageIron: number | null): void;
-export function ipcSend(channel: 'update-current-village-max-storage', villageMaxStorage: number | null): void;
+export function ipcSend(channel: 'script-tag-is-ready'): void;
+export function ipcSend(channel: 'update-game-data', gameData: TribalWarsGameData): void;
 
 export function ipcSend(channel: string, ...args: any[]) {
     ipcRenderer.send(channel, ...args);

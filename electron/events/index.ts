@@ -25,7 +25,6 @@ export function setEvents() {
     // Além disso, insere o CSS e solicita ao browser que atualize o Deimos.
     const browserStyle = fs.readFileSync(browserCss, { encoding: 'utf8' });
     mainWindow.webContents.on('did-finish-load', async () => {
-        mainWindow.webContents.send('update-deimos');
 
         const currentURL = mainWindow.webContents.getURL();
         mainWindow.webContents.send('page-url', currentURL);

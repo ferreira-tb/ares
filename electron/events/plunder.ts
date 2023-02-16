@@ -10,19 +10,19 @@ export function setPlunderEvents() {
 
     // Verifica se o Plunder está ativo ou não.
     ipcMain.handle('is-plunder-active', (_e, world?: string) => {
-        world ??= browserStore.world ?? '';
+        world ??= browserStore.currentWorld ?? '';
         return plunderStore.get(`plunder-state.${world}.status`, false);
     });
 
     // Obtém o estado atual do Plunder.
     ipcMain.handle('get-plunder-state', (_e, world?: string) => {
-        world ??= browserStore.world ?? '';
+        world ??= browserStore.currentWorld ?? '';
         return plunderStore.get(`plunder-state.${world}`, null);
     });
 
     // Salva o estado do Plunder.
     ipcMain.on('set-plunder-state', (_e, stateName: unknown, value: unknown, world?: string) => {
-        world ??= browserStore.world ?? '';
+        world ??= browserStore.currentWorld ?? '';
         assertString(stateName, 'O nome do estado é inválido.');
         
         plunderStore.set(`plunder-state.${world}.${stateName}`, value);
@@ -38,7 +38,7 @@ export function setPlunderEvents() {
     // Emitido pelo browser quando o Plunder é desativado.
     // Salva a quantidade de recursos saqueados durante a última execução do Plunder.
     ipcMain.on('save-plundered-amount', (_e, resources: unknown, world?: string) => {
-        world ??= browserStore.world ?? '';
+        world ??= browserStore.currentWorld ?? '';
 
         const plundered = new PlunderedAmount(resources);
         plunderStore.set(`history.${world}.last`, plundered);
@@ -51,13 +51,13 @@ export function setPlunderEvents() {
 
     // Obtém a quantidade de recursos saqueados durante a última execução do Plunder.
     ipcMain.handle('get-last-plundered-amount', (_e, world?: string) => {
-        world ??= browserStore.world ?? '';
+        world ??= browserStore.currentWorld ?? '';
         return plunderStore.get(`history.${world}.last`, null);
     });
 
     // Obtém a quantidade total de recursos saqueados em determinado mundo.
     ipcMain.handle('get-total-plundered-amount', (_e, world?: string) => {
-        world ??= browserStore.world ?? '';
+        world ??= browserStore.currentWorld ?? '';
         return plunderStore.get(`history.${world}.total`, null);
     });
 };

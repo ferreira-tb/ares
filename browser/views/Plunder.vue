@@ -5,7 +5,6 @@ import { assertElement } from '@tb-dev/ts-guard-dom';
 import { patchPlunderStore, usePlunderStore } from '$vue/stores/plunder.js';
 import { filterTemplates, pickBestTemplate, queryTemplateData } from '$lib/farm/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$lib/farm/villages.js';
-import { queryCurrentVillageCoords } from '$browser/helpers.js';
 import { queryAvailableUnits } from '$lib/farm/units.js';
 import { PlunderedResources } from '$lib/farm/resources.js';
 import { prepareAttack, eventTarget as attackEventTarget } from '$lib/farm/attack.js';
@@ -40,7 +39,6 @@ const autoReloadMessage = computed(() => {
 await patchPlunderStore();
 
 // Reune informações necessárias para o funcionamento do Plunder.
-queryCurrentVillageCoords();
 queryTemplateData();
 queryAvailableUnits();
 queryVillagesInfo();

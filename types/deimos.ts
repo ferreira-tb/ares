@@ -97,7 +97,7 @@ export type Buildings = {
     wood: string,
 };
 
-export interface TribalWarsGameData {
+export interface RawTribalWarsGameData {
     // TribalWars.getGameData()
     readonly device: string;
     readonly features: Features;
