@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { watch, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
+import { isString } from '@tb-dev/ts-guard';
 import { routeNames, router } from '$panel/router/router.js';
 import { useAresStore } from '$vue/stores/ares.js';
 import { patchPlunderStore } from '$vue/stores/plunder.js';
@@ -19,7 +20,7 @@ watchEffect(() => {
 
 // Atribui as configurações salvas de acordo com o mundo atual.
 watch(() => aresStore.currentWorld, async () => {
-    if (aresStore.currentWorld === null) return;
+    if (!isString(aresStore.currentWorld)) return;
     await Promise.all([
         verifyWorldAndUnitData(aresStore),
         patchPlunderStore()
