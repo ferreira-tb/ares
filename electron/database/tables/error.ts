@@ -12,6 +12,7 @@ export class ErrorLog extends Model<InferAttributes<ErrorLog>, InferCreationAttr
     declare readonly electron: string;
     declare readonly chrome: string;
     declare readonly tribal: string | null;
+    declare readonly pending: CreationOptional<boolean>;
 };
 
 ErrorLog.init({
@@ -47,6 +48,11 @@ ErrorLog.init({
     tribal: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    pending: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
 }, { sequelize, tableName: 'error_log', timestamps: false });
 
@@ -60,6 +66,7 @@ export class DOMErrorLog extends Model<InferAttributes<DOMErrorLog>, InferCreati
     declare readonly electron: string;
     declare readonly chrome: string;
     declare readonly tribal: string | null;
+    declare readonly pending: CreationOptional<boolean>;
 };
 
 DOMErrorLog.init({
@@ -99,5 +106,10 @@ DOMErrorLog.init({
     tribal: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    pending: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
 }, { sequelize, tableName: 'dom_error_log', timestamps: false });

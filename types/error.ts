@@ -10,6 +10,7 @@ export interface ErrorLogType extends ErrorLogBase {
     readonly electron: string;
     readonly chrome: string;
     readonly tribal: string | null;
+    readonly pending: boolean;
 }
 
 export type DOMErrorLogBase = {
@@ -25,4 +26,5 @@ export interface DOMErrorLogType extends DOMErrorLogBase {
     readonly electron: string;
     readonly chrome: string;
     readonly tribal: string | null;
+    readonly pending: boolean;
 }

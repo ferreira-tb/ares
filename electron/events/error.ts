@@ -15,7 +15,7 @@ export function setErrorEvents() {
             assertString(err.name, 'O nome do erro é inválido.');
             assertString(err.message, 'Não há uma mensagem válida no relatório de erro.');
 
-            const errorLog: Omit<ErrorLogType, 'id'> = {
+            const errorLog: Omit<ErrorLogType, 'id' | 'pending'> = {
                 name: err.name,
                 message: err.message,
                 time: Date.now(),
@@ -71,7 +71,7 @@ export function setErrorEvents() {
         try {
             assertString(err.selector, 'O seletor informado no relatório de erro é inválido.');
 
-            const domErrorLog: Omit<DOMErrorLogType, 'id'> = {
+            const domErrorLog: Omit<DOMErrorLogType, 'id' | 'pending'> = {
                 url: new URL(e.sender.getURL()).href,
                 world: browserStore.currentWorld,
                 selector: err.selector,
