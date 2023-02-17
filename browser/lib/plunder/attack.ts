@@ -10,7 +10,7 @@ export function prepareAttack(resources: PlunderedResources, button: HTMLAnchorE
     const store = usePlunderConfigStore();
     return new Promise<void>((resolve, reject) => {
         // O jogo possui um limite de cinco ações por segundo.
-        const delay = store.ignoreDelay === true ? 0 : generateIntegerBetween(200, 300);
+        const delay = store.ignoreDelay === true ? 0 : generateIntegerBetween(150, 250);
         const attackTimeout = setTimeout(attack, delay);
         const cleanup = useEventListener(eventTarget, 'stop', stop, { once: true });
 
