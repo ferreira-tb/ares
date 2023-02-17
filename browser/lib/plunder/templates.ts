@@ -114,7 +114,7 @@ export async function filterTemplates(resources: number): Promise<PlunderTemplat
     await nextTick();
 
     for (const template of allTemplates.values()) {
-        if (!template.ok) continue;
+        if (template.ok.value !== true) continue;
 
         if (template.carry > resources) {
             bigger.push(template);
