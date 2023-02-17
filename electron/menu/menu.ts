@@ -1,7 +1,8 @@
-import { Menu, MenuItem, shell } from 'electron';
+import { Menu, shell } from 'electron';
 import { showErrorLog } from '$electron/app/modules.js';
-import { aresURL, gameURL, repoURL, discordURL, devOptions } from '$electron/utils/constants.js';
+import { aresURL, gameURL, repoURL, discordURL } from '$electron/utils/constants.js';
 import { togglePanelWindow, assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
+import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
 export function setAppMenu() {
@@ -40,11 +41,9 @@ export function setAppMenu() {
         { label: 'Atualizar', visible: false, accelerator: 'F5', click: () => mainWindow.webContents.reload() },
     ] satisfies MenuItemConstructorOptions[]);
 
-    if (process.env.ARES_MODE === 'dev') {
-        const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu: devOptions });
-        mainMenu.append(menuItem);
-        panelMenu.append(menuItem);
-    };
+    // Adiciona o menu de desenvolvedor às janelas.
+    setBrowserDevMenu(mainMenu);
+    setPanelDevMenu(panelMenu);
 
     mainWindow.setMenu(mainMenu);
     panelWindow.setMenu(panelMenu);

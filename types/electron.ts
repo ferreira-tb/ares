@@ -5,6 +5,8 @@ import type { PlunderInfo } from '$deimos/models/plunder.js';
 export type Schema = StoreSchema<Record<string, unknown>>;
 export type JSONSchema = Schema[keyof Schema];
 
+export type ModuleNames = 'error-log';
+
 export interface BrowserStoreType extends TribalWarsGameData {
     /** Coordenadas da aldeia atual no formato de tupla. */
     currentCoords: [number | null, number | null];

@@ -1,7 +1,6 @@
 import { URL } from 'url';
-import { BrowserWindow, Menu } from 'electron';
+import { BrowserWindow } from 'electron';
 import { assertInstanceOf, assertString } from '@tb-dev/ts-guard';
-import { devOptions } from '$electron/utils/constants.js';
 
 export const getMainWindow = () => {
     const id = Number.parseIntStrict(process.env.MAIN_WINDOW_ID ?? '', 10);
@@ -40,21 +39,6 @@ export function assertWorldFromURL(url: URL) {
     const world = getWorldFromURL(url);
     assertString(world, 'Não foi possível determinar o mundo a partir da URL.');
     return world;
-};
-
-/**
- * Adiciona um menu básico à janela, com opções para inspeção e atualização da página.
- * Se `setNull` for `true`, a janela ficará sem menu caso o Ares não esteja em modo de desenvolvedor.
- */
-export function setBasicDevMenu(browserWindow: BrowserWindow, setNull: boolean = true) {
-    assertInstanceOf(browserWindow, BrowserWindow, 'O item não é uma janela.');
-    if (process.env.ARES_MODE !== 'dev') {
-        if (setNull === true) browserWindow.setMenu(null);
-        return;
-    };
-
-    const menu = Menu.buildFromTemplate(devOptions);
-    browserWindow.setMenu(menu);
 };
 
 export function togglePanelWindow() {

@@ -1,6 +1,11 @@
 import { BrowserWindow } from 'electron';
 import { favicon, moduleHtml } from '$electron/utils/constants.js';
-import { assertMainWindow, setBasicDevMenu } from '$electron/utils/helpers.js';
+import { assertMainWindow } from '$electron/utils/helpers.js';
+import { setBasicDevMenu } from '$electron/menu/dev.js';
+import type { ModuleNames } from '$types/electron.js';
+
+const activeModules = new Map<ModuleNames, BrowserWindow>();
+export const getActiveModule = (name: ModuleNames) => activeModules.get(name);
 
 export function showErrorLog() {
     const mainWindow = assertMainWindow();
@@ -30,7 +35,11 @@ export function showErrorLog() {
     errorLogWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 
     errorLogWindow.once('ready-to-show', () =>  {
+        activeModules.set('error-log', errorLogWindow);
         errorLogWindow.webContents.send('set-module-route', 'error-log');
         errorLogWindow.show();
     });
+
+    // Remove do mapa quando a janela for fechada.
+    errorLogWindow.once('closed', () => activeModules.delete('error-log'));
 };

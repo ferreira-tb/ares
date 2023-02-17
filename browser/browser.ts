@@ -4,7 +4,7 @@ import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '$browser/router/router.js';
-import { setBrowserEvents } from '$browser/events.js';
+import { setBrowserEvents } from '$browser/events/index.js';
 import { AresError } from '$global/error.js';
 import Browser from '$browser/Browser.vue';
 

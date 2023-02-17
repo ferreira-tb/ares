@@ -1,30 +1,36 @@
-import { app, ipcMain } from 'electron';
+import { app, ipcMain, BrowserWindow } from 'electron';
 import { URL } from 'url';
 import { Op } from 'sequelize';
-import { assertInteger, assertString } from '@tb-dev/ts-guard';
+import { assertInteger, assertString, isInstanceOf } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
-import { getWorldFromURL } from '$electron/utils/helpers.js';
 import { sequelize } from '$electron/database/database.js';
 import { ErrorLog, DOMErrorLog } from '$tables/error.js';
-import { ErrorLogType, DOMErrorLogType } from '$types/error.js';
 import { browserStore } from '$electron/stores/browser.js';
+import { getActiveModule } from '$electron/app/modules.js';
+import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 
 export function setErrorEvents() {
-    ipcMain.on('set-error-log', async (_e, err: ErrorLogType) => {
+    ipcMain.on('set-error-log', async (_e, err: ErrorLogBase) => {
         try {
             assertString(err.name, 'O nome do erro é inválido.');
             assertString(err.message, 'Não há uma mensagem válida no relatório de erro.');
 
+            const errorLog: Omit<ErrorLogType, 'id'> = {
+                name: err.name,
+                message: err.message,
+                time: Date.now(),
+                ares: app.getVersion(),
+                chrome: process.versions.chrome,
+                electron: process.versions.electron,
+                tribal: browserStore.majorVersion
+            };
+
             await sequelize.transaction(async (transaction) => {
-                await ErrorLog.create({
-                    name: err.name,
-                    message: err.message,
-                    time: Date.now(),
-                    ares: app.getVersion(),
-                    chrome: process.versions.chrome,
-                    electron: process.versions.electron,
-                    tribal: browserStore.majorVersion
-                }, { transaction });
+                const newRow = await ErrorLog.create(errorLog, { transaction });
+                const errorModule = getActiveModule('error-log');
+                if (isInstanceOf(errorModule, BrowserWindow)) {
+                    errorModule.webContents.send('error-log-updated', newRow.toJSON());
+                };
             });
 
         } catch (err) {
@@ -61,24 +67,27 @@ export function setErrorEvents() {
         };
     });
 
-    ipcMain.on('set-dom-error-log', async (e, err: DOMErrorLogType) => {
+    ipcMain.on('set-dom-error-log', async (e, err: DOMErrorLogBase) => {
         try {
             assertString(err.selector, 'O seletor informado no relatório de erro é inválido.');
 
-            const url = new URL(e.sender.getURL());
-            const world = getWorldFromURL(url);
+            const domErrorLog: Omit<DOMErrorLogType, 'id'> = {
+                url: new URL(e.sender.getURL()).href,
+                world: browserStore.currentWorld,
+                selector: err.selector,
+                time: Date.now(),
+                ares: app.getVersion(),
+                chrome: process.versions.chrome,
+                electron: process.versions.electron,
+                tribal: browserStore.majorVersion
+            };
 
             await sequelize.transaction(async (transaction) => {
-                await DOMErrorLog.create({
-                    url: url.href,
-                    world: world,
-                    selector: err.selector,
-                    time: Date.now(),
-                    ares: app.getVersion(),
-                    chrome: process.versions.chrome,
-                    electron: process.versions.electron,
-                    tribal: browserStore.majorVersion
-                }, { transaction });
+                const newRow = await DOMErrorLog.create(domErrorLog, { transaction });
+                const errorModule = getActiveModule('error-log');
+                if (isInstanceOf(errorModule, BrowserWindow)) {
+                    errorModule.webContents.send('dom-error-log-updated', newRow.toJSON());
+                };
             });
 
         } catch (err) {

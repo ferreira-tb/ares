@@ -1,6 +1,6 @@
 import '@tb-dev/prototype';
 import { app, BrowserWindow } from 'electron';
-import { setAppMenu } from '$electron/menu.js';
+import { setAppMenu } from '$electron/menu/menu.js';
 import { sequelize } from '$electron/database/database.js';
 import { UserConfig } from '$tables/config.js';
 import { setEvents } from '$electron/events/index.js';
