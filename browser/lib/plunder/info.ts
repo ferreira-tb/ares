@@ -14,6 +14,6 @@ export async function getPlunderInfo() {
         
         ipcSend('update-plunder-info', plunderInfo);
     } catch (err) {
-        AresError.handle(err);
+        AresError.capture(err);
     };
 };

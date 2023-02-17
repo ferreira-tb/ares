@@ -33,7 +33,7 @@ app.use(router);
 app.use(vuetify);
 
 // Error handler.
-app.config.errorHandler = AresError.handle;
+app.config.errorHandler = AresError.capture;
 
 // Eventos
 setModuleEvents();

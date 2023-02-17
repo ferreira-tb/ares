@@ -10,7 +10,7 @@ export async function readDeimosFile() {
         return deimos;
 
     } catch (err) {
-        MainProcessError.handle(err);
+        MainProcessError.capture(err);
         return null;
     };
 };

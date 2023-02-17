@@ -11,7 +11,7 @@ export function setDeimosEvents() {
             const rawGameData = TribalWars.getGameData();
             return new TribalWarsGameData(rawGameData);
         } catch (err) {
-            DeimosError.handle(err);
+            DeimosError.capture(err);
             return null;
         };
     });
@@ -22,7 +22,7 @@ export function setDeimosEvents() {
             return new PlunderInfo(rawPlunderInfo);
 
         } catch (err) {
-            DeimosError.handle(err);
+            DeimosError.capture(err);
             return null;
         };
     });
@@ -32,7 +32,7 @@ export function setDeimosEvents() {
             const rawUnits = Accountmanager.farm.current_units;
             return new Units(rawUnits);
         } catch (err) {
-            DeimosError.handle(err);
+            DeimosError.capture(err);
             return null;
         };
     });
@@ -42,7 +42,7 @@ export function setDeimosEvents() {
             assertString(message);
             UI.ErrorMessage(message);
         } catch (err) {
-            DeimosError.handle(err);
+            DeimosError.capture(err);
         };
     });
 
@@ -51,7 +51,7 @@ export function setDeimosEvents() {
             assertString(message);
             UI.InfoMessage(message);
         } catch (err) {
-            DeimosError.handle(err);
+            DeimosError.capture(err);
         };
     });
 
@@ -60,7 +60,7 @@ export function setDeimosEvents() {
             assertString(message);
             UI.SuccessMessage(message);
         } catch (err) {
-            DeimosError.handle(err);
+            DeimosError.capture(err);
         };
     });
 };

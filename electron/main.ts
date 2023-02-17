@@ -63,4 +63,4 @@ function createWindow() {
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
 
-sequelize.sync().catch((err: unknown) => MainProcessError.handle(err));
+sequelize.sync().catch((err: unknown) => MainProcessError.capture(err));

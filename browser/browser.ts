@@ -3,7 +3,6 @@ import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { DOMAssertionError } from '@tb-dev/ts-guard-dom';
 import { router } from '$browser/router/router.js';
 import { setBrowserEvents } from '$browser/events.js';
 import { AresError } from '$global/error.js';
@@ -17,13 +16,7 @@ app.use(pinia);
 app.use(router);
 
 // Error handler.
-app.config.errorHandler = (err) => {
-    if (err instanceof DOMAssertionError) {
-        AresError.handleDOMError(err);
-    } else {
-        AresError.handle(err);
-    };
-};
+app.config.errorHandler = AresError.capture;
 
 // Eventos.
 setBrowserEvents(pinia);

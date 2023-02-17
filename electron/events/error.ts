@@ -28,7 +28,7 @@ export function setErrorEvents() {
             });
 
         } catch (err) {
-            MainProcessError.handle(err);
+            MainProcessError.capture(err);
         };
     });
 
@@ -40,7 +40,7 @@ export function setErrorEvents() {
             });
 
         } catch (err) {
-            MainProcessError.handle(err);
+            MainProcessError.capture(err);
         };
     });
 
@@ -56,7 +56,7 @@ export function setErrorEvents() {
             return result;
 
         } catch (err) {
-            MainProcessError.handle(err);
+            MainProcessError.capture(err);
             return null;
         };
     });
@@ -82,7 +82,7 @@ export function setErrorEvents() {
             });
 
         } catch (err) {
-            MainProcessError.handle(err);
+            MainProcessError.capture(err);
         }; 
     });
 
@@ -94,7 +94,7 @@ export function setErrorEvents() {
             });
             
         } catch (err) {
-            MainProcessError.handle(err);
+            MainProcessError.capture(err);
         };
     });
 
@@ -110,7 +110,7 @@ export function setErrorEvents() {
             return result;
 
         } catch (err) {
-            MainProcessError.handle(err);
+            MainProcessError.capture(err);
             return null;
         };
     });

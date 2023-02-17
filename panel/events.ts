@@ -23,7 +23,7 @@ export function setPanelWindowEvents(pinia: Pinia) {
             assertString(url, 'A URL é inválida.');
             aresStore.currentURL = url;
         } catch (err) {
-            AresError.handle(err);
+            AresError.capture(err);
         };
     });
 
@@ -39,7 +39,7 @@ export function setPanelWindowEvents(pinia: Pinia) {
     
             plunderHistoryStore.attackAmount++;
         } catch (err) {
-            AresError.handle(err);
+            AresError.capture(err);
         };
     });
 

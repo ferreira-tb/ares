@@ -73,7 +73,7 @@ export function setIntoWorldStore(key: string, value: unknown): boolean {
         return true;
 
     } catch (err) {
-        MainProcessError.handle(err);
+        MainProcessError.capture(err);
         return false;
     };
 };

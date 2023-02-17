@@ -20,7 +20,7 @@ export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreation
             });
 
         } catch (err) {
-            MainProcessError.handle(err);
+            MainProcessError.capture(err);
         };
     };
 
@@ -34,7 +34,7 @@ export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreation
             panelWindow.setBounds(rectangle);
 
         } catch (err) {
-            MainProcessError.handle(err);
+            MainProcessError.capture(err);
         };
     };
 };

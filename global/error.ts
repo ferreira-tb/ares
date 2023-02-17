@@ -9,20 +9,17 @@ export class AresError extends Error {
         super(message);
     };
 
-    public static handle(err: unknown) {
-        if (err instanceof Error) {
-            ipcSend('set-error-log', {
-                name: err.name,
-                message: err.message
-            } satisfies ErrorLogBase);
-        };
-    };
-
-    public static handleDOMError(err: unknown) {
+    public static capture(err: unknown) {
         if (err instanceof DOMAssertionError) {
             ipcSend('set-dom-error-log', {
                 selector: err.message
             } satisfies DOMErrorLogBase);
+            
+        } else if (err instanceof Error) {
+            ipcSend('set-error-log', {
+                name: err.name,
+                message: err.message
+            } satisfies ErrorLogBase);
         };
     };
 };

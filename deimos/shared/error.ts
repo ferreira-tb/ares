@@ -5,7 +5,7 @@ export class DeimosError extends Error {
         super(message);
     };
 
-    public static handle(err: unknown) {
+    public static capture(err: unknown) {
         if (err instanceof ReferenceError) return;
         if (err instanceof Error) console.error(err);
     };

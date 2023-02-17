@@ -97,7 +97,7 @@ async function handleAttack(): Promise<void> {
                 .then(() => villagesInfo.delete(id))
                 .then(() => village.remove())
                 .then(() => handleAttack())
-                .catch((err: unknown) => AresError.handle(err));
+                .catch((err: unknown) => AresError.capture(err));
 
         } else {
             // TODO: implementar ataque com modelos personalizados.

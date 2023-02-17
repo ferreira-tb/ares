@@ -17,7 +17,7 @@ export function setBrowserEvents(pinia: Pinia) {
             assertString(url, 'A URL é inválida.');
             aresStore.currentURL = url;
         } catch (err) {
-            AresError.handle(err);
+            AresError.capture(err);
         };
     });
     
@@ -30,7 +30,7 @@ export function setBrowserEvents(pinia: Pinia) {
             ipcSend('update-game-data', gameData);
 
         } catch (err) {
-            AresError.handle(err);
+            AresError.capture(err);
         };
     });
 

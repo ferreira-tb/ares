@@ -33,7 +33,7 @@ panel.use(router);
 panel.use(vuetify);
 
 // Error handler.
-panel.config.errorHandler = AresError.handle;
+panel.config.errorHandler = AresError.capture;
 
 // Eventos.
 setPanelWindowEvents(pinia);
