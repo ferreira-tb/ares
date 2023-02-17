@@ -31,7 +31,7 @@ function queryUnitsRow(unitStore: ReturnType<typeof useUnitStore>) {
 
     for (const field of unitFields) {
         const unitType = field.getAttributeStrict<AllUnits>('id');
-        assert(allUnits.includes(unitType), `Tipo de unidade inválido: ${unitType}`);
+        assert(allUnits.includes(unitType), `Tipo inválido de unidade: ${unitType}`);
         const amount = field.parseIntStrict();
         unitStore[unitType] = amount;
     };

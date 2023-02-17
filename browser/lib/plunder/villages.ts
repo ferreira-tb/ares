@@ -23,11 +23,13 @@ export class PlunderVillageInfo {
     /** Indica se o botão C está ativo ou não. */
     cStatus: boolean = true;
 
+    /** Coordenadas da aldeia. */
     coords: Coords = {
         x: 0,
         y: 0
     };
 
+    /** Quantidade de recursos na aldeia. */
     res: PlunderTableResources = {
         wood: 0,
         stone: 0,
@@ -35,6 +37,7 @@ export class PlunderVillageInfo {
         total: 0
     };
     
+    /** Botões da tabela. */
     button: PlunderTableButtons = {
         a: null,
         b: null,
