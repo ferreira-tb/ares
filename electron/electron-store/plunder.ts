@@ -5,7 +5,7 @@ const stateChema: JSONSchema = {
     type: 'object',
     additionalProperties: false,
     properties: {
-        status: { type: 'boolean', default: false },
+        active: { type: 'boolean', default: false },
         ignoreWall: { type: 'boolean', default: false },
         destroyWall: { type: 'boolean', default: false },
         groupAttack: { type: 'boolean', default: false },

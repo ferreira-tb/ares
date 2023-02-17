@@ -2,7 +2,7 @@ import { useEventListener, useMutationObserver } from '@vueuse/core';
 import { usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { generateIntegerBetween, wait } from '$global/utils/helpers.js';
 import { ipcSend } from '$global/ipc.js';
-import type { PlunderedResources } from '$lib/farm/resources.js';
+import type { PlunderedResources } from '$lib/plunder/resources.js';
 
 export const eventTarget = new EventTarget();
 

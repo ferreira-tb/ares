@@ -1,7 +1,9 @@
-import { isString, assertString } from '@tb-dev/ts-guard';
+import { assertString } from '@tb-dev/ts-guard';
 import { Deimos } from '$deimos/shared/ipc.js';
 import { DeimosError } from '$deimos/shared/error.js';
-import { TribalWarsGameData } from '$deimos/models/data';
+import { TribalWarsGameData } from '$deimos/models/data.js';
+import { PlunderInfo } from '$deimos/models/plunder.js';
+import { Units } from '$deimos/models/units.js';
 
 export function setDeimosEvents() {
     Deimos.handle('get-game-data', () => {
@@ -14,12 +16,21 @@ export function setDeimosEvents() {
         };
     });
 
-    Deimos.handle('get-world', () => {
+    Deimos.handle('get-plunder-info', () => {
         try {
-            const gameData = TribalWars.getGameData();
-            if (isString(gameData.world)) return gameData.world;
+            const rawPlunderInfo = Accountmanager.farm;
+            return new PlunderInfo(rawPlunderInfo);
+
+        } catch (err) {
+            DeimosError.handle(err);
             return null;
-            
+        };
+    });
+
+    Deimos.handle('get-current-village-units', () => {
+        try {
+            const rawUnits = Accountmanager.farm.current_units;
+            return new Units(rawUnits);
         } catch (err) {
             DeimosError.handle(err);
             return null;

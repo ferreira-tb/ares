@@ -26,6 +26,10 @@ export type AllUnits =
     | FarmUnits
     | OtherUnits;
 
+export type FarmUnitsAmount = { [key in FarmUnits]: number };
+export type UnitsAmount = { [key in AllUnits]: number };
+export type UnitsAmountAsStrings = { [key in AllUnits]: string };
+
 export type GameScreen =
     | 'am_farm'
     | 'info_player'

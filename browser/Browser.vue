@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
+import { arrayIncludes } from '@tb-dev/ts-guard';
 import { routeNames, router } from '$browser/router/router.js';
 import { useAresStore } from '$vue/stores/ares.js';
+import { getPlunderInfo } from '$lib/plunder/info.js';
 import ScriptTag from '$browser/components/ScriptTag.vue';
 
 const aresStore = useAresStore();
 
 // Define a janela de acordo com a página atual no jogo.
 watchEffect(() => {
-    if (aresStore.currentScreen && routeNames.includes(aresStore.currentScreen)) {
-        router.push({ name: aresStore.currentScreen });
+    const screen = aresStore.currentScreen;
+    if (arrayIncludes(routeNames, screen)) {
+        router.push({ name: screen });
     } else {
         router.push('/');
     };
+
+    if (screen === 'am_farm') getPlunderInfo();
 });
 </script>
 

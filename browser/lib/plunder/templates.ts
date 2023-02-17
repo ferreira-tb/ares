@@ -1,9 +1,10 @@
-import { computed, reactive, nextTick } from 'vue';
+import { computed, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { assert } from '@tb-dev/ts-guard';
-import { availableUnits } from '$lib/farm/units.js';
 import { usePlunderConfigStore } from '$vue/stores/plunder.js';
+import { useUnitStore } from '$vue/stores/units.js';
 import { isFarmUnit } from '$global/utils/guards.js';
+import type { FarmUnits, FarmUnitsAmount } from '$types/game.js';
 
 export class PlunderTemplate {
     /** Tipo do modelo. */
@@ -12,15 +13,15 @@ export class PlunderTemplate {
     carry = 0;
     /** Indica se há tropas o suficiente para o modelo ser usado. */
     readonly ok = computed(() => {
-        for (const [key, value] of Object.entries(availableUnits) as [keyof typeof availableUnits, number][]) {
-            if (key === 'ram') continue;
-            if (value < this.units[key]) return false;
+        const unitStore = useUnitStore();
+        for (const [key, value] of Object.entries(this.units) as [FarmUnits, number][]) {
+            if (unitStore[key] < value) return false;
         };
 
         return true;
     });
 
-    readonly units = reactive({
+    readonly units: FarmUnitsAmount = {
         spear: 0,
         sword: 0,
         axe: 0,
@@ -30,32 +31,24 @@ export class PlunderTemplate {
         knight: 0,
         archer: 0,
         marcher: 0
-    });
+    };
 
     constructor(type: string) {
         this.type = type;
     };
 };
 
-const templateA = new PlunderTemplate('a');
-const templateB = new PlunderTemplate('b');
-
 /** Representa todos os modelos de saque. */
 const allTemplates = new Map<string, PlunderTemplate>();
-allTemplates.set(templateA.type, templateA);
-allTemplates.set(templateB.type, templateB);
-
-/** Representa os modelos de saque com tropas disponíveis. */
-const availableTemplates = computed(() => {
-    const templates: PlunderTemplate[] = [];
-    for (const template of allTemplates.values()) {
-        if (template.ok.value) templates.push(template);
-    };
-    return templates;
-});
 
 /** Obtêm informações sobre os modelos de saque. */
 export function queryTemplateData() {
+    // Cria os modelos de saque base e os adiciona ao mapa.
+    const templateA = new PlunderTemplate('a');
+    const templateB = new PlunderTemplate('b');
+    allTemplates.set(templateA.type, templateA);
+    allTemplates.set(templateB.type, templateB);
+
     // Corpo da tabela com os modelos do assistente de saque.
     const table = document.queryAndAssert('#content_value form tbody:has(td input[type="text"][name^="spear" i])');
 
@@ -85,7 +78,7 @@ export function queryTemplateData() {
  * @param fields Campos da linha.
  */
 function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
-    const template = row === 'a' ? templateA : templateB;
+    const template = row === 'a' ? allTemplates.getStrict('a') : allTemplates.getStrict('b');
 
     for (const field of fields) {
         /** O atributo `name` é usado para determinar a unidade referente ao campo. */
@@ -108,8 +101,8 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * @param resources - Recursos disponíveis na aldeia-alvo.
  */
 export async function filterTemplates(resources: number): Promise<PlunderTemplate[]> {
-    const store = usePlunderConfigStore();
-    const { resourceRatio } = storeToRefs(store);
+    const configStore = usePlunderConfigStore();
+    const { resourceRatio } = storeToRefs(configStore);
 
     // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.
     // Os modelos com capacidade de carga maior que a quantidade de recursos são colocados no grupo `bigger`.
@@ -120,7 +113,9 @@ export async function filterTemplates(resources: number): Promise<PlunderTemplat
     // Aguarda para certificar-se de que a lista de modelos foi atualizada.
     await nextTick();
 
-    for (const template of availableTemplates.value) {
+    for (const template of allTemplates.values()) {
+        if (!template.ok) continue;
+
         if (template.carry > resources) {
             bigger.push(template);
         } else {

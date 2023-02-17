@@ -1,6 +1,6 @@
 import { assertInteger } from '@tb-dev/ts-guard';
 import { resources } from '$global/utils/constants.js';
-import type { PlunderVillageInfo } from '$lib/farm/villages.js';
+import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
 
 export class PlunderedResources {
     wood: number;

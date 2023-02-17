@@ -1,6 +1,6 @@
 export type PlunderState = {
     /** Indica se o Ares está ativado. */
-    status: boolean;
+    active: boolean;
     /** Determina se o Ares deve atacar aldeias com muralha. */
     ignoreWall: boolean;
     /** Determina se o Ares deve demolir a muralha das aldeias. */

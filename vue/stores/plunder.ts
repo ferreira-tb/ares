@@ -4,7 +4,24 @@ import { isObject } from '@tb-dev/ts-guard';
 import { ipcInvoke } from '$global/ipc.js';
 import type { PlunderedAmount } from '$types/game.js';
 
-export const usePlunderConfigStore = defineStore('plunder', () => {
+export const usePlunderStore = defineStore('plunder', () => {
+    /** Indica se as aldeias sob ataque estão ocultas. */
+    const hideAttacked = ref<boolean>(true);
+    /** Página atual. */
+    const page = ref<number>(0);
+    /** Quantidade de aldeias por página. */
+    const pageSize = ref<number>(15);
+    const plunderExhausted = ref<boolean>(false);
+
+    return {
+        hideAttacked,
+        page,
+        pageSize,
+        plunderExhausted
+    };
+});
+
+export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const active = ref<boolean>(false);
     const ignoreWall = ref<boolean>(false);
     const destroyWall = ref<boolean>(false);
@@ -64,7 +81,6 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
     };
 });
 
-/** Atualiza os dados da store com base nos valores salvos no armazenamento. */
 export async function patchPlunderConfigStore() {
     const plunderConfigStore = usePlunderConfigStore();
     const plunderState = await ipcInvoke('get-plunder-config');

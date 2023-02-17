@@ -1,10 +1,11 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderState, PlunderStateValue } from '$types/plunder.js';
 import type { WorldData, UnitData } from '$panel/config.js';
-import type { PlunderedResources } from '$lib/farm/resources.js';
-import type { PlunderedAmount } from '$types/game.js';
+import type { PlunderedResources } from '$lib/plunder/resources.js';
+import type { PlunderedAmount, UnitsAmount } from '$types/game.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 import type { TribalWarsGameData } from '$deimos/models/data.js';
+import type { PlunderInfo } from '$deimos/models/plunder.js';
 
 // Geral
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
@@ -58,6 +59,8 @@ export function ipcSend(channel: 'save-plundered-amount', resources: PlunderedAm
 // Deimos
 export function ipcSend(channel: 'script-tag-is-ready'): void;
 export function ipcSend(channel: 'update-game-data', gameData: TribalWarsGameData): void;
+export function ipcSend(channel: 'update-current-village-units', units: UnitsAmount): void;
+export function ipcSend(channel: 'update-plunder-info', plunderInfo: PlunderInfo): void;
 
 export function ipcSend(channel: string, ...args: any[]) {
     ipcRenderer.send(channel, ...args);

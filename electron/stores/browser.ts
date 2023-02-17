@@ -1,4 +1,3 @@
-import { isString } from '@tb-dev/ts-guard';
 import type { BrowserStoreType } from '$types/electron.js';
 
 class BrowserStore implements BrowserStoreType {
@@ -10,7 +9,6 @@ class BrowserStore implements BrowserStoreType {
     villageAmount: number | null = null;
     groupId: number | null = null;
 
-    // Features
     premium: boolean | null = null;
     accountManager: boolean | null = null;
     farmAssistant: boolean | null = null;
@@ -35,10 +33,6 @@ class BrowserStore implements BrowserStoreType {
 };
 
 export const browserStore = new Proxy(new BrowserStore(), {
-    set(target, prop, value) {
-        if (!isString(prop)) return false;
-        return Reflect.set(target, prop, value);
-    },
     get(target, prop) {
         switch (prop) {
             case 'currentCoords':

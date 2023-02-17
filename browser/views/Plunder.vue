@@ -3,11 +3,11 @@ import { computed, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { assertElement } from '@tb-dev/ts-guard-dom';
 import { patchPlunderConfigStore, usePlunderConfigStore } from '$vue/stores/plunder.js';
-import { filterTemplates, pickBestTemplate, queryTemplateData } from '$lib/farm/templates.js';
-import { queryVillagesInfo, villagesInfo } from '$lib/farm/villages.js';
-import { queryAvailableUnits } from '$lib/farm/units.js';
-import { PlunderedResources } from '$lib/farm/resources.js';
-import { prepareAttack, eventTarget as attackEventTarget } from '$lib/farm/attack.js';
+import { filterTemplates, pickBestTemplate, queryTemplateData } from '$lib/plunder/templates.js';
+import { queryVillagesInfo, villagesInfo } from '$lib/plunder/villages.js';
+import { queryAvailableUnits } from '$lib/plunder/units.js';
+import { PlunderedResources } from '$lib/plunder/resources.js';
+import { prepareAttack, eventTarget as attackEventTarget } from '$lib/plunder/attack.js';
 import { AresError } from '$global/error.js';
 import { ipcSend } from '$global/ipc.js';
 
@@ -40,7 +40,6 @@ await patchPlunderConfigStore();
 
 // Reune informações necessárias para o funcionamento do Plunder.
 queryTemplateData();
-queryAvailableUnits();
 queryVillagesInfo();
 
 watchEffect(() => {
@@ -58,6 +57,7 @@ watchEffect(() => {
 
 async function handleAttack(): Promise<void> {
     if (config.active === false) return;
+    await queryAvailableUnits();
 
     // Seleciona todas as aldeias da tabela e itera sobre elas.
     const villages = plunderList.queryAsMap('tr[data-tb-village]', (e) => e.getAttributeStrict('data-tb-village'));

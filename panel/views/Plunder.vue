@@ -18,7 +18,7 @@ watch(() => config.ignoreDelay, (value) => ipcSend('set-plunder-config', 'ignore
 watch(() => config.blindAttack, (value) => ipcSend('set-plunder-config', 'blindAttack', value));
 
 watch(() => config.active, (value) => {
-    ipcSend('set-plunder-config', 'status', value);
+    ipcSend('set-plunder-config', 'active', value);
     
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
     if (value === false) {

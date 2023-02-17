@@ -1,25 +1,14 @@
-import type { RawTribalWarsGameData, MarketDataTrader, PremiumExchangeGraphResourceData } from '$types/deimos.js';
-import type { AllUnits, ResourceAmount } from '$types/game.js';
+import type { ResourceAmount } from '$types/game.js';
+import type {
+    RawTribalWarsGameData,
+    RawPlunderInfo,
+    MarketDataTrader,
+    PremiumExchangeGraphResourceData
+} from '$types/deimos.js';
 
 declare global {
-    const AccountManager: {
-        readonly farm: {
-            readonly current_units: {
-                readonly [index in AllUnits]: string;
-            };
-        
-            readonly extended: boolean;
-            readonly hide_attacked: boolean;
-            readonly last_click: number;
-            readonly page: number;
-            readonly page_size: number;
-            readonly plunders_exhausted: boolean;
-            readonly should_update_queue: boolean;
-            readonly waiting_for_display_queue_load: boolean;
-        
-            init(): void;
-            setPageSize(size: number): boolean;
-        }
+    const Accountmanager: {
+        readonly farm: RawPlunderInfo
     };
 
     const InfoPlayer: {
