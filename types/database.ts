@@ -1,0 +1,1 @@
+export type UserConfigName = 'panel_bounds';

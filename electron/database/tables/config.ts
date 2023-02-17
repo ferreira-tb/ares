@@ -5,9 +5,10 @@ import { MainProcessError } from '$electron/error.js';
 import { assertPanelWindow } from '$electron/utils/helpers.js';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { Rectangle } from 'electron';
+import type { UserConfigName } from '$types/database.js';
 
 export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreationAttributes<UserConfig>> {
-    declare readonly name: string;
+    declare readonly name: UserConfigName;
     declare readonly json: string;
 
     public static async savePanelBounds(rectangle: Rectangle) {
