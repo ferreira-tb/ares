@@ -5,6 +5,7 @@ export type ErrorLogBase = {
 
 export interface ErrorLogType extends ErrorLogBase {
     readonly id: number;
+    readonly world: string | null;
     readonly time: number;
     readonly ares: string;
     readonly electron: string;

@@ -17,6 +17,7 @@ export function setErrorEvents() {
             const errorLog: Omit<ErrorLogType, 'id' | 'pending'> = {
                 name: err.name,
                 message: err.message,
+                world: browserStore.currentWorld,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,

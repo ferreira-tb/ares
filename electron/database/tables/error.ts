@@ -7,6 +7,7 @@ export class ErrorLog extends Model<InferAttributes<ErrorLog>, InferCreationAttr
     declare readonly id: CreationOptional<number>;
     declare readonly name: string;
     declare readonly message: string;
+    declare readonly world: string | null;
     declare readonly time: number;
     declare readonly ares: string;
     declare readonly electron: string;
@@ -28,6 +29,10 @@ ErrorLog.init({
     message: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    world: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     time: {
         type: DataTypes.INTEGER,
