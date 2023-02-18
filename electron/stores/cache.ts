@@ -29,7 +29,6 @@ function setCacheStore(setStoreState: typeof SetStoreState) {
         },
         get(target, key) {
             if (key === 'userAlias') {
-                console.log('world:', target.world, 'player:', target.player);
                 if (!isString(target.player) || !isString(target.world)) return null;
                 return generateUserAlias(target.world, target.player);
             };
