@@ -5,7 +5,7 @@ export class MainProcessError extends Error {
         super(message);
     };
 
-    public static capture(err: unknown) {
+    public static async capture(err: unknown) {
         if (err instanceof Error) console.error(err);
     };
 };

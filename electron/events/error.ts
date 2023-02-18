@@ -4,8 +4,8 @@ import { Op } from 'sequelize';
 import { assertInteger, assertString, isInstanceOf } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
 import { sequelize } from '$electron/database/database.js';
-import { ErrorLog, DOMErrorLog } from '$tables/error.js';
-import { browserStore } from '$electron/stores/browser.js';
+import { ErrorLog, DOMErrorLog } from '$tables/index.js';
+import { browserStore } from '$electron/stores/index.js';
 import { getActiveModule } from '$electron/app/modules.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 

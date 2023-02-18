@@ -51,14 +51,6 @@ export type UnitDetails = {
     carry: number;
 };
 
-export type PlunderedAmount = {
-    wood: number;
-    stone: number;
-    iron: number;
-    total: number;
-    attackAmount: number;
-};
-
 export type Coords = {
     x: number;
     y: number;

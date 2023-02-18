@@ -16,4 +16,9 @@ class UnitStore implements UnitsAmount {
     militia: number = 0;
 };
 
-export const unitStore = new Proxy(new UnitStore(), { });
+function setUnitStore() {
+    return new Proxy(new UnitStore(), { });
+};
+
+export type { UnitStore };
+export { setUnitStore };

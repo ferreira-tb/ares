@@ -2,7 +2,7 @@ import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { isObject } from '@tb-dev/ts-guard';
 import { ipcInvoke } from '$global/ipc.js';
-import type { PlunderedAmount } from '$types/game.js';
+import type { PlunderedAmount } from '$types/plunder.js';
 
 export const usePlunderStore = defineStore('plunder', () => {
     /** Indica se as aldeias sob ataque estão ocultas. */

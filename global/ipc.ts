@@ -1,8 +1,9 @@
 import { ipcRenderer } from 'electron';
-import type { PlunderState, PlunderStateValue } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderConfigValue } from '$types/plunder.js';
 import type { WorldData, UnitData } from '$panel/config.js';
 import type { PlunderedResources } from '$lib/plunder/resources.js';
-import type { PlunderedAmount, UnitsAmount } from '$types/game.js';
+import type { UnitsAmount } from '$types/game.js';
+import type { PlunderedAmount } from '$types/plunder.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 import type { TribalWarsGameData } from '$deimos/models/data.js';
 import type { PlunderInfo } from '$deimos/models/plunder.js';
@@ -26,13 +27,10 @@ export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[
 export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorLogType[] | null>;
 
 // Plunder
-export async function ipcInvoke(channel: 'is-plunder-active', world?: string): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-plunder-config', world?: string): Promise<PlunderState | null>;
-export async function ipcInvoke(channel: 'get-last-plundered-amount', world?: string): Promise<PlunderedAmount | null>;
-export async function ipcInvoke(channel: 'get-total-plundered-amount', world?: string): Promise<PlunderedAmount | null>;
-
-// Deimos
-
+export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
+export async function ipcInvoke(channel: 'get-plunder-config'): Promise<PlunderConfigType | null>;
+export async function ipcInvoke(channel: 'get-last-plundered-amount'): Promise<PlunderedAmount | null>;
+export async function ipcInvoke(channel: 'get-total-plundered-amount'): Promise<PlunderedAmount | null>;
 
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
     const response = await ipcRenderer.invoke(channel, ...args);
@@ -52,9 +50,9 @@ export function ipcSend(channel: 'delete-error-log', id: number): void;
 export function ipcSend(channel: 'delete-dom-error-log', id: number): void;
 
 // Plunder
-export function ipcSend(channel: 'set-plunder-config', name: keyof PlunderState, value: PlunderStateValue, world?: string): void;
+export function ipcSend(channel: 'update-plunder-config', name: keyof PlunderConfigType, value: PlunderConfigValue): void;
 export function ipcSend(channel: 'update-plundered-amount', resources: PlunderedResources): void;
-export function ipcSend(channel: 'save-plundered-amount', resources: PlunderedAmount, world?: string): void;
+export function ipcSend(channel: 'save-plundered-amount', resources: PlunderedAmount): void;
 
 // Deimos
 export function ipcSend(channel: 'script-tag-is-ready'): void;

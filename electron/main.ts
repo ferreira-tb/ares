@@ -2,10 +2,11 @@ import '@tb-dev/prototype';
 import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu/menu.js';
 import { sequelize } from '$electron/database/database.js';
-import { UserConfig } from '$tables/config.js';
+import { UserConfig } from '$tables/index.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants.js';
 import { MainProcessError } from '$electron/error.js';
+import { saveStoreState } from '$electron/stores/index.js';
 
 process.env.ARES_MODE = 'dev';
 
@@ -61,6 +62,9 @@ function createWindow() {
 };
 
 app.whenReady().then(() => createWindow());
-app.on('window-all-closed', () => app.quit());
+app.on('window-all-closed', async () => {
+    await saveStoreState();
+    app.quit();
+});
 
-sequelize.sync().catch((err: unknown) => MainProcessError.capture(err));
+sequelize.sync().catch(MainProcessError.capture);

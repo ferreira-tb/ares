@@ -5,6 +5,7 @@ import type { PlunderInfo } from '$deimos/models/plunder.js';
 export type Schema = StoreSchema<Record<string, unknown>>;
 export type JSONSchema = Schema[keyof Schema];
 
+export type UserAlias = `${string}__USERID__${string}`;
 export type ModuleNames = 'error-log';
 
 export interface BrowserStoreType extends TribalWarsGameData {
@@ -12,6 +13,12 @@ export interface BrowserStoreType extends TribalWarsGameData {
     currentCoords: [number | null, number | null];
     /** Quantidade total de recursos na aldeia atual. */
     currentVillageTotalResources: number | null;
+};
+
+export interface CacheStoreType {
+    lastWorld: string | null;
+    lastPlayer: string | null;
+    lastUserAlias: UserAlias | null;
 };
 
 export interface PlunderStoreType extends PlunderInfo { };

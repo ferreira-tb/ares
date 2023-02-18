@@ -1,3 +1,6 @@
+import { isString } from '@tb-dev/ts-guard';
+import type { User } from '$tables/index.js';
+import type { CacheStore } from '$electron/stores/cache.js';
 import type { BrowserStoreType } from '$types/electron.js';
 
 class BrowserStore implements BrowserStoreType {
@@ -32,19 +35,35 @@ class BrowserStore implements BrowserStoreType {
     currentVillageMaxStorage: number | null = null;
 };
 
-export const browserStore = new Proxy(new BrowserStore(), {
-    get(target, prop) {
-        switch (prop) {
-            case 'currentCoords':
-                return [target.currentX, target.currentY];
-            case 'currentVillageTotalResources':
-                const wood = target.currentVillageWood;
-                const stone = target.currentVillageStone;
-                const iron = target.currentVillageIron;
-                if (wood === null || stone === null || iron === null) return null;
-                return wood + stone + iron;
-            default:
-                return Reflect.get(target, prop);
-        };
-    }
-});
+function setBrowserStore(cacheStore: CacheStore, userTable: typeof User) {
+    return new Proxy(new BrowserStore(), {
+        get(target, key) {
+            switch (key) {
+                case 'currentCoords':
+                    return [target.currentX, target.currentY];
+                case 'currentVillageTotalResources':
+                    const wood = target.currentVillageWood;
+                    const stone = target.currentVillageStone;
+                    const iron = target.currentVillageIron;
+                    if (wood === null || stone === null || iron === null) return null;
+                    return wood + stone + iron;
+                default:
+                    return Reflect.get(target, key);
+            };
+        },
+        set(target, key, value) {
+            if (key === 'currentWorld' && isString(value)) {
+                cacheStore.lastWorld = value;
+            } else if (key === 'currentPlayer' && isString(value)) {
+                const previous = Reflect.get(target, key);
+                if (previous !== value) userTable.savePlayerAsUser(value);
+                cacheStore.lastPlayer = value;
+            };
+    
+            return Reflect.set(target, key, value);
+        }
+    });
+};
+
+export type { BrowserStore };
+export { setBrowserStore };

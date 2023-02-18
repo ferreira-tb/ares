@@ -1,22 +1,22 @@
 import { DataTypes, Model } from 'sequelize';
-import { isString } from '@tb-dev/ts-guard';
+import { isObject } from '@tb-dev/ts-guard';
 import { sequelize } from '$electron/database/database.js';
 import { MainProcessError } from '$electron/error.js';
 import { assertPanelWindow } from '$electron/utils/helpers.js';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { Rectangle } from 'electron';
-import type { UserConfigName } from '$types/database.js';
+import type { UserConfigName, UserConfigJSON } from '$types/database.js';
 
 export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreationAttributes<UserConfig>> {
     declare readonly name: UserConfigName;
-    declare readonly json: string;
+    declare readonly json: UserConfigJSON;
 
     public static async savePanelBounds(rectangle: Rectangle) {
         try {
             await sequelize.transaction(async (transaction) => {
                 await UserConfig.upsert({
                     name: 'panel_bounds',
-                    json: JSON.stringify(rectangle)
+                    json: rectangle
                 }, { transaction });
             });
 
@@ -29,10 +29,8 @@ export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreation
         try {
             const panelWindow = assertPanelWindow();
             const bounds = await UserConfig.findByPk('panel_bounds');
-            if (!bounds || !isString(bounds.json)) return;
-
-            const rectangle = JSON.parse(bounds.json) as Rectangle;
-            panelWindow.setBounds(rectangle);
+            if (!bounds || !isObject(bounds.json)) return;
+            panelWindow.setBounds(bounds.json as Rectangle);
 
         } catch (err) {
             MainProcessError.capture(err);
@@ -48,7 +46,7 @@ UserConfig.init({
         unique: true
     },
     json: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: true,
     }
-}, { sequelize, tableName: 'user_config' });
+}, { sequelize, tableName: 'user_config', timestamps: true });

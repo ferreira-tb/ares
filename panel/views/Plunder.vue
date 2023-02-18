@@ -10,20 +10,24 @@ import Resources from '$panel/components/Resources.vue';
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
 
-watch(() => config.ignoreWall, (value) => ipcSend('set-plunder-config', 'ignoreWall', value));
-watch(() => config.destroyWall, (value) => ipcSend('set-plunder-config', 'destroyWall', value));
-watch(() => config.groupAttack, (value) => ipcSend('set-plunder-config', 'groupAttack', value));
-watch(() => config.useC, (value) => ipcSend('set-plunder-config', 'useC', value));
-watch(() => config.ignoreDelay, (value) => ipcSend('set-plunder-config', 'ignoreDelay', value));
-watch(() => config.blindAttack, (value) => ipcSend('set-plunder-config', 'blindAttack', value));
+watch(() => config.ignoreWall, (value) => ipcSend('update-plunder-config', 'ignoreWall', value));
+watch(() => config.destroyWall, (value) => ipcSend('update-plunder-config', 'destroyWall', value));
+watch(() => config.groupAttack, (value) => ipcSend('update-plunder-config', 'groupAttack', value));
+watch(() => config.useC, (value) => ipcSend('update-plunder-config', 'useC', value));
+watch(() => config.ignoreDelay, (value) => ipcSend('update-plunder-config', 'ignoreDelay', value));
+watch(() => config.blindAttack, (value) => ipcSend('update-plunder-config', 'blindAttack', value));
 
 watch(() => config.active, (value) => {
-    ipcSend('set-plunder-config', 'active', value);
+    ipcSend('update-plunder-config', 'active', value);
     
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
     if (value === false) {
+        // Se não ocorreu saque, não é necessário salvar as informações.
         const currentHistoryState = history.getState();
-        ipcSend('save-plundered-amount', currentHistoryState);
+        if (Object.values(currentHistoryState).every((value) => value > 0))  {
+            ipcSend('save-plundered-amount', currentHistoryState);
+        };
+
         history.resetState();
         Deimos.send('show-ui-success-message', 'O saque foi interrompido.');
     } else {
