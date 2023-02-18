@@ -9,6 +9,7 @@ import { setDeimosEvents } from '$electron/events/deimos.js';
 import { MainProcessError } from '$electron/error.js';
 import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
 import { browserCss } from '$electron/utils/constants.js';
+import { getUserAlias } from '$interface/interface.js';
 
 export function setEvents() {
     const mainWindow = assertMainWindow();
@@ -17,6 +18,7 @@ export function setEvents() {
     // Informações sobre o Ares.
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
+    ipcMain.handle('user-alias', async () => await getUserAlias());
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
     ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');

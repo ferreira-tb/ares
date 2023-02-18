@@ -1,7 +1,6 @@
 import { URL } from 'url';
 import { BrowserWindow } from 'electron';
-import { assertInstanceOf, assertString, assert } from '@tb-dev/ts-guard';
-import type { UserAlias } from '$types/electron.js';
+import { assertInstanceOf, assertString } from '@tb-dev/ts-guard';
 
 export const getMainWindow = () => {
     const id = Number.parseIntStrict(process.env.MAIN_WINDOW_ID ?? '', 10);
@@ -56,15 +55,4 @@ export function togglePanelWindow() {
     } else {
         panelWindow.show();
     };
-};
-
-export function validateUserAlias(alias: unknown): alias is UserAlias {
-    assertString(alias, 'O alias não é uma string.');
-    return /^[a-z]+\d+__USERID__\d+$/.test(alias);
-};
-
-export function validateUserAliasStrict(alias: unknown): alias is UserAlias {
-    const result = validateUserAlias(alias);
-    assert(result === true, 'O alias não é válido.');
-    return result;
 };

@@ -1,5 +1,5 @@
 import { isString } from '@tb-dev/ts-guard';
-import type { User } from '$tables/index.js';
+import type { savePlayerAsUser as SavePlayerAsUser } from '$interface/interface.js';
 import type { CacheStore } from '$electron/stores/cache.js';
 import type { BrowserStoreType } from '$types/electron.js';
 
@@ -35,7 +35,7 @@ class BrowserStore implements BrowserStoreType {
     currentVillageMaxStorage: number | null = null;
 };
 
-function setBrowserStore(cacheStore: CacheStore, userTable: typeof User) {
+function setBrowserStore(cacheStore: CacheStore, savePlayerAsUser: typeof SavePlayerAsUser) {
     return new Proxy(new BrowserStore(), {
         get(target, key) {
             switch (key) {
@@ -56,7 +56,7 @@ function setBrowserStore(cacheStore: CacheStore, userTable: typeof User) {
                 cacheStore.lastWorld = value;
             } else if (key === 'currentPlayer' && isString(value)) {
                 const previous = Reflect.get(target, key);
-                if (previous !== value) userTable.savePlayerAsUser(value);
+                if (previous !== value) savePlayerAsUser(value);
                 cacheStore.lastPlayer = value;
             };
     

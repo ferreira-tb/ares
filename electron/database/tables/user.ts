@@ -30,20 +30,6 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
             return null;
         };
     };
-
-    public static async savePlayerAsUser(playerName: string) {
-        try {
-            await sequelize.transaction(async (transaction) => {
-                const user = await this.findOne({ where: { id: playerName }, transaction });
-                if (isNotNull(user)) return;
-
-                await this.create({ name: playerName }, { transaction });
-            });
-            
-        } catch (err) {
-            MainProcessError.capture(err);
-        };
-    };
 };
 
 User.init({

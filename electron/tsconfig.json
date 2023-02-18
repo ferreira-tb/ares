@@ -23,6 +23,15 @@
             "$deimos/*": [
                 "../deimos/*"
             ],
+            "$stores/*": [
+                "./stores/*"
+            ],
+            "$interface/*": [
+                "./interface/*"
+            ],
+            "$database/*": [
+                "./database/*"
+            ]
         },
         
         // Modo estrito

@@ -1,6 +1,6 @@
 import { MainProcessError } from '$electron/error.js';
 import type { CacheStoreType, UserAlias } from '$types/electron.js';
-import type { getUserAlias as GetUserAlias, setStoreState as SetStoreState } from '$electron/stores/index.js';
+import type { getUserAlias as GetUserAlias, setStoreState as SetStoreState } from '$interface/interface.js';
 
 class CacheStore implements CacheStoreType {
     lastWorld: string | null = null;

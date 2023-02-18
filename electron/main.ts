@@ -2,11 +2,10 @@ import '@tb-dev/prototype';
 import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu/menu.js';
 import { sequelize } from '$electron/database/database.js';
-import { UserConfig } from '$tables/index.js';
+import { UserConfig, saveStoreState } from '$interface/interface.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants.js';
 import { MainProcessError } from '$electron/error.js';
-import { saveStoreState } from '$electron/stores/index.js';
 
 process.env.ARES_MODE = 'dev';
 

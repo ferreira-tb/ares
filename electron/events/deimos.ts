@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { readDeimosFile } from '$electron/app/deimos.js';
-import { browserStore, plunderStore, unitStore } from '$electron/stores/index.js';
+import { browserStore, plunderStore, unitStore } from '$interface/interface.js';
 import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
 import type { TribalWarsGameData } from '$deimos/models/data.js';
 import type { PlunderInfo } from '$deimos/models/plunder.js';

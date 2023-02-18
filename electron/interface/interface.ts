@@ -1,17 +1,24 @@
-import { assertInteger, assertString, isObject, isString } from '@tb-dev/ts-guard';
-import { sequelize } from '$electron/database/database.js';
+import { assertInteger, assertString, isObject, isString, isNotNull } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
-import { User, PlunderConfig, PlunderHistory } from '$tables/index.js';
-import { setPlunderStore, setPlunderConfigStore, setPlunderHistoryStore } from '$electron/stores/plunder.js';
-import { setBrowserStore } from '$electron/stores/browser.js';
-import { setCacheStore } from '$electron/stores/cache.js';
-import { setUnitStore } from '$electron/stores/units.js';
-import { setWorldConfigStore } from '$electron/stores/world.js';
+import { sequelize } from '$database/database.js';
+import { isUserAlias } from '$electron/utils/guards.js';
+
+import { UserConfig } from '$tables/config.js';
+import { ErrorLog, DOMErrorLog } from '$tables/error.js';
+import { PlunderHistory, PlunderConfig } from '$tables/plunder.js';
+import { User } from '$tables/user.js';
+
+import { setPlunderStore, setPlunderConfigStore, setPlunderHistoryStore } from '$stores/plunder.js';
+import { setBrowserStore } from '$stores/browser.js';
+import { setCacheStore } from '$stores/cache.js';
+import { setUnitStore } from '$stores/units.js';
+import { setWorldConfigStore } from '$stores/world.js';
+
 import type { PlunderedAmount, PlunderHistoryType } from '$types/plunder.js';
 import type { UserAlias } from '$types/electron.js';
 
 export const cacheStore = setCacheStore(getUserAlias, setStoreState);
-export const browserStore = setBrowserStore(cacheStore, User);
+export const browserStore = setBrowserStore(cacheStore, savePlayerAsUser);
 export const plunderStore = setPlunderStore();
 export const plunderConfigStore = setPlunderConfigStore();
 export const plunderHistoryStore = setPlunderHistoryStore();
@@ -25,9 +32,9 @@ export const worldConfigStore = setWorldConfigStore();
  * `^[a-z]+\d+` representa o mundo atual e `\d+$` representa o ID do usuário na tabela `user` do banco de dados.
  * @param playerName Nome do jogador.
  */
-export async function getUserAlias(playerName?: string | null): Promise<UserAlias> {
-    if (!isString(playerName)) playerName = cacheStore.lastPlayer;
-    assertString(playerName, 'Não é possível obter o alias porquê o nome do jogador é inválido.');
+export async function getUserAlias(playerName?: string | null): Promise<UserAlias | null> {
+    playerName ??= cacheStore.lastPlayer;
+    if (!isString(playerName)) return null;
 
     const userId = await User.getUserID(playerName);
     assertInteger(userId, 'Não foi possível obter o alias porquê o ID do usuário é inválido.');
@@ -44,6 +51,7 @@ export async function getUserAlias(playerName?: string | null): Promise<UserAlia
 export async function setStoreState() {
     try {
         const userAlias = await getUserAlias();
+        if (!isUserAlias(userAlias)) return;
 
         const plunderConfig = (await PlunderConfig.findByPk(userAlias))?.toJSON();
         if (isObject(plunderConfig)) {
@@ -80,6 +88,8 @@ export async function saveStoreState() {
         if (!isString(lastPlayer) || !isString(lastWorld)) return;
 
         const userAlias = await getUserAlias();
+        if (!isUserAlias(userAlias)) return;
+
         await sequelize.transaction(async (transaction) => {
             await PlunderConfig.upsert({
                 id: userAlias,
@@ -96,4 +106,47 @@ export async function saveStoreState() {
     } catch (err) {
         await MainProcessError.capture(err);
     };
+};
+
+export async function getPlunderHistoryAsJSON(): Promise<PlunderHistory | null> {
+    try {
+        const result = await sequelize.transaction(async (transaction) => {
+            const userAlias = await getUserAlias();
+            if (!isUserAlias(userAlias)) return null;
+            
+            const plunderHistory = await PlunderHistory.findByPk(userAlias, { transaction });
+            if (!isObject(plunderHistory)) return null;
+
+            return plunderHistory.toJSON();
+        });
+
+        return result as PlunderHistory | null;
+
+    } catch (err) {
+        MainProcessError.capture(err);
+        return null;
+    };
+};
+
+export async function savePlayerAsUser(name: string) {
+    try {
+        await sequelize.transaction(async (transaction) => {
+            const user = await User.findOne({ where: { name }, transaction });
+            if (isNotNull(user)) return;
+
+            await User.create({ name }, { transaction });
+        });
+        
+    } catch (err) {
+        MainProcessError.capture(err);
+    };
+};
+
+export {
+    UserConfig,
+    ErrorLog,
+    DOMErrorLog,
+    PlunderHistory,
+    PlunderConfig,
+    User
 };

@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { assert, assertInteger, assertString } from '@tb-dev/ts-guard';
+import { assertKeyOf, assertInteger, assertString } from '@tb-dev/ts-guard';
 import { useAresStore } from '$vue/stores/ares.js';
 import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { useUnitStore } from '$vue/stores/units.js';
@@ -32,7 +32,7 @@ export function setPanelWindowEvents(pinia: Pinia) {
             if (plunderConfigStore.active === false) return;
         
             resourceList.forEach((res) => {
-                assert(res in resources, 'Não foi possível atualizar a quantidade de recursos saqueados.');
+                assertKeyOf(res, resources, 'Não foi possível atualizar a quantidade de recursos saqueados.');
                 assertInteger(resources[res], 'A quantidade de recursos não é um número inteiro.');
                 plunderHistoryStore[res] += resources[res];
             });

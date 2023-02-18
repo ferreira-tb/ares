@@ -1,6 +1,6 @@
 import { useAresStore } from "$vue/stores/ares.js";
 import { ipcInvoke } from '$global/ipc.js';
-import { assert, isString } from '@tb-dev/ts-guard';
+import { assertTrue, isString } from '@tb-dev/ts-guard';
 import { queryXMLTags } from '$global/utils/helpers.js';
 import { allUnits } from '$global/utils/constants.js';
 import type { UnitDetails } from '$types/game.js';
@@ -98,7 +98,7 @@ export async function verifyWorldAndUnitData(aresStore?: ReturnType<typeof useAr
 
 async function fetchHtmlDocument(url: string): Promise<XMLDocument> {
     const response = await fetch(url);
-    assert(response.ok === true, 'Não foi possível obter as informações sobre o mundo.');
+    assertTrue(response.ok, 'Não foi possível obter as informações sobre o mundo.');
 
     const text = await response.text();
     return new DOMParser().parseFromString(text, 'text/xml');

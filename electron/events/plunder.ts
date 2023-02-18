@@ -1,12 +1,19 @@
 import { ipcMain } from 'electron';
 import { assertObject, assertPositiveInteger } from '@tb-dev/ts-guard';
 import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
-import { plunderConfigStore, plunderHistoryStore, getUserAlias } from '$electron/stores/index.js';
-import { sequelize } from '$electron/database/database.js';
+import { assertUserAlias } from '$electron/utils/guards.js';
+import { sequelize } from '$database/database.js';
 import { MainProcessError } from '$electron/error.js';
-import { getPlunderHistoryAsJSON, PlunderHistory, PlunderConfig } from '$tables/index.js';
 import type { PlunderedAmount } from '$types/plunder.js';
 
+import {
+    getPlunderHistoryAsJSON,
+    PlunderHistory,
+    PlunderConfig,
+    plunderConfigStore,
+    plunderHistoryStore,
+    getUserAlias
+} from '$interface/interface.js';
 
 export function setPlunderEvents() {
     const mainWindow = assertMainWindow();
@@ -22,9 +29,13 @@ export function setPlunderEvents() {
             // A confirmação dos tipos é feita no Proxy.
             (plunderConfigStore as any)[key] = value;
             mainWindow.webContents.send('plunder-config-updated', key, value);
+
+            const userAlias = await getUserAlias();
+            assertUserAlias(userAlias);
+
             await sequelize.transaction(async (transaction) => {
                 await PlunderConfig.upsert({
-                    id: await getUserAlias(),
+                    id: userAlias,
                     ...plunderConfigStore
                 }, { transaction });
             });
@@ -56,10 +67,13 @@ export function setPlunderEvents() {
                 plunderHistoryStore.last[key] = value;
                 plunderHistoryStore.total[key] += value;
             };
+
+            const userAlias = await getUserAlias();
+            assertUserAlias(userAlias);
     
             await sequelize.transaction(async (transaction) => {
                 await PlunderHistory.upsert({
-                    id: await getUserAlias(),
+                    id: userAlias,
                     last: { ...plunderHistoryStore.last },
                     total: { ...plunderHistoryStore.total }
                 }, { transaction });
