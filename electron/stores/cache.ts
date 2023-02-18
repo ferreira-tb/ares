@@ -1,33 +1,40 @@
-import { MainProcessError } from '$electron/error.js';
+import { isString } from '@tb-dev/ts-guard';
+import { generateUserAlias } from '$electron/utils/helpers.js';
+import { isUserAlias } from '$electron/utils/guards.js';
 import type { CacheStoreType, UserAlias } from '$types/electron.js';
-import type { getUserAlias as GetUserAlias, setStoreState as SetStoreState } from '$interface/interface.js';
+import type { SetStoreState } from '$interface/interface.js';
 
 class CacheStore implements CacheStoreType {
-    lastWorld: string | null = null;
-    lastPlayer: string | null = null;
-    lastUserAlias: UserAlias | null = null;
+    world: string | null = null;
+    player: string | null = null;
+    userAlias: UserAlias | null = null;
 };
 
-function setCacheStore(getUserAlias: typeof GetUserAlias, setStoreState: typeof SetStoreState) {
+function setCacheStore(setStoreState: typeof SetStoreState) {
     return new Proxy(new CacheStore(), {
-        set(target, key, value) {
-            if (key in target)  {
-                if (value === null) return true;
-    
-                // Não atualiza o valor se for igual ao anterior.
-                const previous = Reflect.get(target, key) as CacheStore[keyof CacheStore];
-                if (previous === value) return true;
-    
-                if (key === 'lastWorld' || key === 'lastPlayer') {
-                    getUserAlias().catch(MainProcessError.capture);
-                } else if (key === 'lastUserAlias') {
-                    setStoreState();
-                };
-    
-                return Reflect.set(target, key, value);
+        set(target, key, value, receiver) {
+            if (value === null) return true;
+
+            // Obtém do target para que a trap "get" não seja acionada.
+            const previousAlias = Reflect.get(target, 'userAlias') as UserAlias | null;
+            // Obtém do receiver (proxy) para que a trap "get" seja acionada.
+            const alias = Reflect.get(receiver, 'userAlias') as UserAlias | null;
+
+            if (isUserAlias(alias) && alias !== previousAlias) {
+                setStoreState(alias);
+                Reflect.set(target, 'userAlias', alias);
             };
-    
-            return false;
+
+            return Reflect.set(target, key, value);
+        },
+        get(target, key) {
+            if (key === 'userAlias') {
+                console.log('world:', target.world, 'player:', target.player);
+                if (!isString(target.player) || !isString(target.world)) return null;
+                return generateUserAlias(target.world, target.player);
+            };
+
+            return Reflect.get(target, key);
         }
     });
 };

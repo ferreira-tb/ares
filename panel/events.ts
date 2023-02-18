@@ -10,6 +10,7 @@ import type { PlunderedResources } from '$lib/plunder/resources.js';
 import type { TribalWarsGameData } from '$deimos/models/data.js';
 import type { PlunderInfo } from '$deimos/models/plunder.js';
 import type { UnitsAmount } from '$types/game.js';
+import type { PlunderConfigType, PlunderHistoryType } from '$types/plunder.js';
 
 export function setPanelWindowEvents(pinia: Pinia) {
     const aresStore = useAresStore(pinia);
@@ -43,7 +44,9 @@ export function setPanelWindowEvents(pinia: Pinia) {
         };
     });
 
-    ipcRenderer.on('update-game-data', (_e, gameData: TribalWarsGameData) => aresStore.$patch(gameData));
-    ipcRenderer.on('update-plunder-info', (_e, plunderInfo: PlunderInfo) => plunderStore.$patch(plunderInfo));
+    ipcRenderer.on('update-game-data', (_e, data: TribalWarsGameData) => aresStore.$patch(data));
+    ipcRenderer.on('update-plunder-info', (_e, info: PlunderInfo) => plunderStore.$patch(info));
+    ipcRenderer.on('update-plunder-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
+    ipcRenderer.on('update-plunder-history', (_e, history: PlunderHistoryType['last']) => plunderHistoryStore.$patch(history));
     ipcRenderer.on('update-current-village-units', (_e, units: UnitsAmount) => unitStore.$patch(units));
 };

@@ -1,6 +1,7 @@
 import { URL } from 'url';
 import { BrowserWindow } from 'electron';
 import { assertInstanceOf, assertString } from '@tb-dev/ts-guard';
+import type { UserAlias } from '$types/electron.js';
 
 export const getMainWindow = () => {
     const id = Number.parseIntStrict(process.env.MAIN_WINDOW_ID ?? '', 10);
@@ -55,4 +56,15 @@ export function togglePanelWindow() {
     } else {
         panelWindow.show();
     };
+};
+
+/**
+* Retorna o alias do usuário, no padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`.
+
+* Ele é usado para diferenciar tanto diferentes jogadores quanto diferentes mundos do mesmo jogador.
+* @param playerName Nome do jogador.
+*/
+export function generateUserAlias(world: string, playerName: string): UserAlias {
+    playerName = encodeURIComponent(playerName);
+    return `${world.toLowerCase()}__USERID__${playerName}`;
 };

@@ -53,11 +53,11 @@ function setBrowserStore(cacheStore: CacheStore, savePlayerAsUser: typeof SavePl
         },
         set(target, key, value) {
             if (key === 'currentWorld' && isString(value)) {
-                cacheStore.lastWorld = value;
+                cacheStore.world = value;
             } else if (key === 'currentPlayer' && isString(value)) {
                 const previous = Reflect.get(target, key);
                 if (previous !== value) savePlayerAsUser(value);
-                cacheStore.lastPlayer = value;
+                cacheStore.player = value;
             };
     
             return Reflect.set(target, key, value);

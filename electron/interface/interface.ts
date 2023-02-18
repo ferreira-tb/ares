@@ -1,6 +1,7 @@
-import { assertInteger, assertString, isObject, isString, isNotNull } from '@tb-dev/ts-guard';
+import { isObject, isNotNull } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
 import { sequelize } from '$database/database.js';
+import { assertPanelWindow } from '$electron/utils/helpers.js';
 import { isUserAlias } from '$electron/utils/guards.js';
 
 import { UserConfig } from '$tables/config.js';
@@ -17,7 +18,7 @@ import { setWorldConfigStore } from '$stores/world.js';
 import type { PlunderedAmount, PlunderHistoryType } from '$types/plunder.js';
 import type { UserAlias } from '$types/electron.js';
 
-export const cacheStore = setCacheStore(getUserAlias, setStoreState);
+export const cacheStore = setCacheStore(setStoreState);
 export const browserStore = setBrowserStore(cacheStore, savePlayerAsUser);
 export const plunderStore = setPlunderStore();
 export const plunderConfigStore = setPlunderConfigStore();
@@ -26,34 +27,18 @@ export const unitStore = setUnitStore();
 export const worldConfigStore = setWorldConfigStore();
 
 /**
- * Retorna o alias do usuário, no padrão `/^[a-z]+\d+__USERID__\d+$/`.
- * Ele é usado para diferenciar tanto diferentes jogadores quanto diferentes mundos do mesmo jogador.
+ * Define o estado das stores de acordo com o alias atual.
  * 
- * `^[a-z]+\d+` representa o mundo atual e `\d+$` representa o ID do usuário na tabela `user` do banco de dados.
- * @param playerName Nome do jogador.
+ * Essa função deve ser chamada sempre que o alias for alterado.
+ * A responsabilidade de chamar essa função é do Proxy `cacheStore`.
+ * 
+ * Entende-se como "alias" o padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`.
  */
-export async function getUserAlias(playerName?: string | null): Promise<UserAlias | null> {
-    playerName ??= cacheStore.lastPlayer;
-    if (!isString(playerName)) return null;
-
-    const userId = await User.getUserID(playerName);
-    assertInteger(userId, 'Não foi possível obter o alias porquê o ID do usuário é inválido.');
-
-    const world = cacheStore.lastWorld;
-    assertString(world, 'Não foi possível obter o alias porquê o mundo é inválido.');
-
-    // É importante deixá-lo passar pelo Proxy em vez de usar diretamente `this`.
-    const alias: UserAlias = `${world.toLowerCase()}__USERID__${userId.toString(10)}`;
-    if (playerName === cacheStore.lastPlayer) cacheStore.lastUserAlias = alias;
-    return alias;
-};
-
-export async function setStoreState() {
+async function setStoreState(alias: UserAlias) {
     try {
-        const userAlias = await getUserAlias();
-        if (!isUserAlias(userAlias)) return;
+        const panelWindow = assertPanelWindow();
 
-        const plunderConfig = (await PlunderConfig.findByPk(userAlias))?.toJSON();
+        const plunderConfig = (await PlunderConfig.findByPk(alias))?.toJSON();
         if (isObject(plunderConfig)) {
             for (const [key, value] of Object.entries(plunderConfig)) {
                 if (key in plunderConfigStore) {
@@ -61,9 +46,12 @@ export async function setStoreState() {
                     (plunderConfigStore as any)[key] = value;
                 };
             };
+
+            // Atualiza o painel com as configurações para o alias atual.
+            panelWindow.webContents.send('update-plunder-config', plunderConfig);
         };
 
-        const plunderHistory = (await PlunderHistory.findByPk(userAlias))?.toJSON();
+        const plunderHistory = (await PlunderHistory.findByPk(alias))?.toJSON();
         if (isObject(plunderHistory)) {
             type PlunderHistoryKeys = keyof PlunderHistoryType;
             for (const [key, value] of Object.entries(plunderHistory) as [PlunderHistoryKeys, PlunderedAmount][]) {
@@ -75,6 +63,12 @@ export async function setStoreState() {
                     };
                 };
             };
+
+            // Se o Plunder estiver ativo para o alias atual, atualiza o painel com o histórico de recursos.
+            // Isso permite que ele continue de onde parou.
+            if (isObject(plunderConfig) && plunderConfig.active === true) {
+                panelWindow.webContents.send('update-plunder-history', plunderHistory);
+            };
         };
 
     } catch (err) {
@@ -82,36 +76,10 @@ export async function setStoreState() {
     };
 };
 
-export async function saveStoreState() {
-    try {
-        const { lastPlayer, lastWorld } = cacheStore;
-        if (!isString(lastPlayer) || !isString(lastWorld)) return;
-
-        const userAlias = await getUserAlias();
-        if (!isUserAlias(userAlias)) return;
-
-        await sequelize.transaction(async (transaction) => {
-            await PlunderConfig.upsert({
-                id: userAlias,
-                ...plunderConfigStore
-            }, { transaction });
-
-            await PlunderHistory.upsert({
-                id: userAlias,
-                last: { ...plunderHistoryStore.last },
-                total: { ...plunderHistoryStore.total }
-            }, { transaction });
-        });
-
-    } catch (err) {
-        await MainProcessError.capture(err);
-    };
-};
-
 export async function getPlunderHistoryAsJSON(): Promise<PlunderHistory | null> {
     try {
         const result = await sequelize.transaction(async (transaction) => {
-            const userAlias = await getUserAlias();
+            const userAlias = cacheStore.userAlias;
             if (!isUserAlias(userAlias)) return null;
             
             const plunderHistory = await PlunderHistory.findByPk(userAlias, { transaction });
@@ -128,12 +96,12 @@ export async function getPlunderHistoryAsJSON(): Promise<PlunderHistory | null> 
     };
 };
 
-export async function savePlayerAsUser(name: string) {
+export async function savePlayerAsUser(playerName: string) {
     try {
         await sequelize.transaction(async (transaction) => {
+            const name = encodeURIComponent(playerName);
             const user = await User.findOne({ where: { name }, transaction });
             if (isNotNull(user)) return;
-
             await User.create({ name }, { transaction });
         });
         
@@ -141,6 +109,8 @@ export async function savePlayerAsUser(name: string) {
         MainProcessError.capture(err);
     };
 };
+
+export type { setStoreState as SetStoreState };
 
 export {
     UserConfig,

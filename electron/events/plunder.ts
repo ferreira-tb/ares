@@ -12,7 +12,7 @@ import {
     PlunderConfig,
     plunderConfigStore,
     plunderHistoryStore,
-    getUserAlias
+    cacheStore
 } from '$interface/interface.js';
 
 export function setPlunderEvents() {
@@ -30,7 +30,7 @@ export function setPlunderEvents() {
             (plunderConfigStore as any)[key] = value;
             mainWindow.webContents.send('plunder-config-updated', key, value);
 
-            const userAlias = await getUserAlias();
+            const userAlias = cacheStore.userAlias;
             assertUserAlias(userAlias);
 
             await sequelize.transaction(async (transaction) => {
@@ -68,7 +68,7 @@ export function setPlunderEvents() {
                 plunderHistoryStore.total[key] += value;
             };
 
-            const userAlias = await getUserAlias();
+            const userAlias = cacheStore.userAlias;
             assertUserAlias(userAlias);
     
             await sequelize.transaction(async (transaction) => {

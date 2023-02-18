@@ -3,6 +3,7 @@ import { assertString } from '@tb-dev/ts-guard';
 import { deimosJs } from '$electron/utils/constants.js';
 import { MainProcessError } from '$electron/error.js';
 
+/** Retorna o conteúdo do arquivo `deimos.js`. */
 export async function readDeimosFile() {
     try {
         const deimos = await fs.readFile(deimosJs, 'utf8');

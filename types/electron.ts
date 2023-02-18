@@ -16,9 +16,9 @@ export interface BrowserStoreType extends TribalWarsGameData {
 };
 
 export interface CacheStoreType {
-    lastWorld: string | null;
-    lastPlayer: string | null;
-    lastUserAlias: UserAlias | null;
+    world: string | null;
+    player: string | null;
+    userAlias: UserAlias | null;
 };
 
 export interface PlunderStoreType extends PlunderInfo { };

@@ -2,7 +2,7 @@ import '@tb-dev/prototype';
 import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu/menu.js';
 import { sequelize } from '$electron/database/database.js';
-import { UserConfig, saveStoreState } from '$interface/interface.js';
+import { UserConfig } from '$interface/interface.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants.js';
 import { MainProcessError } from '$electron/error.js';
@@ -61,9 +61,6 @@ function createWindow() {
 };
 
 app.whenReady().then(() => createWindow());
-app.on('window-all-closed', async () => {
-    await saveStoreState();
-    app.quit();
-});
+app.on('window-all-closed', () => app.quit());
 
 sequelize.sync().catch(MainProcessError.capture);

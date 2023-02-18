@@ -28,18 +28,6 @@ class PlunderConfigStore implements PlunderConfigType {
     blindAttack: boolean = false;
     resourceRatio: number = 0.8;
     minutesUntilReload: number = 10;
-
-    public reset() {
-        this.active = false;
-        this.ignoreWall = false;
-        this.destroyWall = false;
-        this.groupAttack = false;
-        this.useC = false;
-        this.ignoreDelay = false;
-        this.blindAttack = false;
-        this.resourceRatio = 0.8;
-        this.minutesUntilReload = 10;
-    };
 };
 
 function setPlunderConfigStore() {
