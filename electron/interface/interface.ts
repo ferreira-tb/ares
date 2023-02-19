@@ -91,8 +91,7 @@ async function setAllPlunderStoresState(alias: UserAlias, panelWindow: BrowserWi
     // Histórico do assistente de saque.
     const plunderHistory = (await PlunderHistory.findByPk(alias))?.toJSON();
     if (isObject(plunderHistory)) {
-        type PlunderHistoryKeys = keyof PlunderHistoryType;
-        for (const [key, value] of Object.entries(plunderHistory) as [PlunderHistoryKeys, PlunderedAmount][]) {
+        for (const [key, value] of Object.entries(plunderHistory) as [keyof PlunderHistoryType, PlunderedAmount][]) {
             if (!isObject(value)) continue;
 
             for (const [innerKey, innerValue] of Object.entries(value) as [keyof PlunderedAmount, number][]) {
