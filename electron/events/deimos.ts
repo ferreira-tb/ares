@@ -28,7 +28,7 @@ export function setDeimosEvents() {
         };
 
         const panelWindow = assertPanelWindow();
-        panelWindow.webContents.send('update-game-data', gameData);
+        panelWindow.webContents.send('patch-panel-game-data', gameData);
     });
 
     // Recebe as informações referentes ao assistente de saque, salva-as localmente e então envia-as ao painel.
@@ -38,7 +38,7 @@ export function setDeimosEvents() {
         };
 
         const panelWindow = assertPanelWindow();
-        panelWindow.webContents.send('update-plunder-info', plunderInfo);
+        panelWindow.webContents.send('patch-panel-plunder-info', plunderInfo);
     });
 
     // Recebe as informações referentes às unidades da aldeia atual, salva-as localmente e então envia-as ao painel.
@@ -48,6 +48,6 @@ export function setDeimosEvents() {
         };
 
         const panelWindow = assertPanelWindow();
-        panelWindow.webContents.send('update-current-village-units', units);
+        panelWindow.webContents.send('patch-panel-current-village-units', units);
     });
 };

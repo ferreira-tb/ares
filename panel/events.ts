@@ -7,10 +7,9 @@ import { resources as resourceList } from '$global/utils/constants.js';
 import { PanelError } from '$panel/error.js';
 import type { Pinia } from 'pinia';
 import type { PlunderedResources } from '$lib/plunder/resources.js';
-import type { TribalWarsGameData } from '$deimos/models/data.js';
-import type { PlunderInfo } from '$deimos/models/plunder.js';
+import type { TribalWarsGameDataType, PlunderInfoType } from '$types/deimos.js';
 import type { UnitAmount } from '$types/game.js';
-import type { PlunderConfigType, PlunderHistoryType } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
 
 export function setPanelWindowEvents(pinia: Pinia) {
     const aresStore = useAresStore(pinia);
@@ -28,7 +27,7 @@ export function setPanelWindowEvents(pinia: Pinia) {
         };
     });
 
-    ipcRenderer.on('update-plundered-amount', (_e, resources: PlunderedResources) => {
+    ipcRenderer.on('patch-panel-plundered-amount', (_e, resources: PlunderedResources) => {
         try {
             if (plunderConfigStore.active === false) return;
         
@@ -44,9 +43,9 @@ export function setPanelWindowEvents(pinia: Pinia) {
         };
     });
 
-    ipcRenderer.on('update-game-data', (_e, data: TribalWarsGameData) => aresStore.$patch(data));
-    ipcRenderer.on('update-plunder-info', (_e, info: PlunderInfo) => plunderStore.$patch(info));
-    ipcRenderer.on('update-plunder-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
-    ipcRenderer.on('update-plunder-history', (_e, history: PlunderHistoryType['last']) => plunderHistoryStore.$patch(history));
-    ipcRenderer.on('update-current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
+    ipcRenderer.on('patch-panel-game-data', (_e, data: TribalWarsGameDataType) => aresStore.$patch(data));
+    ipcRenderer.on('patch-panel-plunder-info', (_e, info: PlunderInfoType) => plunderStore.$patch(info));
+    ipcRenderer.on('patch-panel-plunder-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
+    ipcRenderer.on('patch-panel-plunder-history', (_e, history: PlunderedAmount) => plunderHistoryStore.$patch(history));
+    ipcRenderer.on('patch-panel--current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
 };

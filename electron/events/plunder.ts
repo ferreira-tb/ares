@@ -55,7 +55,7 @@ export function setPlunderEvents() {
     ipcMain.on('update-plundered-amount', (_e, resources: PlunderedAmount) => {
         try {
             assertObject(resources, 'A quantidade de recursos é inválida.');
-            panelWindow.webContents.send('update-plundered-amount', resources);
+            panelWindow.webContents.send('patch-panel-plundered-amount', resources);
         } catch (err) {
             MainProcessError.catch(err);
         };
