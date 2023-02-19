@@ -198,7 +198,9 @@ async function setWorldUnitState(world: World) {
             });
         };
     
-        for (const [key, value] of Object.entries(worldUnit) as [keyof WorldUnitType, UnitDetails][]) {
+        for (const [key, value] of Object.entries(worldUnit) as [keyof WorldUnitType, UnitDetails | null][]) {
+            // Em mundos sem arqueiros, as propriedades `archer` e `marcher` são `null`.
+            if (!isObject(value)) continue;
             // A propriedade `id` existe no banco de dados, mas não no Proxy.
             if (!isKeyOf(key, worldUnitStore)) continue;
     
