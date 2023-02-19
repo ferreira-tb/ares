@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { computed, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
+import { isObject } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
-import { patchPlunderConfigStore, usePlunderConfigStore } from '$vue/stores/plunder.js';
+import { usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { filterTemplates, pickBestTemplate, queryTemplateData } from '$lib/plunder/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$lib/plunder/villages.js';
 import { queryAvailableUnits } from '$lib/plunder/units.js';
 import { PlunderedResources } from '$lib/plunder/resources.js';
 import { prepareAttack, eventTarget as attackEventTarget } from '$lib/plunder/attack.js';
-import { AresError } from '$global/error.js';
-import { ipcSend } from '$global/ipc.js';
+import { PlunderError } from '$browser/error.js';
+import { ipcSend, ipcInvoke } from '$global/ipc.js';
 
 const config = usePlunderConfigStore();
+const previousConfig = await ipcInvoke('get-plunder-config');
+if (isObject(previousConfig)) config.$patch(previousConfig);
 
 /** EventTarget interno do componente. */
 const eventTarget = new EventTarget();
@@ -34,9 +37,6 @@ const autoReloadMessage = computed(() => {
     const time = nextAutoReload.value.toLocaleTimeString('pt-br', { hour: '2-digit', minute: '2-digit' });
     return `A página será recarregada automaticamente em ${date} às ${time}`;
 });
-
-// Atualiza a store do Plunder com os valores salvos no armazenamento.
-await patchPlunderConfigStore();
 
 // Reune informações necessárias para o funcionamento do Plunder.
 queryTemplateData();
@@ -97,7 +97,7 @@ async function handleAttack(): Promise<void> {
                 .then(() => villagesInfo.delete(id))
                 .then(() => village.remove())
                 .then(() => handleAttack())
-                .catch((err: unknown) => AresError.capture(err));
+                .catch(PlunderError.catch);
 
         } else {
             // TODO: implementar ataque com modelos personalizados.

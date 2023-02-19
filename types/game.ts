@@ -1,3 +1,9 @@
+export type WorldLocale = 'br';
+export type World =
+    | `${WorldLocale}${string}` // Mundo padrão.
+    | `${WorldLocale}s${string}` // Rodada speed.
+    | `${WorldLocale}p${string}`; // Mundo casual.
+
 export type Resources = 'wood' | 'stone' | 'iron';
 export type ResourcesPTBR = 'Madeira' | 'Argila' | 'Ferro';
 export type ResourceAmount = { [key in Resources]: number };
@@ -27,7 +33,7 @@ export type AllUnits =
     | OtherUnits;
 
 export type FarmUnitsAmount = { [key in FarmUnits]: number };
-export type UnitsAmount = { [key in AllUnits]: number };
+export type UnitAmount = { [key in AllUnits]: number };
 export type UnitsAmountAsStrings = { [key in AllUnits]: string };
 
 export type GameScreen =
@@ -38,18 +44,6 @@ export type GameScreen =
     | 'overview_villages'
     | 'place'
     | 'report';
-
-export type XMLTags =
-    | 'speed'
-    | 'unit_speed'
-    | 'archer'
-    | `${AllUnits} speed`
-    | `${AllUnits} carry`;
-
-export type UnitDetails = {
-    speed: number;
-    carry: number;
-};
 
 export type Coords = {
     x: number;

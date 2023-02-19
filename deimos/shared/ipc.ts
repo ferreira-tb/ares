@@ -82,7 +82,7 @@ export class Deimos {
         window.addEventListener('message', (e: MessageEvent<Deimos>) => {
             if (e.data.channel === channel) {
                 Promise.resolve().then(() => listener(...e.data.message))
-                    .catch((err: unknown) => DeimosError.capture(err));
+                    .catch((err: unknown) => DeimosError.catch(err));
             };
         });
     };

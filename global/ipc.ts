@@ -1,8 +1,7 @@
 import { ipcRenderer } from 'electron';
-import type { PlunderConfigType, PlunderConfigValue } from '$types/plunder.js';
-import type { WorldData, UnitData } from '$panel/config.js';
+import type { PlunderConfigType } from '$types/plunder.js';
 import type { PlunderedResources } from '$lib/plunder/resources.js';
-import type { UnitsAmount } from '$types/game.js';
+import type { UnitAmount } from '$types/game.js';
 import type { PlunderedAmount } from '$types/plunder.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 import type { TribalWarsGameData } from '$deimos/models/data.js';
@@ -17,19 +16,13 @@ export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 
-// Mundo
-export async function ipcInvoke(channel: 'has-world-data', world: string): Promise<boolean>;
-export async function ipcInvoke(channel: 'has-unit-data', world: string): Promise<boolean>;
-export async function ipcInvoke(channel: 'set-world-data', world: string, data: WorldData): Promise<boolean>;
-export async function ipcInvoke(channel: 'set-unit-data', world: string, data: UnitData): Promise<boolean>;
-
 // Erros
 export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
 export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorLogType[] | null>;
 
 // Plunder
 export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-plunder-config'): Promise<PlunderConfigType | null>;
+export async function ipcInvoke(channel: 'get-plunder-config', world?: string): Promise<PlunderConfigType | null>;
 export async function ipcInvoke(channel: 'get-last-plundered-amount'): Promise<PlunderedAmount | null>;
 export async function ipcInvoke(channel: 'get-total-plundered-amount'): Promise<PlunderedAmount | null>;
 
@@ -54,14 +47,14 @@ export function ipcSend(channel: 'delete-error-log', id: number): void;
 export function ipcSend(channel: 'delete-dom-error-log', id: number): void;
 
 // Plunder
-export function ipcSend(channel: 'update-plunder-config', name: keyof PlunderConfigType, value: PlunderConfigValue): void;
+export function ipcSend(channel: 'update-plunder-config', plunderConfig: PlunderConfigType): void;
 export function ipcSend(channel: 'update-plundered-amount', resources: PlunderedResources): void;
 export function ipcSend(channel: 'save-plundered-amount', resources: PlunderedAmount): void;
 
 // Deimos
 export function ipcSend(channel: 'script-tag-is-ready'): void;
 export function ipcSend(channel: 'update-game-data', gameData: TribalWarsGameData): void;
-export function ipcSend(channel: 'update-current-village-units', units: UnitsAmount): void;
+export function ipcSend(channel: 'update-current-village-units', units: UnitAmount): void;
 export function ipcSend(channel: 'update-plunder-info', plunderInfo: PlunderInfo): void;
 
 export function ipcSend(channel: string, ...args: any[]) {

@@ -20,9 +20,6 @@
             "$global/*": [
                 "../global/*"
             ],
-            "$deimos/*": [
-                "../deimos/*"
-            ],
             "$stores/*": [
                 "./stores/*"
             ],

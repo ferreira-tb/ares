@@ -73,8 +73,8 @@ class PlunderHistoryStore implements PlunderHistoryType {
         }
     };
 
-    last: PlunderedAmount = new Proxy({ ...this.base }, this.handler);
-    total: PlunderedAmount = new Proxy({ ...this.base }, this.handler);
+    readonly last: PlunderedAmount = new Proxy({ ...this.base }, this.handler);
+    readonly total: PlunderedAmount = new Proxy({ ...this.base }, this.handler);
 };
 
 function setPlunderHistoryStore() {

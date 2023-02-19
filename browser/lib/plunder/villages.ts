@@ -3,7 +3,7 @@ import { assert, assertInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
 import { calcDistance } from '$global/utils/helpers.js';
 import { assertCoordsFromTextContent, parseGameDate } from '$global/utils/parser.js';
-import { AresError } from '$global/error.js';
+import { PlunderError } from '$browser/error.js';
 import { resources as resourceList } from '$global/utils/constants.js';
 import { useAresStore } from '$vue/stores/ares.js';
 import type { Coords } from '$types/game.js';
@@ -121,7 +121,7 @@ function queryLastAttack(row: Element, info: PlunderVillageInfo) {
         };
     };
 
-    throw new AresError('Não foi possível determinar a data do último ataque');
+    throw new PlunderError('Não foi possível determinar a data do último ataque');
 };
 
 /**

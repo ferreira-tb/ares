@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed, watch, toRaw } from 'vue';
 import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcSend } from '$global/ipc.js';
 import { Deimos } from '$deimos/shared/ipc.js';
@@ -10,25 +10,18 @@ import Resources from '$panel/components/Resources.vue';
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
 
-watch(() => config.ignoreWall, (value) => ipcSend('update-plunder-config', 'ignoreWall', value));
-watch(() => config.destroyWall, (value) => ipcSend('update-plunder-config', 'destroyWall', value));
-watch(() => config.groupAttack, (value) => ipcSend('update-plunder-config', 'groupAttack', value));
-watch(() => config.useC, (value) => ipcSend('update-plunder-config', 'useC', value));
-watch(() => config.ignoreDelay, (value) => ipcSend('update-plunder-config', 'ignoreDelay', value));
-watch(() => config.blindAttack, (value) => ipcSend('update-plunder-config', 'blindAttack', value));
+config.$subscribe(() => ipcSend('update-plunder-config', toRaw(config)));
 
 watch(() => config.active, (value) => {
-    ipcSend('update-plunder-config', 'active', value);
-    
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
     if (value === false) {
         // Se não ocorreu saque, não é necessário salvar as informações.
-        const currentHistoryState = history.getState();
+        const currentHistoryState = toRaw(history);
         if (Object.values(currentHistoryState).every((value) => value > 0))  {
             ipcSend('save-plundered-amount', currentHistoryState);
         };
 
-        history.resetState();
+        history.reset();
         Deimos.send('show-ui-success-message', 'O saque foi interrompido.');
     } else {
         Deimos.send('show-ui-success-message', 'O saque foi iniciado.');

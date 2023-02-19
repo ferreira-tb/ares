@@ -1,19 +1,23 @@
 import { isString } from '@tb-dev/ts-guard';
 import { generateUserAlias } from '$electron/utils/helpers.js';
-import { isUserAlias } from '$electron/utils/guards.js';
+import { isUserAlias, isWorld } from '$electron/utils/guards.js';
 import type { CacheStoreType, UserAlias } from '$types/electron.js';
-import type { SetStoreState } from '$interface/interface.js';
+import type { SetAliasStoreState, SetWorldStoreState } from '$interface/interface.js';
+import type { World } from '$types/game.js';
 
 class CacheStore implements CacheStoreType {
-    world: string | null = null;
+    world: World | null = null;
     player: string | null = null;
     userAlias: UserAlias | null = null;
 };
 
-function setCacheStore(setStoreState: typeof SetStoreState) {
+function setCacheStore(
+    setAliasStoreState: typeof SetAliasStoreState,
+    setWorldStoreState: typeof SetWorldStoreState
+) {
     return new Proxy(new CacheStore(), {
         set(target, key, value, receiver) {
-            if (value === null) return true;
+            if (!isString(value)) return true;
 
             // Obtém do target para que a trap "get" não seja acionada.
             const previousAlias = Reflect.get(target, 'userAlias') as UserAlias | null;
@@ -21,8 +25,13 @@ function setCacheStore(setStoreState: typeof SetStoreState) {
             const alias = Reflect.get(receiver, 'userAlias') as UserAlias | null;
 
             if (isUserAlias(alias) && alias !== previousAlias) {
-                setStoreState(alias);
+                setAliasStoreState(alias);
                 Reflect.set(target, 'userAlias', alias);
+            };
+
+            if (key === 'world' && isWorld(value)) {
+                const previousWorld = Reflect.get(target, 'world') as World | null;
+                if (value !== previousWorld) setWorldStoreState(value);
             };
 
             return Reflect.set(target, key, value);

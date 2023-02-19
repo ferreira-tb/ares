@@ -1,28 +1,8 @@
 import { assertString, isInteger } from '@tb-dev/ts-guard';
-import { AresError } from '$global/error.js';
-import type { XMLTags } from '$types/game.js';
 
 /** Calcula distância em campos entre duas coordenadas. */
 export function calcDistance(originX: number, originY: number, destX: number, destY: number) {
     return Math.sqrt(((destX - originX) ** 2) + ((destY - originY) ** 2));
-};
-
-/**
- * Retorna uma função que auxilia na análise dos documentos XML que contêm informações sobre o mundo.
- * @param xmlDocument Documento XML.
- * @param type Indica se o documento corresponde às configurações do mundo ou das unidades.
- */
-export function queryXMLTags(xmlDocument: XMLDocument, type: 'world' | 'unit') {
-    return function(tag: XMLTags): number {
-        const valueField = xmlDocument.querySelector(tag);
-        if (valueField === null) {
-            // Caso não exista campo para arqueiros, assume que o mundo não os possui.
-            if (type === 'unit' && /archer/.test(tag)) return 0;
-            throw new AresError(`O campo \"${tag}\" não foi encontrado no documento XML.`);
-        };
-
-        return valueField.parseFloatStrict();
-    };
 };
 
 /** Retorna o tempo de resposta do servidor. */

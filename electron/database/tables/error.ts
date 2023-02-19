@@ -2,12 +2,13 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database/database.js';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import type { ErrorLogType, DOMErrorLogType } from '$types/error.js';
+import type { World } from '$types/game.js';
 
 export class ErrorLog extends Model<InferAttributes<ErrorLog>, InferCreationAttributes<ErrorLog>> implements ErrorLogType {
     declare readonly id: CreationOptional<number>;
     declare readonly name: string;
     declare readonly message: string;
-    declare readonly world: string | null;
+    declare readonly world: World | null;
     declare readonly time: number;
     declare readonly ares: string;
     declare readonly electron: string;
@@ -65,7 +66,7 @@ export class DOMErrorLog extends Model<InferAttributes<DOMErrorLog>, InferCreati
     declare readonly id: CreationOptional<number>;
     declare readonly selector: string;
     declare readonly url: string;
-    declare readonly world: string | null;
+    declare readonly world: World | null;
     declare readonly time: number;
     declare readonly ares: string;
     declare readonly electron: string;

@@ -20,8 +20,6 @@ export type PlunderConfigType = {
     minutesUntilReload: number;
 };
 
-export type PlunderConfigValue = PlunderConfigType[keyof PlunderConfigType];
-
 export type PlunderHistoryType = {
     last: PlunderedAmount;
     total: PlunderedAmount;

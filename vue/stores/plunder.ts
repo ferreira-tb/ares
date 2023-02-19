@@ -1,8 +1,5 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { isObject } from '@tb-dev/ts-guard';
-import { ipcInvoke } from '$global/ipc.js';
-import type { PlunderedAmount } from '$types/plunder.js';
 
 export const usePlunderStore = defineStore('plunder', () => {
     /** Indica se as aldeias sob ataque estão ocultas. */
@@ -53,17 +50,7 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
     const attackAmount = ref<number>(0);
     const total = computed(() => wood.value + stone.value + iron.value);
 
-    function getState(): PlunderedAmount {
-        return {
-            wood: wood.value,
-            stone: stone.value,
-            iron: iron.value,
-            total: total.value,
-            attackAmount: attackAmount.value
-        };
-    };
-
-    function resetState() {
+    function reset() {
         wood.value = 0;
         stone.value = 0;
         iron.value = 0;
@@ -76,13 +63,6 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
         iron,
         total,
         attackAmount,
-        getState,
-        resetState
+        reset
     };
 });
-
-export async function patchPlunderConfigStore() {
-    const plunderConfigStore = usePlunderConfigStore();
-    const plunderState = await ipcInvoke('get-plunder-config');
-    if (isObject(plunderState)) plunderConfigStore.$patch(plunderState);
-};

@@ -1,25 +1,19 @@
 import { ipcSend } from '$global/ipc.js';
-import { DOMAssertionError } from '@tb-dev/ts-guard-dom';
 import type { ErrorLogBase, DOMErrorLogBase } from '$types/error.js';
 
 export class AresError extends Error {
-    override name = 'AresError';
-
     constructor(message: string) {
         super(message);
+        this.name = 'AresError';
     };
 
-    public static capture(err: unknown) {
-        if (err instanceof DOMAssertionError) {
-            ipcSend('set-dom-error-log', {
-                selector: err.message
-            } satisfies DOMErrorLogBase);
-            
-        } else if (err instanceof Error) {
-            ipcSend('set-error-log', {
-                name: err.name,
-                message: err.message
-            } satisfies ErrorLogBase);
+    public static catch(err: unknown) {
+        if (err instanceof Error) {
+            if (err.name === 'DOMAssertionError') {
+                ipcSend('set-dom-error-log', { selector: err.message } satisfies DOMErrorLogBase);
+            } else {
+                ipcSend('set-error-log', { name: err.name, message: err.message } satisfies ErrorLogBase);
+            };
         };
     };
 };

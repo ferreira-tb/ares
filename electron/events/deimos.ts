@@ -2,9 +2,8 @@ import { ipcMain } from 'electron';
 import { readDeimosFile } from '$electron/app/deimos.js';
 import { browserStore, plunderStore, unitStore } from '$interface/interface.js';
 import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
-import type { TribalWarsGameData } from '$deimos/models/data.js';
-import type { PlunderInfo } from '$deimos/models/plunder.js';
-import type { UnitsAmount } from '$types/game.js';
+import type { TribalWarsGameDataType, PlunderInfoType } from '$types/deimos.js';
+import type { UnitAmount } from '$types/game.js';
 
 export function setDeimosEvents() {
     /** Conteúdo do arquivo `deimos.js`. */
@@ -23,9 +22,9 @@ export function setDeimosEvents() {
     });
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
-    ipcMain.on('update-game-data', (_e, gameData: TribalWarsGameData) => {
+    ipcMain.on('update-game-data', (_e, gameData: TribalWarsGameDataType) => {
         for (const [key, value] of Object.entries(gameData)) {
-            browserStore[key as keyof TribalWarsGameData] = value;
+            browserStore[key as keyof TribalWarsGameDataType] = value;
         };
 
         const panelWindow = assertPanelWindow();
@@ -33,7 +32,7 @@ export function setDeimosEvents() {
     });
 
     // Recebe as informações referentes ao assistente de saque, salva-as localmente e então envia-as ao painel.
-    ipcMain.on('update-plunder-info', (_e, plunderInfo: PlunderInfo) => {
+    ipcMain.on('update-plunder-info', (_e, plunderInfo: PlunderInfoType) => {
         for (const [key, value] of Object.entries(plunderInfo)) {
             (plunderStore as any)[key] = value;
         };
@@ -43,9 +42,9 @@ export function setDeimosEvents() {
     });
 
     // Recebe as informações referentes às unidades da aldeia atual, salva-as localmente e então envia-as ao painel.
-    ipcMain.on('update-current-village-units', (_e, units: UnitsAmount) => {
+    ipcMain.on('update-current-village-units', (_e, units: UnitAmount) => {
         for (const [key, value] of Object.entries(units)) {
-            unitStore[key as keyof UnitsAmount] = value;
+            unitStore[key as keyof UnitAmount] = value;
         };
 
         const panelWindow = assertPanelWindow();

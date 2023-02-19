@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { UnitsAmount } from '$types/game.js';
+import type { UnitAmount } from '$types/game.js';
 
 /** Unidades na aldeia atual. */
 export const useUnitStore = defineStore('unit', () => {
@@ -18,7 +18,7 @@ export const useUnitStore = defineStore('unit', () => {
     const snob = ref<number>(0);
     const militia = ref<number>(0);
 
-    function toRaw(): UnitsAmount {
+    function toRaw(): UnitAmount {
         return {
             spear: spear.value,
             sword: sword.value,

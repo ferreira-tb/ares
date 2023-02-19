@@ -34,7 +34,7 @@ export function setEvents() {
         try {
             await mainWindow.webContents.insertCSS(browserStyle);
         } catch (err) {
-            MainProcessError.capture(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -46,7 +46,7 @@ export function setEvents() {
             if (/\.?tb\.dev\.br/.test(origin)) return;
             e.preventDefault();
         } catch (err) {
-            MainProcessError.capture(err);
+            MainProcessError.catch(err);
         };
     });
 

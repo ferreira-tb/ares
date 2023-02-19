@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '$electron/database/database.js';
+import { sequelize } from '$database/database.js';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { PlunderConfigType, PlunderHistoryType, PlunderedAmount } from '$types/plunder.js';
 import type { UserAlias } from '$types/electron.js';

@@ -1,7 +1,7 @@
 import '@tb-dev/prototype';
 import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu/menu.js';
-import { sequelize } from '$electron/database/database.js';
+import { sequelize } from '$database/database.js';
 import { UserConfig } from '$interface/interface.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants.js';
@@ -63,4 +63,4 @@ function createWindow() {
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
 
-sequelize.sync().catch(MainProcessError.capture);
+sequelize.sync().catch(MainProcessError.catch);

@@ -1,3 +1,5 @@
+import type { World } from '$types/game.js';
+
 export type ErrorLogBase = {
     readonly name: string;
     readonly message: string;
@@ -5,7 +7,7 @@ export type ErrorLogBase = {
 
 export interface ErrorLogType extends ErrorLogBase {
     readonly id: number;
-    readonly world: string | null;
+    readonly world: World | null;
     readonly time: number;
     readonly ares: string;
     readonly electron: string;
@@ -21,7 +23,7 @@ export type DOMErrorLogBase = {
 export interface DOMErrorLogType extends DOMErrorLogBase {
     readonly id: number;
     readonly url: string;
-    readonly world: string | null;
+    readonly world: World | null;
     readonly time: number;
     readonly ares: string;
     readonly electron: string;

@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '$electron/database/database.js';
+import { sequelize } from '$database/database.js';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {

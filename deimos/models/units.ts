@@ -1,7 +1,7 @@
 import { assertString, toCustom, isString } from '@tb-dev/ts-guard';
-import type { UnitsAmount, UnitsAmountAsStrings } from '$types/game.js';
+import type { UnitAmount, UnitsAmountAsStrings } from '$types/game.js';
 
-export class Units implements UnitsAmount {
+export class Units implements UnitAmount {
     public readonly spear: number;
     public readonly sword: number;
     public readonly axe: number;
