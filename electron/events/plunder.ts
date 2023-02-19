@@ -1,83 +1,135 @@
 import { ipcMain } from 'electron';
-import { assertInteger, assertString } from '@tb-dev/ts-guard';
-import { plunderConfigStore } from '$electron/electron-store/plunder.js';
+import { assertObject, assertPositiveInteger, isObject, isKeyOf } from '@tb-dev/ts-guard';
 import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
-import { browserStore } from '$electron/stores/browser';
+import { assertUserAlias } from '$electron/utils/guards.js';
+import { sequelize } from '$database/database.js';
+import { MainProcessError } from '$electron/error.js';
+import { isUserAlias } from '$electron/utils/guards.js';
+import type { PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
+
+import {
+    PlunderHistory,
+    PlunderConfig,
+    plunderConfigStore,
+    plunderHistoryStore,
+    cacheStore
+} from '$interface/interface.js';
 
 export function setPlunderEvents() {
     const mainWindow = assertMainWindow();
     const panelWindow = assertPanelWindow();
 
-    // Verifica se o Plunder está ativo ou não.
-    ipcMain.handle('is-plunder-active', (_e, world?: string) => {
-        world ??= browserStore.currentWorld ?? '';
-        return plunderConfigStore.get(`plunder-state.${world}.status`, false);
-    });
+    ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
+    ipcMain.handle('get-plunder-config', () => ({ ...plunderConfigStore }));
 
-    // Obtém o estado atual do Plunder.
-    ipcMain.handle('get-plunder-config', (_e, world?: string) => {
-        world ??= browserStore.currentWorld ?? '';
-        return plunderConfigStore.get(`plunder-state.${world}`, null);
-    });
+    ipcMain.on('update-plunder-config', async (_e, plunderConfig: PlunderConfigType) => {
+        try {
+            for (const [key, value] of Object.entries(plunderConfig)) {
+                if (!isKeyOf(key, plunderConfigStore)) continue;
 
-    // Salva o estado do Plunder.
-    ipcMain.on('set-plunder-config', (_e, stateName: unknown, value: unknown, world?: string) => {
-        world ??= browserStore.currentWorld ?? '';
-        assertString(stateName, 'O nome do estado é inválido.');
-        
-        plunderConfigStore.set(`plunder-state.${world}.${stateName}`, value);
-        mainWindow.webContents.send('plunder-state-update', stateName, value);
+                const previousValue = Reflect.get(plunderConfigStore, key);
+                if (previousValue === value) continue;
+                
+                // A confirmação dos tipos é feita no Proxy.
+                Reflect.set(plunderConfigStore, key, value);
+                mainWindow.webContents.send('plunder-config-updated', key, value);
+            };
+
+            const userAlias = cacheStore.userAlias;
+            assertUserAlias(userAlias);
+
+            await sequelize.transaction(async (transaction) => {
+                await PlunderConfig.upsert({
+                    id: userAlias,
+                    ...plunderConfigStore
+                }, { transaction });
+            });
+
+        } catch (err) {
+            MainProcessError.catch(err);
+        };
     });
 
     // Emitido pelo browser após cada ataque realizado pelo Plunder.
     // Atualiza a quantidade de recursos saqueados no painel.
-    ipcMain.on('update-plundered-amount', (_e, resources: unknown) => {
-        if (resources) panelWindow.webContents.send('update-plundered-amount', resources);
+    ipcMain.on('update-plundered-amount', (_e, resources: PlunderedAmount) => {
+        try {
+            assertObject(resources, 'A quantidade de recursos é inválida.');
+            panelWindow.webContents.send('patch-panel-plundered-amount', resources);
+        } catch (err) {
+            MainProcessError.catch(err);
+        };
     });
 
     // Emitido pelo browser quando o Plunder é desativado.
     // Salva a quantidade de recursos saqueados durante a última execução do Plunder.
-    ipcMain.on('save-plundered-amount', (_e, resources: unknown, world?: string) => {
-        world ??= browserStore.currentWorld ?? '';
+    ipcMain.on('save-plundered-amount', async (_e, resources: PlunderedAmount) => {
+        try {
+            assertObject(resources, 'A quantidade de recursos é inválida.');
 
-        const plundered = new PlunderedAmount(resources);
-        plunderConfigStore.set(`history.${world}.last`, plundered);
+            for (const [key, value] of Object.entries(resources) as [keyof PlunderedAmount, number][]) {
+                assertPositiveInteger(value, 'A quantidade de recursos é inválida.');
+                plunderHistoryStore.last[key] = value;
+                plunderHistoryStore.total[key] += value;
+            };
 
-        const totalPlundered = plunderConfigStore.get(`history.${world}.total`, null);
-        if (totalPlundered) PlunderedAmount.sum(plundered, totalPlundered);
-        
-        plunderConfigStore.set(`history.${world}.total`, plundered);
+            const userAlias = cacheStore.userAlias;
+            assertUserAlias(userAlias);
+    
+            await sequelize.transaction(async (transaction) => {
+                await PlunderHistory.upsert({
+                    id: userAlias,
+                    last: { ...plunderHistoryStore.last },
+                    total: { ...plunderHistoryStore.total }
+                }, { transaction });
+            });
+            
+        } catch (err) {
+            MainProcessError.catch(err);
+        };
     });
 
     // Obtém a quantidade de recursos saqueados durante a última execução do Plunder.
-    ipcMain.handle('get-last-plundered-amount', (_e, world?: string) => {
-        world ??= browserStore.currentWorld ?? '';
-        return plunderConfigStore.get(`history.${world}.last`, null);
+    ipcMain.handle('get-last-plundered-amount', async () => {
+        try {
+            const history = await getPlunderHistoryAsJSON();
+            assertObject(history, 'Não foi possível obter a quantidade de recursos saqueados.');
+            return history.last;
+        } catch (err) {
+            MainProcessError.catch(err);
+            return null;
+        };
     });
 
     // Obtém a quantidade total de recursos saqueados em determinado mundo.
-    ipcMain.handle('get-total-plundered-amount', (_e, world?: string) => {
-        world ??= browserStore.currentWorld ?? '';
-        return plunderConfigStore.get(`history.${world}.total`, null);
+    ipcMain.handle('get-total-plundered-amount', async () => {
+        try {
+            const history = await getPlunderHistoryAsJSON();
+            assertObject(history, 'Não foi possível obter a quantidade total de recursos saqueados.');
+            return history.total;
+        } catch (err) {
+            MainProcessError.catch(err);
+            return null;
+        };
     });
 };
 
-class PlunderedAmount {
-    wood = 0;
-    stone = 0;
-    iron = 0;
-    total = 0;
-    attackAmount = 0;
+async function getPlunderHistoryAsJSON(): Promise<PlunderHistory | null> {
+    try {
+        const result = await sequelize.transaction(async (transaction) => {
+            const userAlias = cacheStore.userAlias;
+            if (!isUserAlias(userAlias)) return null;
+            
+            const plunderHistory = await PlunderHistory.findByPk(userAlias, { transaction });
+            if (!isObject(plunderHistory)) return null;
 
-    constructor(resources: unknown) {
-        PlunderedAmount.sum(this, resources);
-    };
+            return plunderHistory.toJSON();
+        });
 
-    // TODO: ISSO PRECISA SER REFEITO!!!
-    public static sum(base: PlunderedAmount, resources: unknown) {
-        for (const key of Object.keys(base) as (keyof PlunderedAmount)[]) {
-            assertInteger((resources as PlunderedAmount)[key], 'A quantidade de um dos recursos é inválida.');
-            base[key] += (resources as PlunderedAmount)[key];
-        };
+        return result as PlunderHistory | null;
+
+    } catch (err) {
+        MainProcessError.catch(err);
+        return null;
     };
 };

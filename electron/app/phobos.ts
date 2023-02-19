@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import { BrowserView, type WebPreferences } from 'electron';
-import { assertString, assertInstanceOf } from '@tb-dev/ts-guard';
+import { assertString, assertInstanceOf, isInstanceOf } from '@tb-dev/ts-guard';
 import { assertMainWindow } from '$electron/utils/helpers.js';
 import { phobosJs } from '$electron/utils/constants.js';
 import type { PhobosNames, PhobosOptions } from '$types/phobos.js';
@@ -20,7 +20,7 @@ const activePhobos = new Map<PhobosNames, BrowserView>();
  * @param options Opções que determinam o comportamento do `BrowserView`.
  * É possível passar um objeto `WebPreferences` com uma das opções.
  */
-export async function createPhobos(name: PhobosNames, url: URL, options?: PhobosOptions) {
+export async function createPhobos(name: PhobosNames, url: URL, options?: PhobosOptions): Promise<BrowserView> {
     assertString(name, 'Nome inválido.');
     assertInstanceOf(url, URL, 'URL inválida');
 
@@ -66,4 +66,38 @@ export async function createPhobos(name: PhobosNames, url: URL, options?: Phobos
     await phobos.webContents.loadURL(url.href);
 
     return phobos;
+};
+
+export function getPhobosByName(name: PhobosNames) {
+    return activePhobos.get(name);
+};
+
+export function destroyPhobos(phobos: BrowserView) {
+    assertInstanceOf(phobos, BrowserView, 'O objeto não é um BrowserView.');
+    const mainWindow = assertMainWindow();
+    mainWindow.removeBrowserView(phobos);
+    for (const [name, view] of activePhobos) {
+        if (view === phobos) {
+            activePhobos.delete(name);
+            break;
+        };
+    };
+};
+
+export function destroyPhobosByName(name: PhobosNames) {
+    assertString(name, `${name} não é um nome válido para um Phobos.`);
+    const phobos = activePhobos.get(name);
+    if (isInstanceOf(phobos, BrowserView)) {
+        const mainWindow = assertMainWindow();
+        mainWindow.removeBrowserView(phobos);
+        activePhobos.delete(name);
+    };
+};
+
+export function destroyAllPhobos() {
+    const mainWindow = assertMainWindow();
+    for (const phobos of activePhobos.values()) {
+        mainWindow.removeBrowserView(phobos);
+    };
+    activePhobos.clear();
 };

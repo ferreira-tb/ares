@@ -3,7 +3,7 @@ import { assertString } from '@tb-dev/ts-guard';
 import { Deimos } from '$deimos/shared/ipc.js';
 import { useAresStore } from '$vue/stores/ares.js';
 import { ipcSend } from '$global/ipc.js';
-import { AresError } from '$global/error.js';
+import { BrowserError } from '$browser/error.js';
 import { setDevEvents } from '$browser/events/dev.js';
 import { setPlunderEvents } from '$browser/events/plunder.js';
 import type { Pinia } from 'pinia';
@@ -17,7 +17,7 @@ export function setBrowserEvents(pinia: Pinia) {
             assertString(url, 'A URL é inválida.');
             aresStore.currentURL = url;
         } catch (err) {
-            AresError.capture(err);
+            BrowserError.catch(err);
         };
     });
     
@@ -30,7 +30,7 @@ export function setBrowserEvents(pinia: Pinia) {
             ipcSend('update-game-data', gameData);
 
         } catch (err) {
-            AresError.capture(err);
+            BrowserError.catch(err);
         };
     });
 

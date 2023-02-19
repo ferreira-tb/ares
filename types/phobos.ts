@@ -11,6 +11,10 @@ export interface PhobosOptions extends BrowserViewConstructorOptions {
      * Ela SEMPRE será alterada caso sua origem for diferente da URL passada ao Phobos.
      */
     overrideUrl?: boolean;
-}
+};
 
-export type PhobosNames = '';
+export type PhobosNames = 'fetch-world-config' | 'fetch-world-unit';
+
+export interface PhobosPortMessage extends Record<string, any> {
+    channel: PhobosNames;
+};

@@ -1,11 +1,10 @@
 export class MainProcessError extends Error {
-    override readonly name = 'MainProcessError';
-
     constructor(message: string) {
         super(message);
+        this.name = 'MainProcessError';
     };
 
-    public static capture(err: unknown) {
+    public static async catch(err: unknown) {
         if (err instanceof Error) console.error(err);
     };
 };

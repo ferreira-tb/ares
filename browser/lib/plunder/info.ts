@@ -1,6 +1,6 @@
 import { assertObject } from '@tb-dev/ts-guard';
 import { Deimos } from '$deimos/shared/ipc.js';
-import { AresError } from '$global/error.js';
+import { PlunderError } from '$browser/error.js';
 import { usePlunderStore } from '$vue/stores/plunder.js';
 import { ipcSend } from '$global/ipc.js';
 
@@ -14,6 +14,6 @@ export async function getPlunderInfo() {
         
         ipcSend('update-plunder-info', plunderInfo);
     } catch (err) {
-        AresError.capture(err);
+        PlunderError.catch(err);
     };
 };

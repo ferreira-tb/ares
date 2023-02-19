@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { gameURL } from '$global/utils/constants.js';
+import type { World } from '$types/game.js';
 
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export const useAresStore = defineStore('ares', () => {
@@ -8,7 +9,7 @@ export const useAresStore = defineStore('ares', () => {
     const currentURL = ref<string>(gameURL);
 
     /** Mundo atual. */
-    const currentWorld = ref<string | null>(null);
+    const currentWorld = ref<World | null>(null);
     /** Versão do Tribal Wars. */
     const majorVersion = ref<string | null>(null);
     /** Jogador logado no momento. */

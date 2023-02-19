@@ -41,7 +41,8 @@ export default [
             commonjs(),
             json(),
             typescript({ tsconfig: 'deimos/tsconfig.json' })
-        ]
+        ],
+        external: ['electron']
     },
     {
         input: 'phobos/index.ts',

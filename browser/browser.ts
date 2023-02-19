@@ -5,7 +5,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '$browser/router/router.js';
 import { setBrowserEvents } from '$browser/events/index.js';
-import { AresError } from '$global/error.js';
+import { BrowserError } from '$browser/error.js';
 import Browser from '$browser/Browser.vue';
 
 const app = createApp(Browser);
@@ -16,7 +16,7 @@ app.use(pinia);
 app.use(router);
 
 // Error handler.
-app.config.errorHandler = AresError.capture;
+app.config.errorHandler = BrowserError.catch;
 
 // Eventos.
 setBrowserEvents(pinia);

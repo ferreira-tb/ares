@@ -7,7 +7,7 @@ import { createPinia } from 'pinia';
 import { createVuetify } from 'vuetify';
 import { router } from '$panel/router/router.js';
 import { setPanelWindowEvents } from '$panel/events.js';
-import { AresError } from '$global/error.js';
+import { PanelError } from '$panel/error.js';
 import Panel from '$panel/Panel.vue';
 
 const panel = createApp(Panel);
@@ -33,7 +33,7 @@ panel.use(router);
 panel.use(vuetify);
 
 // Error handler.
-panel.config.errorHandler = AresError.capture;
+panel.config.errorHandler = PanelError.catch;
 
 // Eventos.
 setPanelWindowEvents(pinia);

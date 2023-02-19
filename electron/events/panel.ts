@@ -1,4 +1,4 @@
-import { UserConfig } from '$tables/config.js';
+import { UserConfig } from '$interface/interface.js';
 import { assertPanelWindow } from '$electron/utils/helpers.js';
 
 export function setPanelEvents() {

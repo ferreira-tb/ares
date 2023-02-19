@@ -4,8 +4,7 @@ import { Op } from 'sequelize';
 import { assertInteger, assertString, isInstanceOf } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
 import { sequelize } from '$electron/database/database.js';
-import { ErrorLog, DOMErrorLog } from '$tables/error.js';
-import { browserStore } from '$electron/stores/browser.js';
+import { ErrorLog, DOMErrorLog, browserStore } from '$interface/interface.js';
 import { getActiveModule } from '$electron/app/modules.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 
@@ -18,6 +17,7 @@ export function setErrorEvents() {
             const errorLog: Omit<ErrorLogType, 'id' | 'pending'> = {
                 name: err.name,
                 message: err.message,
+                world: browserStore.currentWorld,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
@@ -34,7 +34,7 @@ export function setErrorEvents() {
             });
 
         } catch (err) {
-            MainProcessError.capture(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -46,7 +46,7 @@ export function setErrorEvents() {
             });
 
         } catch (err) {
-            MainProcessError.capture(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -62,7 +62,7 @@ export function setErrorEvents() {
             return result;
 
         } catch (err) {
-            MainProcessError.capture(err);
+            MainProcessError.catch(err);
             return null;
         };
     });
@@ -91,7 +91,7 @@ export function setErrorEvents() {
             });
 
         } catch (err) {
-            MainProcessError.capture(err);
+            MainProcessError.catch(err);
         }; 
     });
 
@@ -103,7 +103,7 @@ export function setErrorEvents() {
             });
             
         } catch (err) {
-            MainProcessError.capture(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -119,7 +119,7 @@ export function setErrorEvents() {
             return result;
 
         } catch (err) {
-            MainProcessError.capture(err);
+            MainProcessError.catch(err);
             return null;
         };
     });

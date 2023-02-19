@@ -1,6 +1,7 @@
-import type { UnitsAmount } from '$types/game.js';
+import { assertInteger, isKeyOf } from '@tb-dev/ts-guard';
+import type { UnitAmount } from '$types/game.js';
 
-class UnitStore implements UnitsAmount {
+class UnitStore implements UnitAmount {
     archer: number = 0;
     axe: number = 0;
     light: number = 0;
@@ -16,4 +17,15 @@ class UnitStore implements UnitsAmount {
     militia: number = 0;
 };
 
-export const unitStore = new Proxy(new UnitStore(), { });
+function setUnitStore() {
+    return new Proxy(new UnitStore(), {
+        set(target, key, value) {
+            if (!isKeyOf(key, target)) return false;
+            assertInteger(value, 'Valor não é um inteiro.');
+            return Reflect.set(target, key, value);
+        }
+    });
+};
+
+export type { UnitStore };
+export { setUnitStore };

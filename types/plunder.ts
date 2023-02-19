@@ -1,26 +1,29 @@
-export type PlunderState = {
-    /** Indica se o Ares está ativado. */
+export type PlunderConfigType = {
+    /** Indica se o Plunder está ativado. */
     active: boolean;
-    /** Determina se o Ares deve atacar aldeias com muralha. */
+    /** Determina se o Plunder deve atacar aldeias com muralha. */
     ignoreWall: boolean;
-    /** Determina se o Ares deve demolir a muralha das aldeias. */
+    /** Determina se o Plunder deve demolir a muralha das aldeias. */
     destroyWall: boolean;
-    /** Determina se o Ares deve utilizar o grupo Insidious ao atacar. */
+    /** Determina se o Plunder deve utilizar o grupo Insidious ao atacar. */
     groupAttack: boolean;
-    /** Determina se o Ares deve atacar usando o modelo C. */
+    /** Determina se o Plunder deve atacar usando o modelo C. */
     useC: boolean;
-    /** Se ativado, o Ares não terá delay entre os ataques. */
+    /** Se ativado, o Plunder não terá delay entre os ataques. */
     ignoreDelay: boolean;
-    /** Se ativado, o Ares não levará em consideração as informações dos exploradores. */
+    /** Se ativado, o Plunder não levará em consideração as informações dos exploradores. */
     blindAttack: boolean;
 
-    /** Razão de recursos que o Ares deve levar em consideração. */
+    /** Razão de recursos que o Plunder deve levar em consideração. */
     resourceRatio: number;
     /** Minutos até que a página seja recarregada automaticamente. */
     minutesUntilReload: number;
 };
 
-export type PlunderStateValue = PlunderState[keyof PlunderState];
+export type PlunderHistoryType = {
+    last: PlunderedAmount;
+    total: PlunderedAmount;
+};
 
 export type PlunderTableButtons = {
     /** Botão A do assistente de saque. */
@@ -42,4 +45,12 @@ export type PlunderTableResources = {
     iron: number;
     /** Total de recursos que se espera ter na aldeia. */
     total: number;
+};
+
+export type PlunderedAmount = {
+    wood: number;
+    stone: number;
+    iron: number;
+    total: number;
+    attackAmount: number;
 };

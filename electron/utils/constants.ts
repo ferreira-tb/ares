@@ -1,5 +1,6 @@
 import { join, resolve } from 'path';
 import type { MenuItemConstructorOptions } from 'electron';
+import type { World } from '$types/game.js';
 
 // URL
 export const aresURL = 'https://tb.dev.br/ares';
@@ -8,6 +9,9 @@ export const authorURL = 'https://github.com/ferreira-tb';
 export const repoURL = 'https://github.com/ferreira-tb/ares';
 export const issuesURL = 'https://github.com/ferreira-tb/ares/issues';
 export const discordURL = 'https://discord.gg/tNQbrqbmdK';
+
+export const worldConfigURL = (world: World) => `https://${world}.tribalwars.com.br/interface.php?func=get_config`;
+export const worldUnitURL = (world: World) => `https://${world}.tribalwars.com.br/interface.php?func=get_unit_info`;
 
 // Arquivos
 export const favicon = resolve(__dirname, '../public/favicon.ico');
@@ -23,3 +27,7 @@ export const devOptions: MenuItemConstructorOptions[] = [
     { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', role: 'forceReload' },
     { label: 'Inspecionar', accelerator: 'F1', role: 'toggleDevTools' }
 ];
+
+// Regex.
+export const worldRegex = /^br([sp](?![sp]))*\d+$/;
+export const aliasRegex = /^[a-z]+\d+__USERID__/;

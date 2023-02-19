@@ -1,8 +1,15 @@
+import { isString, isNotNull } from '@tb-dev/ts-guard';
+import { MainProcessError } from '$electron/error.js';
+import { isWorld } from '$electron/utils/guards.js';
+import { sequelize } from '$database/database.js';
+import type { CacheStore } from '$stores/cache.js';
 import type { BrowserStoreType } from '$types/electron.js';
+import type { User as UserTable } from '$tables/user.js';
+import type { World } from '$types/game.js';
 
 class BrowserStore implements BrowserStoreType {
     majorVersion: string | null = null;
-    currentWorld: string | null = null;
+    currentWorld: World | null = null;
     currentPlayer: string | null = null;
     currentPlayerId: number | null = null;
     currentPlayerPoints: number | null = null;
@@ -32,19 +39,49 @@ class BrowserStore implements BrowserStoreType {
     currentVillageMaxStorage: number | null = null;
 };
 
-export const browserStore = new Proxy(new BrowserStore(), {
-    get(target, prop) {
-        switch (prop) {
-            case 'currentCoords':
-                return [target.currentX, target.currentY];
-            case 'currentVillageTotalResources':
-                const wood = target.currentVillageWood;
-                const stone = target.currentVillageStone;
-                const iron = target.currentVillageIron;
-                if (wood === null || stone === null || iron === null) return null;
-                return wood + stone + iron;
-            default:
-                return Reflect.get(target, prop);
-        };
-    }
-});
+function setBrowserStore(cacheStore: CacheStore, User: typeof UserTable) {
+    return new Proxy(new BrowserStore(), {
+        get(target, key) {
+            switch (key) {
+                case 'currentCoords':
+                    return [target.currentX, target.currentY];
+                case 'currentVillageTotalResources':
+                    const wood = target.currentVillageWood;
+                    const stone = target.currentVillageStone;
+                    const iron = target.currentVillageIron;
+                    if (wood === null || stone === null || iron === null) return null;
+                    return wood + stone + iron;
+                default:
+                    return Reflect.get(target, key);
+            };
+        },
+        set(target, key, value) {
+            if (key === 'currentWorld' && isWorld(value)) {
+                cacheStore.world = value;
+            } else if (key === 'currentPlayer' && isString(value)) {
+                const previous = Reflect.get(target, key);
+                if (previous !== value) savePlayerAsUser(value, User);
+                cacheStore.player = value;
+            };
+    
+            return Reflect.set(target, key, value);
+        }
+    });
+};
+
+async function savePlayerAsUser(playerName: string, User: typeof UserTable) {
+    try {
+        await sequelize.transaction(async (transaction) => {
+            const name = encodeURIComponent(playerName);
+            const user = await User.findOne({ where: { name }, transaction });
+            if (isNotNull(user)) return;
+            await User.create({ name }, { transaction });
+        });
+        
+    } catch (err) {
+        MainProcessError.catch(err);
+    };
+};
+
+export type { BrowserStore };
+export { setBrowserStore };

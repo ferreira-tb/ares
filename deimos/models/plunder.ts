@@ -1,12 +1,9 @@
 import { assertBoolean, assertInteger } from '@tb-dev/ts-guard';
-import type { RawPlunderInfo } from '$types/deimos.js';
+import type { RawPlunderInfo, PlunderInfoType } from '$types/deimos.js';
 
-export class PlunderInfo {
-    /** Indica se as aldeias sob ataque estão ocultas. */
+export class PlunderInfo implements PlunderInfoType {
     public readonly hideAttacked: boolean;
-    /** Página atual. */
     public readonly page: number;
-    /** Quantidade de aldeias por página. */
     public readonly pageSize: number;
     public readonly plunderExhausted: boolean;
 

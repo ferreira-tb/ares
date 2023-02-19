@@ -10,3 +10,6 @@ export const farmUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'ma
 export const allUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'marcher', 'heavy', 'ram', 'catapult', 'knight', 'snob', 'militia'] as const;
 
 export const months = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'] as const;
+
+// Regex.
+export const worldRegex = /^br([sp](?![sp]))*\d+$/;
