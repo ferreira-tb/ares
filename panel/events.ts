@@ -47,5 +47,5 @@ export function setPanelWindowEvents(pinia: Pinia) {
     ipcRenderer.on('patch-panel-plunder-info', (_e, info: PlunderInfoType) => plunderStore.$patch(info));
     ipcRenderer.on('patch-panel-plunder-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
     ipcRenderer.on('patch-panel-plunder-history', (_e, history: PlunderedAmount) => plunderHistoryStore.$patch(history));
-    ipcRenderer.on('patch-panel--current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
+    ipcRenderer.on('patch-panel-current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
 };
