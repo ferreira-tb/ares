@@ -1,7 +1,8 @@
 import { BrowserWindow, Menu, MenuItem, type MenuItemConstructorOptions } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
 import { devOptions } from '$electron/utils/constants.js';
-import { assertMainWindow } from '$electron/utils/helpers.js';
+import { getMainWindow } from '$electron/utils/helpers.js';
+import { MainProcessError } from '$electron/error.js';
 
 /**
  * Adiciona um menu básico à janela, com opções para inspeção e atualização da página.
@@ -22,11 +23,12 @@ export function setBrowserDevMenu(menu: Menu) {
     if (process.env.ARES_MODE !== 'dev') return;
     assertInstanceOf(menu, Menu, 'O item não é um menu.');
 
-    const mainWindow = assertMainWindow();
+    const mainWindow = getMainWindow();
 
     const errorMenu: MenuItemConstructorOptions[] = [
         { label: 'Emitir erro', click: () => mainWindow.webContents.send('emit-mock-error') },
-        { label: 'Emitir erro de DOM', click: () => mainWindow.webContents.send('emit-mock-dom-error') }
+        { label: 'Emitir erro de DOM', click: () => mainWindow.webContents.send('emit-mock-dom-error') },
+        { label: 'Emitir erro no núcleo', click: () => emitMockMainProcessError() }
     ];
 
     const devMenu: MenuItemConstructorOptions[] = [
@@ -45,4 +47,10 @@ export function setPanelDevMenu(menu: Menu) {
 
     const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu: devOptions });
     menu.append(menuItem);
+};
+
+/** Emite um erro falso no processo principal para fins de teste. */
+function emitMockMainProcessError() {
+    const error = new MainProcessError('Isso é um teste.');
+    MainProcessError.catch(error);
 };

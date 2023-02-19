@@ -1,8 +1,8 @@
 import { UserConfig } from '$interface/interface.js';
-import { assertPanelWindow } from '$electron/utils/helpers.js';
+import { getPanelWindow } from '$electron/utils/helpers.js';
 
 export function setPanelEvents() {
-    const panelWindow = assertPanelWindow();
+    const panelWindow = getPanelWindow();
 
     panelWindow.on('moved', async () => {
         const rectangle = panelWindow.getBounds();

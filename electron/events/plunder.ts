@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { assertObject, assertPositiveInteger, isObject, isKeyOf } from '@tb-dev/ts-guard';
-import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
+import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 import { assertUserAlias } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
 import { MainProcessError } from '$electron/error.js';
@@ -16,8 +16,8 @@ import {
 } from '$interface/interface.js';
 
 export function setPlunderEvents() {
-    const mainWindow = assertMainWindow();
-    const panelWindow = assertPanelWindow();
+    const mainWindow = getMainWindow();
+    const panelWindow = getPanelWindow();
 
     ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
     ipcMain.handle('get-plunder-config', () => ({ ...plunderConfigStore }));

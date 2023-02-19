@@ -1,50 +1,24 @@
-import { URL } from 'url';
 import { BrowserWindow } from 'electron';
-import { assertInstanceOf, assertString } from '@tb-dev/ts-guard';
+import { assertInstanceOf } from '@tb-dev/ts-guard';
 import type { UserAlias } from '$types/electron.js';
 
 export const getMainWindow = () => {
-    const id = Number.parseIntStrict(process.env.MAIN_WINDOW_ID ?? '', 10);
-    return BrowserWindow.fromId(id);
-};
-
-export const assertMainWindow = () => {
-    const mainWindow = getMainWindow();
+    const id = Number.parseIntStrict(process.env.MAIN_WINDOW_ID ?? '');
+    const mainWindow = BrowserWindow.fromId(id);
     assertInstanceOf(mainWindow, BrowserWindow, 'Não foi possível obter a janela do browser.');
     return mainWindow;
 };
 
 export const getPanelWindow = () => {
-    const id = Number.parseIntStrict(process.env.PANEL_WINDOW_ID ?? '', 10);
-    return BrowserWindow.fromId(id);
-};
-
-export const assertPanelWindow = () => {
-    const panelWindow = getPanelWindow();
+    const id = Number.parseIntStrict(process.env.PANEL_WINDOW_ID ?? '');
+    const panelWindow = BrowserWindow.fromId(id);
     assertInstanceOf(panelWindow, BrowserWindow, 'Não foi possível obter a janela do painel.');
     return panelWindow;
 };
 
-export function getWorldFromURL(url: URL) {
-    const index = url.hostname.indexOf('.tribalwars');
-    if (index === -1) return null;
-    
-    let world = url.hostname.slice(0, index);
-    world = world.replace(/www\.?/g, '');
-    
-    if (world.length < 1) return null;
-    return world;
-};
-
-export function assertWorldFromURL(url: URL) {
-    const world = getWorldFromURL(url);
-    assertString(world, 'Não foi possível determinar o mundo a partir da URL.');
-    return world;
-};
-
 export function togglePanelWindow() {
-    const mainWindow = assertMainWindow();
-    const panelWindow = assertPanelWindow();
+    const mainWindow = getMainWindow();
+    const panelWindow = getPanelWindow();
 
     if (panelWindow.isVisible()) {
         panelWindow.hide();

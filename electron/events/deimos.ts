@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { readDeimosFile } from '$electron/app/deimos.js';
 import { browserStore, plunderStore, unitStore } from '$interface/interface.js';
-import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
+import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 import type { TribalWarsGameDataType, PlunderInfoType } from '$types/deimos.js';
 import type { UnitAmount } from '$types/game.js';
 
@@ -11,7 +11,7 @@ export function setDeimosEvents() {
 
     // Indica que o script `deimos.js` foi completamente carregado no browser.
     ipcMain.on('script-tag-is-ready', () => {
-        const mainWindow = assertMainWindow();
+        const mainWindow = getMainWindow();
         mainWindow.webContents.send('get-game-data');
     });
 
@@ -27,7 +27,7 @@ export function setDeimosEvents() {
             browserStore[key as keyof TribalWarsGameDataType] = value;
         };
 
-        const panelWindow = assertPanelWindow();
+        const panelWindow = getPanelWindow();
         panelWindow.webContents.send('patch-panel-game-data', gameData);
     });
 
@@ -37,7 +37,7 @@ export function setDeimosEvents() {
             (plunderStore as any)[key] = value;
         };
 
-        const panelWindow = assertPanelWindow();
+        const panelWindow = getPanelWindow();
         panelWindow.webContents.send('patch-panel-plunder-info', plunderInfo);
     });
 
@@ -47,7 +47,7 @@ export function setDeimosEvents() {
             unitStore[key as keyof UnitAmount] = value;
         };
 
-        const panelWindow = assertPanelWindow();
+        const panelWindow = getPanelWindow();
         panelWindow.webContents.send('patch-panel-current-village-units', units);
     });
 };

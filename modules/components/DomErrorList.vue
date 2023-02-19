@@ -4,7 +4,7 @@ import { useIpcRenderer } from '@vueuse/electron';
 import { assertInteger, assertArray } from '@tb-dev/ts-guard';
 import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { getLocaleDateString } from '$global/utils/helpers.js';
-import { AresError } from '$global/error.js';
+import { ModuleError } from '$modules/error.js';
 import type { DOMErrorLogType } from '$types/error.js';
 import { VBtn as Button } from 'vuetify/components/VBtn';
 import {
@@ -31,7 +31,7 @@ function deleteError(id: number) {
     ipcSend('delete-dom-error-log', id);
 
     const index = errors.findIndex((error) => error.id === id);
-    if (index === -1) throw new AresError('Não foi possível remover o erro da lista.');
+    if (index === -1) throw new ModuleError('Não foi possível remover o erro da lista.');
     errors.splice(index, 1);
 };
 </script>

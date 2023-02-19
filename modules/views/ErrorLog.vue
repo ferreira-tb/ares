@@ -11,6 +11,7 @@ router.push({ name: 'normal-errors' });
         <Tabs height="30px" :mandatory="true">
             <Tab :to="({ name: 'normal-errors' })">Geral</Tab>
             <Tab :to="({ name: 'dom-errors' })">DOM</Tab>
+            <Tab :to="({ name: 'main-process-errors' })">Núcleo</Tab>
         </Tabs>
     </nav>
 

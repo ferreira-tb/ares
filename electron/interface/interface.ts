@@ -1,14 +1,15 @@
 import { URL } from 'url';
-import { MessageChannelMain } from 'electron';
-import { isObject, isKeyOf, assertObject } from '@tb-dev/ts-guard';
+import { app, BrowserWindow, MessageChannelMain } from 'electron';
+import { isObject, isKeyOf, isInstanceOf, assertObject } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
-import { assertPanelWindow } from '$electron/utils/helpers.js';
+import { getPanelWindow } from '$electron/utils/helpers.js';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos.js';
 import { worldConfigURL, worldUnitURL } from '$electron/utils/constants';
 import { sequelize } from '$database/database.js';
+import { getActiveModule } from '$electron/app/modules.js';
 
 import { UserConfig } from '$tables/config.js';
-import { ErrorLog, DOMErrorLog } from '$tables/error.js';
+import { ErrorLog, DOMErrorLog, MainProcessErrorLog } from '$tables/error.js';
 import { PlunderHistory, PlunderConfig } from '$tables/plunder.js';
 import { User } from '$tables/user.js';
 import { WorldConfig, WorldUnit } from '$tables/world.js';
@@ -19,12 +20,12 @@ import { setCacheStore } from '$stores/cache.js';
 import { setUnitStore } from '$stores/units.js';
 import { setWorldConfigStore, setWorldUnitStore } from '$stores/world.js';
 
-import type { BrowserWindow } from 'electron';
 import type { PlunderedAmount, PlunderHistoryType } from '$types/plunder.js';
 import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world.js';
 import type { UserAlias } from '$types/electron.js';
 import type { PhobosPortMessage } from '$types/phobos.js';
 import type { World } from '$types/game.js';
+import type { MainProcessErrorLogType } from '$types/error.js';
 
 export const cacheStore = setCacheStore(setAliasStoreState, setWorldStoreState);
 export const browserStore = setBrowserStore(cacheStore, User);
@@ -34,6 +35,34 @@ export const plunderHistoryStore = setPlunderHistoryStore();
 export const unitStore = setUnitStore();
 export const worldConfigStore = setWorldConfigStore();
 export const worldUnitStore = setWorldUnitStore();
+
+MainProcessError.catch = async (err: unknown) => {
+    try {
+        if (err instanceof Error) {
+            const errorLog: Omit<MainProcessErrorLogType, 'id' | 'pending'> = {
+                name: err.name,
+                message: err.message,
+                time: Date.now(),
+                ares: app.getVersion(),
+                chrome: process.versions.chrome,
+                electron: process.versions.electron,
+                tribal: browserStore.majorVersion
+            };
+
+            await sequelize.transaction(async (transaction) => {
+                const newRow = await MainProcessErrorLog.create(errorLog, { transaction });
+                const errorModule = getActiveModule('error-log');
+                if (isInstanceOf(errorModule, BrowserWindow)) {
+                    errorModule.webContents.send('main-process-error-log-updated', newRow.toJSON());
+                };
+            });
+        };
+
+    } catch (anotherErr) {
+        // PENDENTE: Registrar esse erro num arquivo de log.
+        console.error(anotherErr);
+    };
+};
 
 /**
  * Define o estado das stores de acordo com o alias atual.
@@ -45,7 +74,7 @@ export const worldUnitStore = setWorldUnitStore();
  */
 async function setAliasStoreState(alias: UserAlias) {
     try {
-        const panelWindow = assertPanelWindow();
+        const panelWindow = getPanelWindow();
         await Promise.all([setAllPlunderStoresState(alias, panelWindow)]);
 
     } catch (err) {
@@ -223,6 +252,7 @@ export {
     UserConfig,
     ErrorLog,
     DOMErrorLog,
+    MainProcessErrorLog,
     PlunderHistory,
     PlunderConfig,
     User,

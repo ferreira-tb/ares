@@ -7,7 +7,7 @@ import { createPinia } from 'pinia';
 import { createVuetify } from 'vuetify';
 import { router } from '$modules/router/router.js';
 import { setModuleEvents } from '$modules/events.js';
-import { AresError } from '$global/error.js';
+import { ModuleError } from '$modules/error.js';
 import App from '$modules/App.vue';
 
 const app = createApp(App);
@@ -33,7 +33,7 @@ app.use(router);
 app.use(vuetify);
 
 // Error handler.
-app.config.errorHandler = AresError.catch;
+app.config.errorHandler = ModuleError.catch;
 
 // Eventos
 setModuleEvents();

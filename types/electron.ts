@@ -1,9 +1,5 @@
-import type { Schema as StoreSchema } from 'electron-store';
 import type { World } from '$types/game.js';
 import type { TribalWarsGameDataType, PlunderInfoType } from '$types/deimos.js';
-
-export type Schema = StoreSchema<Record<string, unknown>>;
-export type JSONSchema = Schema[keyof Schema];
 
 export type UserAlias = `${string}__USERID__${string}`;
 export type ModuleNames = 'error-log';

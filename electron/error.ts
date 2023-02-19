@@ -4,7 +4,5 @@ export class MainProcessError extends Error {
         this.name = 'MainProcessError';
     };
 
-    public static async catch(err: unknown) {
-        if (err instanceof Error) console.error(err);
-    };
+    declare public static catch: (err: unknown) => Promise<void>;
 };

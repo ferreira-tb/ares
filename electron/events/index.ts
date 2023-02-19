@@ -7,13 +7,13 @@ import { setErrorEvents } from '$electron/events/error.js';
 import { setPanelEvents } from '$electron/events/panel.js';
 import { setDeimosEvents } from '$electron/events/deimos.js';
 import { MainProcessError } from '$electron/error.js';
-import { assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
+import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 import { browserCss } from '$electron/utils/constants.js';
 import { cacheStore } from '$interface/interface.js';
 
 export function setEvents() {
-    const mainWindow = assertMainWindow();
-    const panelWindow = assertPanelWindow();
+    const mainWindow = getMainWindow();
+    const panelWindow = getPanelWindow();
 
     // Informações sobre o Ares.
     ipcMain.handle('app-name', () => app.getName());

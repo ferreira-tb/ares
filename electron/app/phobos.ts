@@ -1,7 +1,7 @@
 import { URL } from 'url';
 import { BrowserView, type WebPreferences } from 'electron';
 import { assertString, assertInstanceOf, isInstanceOf } from '@tb-dev/ts-guard';
-import { assertMainWindow } from '$electron/utils/helpers.js';
+import { getMainWindow } from '$electron/utils/helpers.js';
 import { phobosJs } from '$electron/utils/constants.js';
 import type { PhobosNames, PhobosOptions } from '$types/phobos.js';
 
@@ -24,7 +24,7 @@ export async function createPhobos(name: PhobosNames, url: URL, options?: Phobos
     assertString(name, 'Nome inválido.');
     assertInstanceOf(url, URL, 'URL inválida');
 
-    const mainWindow = assertMainWindow();
+    const mainWindow = getMainWindow();
 
     const alivePhobos = activePhobos.get(name);
     if (alivePhobos instanceof BrowserView) {
@@ -74,7 +74,7 @@ export function getPhobosByName(name: PhobosNames) {
 
 export function destroyPhobos(phobos: BrowserView) {
     assertInstanceOf(phobos, BrowserView, 'O objeto não é um BrowserView.');
-    const mainWindow = assertMainWindow();
+    const mainWindow = getMainWindow();
     mainWindow.removeBrowserView(phobos);
     for (const [name, view] of activePhobos) {
         if (view === phobos) {
@@ -88,14 +88,14 @@ export function destroyPhobosByName(name: PhobosNames) {
     assertString(name, `${name} não é um nome válido para um Phobos.`);
     const phobos = activePhobos.get(name);
     if (isInstanceOf(phobos, BrowserView)) {
-        const mainWindow = assertMainWindow();
+        const mainWindow = getMainWindow();
         mainWindow.removeBrowserView(phobos);
         activePhobos.delete(name);
     };
 };
 
 export function destroyAllPhobos() {
-    const mainWindow = assertMainWindow();
+    const mainWindow = getMainWindow();
     for (const phobos of activePhobos.values()) {
         mainWindow.removeBrowserView(phobos);
     };

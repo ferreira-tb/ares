@@ -1,13 +1,13 @@
 import { Menu, shell } from 'electron';
 import { showErrorLog } from '$electron/app/modules.js';
 import { aresURL, gameURL, repoURL, discordURL } from '$electron/utils/constants.js';
-import { togglePanelWindow, assertMainWindow, assertPanelWindow } from '$electron/utils/helpers.js';
+import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
 export function setAppMenu() {
-    const mainWindow = assertMainWindow();
-    const panelWindow = assertPanelWindow();
+    const mainWindow = getMainWindow();
+    const panelWindow = getPanelWindow();
 
     const optionsMenu: MenuItemConstructorOptions[] = [
         { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },

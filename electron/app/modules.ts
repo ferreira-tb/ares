@@ -1,6 +1,7 @@
 import { BrowserWindow } from 'electron';
+import { isInstanceOf } from '@tb-dev/ts-guard';
 import { favicon, moduleHtml } from '$electron/utils/constants.js';
-import { assertMainWindow } from '$electron/utils/helpers.js';
+import { getMainWindow } from '$electron/utils/helpers.js';
 import { setBasicDevMenu } from '$electron/menu/dev.js';
 import type { ModuleNames } from '$types/electron.js';
 
@@ -8,7 +9,18 @@ const activeModules = new Map<ModuleNames, BrowserWindow>();
 export const getActiveModule = (name: ModuleNames) => activeModules.get(name);
 
 export function showErrorLog() {
-    const mainWindow = assertMainWindow();
+    const mainWindow = getMainWindow();
+
+    // Se a janela já estiver aberta, foca-a.
+    const previousWindow = getActiveModule('error-log');
+    if (isInstanceOf(previousWindow, BrowserWindow) && !previousWindow.isDestroyed()) {
+        if (!previousWindow.isVisible()) {
+            previousWindow.show();
+        } else {
+            previousWindow.focus();
+        };
+        return;
+    };
 
     const errorLogWindow = new BrowserWindow({
         parent: mainWindow,

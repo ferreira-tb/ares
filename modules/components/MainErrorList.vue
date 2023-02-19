@@ -16,17 +16,17 @@ import {
     VCardActions as CardAction
 } from 'vuetify/components/VCard';
 
-const raw = await ipcInvoke('get-error-log');
+const raw = await ipcInvoke('get-main-process-error-log');
 assertArray(raw, 'Houve um erro durante a conexão com o banco de dados.');
 const errors = reactive(raw);
 watchEffect(() => errors.sort((a, b) => b.time - a.time));
 
 const ipcRenderer = useIpcRenderer();
-ipcRenderer.on('error-log-updated', (_e, newError: ErrorLogType) => errors.push(newError));
+ipcRenderer.on('main-process-error-log-updated', (_e, newError: ErrorLogType) => errors.push(newError));
 
 function deleteError(id: number) {
     assertInteger(id, 'O ID do erro deve ser um número inteiro.');
-    ipcSend('delete-error-log', id);
+    ipcSend('delete-main-process-error-log', id);
 
     const index = errors.findIndex((error) => error.id === id);
     if (index === -1) throw new ModuleError('Não foi possível remover o erro da lista.');

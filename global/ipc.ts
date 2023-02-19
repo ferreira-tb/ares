@@ -3,7 +3,7 @@ import type { PlunderConfigType } from '$types/plunder.js';
 import type { PlunderedResources } from '$lib/plunder/resources.js';
 import type { UnitAmount } from '$types/game.js';
 import type { PlunderedAmount } from '$types/plunder.js';
-import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
+import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType, MainProcessErrorLogType } from '$types/error.js';
 import type { TribalWarsGameData } from '$deimos/models/data.js';
 import type { PlunderInfo } from '$deimos/models/plunder.js';
 import type { UserAlias } from '$types/electron.js';
@@ -19,6 +19,7 @@ export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 // Erros
 export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
 export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'get-main-process-error-log'): Promise<MainProcessErrorLogType[] | null>;
 
 // Plunder
 export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
@@ -45,6 +46,7 @@ export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
 export function ipcSend(channel: 'set-dom-error-log', err: DOMErrorLogBase): void;
 export function ipcSend(channel: 'delete-error-log', id: number): void;
 export function ipcSend(channel: 'delete-dom-error-log', id: number): void;
+export function ipcSend(channel: 'delete-main-process-error-log', id: number): void;
 
 // Plunder
 export function ipcSend(channel: 'update-plunder-config', plunderConfig: PlunderConfigType): void;

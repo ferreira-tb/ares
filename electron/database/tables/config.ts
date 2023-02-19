@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import { isObject } from '@tb-dev/ts-guard';
 import { sequelize } from '$database/database.js';
 import { MainProcessError } from '$electron/error.js';
-import { assertPanelWindow } from '$electron/utils/helpers.js';
+import { getPanelWindow } from '$electron/utils/helpers.js';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { Rectangle } from 'electron';
 import type { UserConfigName, UserConfigJSON } from '$types/database.js';
@@ -27,7 +27,7 @@ export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreation
 
     public static async setPanelBounds() {
         try {
-            const panelWindow = assertPanelWindow();
+            const panelWindow = getPanelWindow();
             const bounds = await UserConfig.findByPk('panel_bounds');
             if (!bounds || !isObject(bounds.json)) return;
             panelWindow.setBounds(bounds.json as Rectangle);

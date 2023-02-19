@@ -4,6 +4,7 @@ import Default from '$vue/views/Default.vue';
 import ErrorLog from '$modules/views/ErrorLog.vue';
 import ErrorList from '$modules/components/ErrorList.vue';
 import DomErrorList from '$modules/components/DomErrorList.vue';
+import MainErrorList from '$modules/components/MainErrorList.vue';
 
 // Os componentes devem ser passados diretamente.
 // Importá-los gera problemas ao compilar.
@@ -28,6 +29,11 @@ const routes: RouteRecordRaw[] = [
                 path: 'dom',
                 name: 'dom-errors',
                 component: DomErrorList
+            },
+            {
+                path: 'main-process',
+                name: 'main-process-errors',
+                component: MainErrorList
             }
         ]
     }
