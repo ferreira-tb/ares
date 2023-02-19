@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import type { PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
 
 export const usePlunderStore = defineStore('plunder', () => {
     /** Indica se as aldeias sob ataque estão ocultas. */
@@ -30,6 +31,21 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const resourceRatio = ref<number>(0.8);
     const minutesUntilReload = ref<number>(10);
 
+    function raw(): PlunderConfigType {
+        return {
+            active: active.value,
+            ignoreWall: ignoreWall.value,
+            destroyWall: destroyWall.value,
+            groupAttack: groupAttack.value,
+            useC: useC.value,
+            ignoreDelay: ignoreDelay.value,
+            blindAttack: blindAttack.value,
+            
+            resourceRatio: resourceRatio.value,
+            minutesUntilReload: minutesUntilReload.value
+        };
+    };
+
     return {
         active,
         ignoreWall,
@@ -39,7 +55,8 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         ignoreDelay,
         blindAttack,
         resourceRatio,
-        minutesUntilReload
+        minutesUntilReload,
+        raw
     };
 });
 
@@ -49,6 +66,16 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
     const iron = ref<number>(0);
     const attackAmount = ref<number>(0);
     const total = computed(() => wood.value + stone.value + iron.value);
+
+    function raw(): PlunderedAmount {
+        return {
+            wood: wood.value,
+            stone: stone.value,
+            iron: iron.value,
+            attackAmount: attackAmount.value,
+            total: total.value
+        };
+    };
 
     function reset() {
         wood.value = 0;
@@ -63,6 +90,7 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
         iron,
         total,
         attackAmount,
+        raw,
         reset
     };
 });

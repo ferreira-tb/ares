@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch, toRaw } from 'vue';
+import { computed, watch } from 'vue';
 import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcSend } from '$global/ipc.js';
 import { Deimos } from '$deimos/shared/ipc.js';
@@ -10,13 +10,13 @@ import Resources from '$panel/components/Resources.vue';
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
 
-config.$subscribe(() => ipcSend('update-plunder-config', toRaw(config)));
+config.$subscribe(() => ipcSend('update-plunder-config', config.raw()));
 
 watch(() => config.active, (value) => {
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
     if (value === false) {
         // Se não ocorreu saque, não é necessário salvar as informações.
-        const currentHistoryState = toRaw(history);
+        const currentHistoryState = history.raw();
         if (Object.values(currentHistoryState).every((value) => value > 0))  {
             ipcSend('save-plundered-amount', currentHistoryState);
         };
