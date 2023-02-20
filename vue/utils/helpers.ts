@@ -9,7 +9,9 @@ export function getRouteNames(routes: RouteRecordRaw[]) {
     for (const route of routes) {
         if (isString(route.name)) {
             names.push(route.name)
-        } else if (isArray(route.children)) {
+        };
+        
+        if (isArray(route.children)) {
             names.push(...getRouteNames(route.children))
         };
     };
