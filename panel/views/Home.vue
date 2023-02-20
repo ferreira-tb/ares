@@ -50,6 +50,7 @@ h2 {
     align-items: center;
     justify-items: center;
 }
+
 .button-area > button {
     width: 95%;
     max-width: 150px;
