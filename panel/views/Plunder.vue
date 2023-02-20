@@ -50,42 +50,54 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
         </Transition>
         
         <Container fluid class="plunder-switch-area">
-            <Row no-gutters>
+            <Row dense justify="center">
                 <Column>
-                    <Switch v-model="config.ignoreWall" color="#00bd7e" inset density="compact">
-                        <template v-slot:label>
+                    <Switch v-model="config.ignoreWall" color="#00bd7e" inset density="compact" hide-details>
+                        <template #label>
                             <span>Ignorar muralha</span>
                             <Tooltip :open-delay="800">Determina se o Ares deve ignorar as aldeias com muralha</Tooltip>
                         </template>
                     </Switch>
-                    <Switch v-model="config.destroyWall" color="#00bd7e" inset density="compact">
-                        <template v-slot:label>
-                            <span>Destruir muralha</span>
-                            <Tooltip :open-delay="800">Determina se o Ares deve destruir as muralhas das aldeias</Tooltip>
-                        </template>
-                    </Switch>
-                    <Switch v-model="config.ignoreDelay" color="#00bd7e" inset density="compact">
-                        <template v-slot:label>
-                            <span>Ignorar delay</span>
-                            <Tooltip :open-delay="800">Diminui o intervalo entre os ataques</Tooltip>
-                        </template>
-                    </Switch>
                 </Column>
                 <Column>
-                    <Switch v-model="config.groupAttack" color="#00bd7e" inset density="compact">
-                        <template v-slot:label>
+                    <Switch v-model="config.groupAttack" color="#00bd7e" inset density="compact" hide-details>
+                        <template #label>
                             <span>Usar grupo</span>
                             <Tooltip :open-delay="800">Permite enviar ataques de mais de uma aldeia</Tooltip>
                         </template>
                     </Switch>
-                    <Switch v-model="config.useC" color="#00bd7e" inset density="compact">
-                        <template v-slot:label>
+                </Column>
+            </Row>
+            <Row dense justify="center">
+                <Column>
+                    <Switch v-model="config.destroyWall" color="#00bd7e" inset density="compact" hide-details>
+                        <template #label>
+                            <span>Destruir muralha</span>
+                            <Tooltip :open-delay="800">Determina se o Ares deve destruir as muralhas das aldeias</Tooltip>
+                        </template>
+                    </Switch>
+                </Column>
+                <Column>
+                    <Switch v-model="config.useC" color="#00bd7e" inset density="compact" hide-details>
+                        <template #label>
                             <span>Usar modelo C</span>
                             <Tooltip :open-delay="800">Determina se o Ares deve usar o modelo C para atacar</Tooltip>
                         </template>
                     </Switch>
-                    <Switch v-model="config.blindAttack" color="#00bd7e" inset density="compact">
-                        <template v-slot:label>
+                </Column>
+            </Row>
+            <Row dense justify="center">
+                <Column>
+                    <Switch v-model="config.ignoreDelay" color="#00bd7e" inset density="compact" hide-details>
+                        <template #label>
+                            <span>Ignorar delay</span>
+                            <Tooltip :open-delay="800">Diminui o intervalo entre os ataques</Tooltip>
+                        </template>
+                    </Switch>  
+                </Column>
+                <Column>
+                    <Switch v-model="config.blindAttack" color="#00bd7e" inset density="compact" hide-details>
+                        <template #label>
                             <span>Ataque às cegas</span>
                             <Tooltip :open-delay="800">Ataca mesmo se não houver informações sobre a aldeia</Tooltip>
                         </template>
