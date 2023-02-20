@@ -1,16 +1,15 @@
-import 'vuetify/styles';
-import '$global/assets/style.css';
+import '$global/assets/main.scss';
 import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { createVuetify } from 'vuetify';
-import { router } from '$modules/router/router.js';
-import { setModuleEvents } from '$modules/events.js';
-import { ModuleError } from '$modules/error.js';
-import App from '$modules/App.vue';
+import { router } from '$panel/router/router.js';
+import { setPanelWindowEvents } from '$panel/events.js';
+import { PanelError } from '$panel/error.js';
+import Panel from '$panel/Panel.vue';
 
-const app = createApp(App);
+const panel = createApp(Panel);
 const pinia = createPinia();
 const vuetify = createVuetify({
     defaults: {
@@ -28,15 +27,15 @@ const vuetify = createVuetify({
 });
 
 // Plugins.
-app.use(pinia);
-app.use(router);
-app.use(vuetify);
+panel.use(pinia);
+panel.use(router);
+panel.use(vuetify);
 
 // Error handler.
-app.config.errorHandler = ModuleError.catch;
+panel.config.errorHandler = PanelError.catch;
 
-// Eventos
-setModuleEvents();
+// Eventos.
+setPanelWindowEvents(pinia);
 
 router.push('/');
-app.mount('#app');
+panel.mount('#app');

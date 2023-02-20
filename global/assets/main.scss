@@ -1,5 +1,10 @@
 @charset "utf-8";
 
+@use 'vuetify/lib/styles/main.sass' with (
+    $utilities: false,
+    $color-pack: false,
+);
+
 :root {
     --color-background: #181818;
     --color-background-soft: #222222;

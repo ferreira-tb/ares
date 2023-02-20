@@ -1,4 +1,4 @@
-import '$browser/assets/style.css';
+import '$browser/assets/main.scss';
 import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';

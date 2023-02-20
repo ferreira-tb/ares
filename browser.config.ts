@@ -23,7 +23,7 @@ export default defineConfig({
         outDir: 'dist',
         emptyOutDir: false,
         lib: {
-            entry: join(__dirname, 'browser/browser.ts'),
+            entry: join(__dirname, 'browser/index.ts'),
             fileName: 'browser',
             name: 'browser',
             formats: ['cjs']

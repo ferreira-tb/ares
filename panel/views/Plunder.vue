@@ -3,9 +3,11 @@ import { computed, watch } from 'vue';
 import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcSend } from '$global/ipc.js';
 import { Deimos } from '$deimos/shared/ipc.js';
+import Resources from '$panel/components/Resources.vue';
 import { VBtn as Button } from 'vuetify/components/VBtn';
 import { VTooltip as Tooltip } from 'vuetify/components/VTooltip';
-import Resources from '$panel/components/Resources.vue';
+import { VSwitch as Switch } from 'vuetify/components/VSwitch';
+import { VContainer as Container, VRow as Row, VCol as Column } from 'vuetify/components/VGrid';
 
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
@@ -47,50 +49,50 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             </Suspense>
         </Transition>
         
-        <div class="checkbox-area">
-            <label class="checkbox-label">
-                <input type="checkbox" v-model="config.ignoreWall" disabled="true" />
-                <span>Ignorar muralha</span>
-                <Tooltip>
-                    Determina se o Ares deve ignorar as aldeias com muralha.
-                </Tooltip>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" v-model="config.destroyWall" disabled="true" />
-                <span>Destruir muralha</span>
-                <Tooltip>
-                    Determina se o Ares deve destruir as muralhas das aldeias.
-                </Tooltip>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" v-model="config.groupAttack" disabled="true" />
-                <span>Usar grupo</span>
-                <Tooltip>
-                    Permite enviar ataques de mais de uma aldeia.
-                </Tooltip>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" v-model="config.useC" disabled="true" />
-                <span>Usar modelo C</span>
-                <Tooltip>
-                    Determina se o Ares deve usar o modelo C para atacar.
-                </Tooltip>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" v-model="config.ignoreDelay" />
-                <span>Ignorar delay</span>
-                <Tooltip>
-                    Diminui o intervalo entre os ataques.
-                </Tooltip>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" v-model="config.blindAttack" disabled="true" />
-                <span>Ataque às cegas</span>
-                <Tooltip>
-                    Ataca mesmo se não houver informações sobre a aldeia.
-                </Tooltip>
-            </label>
-        </div>
+        <Container fluid class="plunder-switch-area">
+            <Row no-gutters>
+                <Column>
+                    <Switch v-model="config.ignoreWall" color="#00bd7e" inset density="compact">
+                        <template v-slot:label>
+                            <span>Ignorar muralha</span>
+                            <Tooltip :open-delay="800">Determina se o Ares deve ignorar as aldeias com muralha</Tooltip>
+                        </template>
+                    </Switch>
+                    <Switch v-model="config.destroyWall" color="#00bd7e" inset density="compact">
+                        <template v-slot:label>
+                            <span>Destruir muralha</span>
+                            <Tooltip :open-delay="800">Determina se o Ares deve destruir as muralhas das aldeias</Tooltip>
+                        </template>
+                    </Switch>
+                    <Switch v-model="config.ignoreDelay" color="#00bd7e" inset density="compact">
+                        <template v-slot:label>
+                            <span>Ignorar delay</span>
+                            <Tooltip :open-delay="800">Diminui o intervalo entre os ataques</Tooltip>
+                        </template>
+                    </Switch>
+                </Column>
+                <Column>
+                    <Switch v-model="config.groupAttack" color="#00bd7e" inset density="compact">
+                        <template v-slot:label>
+                            <span>Usar grupo</span>
+                            <Tooltip :open-delay="800">Permite enviar ataques de mais de uma aldeia</Tooltip>
+                        </template>
+                    </Switch>
+                    <Switch v-model="config.useC" color="#00bd7e" inset density="compact">
+                        <template v-slot:label>
+                            <span>Usar modelo C</span>
+                            <Tooltip :open-delay="800">Determina se o Ares deve usar o modelo C para atacar</Tooltip>
+                        </template>
+                    </Switch>
+                    <Switch v-model="config.blindAttack" color="#00bd7e" inset density="compact">
+                        <template v-slot:label>
+                            <span>Ataque às cegas</span>
+                            <Tooltip :open-delay="800">Ataca mesmo se não houver informações sobre a aldeia</Tooltip>
+                        </template>
+                    </Switch>
+                </Column>
+            </Row>
+        </Container>
     </main>
 </template>
 
@@ -101,28 +103,14 @@ main {
 
 .button-area {
     text-align: center;
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
 }
 
 .button-area > button:not(:last-of-type) {
     margin-right: 0.5em;
 }
 
-.checkbox-area {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    justify-items: center;
+.plunder-switch-area {
     -webkit-app-region: no-drag;
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.checkbox-label > span {
-    margin-left: 0.5em;
 }
 </style>
