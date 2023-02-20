@@ -35,6 +35,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
     <main>
         <div class="button-area">
             <Button @click="config.active = !config.active">{{ plunderButtonText }}</Button>
+            <Button>Avançado</Button>
         </div>
 
         <Transition name="fade" mode="out-in">

@@ -2,7 +2,6 @@ import type { World } from '$types/game.js';
 import type { TribalWarsGameDataType, PlunderInfoType } from '$types/deimos.js';
 
 export type UserAlias = `${string}__USERID__${string}`;
-export type ModuleNames = 'error-log';
 
 export interface BrowserStoreType extends TribalWarsGameDataType {
     /** Coordenadas da aldeia atual no formato de tupla. */

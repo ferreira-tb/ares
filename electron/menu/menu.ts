@@ -1,5 +1,5 @@
 import { Menu, shell } from 'electron';
-import { showErrorLog } from '$electron/app/modules.js';
+import { showErrorLog, showAppConfig } from '$electron/app/modules.js';
 import { aresURL, gameURL, repoURL, discordURL } from '$electron/utils/constants.js';
 import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev.js';
@@ -13,12 +13,12 @@ export function setAppMenu() {
         { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
         { label: 'Atualizar', accelerator: 'F5', role: 'reload' },
         { type: 'separator' },
-        { label: 'Configurações', accelerator: 'F3', enabled: false },
+        { label: 'Configurações', accelerator: 'F3', click: () => showAppConfig() },
         { type: 'separator' },
         { label: 'Sair', accelerator: 'Esc', role: 'quit' },
 
         // Não-visíveis.
-        { label: 'Painel', visible: false, accelerator: 'F2', click: togglePanelWindow }
+        { label: 'Exibir ou ocultar painel', visible: false, accelerator: 'F2', click: () => togglePanelWindow() },
     ];
     
     const helpMenu: MenuItemConstructorOptions[] = [
@@ -26,7 +26,7 @@ export function setAppMenu() {
         { label: 'Git Hub', click: () => shell.openExternal(repoURL) },
         { label: 'Discord', click: () => shell.openExternal(discordURL) },
         { type: 'separator' },
-        { label: 'Registro de erros', click: showErrorLog }
+        { label: 'Registro de erros', click: () => showErrorLog() }
     ];
 
     const mainMenu = Menu.buildFromTemplate([
@@ -36,8 +36,8 @@ export function setAppMenu() {
 
     const panelMenu = Menu.buildFromTemplate([
         { label: 'Início', visible: false, accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
-        { label: 'Painel', visible: false, accelerator: 'F2', click: togglePanelWindow },
-        { label: 'Configurações', visible: false, accelerator: 'F3', enabled: false },
+        { label: 'Painel', visible: false, accelerator: 'F2', click: () => togglePanelWindow() },
+        { label: 'Configurações', visible: false, accelerator: 'F3', click: () => showAppConfig() },
         { label: 'Atualizar', visible: false, accelerator: 'F5', click: () => mainWindow.webContents.reload() },
     ] satisfies MenuItemConstructorOptions[]);
 

@@ -1,23 +1,19 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 import { VTabs as Tabs, VTab as Tab } from 'vuetify/components/VTabs';
-import { router } from '$modules/router/router.js';
 import type { ModuleRouteToPush } from '$types/modules.js';
-
-router.push({ name: 'normal-errors' } satisfies ModuleRouteToPush);
 </script>
 
 <template>
     <nav>
         <Tabs height="30px" :mandatory="true">
-            <Tab :to="({ name: 'normal-errors' } satisfies ModuleRouteToPush)">Geral</Tab>
-            <Tab :to="({ name: 'dom-errors' } satisfies ModuleRouteToPush)">DOM</Tab>
-            <Tab :to="({ name: 'main-process-errors' } satisfies ModuleRouteToPush)">Núcleo</Tab>
+            <Tab :to="({ name: 'general-config' } satisfies ModuleRouteToPush)">Geral</Tab>
+            <Tab :to="({ name: 'plunder-config' } satisfies ModuleRouteToPush)">Saque</Tab>
         </Tabs>
     </nav>
 
-    <div class="error-log-content">
-        <RouterView class="error-log-view scrollbar" v-slot="{ Component }">
+    <div class="config-content">
+        <RouterView class="config-view scrollbar" v-slot="{ Component }">
             <template v-if="Component">
                 <Transition name="fade" mode="out-in">
                     <KeepAlive>
@@ -35,7 +31,7 @@ router.push({ name: 'normal-errors' } satisfies ModuleRouteToPush);
 </template>
 
 <style scoped>
-.error-log-content {
+.config-content {
     position: absolute;
     top: 30px;
     bottom: 0;
@@ -46,7 +42,7 @@ router.push({ name: 'normal-errors' } satisfies ModuleRouteToPush);
     overflow: hidden;
 }
 
-:deep(.error-log-view) {
+:deep(.config-view) {
     height: 100%;
     width: 100%;
     overflow-x: hidden;

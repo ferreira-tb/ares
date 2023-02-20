@@ -1,19 +1,43 @@
-import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
+import { createRouter, createMemoryHistory } from 'vue-router';
 import { getRouteNames } from '$vue/utils/helpers.js';
 import Default from '$vue/views/Default.vue';
+
+import Config from '$modules/views/Config.vue';
+import GeneralConfig from '$modules/components/config/GeneralConfig.vue';
+import PlunderConfig from '$modules/components/config/PlunderConfig.vue';
+
 import ErrorLog from '$modules/views/ErrorLog.vue';
-import ErrorList from '$modules/components/ErrorList.vue';
-import DomErrorList from '$modules/components/DomErrorList.vue';
-import MainErrorList from '$modules/components/MainErrorList.vue';
+import ErrorList from '$modules/components/error/ErrorList.vue';
+import DomErrorList from '$modules/components/error/DomErrorList.vue';
+import MainErrorList from '$modules/components/error/MainErrorList.vue';
+
+import type { ModuleRouteRecordRaw, ModuleRoutes } from '$types/modules.js';
 
 // Os componentes devem ser passados diretamente.
 // Importá-los gera problemas ao compilar.
 
-const routes: RouteRecordRaw[] = [
+const routes: ModuleRouteRecordRaw[] = [
     {
         path: '/',
         name: 'default',
         component: Default
+    },
+    {
+        path: '/app-config',
+        name: 'app-config',
+        component: Config,
+        children: [
+            {
+                path: 'general',
+                name: 'general-config',
+                component: GeneralConfig
+            },
+            {
+                path: 'plunder',
+                name: 'plunder-config',
+                component: PlunderConfig
+            }
+        ]
     },
     {
         path: '/error-log',
@@ -44,4 +68,4 @@ export const router = createRouter({
     routes: routes
 });
 
-export const routeNames = getRouteNames(routes);
+export const routeNames = getRouteNames(routes) as ModuleRoutes[];
