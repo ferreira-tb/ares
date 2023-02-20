@@ -13,7 +13,7 @@ export function setAppMenu() {
         { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
         { label: 'Atualizar', accelerator: 'F5', role: 'reload' },
         { type: 'separator' },
-        { label: 'Configurações', accelerator: 'F3', click: () => showAppConfig() },
+        { label: 'Configurações', accelerator: 'F3', click: () => showAppConfig('general-config') },
         { type: 'separator' },
         { label: 'Sair', accelerator: 'Esc', role: 'quit' },
 
@@ -37,7 +37,7 @@ export function setAppMenu() {
     const panelMenu = Menu.buildFromTemplate([
         { label: 'Início', visible: false, accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
         { label: 'Painel', visible: false, accelerator: 'F2', click: () => togglePanelWindow() },
-        { label: 'Configurações', visible: false, accelerator: 'F3', click: () => showAppConfig() },
+        { label: 'Configurações', visible: false, accelerator: 'F3', click: () => showAppConfig('general-config') },
         { label: 'Atualizar', visible: false, accelerator: 'F5', click: () => mainWindow.webContents.reload() },
     ] satisfies MenuItemConstructorOptions[]);
 
