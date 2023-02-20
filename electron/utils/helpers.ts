@@ -4,6 +4,11 @@ import { app, dialog, BrowserWindow } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
 import type { UserAlias } from '$types/electron.js';
 
+export function restartAres() {
+    app.relaunch();
+    app.quit();
+};
+
 export async function createErrorLog(error: Error) {
     try {
         // Gera um arquivo de log com a data e a pilha de erros.
