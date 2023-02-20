@@ -20,7 +20,7 @@ export function wait(extra?: number) {
     if (time <= 0) time = 500;
     if (isInteger(extra)) time += extra;
     
-    return new Promise<void>((resolve) => setTimeout(() => resolve(), time));
+    return new Promise<void>((resolve) => setTimeout(resolve, time));
 };
 
 /** Gera um número inteiro entre dois outros. */
@@ -36,24 +36,6 @@ export async function* fetchDocuments(urls: string[]) {
         const text = await response.text();
         yield parser.parseFromString(text, 'text/html').documentElement;
     };
-};
-
-/** Determina o mundo atual a partir da URL passada. */
-export function getWorldFromURL(url: URL): string | null {
-    const index = url.hostname.indexOf('.tribalwars');
-    if (index === -1) return null;
-    
-    let world = url.hostname.slice(0, index);
-    world = world.replace(/www\.?/g, '');
-    
-    if (world.length < 1) return null;
-    return world;
-};
-
-export function assertWorldFromURL(url: URL): string {
-    const world = getWorldFromURL(url);
-    assertString(world, 'Não foi possível determinar o mundo.');
-    return world;
 };
 
 /**

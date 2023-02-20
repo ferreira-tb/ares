@@ -2,7 +2,7 @@ import { URL } from 'url';
 import { app, BrowserWindow, MessageChannelMain } from 'electron';
 import { isObject, isKeyOf, isInstanceOf, assertObject } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
-import { getPanelWindow } from '$electron/utils/helpers.js';
+import { getPanelWindow, createErrorLog } from '$electron/utils/helpers.js';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos.js';
 import { worldConfigURL, worldUnitURL } from '$electron/utils/constants';
 import { sequelize } from '$database/database.js';
@@ -59,8 +59,9 @@ MainProcessError.catch = async (err: unknown) => {
         };
 
     } catch (anotherErr) {
-        // PENDENTE: Registrar esse erro num arquivo de log.
-        console.error(anotherErr);
+        if (anotherErr instanceof Error) {
+            await createErrorLog(anotherErr);
+        };
     };
 };
 

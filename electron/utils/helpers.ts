@@ -1,6 +1,22 @@
-import { BrowserWindow } from 'electron';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { app, dialog, BrowserWindow } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
 import type { UserAlias } from '$types/electron.js';
+
+export async function createErrorLog(error: Error) {
+    try {
+        // Gera um arquivo de log com a data e a pilha de erros.
+        const date = new Date().toLocaleString('pt-br');
+        const logPath = path.join(app.getPath('userData'), 'ares_error.log');
+        const logContent = `${date}\n${error.stack}\n\n`;
+        await fs.appendFile(logPath, logContent);
+
+    } catch {
+        // Se não for possível gerar o log, emite um alerta.
+        dialog.showErrorBox('ERRO CRÍTICO', `Um erro crítico ocorreu. Contate o desenvolvedor.\n\n${error.stack}`);
+    };
+};
 
 export const getMainWindow = () => {
     const id = Number.parseIntStrict(process.env.MAIN_WINDOW_ID ?? '');
