@@ -41,6 +41,9 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
 export function ipcSend(channel: 'reload-browser-window'): void;
 export function ipcSend(channel: 'force-reload-browser-window'): void;
 
+// Configurações
+export function ipcSend(channel: 'open-plunder-config-window'): void;
+
 // Erros
 export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
 export function ipcSend(channel: 'set-dom-error-log', err: DOMErrorLogBase): void;

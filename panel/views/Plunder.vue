@@ -35,7 +35,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
     <main>
         <div class="button-area">
             <Button @click="config.active = !config.active">{{ plunderButtonText }}</Button>
-            <Button>Avançado</Button>
+            <Button @click="ipcSend('open-plunder-config-window')">Configurações</Button>
         </div>
 
         <Transition name="fade" mode="out-in">
@@ -102,6 +102,10 @@ main {
 .button-area {
     text-align: center;
     margin-bottom: 0.5em;
+}
+
+.button-area > button:not(:last-of-type) {
+    margin-right: 0.5em;
 }
 
 .checkbox-area {

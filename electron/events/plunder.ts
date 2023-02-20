@@ -5,6 +5,7 @@ import { assertUserAlias } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
 import { MainProcessError } from '$electron/error.js';
 import { isUserAlias } from '$electron/utils/guards.js';
+import { showAppConfig } from '$electron/app/modules.js';
 import type { PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
 
 import {
@@ -21,6 +22,9 @@ export function setPlunderEvents() {
 
     ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
     ipcMain.handle('get-plunder-config', () => ({ ...plunderConfigStore }));
+
+    // Abre a janela de configurações avançadas do Plunder.
+    ipcMain.on('open-plunder-config-window', () => showAppConfig('plunder-config'));
 
     ipcMain.on('update-plunder-config', async (_e, plunderConfig: PlunderConfigType) => {
         try {
