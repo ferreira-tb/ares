@@ -4,10 +4,7 @@ import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plund
 import { ipcSend } from '$global/ipc.js';
 import { Deimos } from '$deimos/shared/ipc.js';
 import Resources from '$panel/components/Resources.vue';
-import { VBtn as Button } from 'vuetify/components/VBtn';
-import { VTooltip as Tooltip } from 'vuetify/components/VTooltip';
-import { VSwitch as Switch } from 'vuetify/components/VSwitch';
-import { VContainer as Container, VRow as Row, VCol as Column } from 'vuetify/components/VGrid';
+import { NButton, NButtonGroup, NSwitch, NPopover, NGrid, NGridItem } from 'naive-ui';
 
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
@@ -19,7 +16,7 @@ watch(() => config.active, (value) => {
     if (value === false) {
         // Se não ocorreu saque, não é necessário salvar as informações.
         const currentHistoryState = history.raw();
-        if (Object.values(currentHistoryState).every((value) => value > 0))  {
+        if (Object.values(currentHistoryState).every((value) => value > 0)) {
             ipcSend('save-plundered-amount', currentHistoryState);
         };
 
@@ -36,8 +33,11 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
 <template>
     <main>
         <div class="button-area">
-            <Button @click="config.active = !config.active">{{ plunderButtonText }}</Button>
-            <Button @click="ipcSend('open-plunder-config-window')">Configurações</Button>
+            <NButtonGroup>
+                <NButton round disabled>Modelos</NButton>
+                <NButton round @click="config.active = !config.active">{{ plunderButtonText }}</NButton>
+                <NButton round @click="ipcSend('open-plunder-config-window')">Configurações</NButton>
+            </NButtonGroup>
         </div>
 
         <Transition name="fade" mode="out-in">
@@ -48,81 +48,98 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
                 </template>
             </Suspense>
         </Transition>
-        
-        <Container fluid class="plunder-switch-area">
-            <Row dense justify="center">
-                <Column>
-                    <Switch v-model="config.ignoreWall" color="#00bd7e" inset density="compact" hide-details>
-                        <template #label>
-                            <span>Ignorar muralha</span>
-                            <Tooltip :open-delay="800">Determina se o Ares deve ignorar as aldeias com muralha</Tooltip>
-                        </template>
-                    </Switch>
-                </Column>
-                <Column>
-                    <Switch v-model="config.groupAttack" color="#00bd7e" inset density="compact" hide-details>
-                        <template #label>
-                            <span>Usar grupo</span>
-                            <Tooltip :open-delay="800">Permite enviar ataques de mais de uma aldeia</Tooltip>
-                        </template>
-                    </Switch>
-                </Column>
-            </Row>
-            <Row dense justify="center">
-                <Column>
-                    <Switch v-model="config.destroyWall" color="#00bd7e" inset density="compact" hide-details>
-                        <template #label>
-                            <span>Destruir muralha</span>
-                            <Tooltip :open-delay="800">Determina se o Ares deve destruir as muralhas das aldeias</Tooltip>
-                        </template>
-                    </Switch>
-                </Column>
-                <Column>
-                    <Switch v-model="config.useC" color="#00bd7e" inset density="compact" hide-details>
-                        <template #label>
-                            <span>Usar modelo C</span>
-                            <Tooltip :open-delay="800">Determina se o Ares deve usar o modelo C para atacar</Tooltip>
-                        </template>
-                    </Switch>
-                </Column>
-            </Row>
-            <Row dense justify="center">
-                <Column>
-                    <Switch v-model="config.ignoreDelay" color="#00bd7e" inset density="compact" hide-details>
-                        <template #label>
-                            <span>Ignorar delay</span>
-                            <Tooltip :open-delay="800">Diminui o intervalo entre os ataques</Tooltip>
-                        </template>
-                    </Switch>  
-                </Column>
-                <Column>
-                    <Switch v-model="config.blindAttack" color="#00bd7e" inset density="compact" hide-details>
-                        <template #label>
-                            <span>Ataque às cegas</span>
-                            <Tooltip :open-delay="800">Ataca mesmo se não houver informações sobre a aldeia</Tooltip>
-                        </template>
-                    </Switch>
-                </Column>
-            </Row>
-        </Container>
+
+        <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
+            <NGridItem>
+                <div class="switch-grid-item">
+                    <NSwitch v-model="config.ignoreWall" size="small"></NSwitch>
+                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                        <template #trigger><span class="span-label">Ignorar muralha</span></template>
+                        <span>
+                            Determina se o Ares deve evitar aldeias com muralha.
+                            Nas configurações, é possível determinar a partir de qual nível ele deve ignorar.
+                        </span>
+                    </NPopover>
+                </div>
+            </NGridItem>
+
+            <NGridItem>
+                <div class="switch-grid-item">
+                    <NSwitch v-model="config.groupAttack" size="small"></NSwitch>
+                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                        <template #trigger><span class="span-label">Ataque em grupo</span></template>
+                        <span>
+                            Permite enviar ataques de mais de uma aldeia.
+                            Recomenda-se que o grupo usado seja dinâmico.
+                        </span>
+                    </NPopover>
+                </div>
+            </NGridItem>
+
+            <NGridItem>
+                <div class="switch-grid-item">
+                    <NSwitch v-model="config.destroyWall" size="small"></NSwitch>
+                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                        <template #trigger><span class="span-label">Destruir muralha</span></template>
+                        <span>
+                            Determina se o Ares deve destruir as muralhas das aldeias.
+                            Nas configurações, é possível determinar a partir de qual nível ele deve destruir,
+                            assim como a quantidade de tropas que ele deve enviar.
+                        </span>
+                    </NPopover>
+                </div>
+            </NGridItem>
+
+            <NGridItem>
+                <div class="switch-grid-item">
+                    <NSwitch v-model="config.useC" size="small"></NSwitch>
+                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                        <template #trigger><span class="span-label">Usar modelo C</span></template>
+                        <span>Determina se o Ares deve usar o modelo C para atacar.</span>
+                    </NPopover>
+                </div>
+            </NGridItem>
+
+            <NGridItem>
+                <div class="switch-grid-item">
+                    <NSwitch v-model="config.ignoreDelay" size="small"></NSwitch>
+                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                        <template #trigger><span class="span-label">Ignorar delay</span></template>
+                        <span>
+                            O jogo possui um limite de cinco ações por segundo.
+                            Sendo assim, o Ares impõe um pequeno atraso entre cada ataque.
+                            Caso essa opção esteja ativada, o Ares não irá ter esse comportamento.
+                        </span>
+                    </NPopover>
+                </div>
+            </NGridItem>
+
+            <NGridItem>
+                <div class="switch-grid-item">
+                    <NSwitch v-model="config.blindAttack" size="small"></NSwitch>
+                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                        <template #trigger><span class="span-label">Ataque às cegas</span></template>
+                        <span>Ataca mesmo se não houver informações sobre a aldeia.</span>
+                    </NPopover>
+                </div>
+            </NGridItem>
+        </NGrid>
     </main>
 </template>
 
 <style scoped>
-main {
-    user-select: none;
-}
-
 .button-area {
-    text-align: center;
+    display: flex;
+    justify-content: center;
     margin-bottom: 1em;
 }
 
-.button-area > button:not(:last-of-type) {
-    margin-right: 0.5em;
+.switch-area {
+    -webkit-app-region: no-drag;
+    margin-top: 1em;
 }
 
-.plunder-switch-area {
-    -webkit-app-region: no-drag;
+.span-label {
+    margin-left: 0.5em;
 }
 </style>

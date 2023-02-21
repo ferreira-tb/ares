@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
-import { routeNames, router } from '$modules/router/router.js';
 import { assertArrayIncludes } from '@tb-dev/ts-guard';
+import { routeNames, router } from '$modules/router/router.js';
 import type { ModuleRouteToPush } from '$types/modules.js';
 
 export function setModuleEvents() {

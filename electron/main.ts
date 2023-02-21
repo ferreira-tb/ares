@@ -24,13 +24,10 @@ function createWindow() {
     
     const panelWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 300,
-        minWidth: 300,
-        maxWidth: 500,
-        height: 200,
-        minHeight: 200,
-        maxHeight: 500,
+        width: 350,
+        height: 250,
         show: false,
+        resizable: false,
         fullscreenable: false,
         frame: false,
         titleBarStyle: 'hidden',

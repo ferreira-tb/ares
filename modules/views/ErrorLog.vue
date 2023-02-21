@@ -1,23 +1,25 @@
 <script setup lang="ts">
+import { ref, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
-import { VTabs as Tabs, VTab as Tab } from 'vuetify/components/VTabs';
+import { NTabs, NTab } from 'naive-ui';
 import { router } from '$modules/router/router.js';
-import type { ModuleRouteToPush } from '$types/modules.js';
+import type { ErrorModuleRoutes } from '$types/modules.js';
 
-router.push({ name: 'normal-errors' } satisfies ModuleRouteToPush);
+const route = ref<ErrorModuleRoutes>('normal-errors');
+watchEffect(() => router.push({ name: route.value }));
 </script>
 
 <template>
-    <nav>
-        <Tabs height="30px" :mandatory="true">
-            <Tab :to="({ name: 'normal-errors' } satisfies ModuleRouteToPush)">Geral</Tab>
-            <Tab :to="({ name: 'dom-errors' } satisfies ModuleRouteToPush)">DOM</Tab>
-            <Tab :to="({ name: 'main-process-errors' } satisfies ModuleRouteToPush)">Núcleo</Tab>
-        </Tabs>
+    <nav class="module-nav-bar">
+        <NTabs animated defaultValue="normal-errors" v-model:value="route" justifyContent="start" tab-style="margin-right: 1em;">
+            <NTab name="normal-errors" tab="Geral"></NTab>
+            <NTab name="dom-errors" tab="DOM"></NTab>
+            <NTab name="main-process-errors" tab="Núcleo"></NTab>
+        </NTabs>
     </nav>
 
-    <div class="error-log-content">
-        <RouterView class="error-log-view scrollbar" v-slot="{ Component }">
+    <div class="module-content">
+        <RouterView class="module-view scrollbar" v-slot="{ Component }">
             <template v-if="Component">
                 <Transition name="fade" mode="out-in">
                     <KeepAlive>
@@ -33,23 +35,3 @@ router.push({ name: 'normal-errors' } satisfies ModuleRouteToPush);
         </RouterView>
     </div>
 </template>
-
-<style scoped>
-.error-log-content {
-    position: absolute;
-    top: 30px;
-    bottom: 0;
-    width: 100%;
-    padding-left: 0.3em;
-    padding-right: 0.3em;
-    margin-top: 0.5em;
-    overflow: hidden;
-}
-
-:deep(.error-log-view) {
-    height: 100%;
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-</style>

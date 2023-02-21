@@ -27,11 +27,8 @@ export function setEvents() {
     // Além disso, insere o CSS e solicita ao browser que atualize o Deimos.
     const browserStyle = fs.readFileSync(browserCss, { encoding: 'utf8' });
     mainWindow.webContents.on('did-finish-load', async () => {
-        const currentURL = mainWindow.webContents.getURL();
-        mainWindow.webContents.send('page-url', currentURL);
-        panelWindow.webContents.send('page-url', currentURL);
-
         try {
+            panelWindow.webContents.send('browser-did-finish-load');
             await mainWindow.webContents.insertCSS(browserStyle);
         } catch (err) {
             MainProcessError.catch(err);
@@ -41,6 +38,8 @@ export function setEvents() {
     // Impede que o usuário navegue para fora da página do jogo.
     mainWindow.webContents.on('will-navigate', (e, url) => {
         try {
+            panelWindow.webContents.send('browser-will-navigate');
+
             const { origin } = new URL(url);
             if (/\.?tribalwars/.test(origin)) return;
             if (/\.?tb\.dev\.br/.test(origin)) return;

@@ -17,13 +17,7 @@ export interface ModuleRouteRecordRaw extends ModuleRouteToPush {
 };
 
 export type ModuleNames = 'app-config' | 'error-log';
-export type ModuleRoutes =
-    | ModuleNames
-    | 'default'
-    
-    | 'general-config'
-    | 'plunder-config'
+export type ErrorModuleRoutes = 'normal-errors' | 'dom-errors' | 'main-process-errors';
+export type ConfigModuleRoutes = 'general-config' | 'plunder-config';
 
-    | 'normal-errors'
-    | 'dom-errors'
-    | 'main-process-errors';
+export type ModuleRoutes = 'default' | ModuleNames | ErrorModuleRoutes | ConfigModuleRoutes;

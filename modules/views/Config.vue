@@ -1,19 +1,26 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
 import { RouterView } from 'vue-router';
-import { VTabs as Tabs, VTab as Tab } from 'vuetify/components/VTabs';
-import type { ModuleRouteToPush } from '$types/modules.js';
+import { NTabs, NTab } from 'naive-ui';
+import { arrayIncludes } from '@tb-dev/ts-guard';
+import { configRoutes, router } from '$modules/router/router.js';
+import type { ConfigModuleRoutes } from '$types/modules.js';
+
+const route = ref<ConfigModuleRoutes>('general-config');
+if (arrayIncludes(configRoutes, router.currentRoute.value)) route.value = router.currentRoute.value;
+watch(route, () => router.push({ name: route.value }));
 </script>
 
 <template>
-    <nav>
-        <Tabs height="30px" :mandatory="true">
-            <Tab :to="({ name: 'general-config' } satisfies ModuleRouteToPush)">Geral</Tab>
-            <Tab :to="({ name: 'plunder-config' } satisfies ModuleRouteToPush)">Saque</Tab>
-        </Tabs>
+    <nav class="module-nav-bar">
+        <NTabs animated defaultValue="general-config" v-model:value="route" justifyContent="start" tab-style="margin-right: 1em;">
+            <NTab name="general-config" tab="Geral">Geral</NTab>
+            <NTab name="plunder-config" tab="Saque">Saque</NTab>
+        </NTabs>
     </nav>
 
-    <div class="config-content">
-        <RouterView class="config-view scrollbar" v-slot="{ Component }">
+    <div class="module-content">
+        <RouterView class="module-view scrollbar" v-slot="{ Component }">
             <template v-if="Component">
                 <Transition name="fade" mode="out-in">
                     <KeepAlive>
@@ -29,23 +36,3 @@ import type { ModuleRouteToPush } from '$types/modules.js';
         </RouterView>
     </div>
 </template>
-
-<style scoped>
-.config-content {
-    position: absolute;
-    top: 30px;
-    bottom: 0;
-    width: 100%;
-    padding-left: 0.3em;
-    padding-right: 0.3em;
-    margin-top: 0.5em;
-    overflow: hidden;
-}
-
-:deep(.config-view) {
-    height: 100%;
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-</style>
