@@ -1,11 +1,11 @@
-import { ipcMain } from 'electron';
-import { assertObject, assertPositiveInteger, isObject, isKeyOf } from '@tb-dev/ts-guard';
+import { ipcMain, BrowserWindow } from 'electron';
+import { assertObject, assertPositiveInteger, isObject, isKeyOf, isInstanceOf } from '@tb-dev/ts-guard';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 import { assertUserAlias } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
 import { MainProcessError } from '$electron/error.js';
 import { isUserAlias } from '$electron/utils/guards.js';
-import { showAppConfig } from '$electron/app/modules.js';
+import { showAppConfig, getActiveModule } from '$electron/app/modules.js';
 import type { PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
 
 import {
@@ -20,23 +20,37 @@ export function setPlunderEvents() {
     const mainWindow = getMainWindow();
     const panelWindow = getPanelWindow();
 
-    ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
-    ipcMain.handle('get-plunder-config', () => ({ ...plunderConfigStore }));
-
     // Abre a janela de configurações avançadas do Plunder.
     ipcMain.on('open-plunder-config-window', () => showAppConfig('plunder-config'));
+    // Verifica se o Plunder está ativo.
+    ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
+    // Obtém as configurações do Plunder.
+    ipcMain.handle('get-plunder-config', () => ({ ...plunderConfigStore }));
 
-    ipcMain.on('update-plunder-config', async (_e, plunderConfig: PlunderConfigType) => {
+    // Recebe as configurações do Plunder do painel ou do módulo de configuração e as salva no banco de dados.
+    // Além disso, comunica a mudança aos processos diferentes daquele que enviou os dados.
+    type PlunderKeys = keyof PlunderConfigType;
+    type PlunderValues = PlunderConfigType[PlunderKeys];
+    ipcMain.on('update-plunder-config', async (e, key: PlunderKeys, value: PlunderValues) => {
         try {
-            for (const [key, value] of Object.entries(plunderConfig)) {
-                if (!isKeyOf(key, plunderConfigStore)) continue;
+            if (!isKeyOf(key, plunderConfigStore)) return;
 
-                const previousValue = Reflect.get(plunderConfigStore, key);
-                if (previousValue === value) continue;
-                
-                // A confirmação dos tipos é feita no Proxy.
-                Reflect.set(plunderConfigStore, key, value);
-                mainWindow.webContents.send('plunder-config-updated', key, value);
+            const previousValue = Reflect.get(plunderConfigStore, key);
+            if (previousValue === value) return;
+
+            // A confirmação dos tipos é feita no Proxy.
+            Reflect.set(plunderConfigStore, key, value);
+
+            // Comunica a mudança ao browser e aos processos diferentes daquele que enviou os dados.
+            mainWindow.webContents.send('plunder-config-updated', key, value);
+            
+            const configModule = getActiveModule('app-config');
+            if (isInstanceOf(configModule, BrowserWindow) && e.sender !== configModule.webContents) {
+                configModule.webContents.send('plunder-config-updated', key, value);
+            };
+
+            if (e.sender !== panelWindow.webContents) {
+                panelWindow.webContents.send('plunder-config-updated', key, value);
             };
 
             const userAlias = cacheStore.userAlias;
@@ -79,7 +93,7 @@ export function setPlunderEvents() {
 
             const userAlias = cacheStore.userAlias;
             assertUserAlias(userAlias);
-    
+
             await sequelize.transaction(async (transaction) => {
                 await PlunderHistory.upsert({
                     id: userAlias,
@@ -87,7 +101,7 @@ export function setPlunderEvents() {
                     total: { ...plunderHistoryStore.total }
                 }, { transaction });
             });
-            
+
         } catch (err) {
             MainProcessError.catch(err);
         };
@@ -123,7 +137,7 @@ async function getPlunderHistoryAsJSON(): Promise<PlunderHistory | null> {
         const result = await sequelize.transaction(async (transaction) => {
             const userAlias = cacheStore.userAlias;
             if (!isUserAlias(userAlias)) return null;
-            
+
             const plunderHistory = await PlunderHistory.findByPk(userAlias, { transaction });
             if (!isObject(plunderHistory)) return null;
 

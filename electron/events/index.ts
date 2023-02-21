@@ -15,13 +15,16 @@ export function setEvents() {
     const mainWindow = getMainWindow();
     const panelWindow = getPanelWindow();
 
-    // Informações sobre o Ares.
+    // Informações gerais.
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
     ipcMain.handle('user-alias', () => cacheStore.userAlias);
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
     ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
+
+    // Informações do jogo.
+    ipcMain.handle('current-world', () => cacheStore.world);
 
     // Informa ao painel qual é a URL atual sempre que ocorre navegação.
     // Além disso, insere o CSS e solicita ao browser que atualize o Deimos.

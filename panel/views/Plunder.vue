@@ -10,12 +10,14 @@ import SwitchPopover from '$vue/components/SwitchPopover.vue';
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
 
-config.$subscribe(() => ipcSend('update-plunder-config', config.raw()));
+const plunderButtonText = computed(() => config.active === false ? 'Saquear' : 'Parar');
 
 watch(() => config.active, (value) => {
+    ipcSend('update-plunder-config', 'active', value);
+
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
     if (value === false) {
-        // Se não ocorreu saque, não é necessário salvar as informações.
+        // Se não houve saque, não é necessário realizar essa operação.
         const currentHistoryState = history.raw();
         if (Object.values(currentHistoryState).every((value) => value > 0)) {
             ipcSend('save-plundered-amount', currentHistoryState);
@@ -28,7 +30,12 @@ watch(() => config.active, (value) => {
     };
 });
 
-const plunderButtonText = computed(() => config.active === false ? 'Saquear' : 'Parar');
+watch(() => config.ignoreWall, (value) => ipcSend('update-plunder-config', 'ignoreWall', value));
+watch(() => config.groupAttack, (value) => ipcSend('update-plunder-config', 'groupAttack', value));
+watch(() => config.destroyWall, (value) => ipcSend('update-plunder-config', 'destroyWall', value));
+watch(() => config.useC, (value) => ipcSend('update-plunder-config', 'useC', value));
+watch(() => config.ignoreDelay, (value) => ipcSend('update-plunder-config', 'ignoreDelay', value));
+watch(() => config.blindAttack, (value) => ipcSend('update-plunder-config', 'blindAttack', value));
 </script>
 
 <template>
@@ -52,7 +59,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
 
         <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
             <NGridItem>
-                <SwitchPopover @switch-updated="(v) => config.ignoreWall = v">
+                <SwitchPopover :value="config.ignoreWall" @switch-updated="(v) => config.ignoreWall = v">
                     <template #trigger>Ignorar muralha</template>
                     <span>
                         Determina se o Ares deve evitar aldeias com muralha.
@@ -62,7 +69,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover @switch-updated="(v) => config.groupAttack = v">
+                <SwitchPopover :value="config.groupAttack" @switch-updated="(v) => config.groupAttack = v">
                     <template #trigger>Ataque em grupo</template>
                     <span>
                         Permite enviar ataques de mais de uma aldeia.
@@ -72,7 +79,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover @switch-updated="(v) => config.destroyWall = v">
+                <SwitchPopover :value="config.destroyWall" @switch-updated="(v) => config.destroyWall = v">
                     <template #trigger>Destruir muralha</template>
                     <span>
                         Determina se o Ares deve destruir as muralhas das aldeias.
@@ -83,14 +90,14 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover @switch-updated="(v) => config.useC = v">
+                <SwitchPopover :value="config.useC" @switch-updated="(v) => config.useC = v">
                     <template #trigger>Usar modelo C</template>
                     <span>Determina se o Ares deve usar o modelo C para atacar.</span>
                 </SwitchPopover>
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover @switch-updated="(v) => config.ignoreDelay = v">
+                <SwitchPopover :value="config.ignoreDelay" @switch-updated="(v) => config.ignoreDelay = v">
                     <template #trigger>Ignorar delay</template>
                     <span>
                         O jogo possui um limite de cinco ações por segundo.
@@ -101,7 +108,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover @switch-updated="(v) => config.blindAttack = v">
+                <SwitchPopover :value="config.blindAttack" @switch-updated="(v) => config.blindAttack = v">
                     <template #trigger>Ataque às cegas</template>
                     <span>Ataca mesmo se não houver informações sobre a aldeia.</span>
                 </SwitchPopover>

@@ -2,6 +2,7 @@
 import { ref, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { useIpcRenderer } from '@vueuse/electron';
+import { arrayIncludes } from '@tb-dev/ts-guard';
 import { NConfigProvider, darkTheme, NSpin } from 'naive-ui';
 import { routeNames, router } from '$panel/router/router.js';
 import { useAresStore } from '$vue/stores/ares.js';
@@ -15,7 +16,7 @@ ipcRenderer.on('browser-did-finish-load', () => browserIsLoading.value = false);
 
 // Define a janela de acordo com a página atual no jogo.
 watchEffect(() => {
-    if (aresStore.currentScreen && routeNames.includes(aresStore.currentScreen)) {
+    if (arrayIncludes(routeNames, aresStore.currentScreen)) {
         router.push({ name: aresStore.currentScreen });
     } else {
         router.push('/');

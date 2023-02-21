@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { NSwitch } from 'naive-ui';
 import { isBoolean } from '@tb-dev/ts-guard';
 import Popover from '$vue/components/Popover.vue';
@@ -36,22 +36,23 @@ const emit = defineEmits<{
     (e: 'switch-updated', value: boolean): void
 }>();
 
+const switchValue = ref(props.value);
+watch(switchValue, (value) => {
+    if (isBoolean(value)) {
+        emit('switch-updated', value);
+    };
+});
+
 const popoverStyle = reactive({
     maxWidth: `${props.popMaxWidth}px`,
     maxHeight: `${props.popMaxHeight}px`
 });
-
-function updateSwitch(value: boolean) {
-    if (isBoolean(value)) {
-        emit('switch-updated', value);
-    };
-};
 </script>
 
 <template>
     <div class="switch-popover">
         <NSwitch
-            @update:value="updateSwitch"
+            v-model:value="switchValue"
             :size="props.size"
             :round="props.round"
             :disabled="props.disabled"

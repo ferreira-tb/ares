@@ -1,5 +1,5 @@
 import { isString, isNotNull } from '@tb-dev/ts-guard';
-import { MainProcessError } from '$electron/error.js';
+import { DatabaseError } from '$electron/error.js';
 import { isWorld } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
 import type { CacheStore } from '$stores/cache.js';
@@ -80,7 +80,7 @@ async function savePlayerAsUser(playerName: string, User: typeof UserTable) {
         });
         
     } catch (err) {
-        MainProcessError.catch(err);
+        DatabaseError.catch(err);
     };
 };
 

@@ -24,43 +24,43 @@ export type PiniaPlunderInfoStore = Record<PiniaPlunderInfoStoreKeys, PiniaPlund
 export type BlindAttackPattern = 'max' | 'min';
 
 export type PlunderConfigType = {
+    // Painel
     /** Indica se o Plunder está ativado. */
     active: boolean;
-
     /** Determina se o Plunder deve atacar aldeias com muralha. */
     ignoreWall: boolean;
-    /** Nível da muralha a partir do qual ele deve ignorar. */
-    wallLevelToIgnore: number;
-
     /** Determina se o Plunder deve demolir a muralha das aldeias. */
     destroyWall: boolean;
-    /** Nível da muralha a partir do qual ele deve demolir. */
-    wallLevelToDestroy: number;
-
     /** Determina se o Plunder deve utilizar o grupo Insidious ao atacar. */
     groupAttack: boolean;
     /** Determina se o Plunder deve atacar usando o modelo C. */
     useC: boolean;
-
     /** Se ativado, o Plunder não terá delay entre os ataques. */
     ignoreDelay: boolean;
-    /** Delay médio entre os ataques. */
-    attackDelay: number;
-
     /** Se ativado, o Plunder não levará em consideração as informações dos exploradores. */
     blindAttack: boolean;
+
+    // Configurações
+    /** Nível da muralha a partir do qual ele deve ignorar. */
+    wallLevelToIgnore: number;
+    /** Nível da muralha a partir do qual ele deve demolir. */
+    wallLevelToDestroy: number;
+    /** Delay médio entre os ataques. */
+    attackDelay: number;
     /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
     blindAttackPattern: BlindAttackPattern;
-
     /** Razão de recursos que o Plunder deve levar em consideração. */
     resourceRatio: number;
     /** Minutos até que a página seja recarregada automaticamente. */
     minutesUntilReload: number;
 };
 
-export type PiniaPlunderConfigStoreKeys = keyof PlunderConfigType | 'raw';
+export type PlunderConfigKeys = keyof PlunderConfigType;
+export type PlunderConfigValues = PlunderConfigType[PlunderConfigKeys];
+
+export type PiniaPlunderConfigStoreKeys = PlunderConfigKeys | 'raw';
 export type PiniaPlunderConfigStoreActions = () => PlunderConfigType;
-export type PiniaPlunderConfigStoreValues = Ref<PlunderConfigType[keyof PlunderConfigType]> | PiniaPlunderConfigStoreActions;
+export type PiniaPlunderConfigStoreValues = Ref<PlunderConfigValues> | PiniaPlunderConfigStoreActions;
 export type PiniaPlunderConfigStore = Record<PiniaPlunderConfigStoreKeys, PiniaPlunderConfigStoreValues>;
 
 export type PlunderHistoryType = {

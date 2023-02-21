@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { NInputNumber } from 'naive-ui';
 import { isWallLevel, assertWallLevel } from '$global/utils/guards.js';
 import { AresError } from '$global/error.js';
@@ -13,7 +13,6 @@ interface Props {
     min?: number;
     max?: number;
     value?: number;
-    defaultValue?: number;
     arrowUp?: boolean;
     arrowDown?: boolean;
     bordered?: boolean;
@@ -27,7 +26,6 @@ const props = withDefaults(defineProps<Props>(), {
     min: 1,
     max: 20,
     value: 1,
-    defaultValue: 1,
     arrowUp: false,
     arrowDown: false,
     bordered: true,
@@ -41,6 +39,13 @@ const emit = defineEmits<{
   (e: 'level-updated', wallLevel: number): void
 }>();
 
+const inputValue = ref(props.value);
+watch(inputValue, (value) => {
+    if (isWallLevel(value)) {
+        emit('level-updated', value);
+    };
+});
+
 const keyboardOptions: Keyboard = reactive({
     ArrowUp: props.arrowUp,
     ArrowDown: props.arrowDown
@@ -49,20 +54,12 @@ const keyboardOptions: Keyboard = reactive({
 assertWallLevel(props.min, AresError);
 assertWallLevel(props.max, AresError);
 assertWallLevel(props.value, AresError);
-assertWallLevel(props.defaultValue, AresError);
-
-function updateWallLevel(value: number | null) {
-    if (isWallLevel(value)) {
-        emit('level-updated', value);
-    };
-};
 </script>
 
 <template>
         <NInputNumber
-            @update:value="updateWallLevel"
+            v-model:value="inputValue"
             :min="props.min" :max="props.max"
-            :default-value="props.defaultValue"
             :keyboard="keyboardOptions"
             :validator="isWallLevel"
             :bordered="props.bordered"

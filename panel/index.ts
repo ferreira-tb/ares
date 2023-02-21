@@ -20,7 +20,7 @@ panel.use(router);
 panel.config.errorHandler = PanelError.catch;
 
 // Eventos.
-setPanelWindowEvents(pinia);
+setPanelWindowEvents();
 
 router.push('/');
 panel.mount('#app');

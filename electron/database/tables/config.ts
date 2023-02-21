@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { isObject } from '@tb-dev/ts-guard';
 import { sequelize } from '$database/database.js';
-import { MainProcessError } from '$electron/error.js';
+import { DatabaseError } from '$electron/error.js';
 import { getPanelWindow } from '$electron/utils/helpers.js';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { Rectangle } from 'electron';
@@ -21,7 +21,7 @@ export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreation
             });
 
         } catch (err) {
-            MainProcessError.catch(err);
+            DatabaseError.catch(err);
         };
     };
 
@@ -33,7 +33,7 @@ export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreation
             panelWindow.setBounds(bounds.json as Rectangle);
 
         } catch (err) {
-            MainProcessError.catch(err);
+            DatabaseError.catch(err);
         };
     };
 };

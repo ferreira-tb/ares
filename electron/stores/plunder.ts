@@ -1,4 +1,6 @@
 import { assertBoolean, assertFinite, assertInteger, assertString } from '@tb-dev/ts-guard';
+import { assertWallLevel } from '$electron/utils/guards.js';
+import { ProxyStoreError } from '$electron/error.js';
 import type { PlunderStoreType } from '$types/electron.js';
 import type { PlunderConfigType, PlunderHistoryType, PlunderedAmount, BlindAttackPattern } from '$types/plunder.js';
 
@@ -47,12 +49,10 @@ function setPlunderConfigStore() {
     
             switch (key) {
                 case 'wallLevelToIgnore':
-                    assertInteger(value);
-                    if (value < 1 || value > 20) return false;
+                    assertWallLevel(value, ProxyStoreError);
                     break;
                 case 'wallLevelToDestroy':
-                    assertInteger(value);
-                    if (value < 1 || value > 20) return false;
+                    assertWallLevel(value, ProxyStoreError);
                     break;
                 case 'attackDelay':
                     assertInteger(value);

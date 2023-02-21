@@ -5,17 +5,26 @@ import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '
 import { useUnitStore } from '$vue/stores/units.js';
 import { resources as resourceList } from '$global/utils/constants.js';
 import { PanelError } from '$panel/error.js';
-import type { Pinia } from 'pinia';
 import type { PlunderedResources } from '$lib/plunder/resources.js';
 import type { TribalWarsGameDataType, UnitAmount } from '$types/game.js';
-import type { PlunderConfigType, PlunderedAmount, PlunderInfoType } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderedAmount, PlunderInfoType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
 
-export function setPanelWindowEvents(pinia: Pinia) {
-    const aresStore = useAresStore(pinia);
-    const unitStore = useUnitStore(pinia);
-    const plunderStore = usePlunderStore(pinia);
-    const plunderConfigStore = usePlunderConfigStore(pinia);
-    const plunderHistoryStore = usePlunderHistoryStore(pinia);
+export function setPanelWindowEvents() {
+    const aresStore = useAresStore();
+    const unitStore = useUnitStore();
+    const plunderStore = usePlunderStore();
+    const plunderConfigStore = usePlunderConfigStore();
+    const plunderHistoryStore = usePlunderHistoryStore();
+
+    // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
+    ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
+        try {
+            assertKeyOf<PlunderConfigType>(key, plunderConfigStore, `${key} não é uma configuração válida para o Plunder.`);
+            Reflect.set(plunderConfigStore, key, value);
+        } catch (err) {
+            PanelError.catch(err);
+        };
+    });
 
     ipcRenderer.on('patch-panel-plundered-amount', (_e, resources: PlunderedResources) => {
         try {

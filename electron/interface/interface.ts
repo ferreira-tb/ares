@@ -1,7 +1,7 @@
 import { URL } from 'url';
 import { app, BrowserWindow, MessageChannelMain } from 'electron';
 import { isObject, isKeyOf, isInstanceOf, assertObject } from '@tb-dev/ts-guard';
-import { MainProcessError } from '$electron/error.js';
+import { MainProcessError, ProxyStoreError, DatabaseError } from '$electron/error.js';
 import { getPanelWindow, createErrorLog } from '$electron/utils/helpers.js';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos.js';
 import { worldConfigURL, worldUnitURL } from '$electron/utils/constants';
@@ -36,7 +36,11 @@ export const unitStore = setUnitStore();
 export const worldConfigStore = setWorldConfigStore();
 export const worldUnitStore = setWorldUnitStore();
 
-MainProcessError.catch = async (err: unknown) => {
+MainProcessError.catch = catchError;
+ProxyStoreError.catch = catchError;
+DatabaseError.catch = catchError;
+
+async function catchError(err: unknown) {
     try {
         if (err instanceof Error) {
             const errorLog: Omit<MainProcessErrorLogType, 'id' | 'pending'> = {

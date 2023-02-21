@@ -27,23 +27,20 @@ export const usePlunderStore = defineStore('plunder', () => {
 });
 
 export const usePlunderConfigStore = defineStore('plunder-config', () => {
+    // Painel
     const active = ref<boolean>(false);
-
     const ignoreWall = ref<boolean>(false);
-    const wallLevelToIgnore = ref<number>(1);
-
     const destroyWall = ref<boolean>(false);
-    const wallLevelToDestroy = ref<number>(1);
-
     const groupAttack = ref<boolean>(false);
     const useC = ref<boolean>(false);
-
     const ignoreDelay = ref<boolean>(false);
-    const attackDelay = ref<number>(200);
-
     const blindAttack = ref<boolean>(false);
-    const blindAttackPattern = ref<BlindAttackPattern>('min');
 
+    // Configurações
+    const wallLevelToIgnore = ref<number>(1);
+    const wallLevelToDestroy = ref<number>(1);
+    const attackDelay = ref<number>(200);
+    const blindAttackPattern = ref<BlindAttackPattern>('min');
     const resourceRatio = ref<number>(0.8);
     const minutesUntilReload = ref<number>(10);
 
