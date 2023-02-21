@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
+import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
 import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcSend } from '$global/ipc.js';
 import { Deimos } from '$deimos/shared/ipc.js';
 import Resources from '$panel/components/Resources.vue';
-import { NButton, NButtonGroup, NSwitch, NPopover, NGrid, NGridItem } from 'naive-ui';
+import SwitchPopover from '$vue/components/SwitchPopover.vue';
 
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
@@ -51,77 +52,59 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
 
         <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
             <NGridItem>
-                <div class="switch-grid-item">
-                    <NSwitch v-model="config.ignoreWall" size="small"></NSwitch>
-                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
-                        <template #trigger><span class="span-label">Ignorar muralha</span></template>
-                        <span>
-                            Determina se o Ares deve evitar aldeias com muralha.
-                            Nas configurações, é possível determinar a partir de qual nível ele deve ignorar.
-                        </span>
-                    </NPopover>
-                </div>
+                <SwitchPopover @update-switch="(v) => config.ignoreWall = v">
+                    <template #trigger>Ignorar muralha</template>
+                    <span>
+                        Determina se o Ares deve evitar aldeias com muralha.
+                        Nas configurações, é possível determinar a partir de qual nível ele deve ignorar.
+                    </span>
+                </SwitchPopover>
             </NGridItem>
 
             <NGridItem>
-                <div class="switch-grid-item">
-                    <NSwitch v-model="config.groupAttack" size="small"></NSwitch>
-                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
-                        <template #trigger><span class="span-label">Ataque em grupo</span></template>
-                        <span>
-                            Permite enviar ataques de mais de uma aldeia.
-                            Recomenda-se que o grupo usado seja dinâmico.
-                        </span>
-                    </NPopover>
-                </div>
+                <SwitchPopover @update-switch="(v) => config.groupAttack = v">
+                    <template #trigger>Ataque em grupo</template>
+                    <span>
+                        Permite enviar ataques de mais de uma aldeia.
+                        Recomenda-se que o grupo usado seja dinâmico.
+                    </span>
+                </SwitchPopover>
             </NGridItem>
 
             <NGridItem>
-                <div class="switch-grid-item">
-                    <NSwitch v-model="config.destroyWall" size="small"></NSwitch>
-                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
-                        <template #trigger><span class="span-label">Destruir muralha</span></template>
-                        <span>
-                            Determina se o Ares deve destruir as muralhas das aldeias.
-                            Nas configurações, é possível determinar a partir de qual nível ele deve destruir,
-                            assim como a quantidade de tropas que ele deve enviar.
-                        </span>
-                    </NPopover>
-                </div>
+                <SwitchPopover @update-switch="(v) => config.destroyWall = v">
+                    <template #trigger>Destruir muralha</template>
+                    <span>
+                        Determina se o Ares deve destruir as muralhas das aldeias.
+                        Nas configurações, é possível determinar a partir de qual nível ele deve destruir,
+                        assim como a quantidade de tropas que ele deve enviar.
+                    </span>
+                </SwitchPopover>
             </NGridItem>
 
             <NGridItem>
-                <div class="switch-grid-item">
-                    <NSwitch v-model="config.useC" size="small"></NSwitch>
-                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
-                        <template #trigger><span class="span-label">Usar modelo C</span></template>
-                        <span>Determina se o Ares deve usar o modelo C para atacar.</span>
-                    </NPopover>
-                </div>
+                <SwitchPopover @update-switch="(v) => config.useC = v">
+                    <template #trigger>Usar modelo C</template>
+                    <span>Determina se o Ares deve usar o modelo C para atacar.</span>
+                </SwitchPopover>
             </NGridItem>
 
             <NGridItem>
-                <div class="switch-grid-item">
-                    <NSwitch v-model="config.ignoreDelay" size="small"></NSwitch>
-                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
-                        <template #trigger><span class="span-label">Ignorar delay</span></template>
-                        <span>
-                            O jogo possui um limite de cinco ações por segundo.
-                            Sendo assim, o Ares impõe um pequeno atraso entre cada ataque.
-                            Caso essa opção esteja ativada, o Ares não irá ter esse comportamento.
-                        </span>
-                    </NPopover>
-                </div>
+                <SwitchPopover @update-switch="(v) => config.ignoreDelay = v">
+                    <template #trigger>Ignorar delay</template>
+                    <span>
+                        O jogo possui um limite de cinco ações por segundo.
+                        Sendo assim, o Ares impõe um pequeno atraso entre cada ataque.
+                        Caso essa opção esteja ativada, o Ares não irá ter esse comportamento.
+                    </span>
+                </SwitchPopover>
             </NGridItem>
 
             <NGridItem>
-                <div class="switch-grid-item">
-                    <NSwitch v-model="config.blindAttack" size="small"></NSwitch>
-                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
-                        <template #trigger><span class="span-label">Ataque às cegas</span></template>
-                        <span>Ataca mesmo se não houver informações sobre a aldeia.</span>
-                    </NPopover>
-                </div>
+                <SwitchPopover @update-switch="(v) => config.blindAttack = v">
+                    <template #trigger>Ataque às cegas</template>
+                    <span>Ataca mesmo se não houver informações sobre a aldeia.</span>
+                </SwitchPopover>
             </NGridItem>
         </NGrid>
     </main>
@@ -137,13 +120,5 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
 .switch-area {
     -webkit-app-region: no-drag;
     margin-top: 1em;
-}
-
-.switch-area .switch-grid-item {
-    text-align: start;
-}
-
-.switch-area .span-label {
-    margin-left: 0.5em;
 }
 </style>
