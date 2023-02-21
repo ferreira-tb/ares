@@ -53,7 +53,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             <NGridItem>
                 <div class="switch-grid-item">
                     <NSwitch v-model="config.ignoreWall" size="small"></NSwitch>
-                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
                         <template #trigger><span class="span-label">Ignorar muralha</span></template>
                         <span>
                             Determina se o Ares deve evitar aldeias com muralha.
@@ -66,7 +66,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             <NGridItem>
                 <div class="switch-grid-item">
                     <NSwitch v-model="config.groupAttack" size="small"></NSwitch>
-                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
                         <template #trigger><span class="span-label">Ataque em grupo</span></template>
                         <span>
                             Permite enviar ataques de mais de uma aldeia.
@@ -79,7 +79,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             <NGridItem>
                 <div class="switch-grid-item">
                     <NSwitch v-model="config.destroyWall" size="small"></NSwitch>
-                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
                         <template #trigger><span class="span-label">Destruir muralha</span></template>
                         <span>
                             Determina se o Ares deve destruir as muralhas das aldeias.
@@ -93,7 +93,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             <NGridItem>
                 <div class="switch-grid-item">
                     <NSwitch v-model="config.useC" size="small"></NSwitch>
-                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
                         <template #trigger><span class="span-label">Usar modelo C</span></template>
                         <span>Determina se o Ares deve usar o modelo C para atacar.</span>
                     </NPopover>
@@ -103,7 +103,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             <NGridItem>
                 <div class="switch-grid-item">
                     <NSwitch v-model="config.ignoreDelay" size="small"></NSwitch>
-                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
                         <template #trigger><span class="span-label">Ignorar delay</span></template>
                         <span>
                             O jogo possui um limite de cinco ações por segundo.
@@ -117,7 +117,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             <NGridItem>
                 <div class="switch-grid-item">
                     <NSwitch v-model="config.blindAttack" size="small"></NSwitch>
-                    <NPopover :delay="800" :maxWidth="250" :maxHeight="150" animated scrollable keep-alive-on-hover>
+                    <NPopover :delay="800" animated scrollable keep-alive-on-hover style="max-width: 250px; max-height: 100px;">
                         <template #trigger><span class="span-label">Ataque às cegas</span></template>
                         <span>Ataca mesmo se não houver informações sobre a aldeia.</span>
                     </NPopover>

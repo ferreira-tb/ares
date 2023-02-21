@@ -11,7 +11,7 @@ watchEffect(() => router.push({ name: route.value }));
 
 <template>
     <nav class="module-nav-bar">
-        <NTabs animated defaultValue="normal-errors" v-model:value="route" justifyContent="start" tab-style="margin-right: 1em;">
+        <NTabs animated defaultValue="normal-errors" v-model:value="route" justifyContent="start" tab-style="margin-right: 2em;">
             <NTab name="normal-errors" tab="Geral"></NTab>
             <NTab name="dom-errors" tab="DOM"></NTab>
             <NTab name="main-process-errors" tab="Núcleo"></NTab>

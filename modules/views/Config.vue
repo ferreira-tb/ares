@@ -13,7 +13,7 @@ watch(route, () => router.push({ name: route.value }));
 
 <template>
     <nav class="module-nav-bar">
-        <NTabs animated defaultValue="general-config" v-model:value="route" justifyContent="start" tab-style="margin-right: 1em;">
+        <NTabs animated defaultValue="general-config" v-model:value="route" justifyContent="start" tab-style="margin-right: 2em;">
             <NTab name="general-config" tab="Geral">Geral</NTab>
             <NTab name="plunder-config" tab="Saque">Saque</NTab>
         </NTabs>
