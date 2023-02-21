@@ -1,5 +1,5 @@
 import { createRouter, createMemoryHistory } from 'vue-router';
-import { getRouteNames } from '$vue/utils/helpers.js';
+import { getRouteNames, getChildrenRoutes } from '$vue/utils/helpers.js';
 import Default from '$vue/views/Default.vue';
 
 import Config from '$modules/views/Config.vue';
@@ -11,7 +11,7 @@ import ErrorList from '$modules/components/error/ErrorList.vue';
 import DomErrorList from '$modules/components/error/DomErrorList.vue';
 import MainErrorList from '$modules/components/error/MainErrorList.vue';
 
-import type { ModuleRouteRecordRaw, ModuleRoutes } from '$types/modules.js';
+import type { ModuleRouteRecordRaw, ModuleRoutes, ConfigModuleRoutes } from '$types/modules.js';
 
 // Os componentes devem ser passados diretamente.
 // Importá-los gera problemas ao compilar.
@@ -68,4 +68,5 @@ export const router = createRouter({
     routes: routes
 });
 
-export const routeNames = getRouteNames(routes) as ModuleRoutes[];
+export const routeNames = getRouteNames<ModuleRoutes>(routes);
+export const configRoutes = getChildrenRoutes<ConfigModuleRoutes>(routes);

@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { assertKeyOf, assertInteger, assertString } from '@tb-dev/ts-guard';
+import { assertKeyOf, assertInteger } from '@tb-dev/ts-guard';
 import { useAresStore } from '$vue/stores/ares.js';
 import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { useUnitStore } from '$vue/stores/units.js';
@@ -17,15 +17,6 @@ export function setPanelWindowEvents(pinia: Pinia) {
     const plunderStore = usePlunderStore(pinia);
     const plunderConfigStore = usePlunderConfigStore(pinia);
     const plunderHistoryStore = usePlunderHistoryStore(pinia);
-
-    ipcRenderer.on('page-url', (_e, url: unknown) => {
-        try {
-            assertString(url, 'A URL é inválida.');
-            aresStore.currentURL = url;
-        } catch (err) {
-            PanelError.catch(err);
-        };
-    });
 
     ipcRenderer.on('patch-panel-plundered-amount', (_e, resources: PlunderedResources) => {
         try {

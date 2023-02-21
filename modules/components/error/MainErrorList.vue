@@ -1,20 +1,12 @@
 <script setup lang="ts">
 import { reactive, watchEffect } from 'vue';
 import { useIpcRenderer } from '@vueuse/electron';
+import { NCard } from 'naive-ui';
 import { assertArray, assertInteger } from '@tb-dev/ts-guard';
 import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { getLocaleDateString } from '$global/utils/helpers.js';
 import { ModuleError } from '$modules/error.js';
 import type { ErrorLogType } from '$types/error.js';
-import { VBtn as Button } from 'vuetify/components/VBtn';
-import {
-    VCard as Card,
-    VCardItem as CardItem,
-    VCardTitle as CardTitle,
-    VCardSubtitle as CardSubtitle,
-    VCardText as CardText,
-    VCardActions as CardAction
-} from 'vuetify/components/VCard';
 
 const raw = await ipcInvoke('get-main-process-error-log');
 assertArray(raw, 'Houve um erro durante a conexão com o banco de dados.');
@@ -38,16 +30,17 @@ function deleteError(id: number) {
     <section>
         <template v-if="errors.length > 0">
             <TransitionGroup name="fade" mode="out-in">
-                <Card v-for="error of errors" :key="error.id" class="error-log rounded">
-                    <CardItem>
-                        <CardTitle>{{ error.name }}</CardTitle>
-                        <CardSubtitle>{{ getLocaleDateString(error.time, true) }}</CardSubtitle>
-                    </CardItem>
-                    <CardText>{{ error.message }}</CardText>
-                    <CardAction>
-                        <Button @click="deleteError(error.id)">Excluir</Button>
-                    </CardAction>
-                </Card>
+                <NCard
+                    v-for="error of errors"
+                    :key="error.id"
+                    class="error-log"
+                    hoverable closable
+                    @close="deleteError(error.id)"
+                >
+                    <template #header>{{ error.name }}</template>
+                    <template #header-extra>{{ getLocaleDateString(error.time, true) }}</template>
+                    <template #default>{{ error.message }}</template>
+                </NCard>
             </TransitionGroup>
         </template>
         <div v-else class="no-errors green-text bold">

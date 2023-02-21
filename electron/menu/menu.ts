@@ -23,7 +23,7 @@ export function setAppMenu() {
     
     const helpMenu: MenuItemConstructorOptions[] = [
         { label: 'Site', click: () => shell.openExternal(aresURL) },
-        { label: 'Git Hub', click: () => shell.openExternal(repoURL) },
+        { label: 'Repositório', click: () => shell.openExternal(repoURL) },
         { label: 'Discord', click: () => shell.openExternal(discordURL) },
         { type: 'separator' },
         { label: 'Registro de erros', click: () => showErrorLog() }

@@ -4,8 +4,3 @@
 @use './scrollbar.scss';
 @use './transitions.scss';
 @use './utils.scss';
-
-@use 'vuetify/lib/styles/main.sass' with (
-    $utilities: false,
-    $color-pack: false,
-);
