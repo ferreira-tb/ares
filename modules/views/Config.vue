@@ -1,19 +1,28 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, nextTick, onMounted } from 'vue';
 import { RouterView } from 'vue-router';
-import { NTabs, NTab } from 'naive-ui';
+import { NTabs, NTab, type TabsInst } from 'naive-ui';
 import { arrayIncludes } from '@tb-dev/ts-guard';
 import { configRoutes, router } from '$modules/router/router.js';
 import type { ConfigModuleRoutes } from '$types/modules.js';
 
-const route = ref<ConfigModuleRoutes>('general-config');
-if (arrayIncludes(configRoutes, router.currentRoute.value)) route.value = router.currentRoute.value;
-watch(route, () => router.push({ name: route.value }));
+const tabs = ref<TabsInst | null>(null);
+const tabName = ref<ConfigModuleRoutes>('general-config');
+watch(tabName, () => router.push({ name: tabName.value }));
+
+onMounted(async () => {
+    // Se uma rota já tiver sido direcionada, atualiza o tabName.
+    if (arrayIncludes(configRoutes, router.currentRoute.value.name)) {
+        tabName.value = router.currentRoute.value.name;
+        await nextTick();
+        tabs.value?.syncBarPosition();
+    };
+});
 </script>
 
 <template>
     <nav class="module-nav-bar">
-        <NTabs animated defaultValue="general-config" v-model:value="route" justifyContent="start" tab-style="margin-right: 2em;">
+        <NTabs ref="tabs" animated defaultValue="general-config" v-model:value="tabName" justifyContent="start" tab-style="margin-right: 2em;">
             <NTab name="general-config" tab="Geral">Geral</NTab>
             <NTab name="plunder-config" tab="Saque">Saque</NTab>
         </NTabs>

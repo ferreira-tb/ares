@@ -69,4 +69,4 @@ export const router = createRouter({
 });
 
 export const routeNames = getRouteNames<ModuleRoutes>(routes);
-export const configRoutes = getChildrenRoutes<ConfigModuleRoutes>(routes);
+export const configRoutes = getChildrenRoutes<ConfigModuleRoutes>(routes, 'app-config');
