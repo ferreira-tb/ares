@@ -1,11 +1,9 @@
 <script setup lang="ts">
-
+import ErrorResult from '$vue/components/ErrorResult.vue';
 </script>
 
 <template>
-    <div class="nothing-to-show">
-        Nada para mostrar :/
-    </div>
+    <ErrorResult description="Não foi possível carregar as configurações :(" />
 </template>
 
 <style scoped>

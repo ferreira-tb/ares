@@ -43,7 +43,7 @@ function deleteError(id: number) {
                 </NCard>
             </TransitionGroup>
         </template>
-        <div v-else class="nothing-to-show">
+        <div v-else class="bold-green-message">
             Nenhum erro registrado :)
         </div>
     </section>

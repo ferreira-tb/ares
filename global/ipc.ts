@@ -23,7 +23,7 @@ export async function ipcInvoke(channel: 'get-main-process-error-log'): Promise<
 
 // Plunder
 export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-plunder-config', world?: string): Promise<PlunderConfigType | null>;
+export async function ipcInvoke(channel: 'get-plunder-config'): Promise<PlunderConfigType | null>;
 export async function ipcInvoke(channel: 'get-last-plundered-amount'): Promise<PlunderedAmount | null>;
 export async function ipcInvoke(channel: 'get-total-plundered-amount'): Promise<PlunderedAmount | null>;
 
@@ -45,6 +45,7 @@ export function ipcSend(channel: 'force-reload-browser-window'): void;
 export function ipcSend(channel: 'open-plunder-config-window'): void;
 
 // Erros
+export function ipcSend(channel: 'open-error-log-window'): void;
 export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
 export function ipcSend(channel: 'set-dom-error-log', err: DOMErrorLogBase): void;
 export function ipcSend(channel: 'delete-error-log', id: number): void;

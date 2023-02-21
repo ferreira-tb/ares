@@ -32,8 +32,14 @@
     @include bold-text-color(var(--color-green));
 }
 
-.nothing-to-show {
+.bold-green-message {
     @include bold-text-color(var(--color-green));
+    text-align: center;
+    margin-top: 1em;
+}
+
+.bold-red-message {
+    @include bold-text-color(var(--color-red));
     text-align: center;
     margin-top: 1em;
 }
