@@ -38,7 +38,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'update-level', wallLevel: number): void
+  (e: 'level-updated', wallLevel: number): void
 }>();
 
 const keyboardOptions: Keyboard = reactive({
@@ -53,7 +53,7 @@ assertWallLevel(props.defaultValue, AresError);
 
 function updateWallLevel(value: number | null) {
     if (isWallLevel(value)) {
-        emit('update-level', value);
+        emit('level-updated', value);
     };
 };
 </script>

@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-    (e: 'update-switch', value: boolean): void
+    (e: 'switch-updated', value: boolean): void
 }>();
 
 const popoverStyle = reactive({
@@ -43,7 +43,7 @@ const popoverStyle = reactive({
 
 function updateSwitch(value: boolean) {
     if (isBoolean(value)) {
-        emit('update-switch', value);
+        emit('switch-updated', value);
     };
 };
 </script>

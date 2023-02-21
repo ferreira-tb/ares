@@ -19,7 +19,7 @@ const config = isObject(previousConfig) ? reactive(previousConfig) : null;
                 <template #trigger>Ignorar muralhas maiores que</template>
                 <span>Determina a partir de qual nível de muralha o Ares deve ignorar aldeias.</span>
             </Popover>
-            <WallInput :value="config.wallLevelToIgnore" @update-level="(l) => config!.wallLevelToIgnore = l" />
+            <WallInput :value="config.wallLevelToIgnore" @level-updated="(l) => config!.wallLevelToIgnore = l" />
         </NSpace>
     </section>
 

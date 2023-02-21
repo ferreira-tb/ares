@@ -52,7 +52,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
 
         <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
             <NGridItem>
-                <SwitchPopover @update-switch="(v) => config.ignoreWall = v">
+                <SwitchPopover @switch-updated="(v) => config.ignoreWall = v">
                     <template #trigger>Ignorar muralha</template>
                     <span>
                         Determina se o Ares deve evitar aldeias com muralha.
@@ -62,7 +62,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover @update-switch="(v) => config.groupAttack = v">
+                <SwitchPopover @switch-updated="(v) => config.groupAttack = v">
                     <template #trigger>Ataque em grupo</template>
                     <span>
                         Permite enviar ataques de mais de uma aldeia.
@@ -72,7 +72,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover @update-switch="(v) => config.destroyWall = v">
+                <SwitchPopover @switch-updated="(v) => config.destroyWall = v">
                     <template #trigger>Destruir muralha</template>
                     <span>
                         Determina se o Ares deve destruir as muralhas das aldeias.
@@ -83,14 +83,14 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover @update-switch="(v) => config.useC = v">
+                <SwitchPopover @switch-updated="(v) => config.useC = v">
                     <template #trigger>Usar modelo C</template>
                     <span>Determina se o Ares deve usar o modelo C para atacar.</span>
                 </SwitchPopover>
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover @update-switch="(v) => config.ignoreDelay = v">
+                <SwitchPopover @switch-updated="(v) => config.ignoreDelay = v">
                     <template #trigger>Ignorar delay</template>
                     <span>
                         O jogo possui um limite de cinco ações por segundo.
@@ -101,7 +101,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover @update-switch="(v) => config.blindAttack = v">
+                <SwitchPopover @switch-updated="(v) => config.blindAttack = v">
                     <template #trigger>Ataque às cegas</template>
                     <span>Ataca mesmo se não houver informações sobre a aldeia.</span>
                 </SwitchPopover>
