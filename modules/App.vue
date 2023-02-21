@@ -11,7 +11,7 @@ import { NConfigProvider, darkTheme } from 'naive-ui';
                     <Suspense>
                         <component :is="Component" />
                         <template #fallback>
-                            <span class="to-center green-text bold">Carregando...</span>
+                            <span class="loading-text">Carregando...</span>
                         </template>
                     </Suspense>
                 </Transition>

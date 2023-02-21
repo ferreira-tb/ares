@@ -43,7 +43,7 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
         <Transition name="fade" mode="out-in">
             <Suspense>
                 <Resources :plunder-status="config.active" />
-                <template #fallback class="to-center green-text bold">
+                <template #fallback class="loading-text">
                     Carregando...
                 </template>
             </Suspense>
@@ -139,7 +139,11 @@ const plunderButtonText = computed(() => config.active === false ? 'Saquear' : '
     margin-top: 1em;
 }
 
-.span-label {
+.switch-area .switch-grid-item {
+    text-align: start;
+}
+
+.switch-area .span-label {
     margin-left: 0.5em;
 }
 </style>

@@ -3,7 +3,9 @@
 </script>
 
 <template>
-    <div>Geral</div>
+    <div class="nothing-to-show">
+        Nada para mostrar :/
+    </div>
 </template>
 
 <style scoped>

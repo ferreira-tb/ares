@@ -45,7 +45,7 @@ function deleteError(id: number) {
                 </NCard>
             </TransitionGroup>
         </template>
-        <div v-else class="no-errors green-text bold">
+        <div v-else class="nothing-to-show">
             Nenhum erro registrado :)
         </div>
     </section>
@@ -58,10 +58,5 @@ function deleteError(id: number) {
 
 .error-log:last-of-type {
     margin-bottom: 1em;
-}
-
-.no-errors {
-    text-align: center;
-    margin-top: 1em;
 }
 </style>

@@ -26,13 +26,6 @@
     font-weight: normal;
 }
 
-a,
-.green {
-    text-decoration: none;
-    color: var(--color-green);
-    transition: 0.4s;
-}
-
 body {
     color: var(--color-text);
     background: var(--color-background);
@@ -45,4 +38,10 @@ body {
 
 main {
     margin: 0.5em;
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-green);
+    transition: 0.4s;
 }

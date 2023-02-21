@@ -1,20 +1,9 @@
-.bold {
+@mixin bold-text-color($text-color: var(--color-green)) {
     font-weight: bold;
+    color: $text-color;
 }
 
-.italic {
-    font-style: italic;
-}
-
-.green-text {
-    color: var(--color-green);
-}
-
-.red-text {
-    color: var(--color-red);
-}
-
-.to-center {
+@mixin to-center() {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -34,6 +23,17 @@
     vertical-align: -4px;
 }
 
-.switch-grid-item {
-    text-align: start;
+.bold-green {
+    @include bold-text-color(var(--color-green));
+}
+
+.loading-text {
+    @include to-center();
+    @include bold-text-color(var(--color-green));
+}
+
+.nothing-to-show {
+    @include bold-text-color(var(--color-green));
+    text-align: center;
+    margin-top: 1em;
 }

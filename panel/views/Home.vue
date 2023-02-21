@@ -12,7 +12,7 @@ const appVersion = ref<string>(await ipcInvoke('app-version'));
 <template>
     <main>
         <div class="title-area">
-            <h1 class="green-text bold">{{ appName.toUpperCase() }}</h1>
+            <h1 class="bold-green">{{ appName.toUpperCase() }}</h1>
             <h2>Uma ferramenta para Tribal Wars</h2>
         </div>
         <NButtonGroup>
