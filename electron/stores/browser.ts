@@ -8,6 +8,7 @@ import type { User as UserTable } from '$tables/user.js';
 import type { World } from '$types/game.js';
 
 class BrowserStore implements BrowserStoreType {
+    locale: string | null = null;
     majorVersion: string | null = null;
     currentWorld: World | null = null;
     currentPlayer: string | null = null;

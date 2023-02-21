@@ -120,57 +120,59 @@ export interface RawTribalWarsGameData {
 };
 
 export interface TribalWarsGameDataType {
-       /** Mundo atual. */
-       readonly currentWorld: World | null;
-       /** Versão do Tribal Wars. */
-       readonly majorVersion: string | null;
-       /** Nome do jogador ativo. */
-       readonly currentPlayer: string | null;
-       /** ID do jogador ativo. */
-       readonly currentPlayerId: number | null;
-       /** Pontuação do jogador. */
-       readonly currentPlayerPoints: number | null;
-       /** Quantidade de aldeias que o jogador possui. */
-       readonly villageAmount: number | null;
-       /** Grupo de aldeias atual. */
-       readonly groupId: number | null;
-   
-       /** Conta premium. */
-       readonly premium: boolean | null;
-       /** Gerente de conta. */
-       readonly accountManager: boolean | null;
-       /** Assistente de saque. */
-       readonly farmAssistant: boolean | null;
-   
-       /** Janela atual. */
-       readonly currentScreen: string | null;
-       /** Modo da janela atual. */
-       readonly screenMode: string | null;
-       /** Indica se está no modo de pré-jogo. */
-       readonly pregame: boolean | null;
-   
-       /** Coordenada X da aldeia atual. */
-       readonly currentX: number | null;
-       /** Coordenada Y da aldeia atual. */
-       readonly currentY: number | null;
-       /** ID da aldeia atual. */
-       readonly currentVillageId: number | null;
-       /** Nome da aldeia atual. */
-       readonly currentVillageName: string | null;
-       /** População da aldeia atual. */
-       readonly currentVillagePopulation: number | null;
-       /** População máxima da aldeia atual. */
-       readonly currentVillageMaxPopulation: number | null;
-       /** Pontos da aldeia atual. */
-       readonly currentVillagePoints: number | null;
-       /** Quantidade de madeira na aldeia atual. */
-       readonly currentVillageWood: number | null;
-       /** Quantidade de argila na aldeia atual. */
-       readonly currentVillageStone: number | null;
-       /** Quantidade de ferro na aldeia atual. */
-       readonly currentVillageIron: number | null;
-       /** Capacidade de armazenamento máximo da aldeia atual. */
-       readonly currentVillageMaxStorage: number | null;
+    /** Local. */
+    readonly locale: string | null;
+    /** Mundo atual. */
+    readonly currentWorld: World | null;
+    /** Versão do Tribal Wars. */
+    readonly majorVersion: string | null;
+    /** Nome do jogador ativo. */
+    readonly currentPlayer: string | null;
+    /** ID do jogador ativo. */
+    readonly currentPlayerId: number | null;
+    /** Pontuação do jogador. */
+    readonly currentPlayerPoints: number | null;
+    /** Quantidade de aldeias que o jogador possui. */
+    readonly villageAmount: number | null;
+    /** Grupo de aldeias atual. */
+    readonly groupId: number | null;
+
+    /** Conta premium. */
+    readonly premium: boolean | null;
+    /** Gerente de conta. */
+    readonly accountManager: boolean | null;
+    /** Assistente de saque. */
+    readonly farmAssistant: boolean | null;
+
+    /** Janela atual. */
+    readonly currentScreen: string | null;
+    /** Modo da janela atual. */
+    readonly screenMode: string | null;
+    /** Indica se está no modo de pré-jogo. */
+    readonly pregame: boolean | null;
+
+    /** Coordenada X da aldeia atual. */
+    readonly currentX: number | null;
+    /** Coordenada Y da aldeia atual. */
+    readonly currentY: number | null;
+    /** ID da aldeia atual. */
+    readonly currentVillageId: number | null;
+    /** Nome da aldeia atual. */
+    readonly currentVillageName: string | null;
+    /** População da aldeia atual. */
+    readonly currentVillagePopulation: number | null;
+    /** População máxima da aldeia atual. */
+    readonly currentVillageMaxPopulation: number | null;
+    /** Pontos da aldeia atual. */
+    readonly currentVillagePoints: number | null;
+    /** Quantidade de madeira na aldeia atual. */
+    readonly currentVillageWood: number | null;
+    /** Quantidade de argila na aldeia atual. */
+    readonly currentVillageStone: number | null;
+    /** Quantidade de ferro na aldeia atual. */
+    readonly currentVillageIron: number | null;
+    /** Capacidade de armazenamento máximo da aldeia atual. */
+    readonly currentVillageMaxStorage: number | null;
 };
 
 export interface RawPlunderInfo {

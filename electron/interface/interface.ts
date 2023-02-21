@@ -46,7 +46,8 @@ MainProcessError.catch = async (err: unknown) => {
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: browserStore.majorVersion
+                tribal: browserStore.majorVersion,
+                locale: browserStore.locale
             };
 
             await sequelize.transaction(async (transaction) => {

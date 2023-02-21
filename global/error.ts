@@ -10,7 +10,7 @@ export class AresError extends Error {
     public static catch(err: unknown) {
         if (err instanceof Error) {
             if (err.name === 'DOMAssertionError') {
-                ipcSend('set-dom-error-log', { selector: err.message } satisfies DOMErrorLogBase);
+                ipcSend('set-dom-error-log', { name: err.name, selector: err.message } satisfies DOMErrorLogBase);
             } else {
                 ipcSend('set-error-log', { name: err.name, message: err.message } satisfies ErrorLogBase);
             };

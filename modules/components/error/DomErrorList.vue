@@ -16,8 +16,6 @@ watchEffect(() => errors.sort((a, b) => b.time - a.time));
 const ipcRenderer = useIpcRenderer();
 ipcRenderer.on('dom-error-log-updated', (_e, newError: DOMErrorLogType) => errors.push(newError));
 
-const getOrigin = (url: string) => new URL(url).origin;
-
 function deleteError(id: number) {
     assertInteger(id, 'O ID do erro deve ser um número inteiro.');
     ipcSend('delete-dom-error-log', id);
@@ -39,7 +37,7 @@ function deleteError(id: number) {
                     hoverable closable
                     @close="deleteError(error.id)"
                 >
-                    <template #header>{{ getOrigin(error.url) }}</template>
+                    <template #header>{{ error.name }}</template>
                     <template #header-extra>{{ getLocaleDateString(error.time, true) }}</template>
                     <template #default>{{ error.selector }}</template>
                 </NCard>

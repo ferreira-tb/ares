@@ -4,6 +4,8 @@ import type { World } from '$types/game.js';
 
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export const useAresStore = defineStore('ares', () => {
+    /** Localização do jogo. */
+    const locale = ref<string | null>(null);
     /** Mundo atual. */
     const currentWorld = ref<World | null>(null);
     /** Versão do Tribal Wars. */
@@ -66,6 +68,7 @@ export const useAresStore = defineStore('ares', () => {
     const currentVillageMaxStorage = ref<number | null>(null);
 
     return {
+        locale,
         majorVersion,
         currentPlayer,
         currentPlayerId,

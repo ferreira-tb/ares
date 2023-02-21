@@ -5,6 +5,7 @@ import type { World } from '$types/game.js';
 
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export class TribalWarsGameData implements TribalWarsGameDataType {
+    public readonly locale: string | null;
     public readonly currentWorld: World | null;
     public readonly majorVersion: string | null;
     public readonly currentPlayer: string | null;
@@ -34,6 +35,7 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
     public readonly currentVillageMaxStorage: number | null;
 
     constructor(rawGameData: RawTribalWarsGameData) {
+        this.locale = toNull(rawGameData.locale, isString);
         this.currentWorld = isWorld(rawGameData.world) ? rawGameData.world : null;
         this.majorVersion = toNull(rawGameData.majorVersion, isString);
         this.currentPlayer = toNull(rawGameData.player.name, isString);

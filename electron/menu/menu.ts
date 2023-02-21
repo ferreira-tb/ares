@@ -5,14 +5,26 @@ import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/util
 import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
+// F1 - DevTools (apenas no modo de desenvolvimento).
+// F2 - Exibe ou oculta o painel.
+// F3 - Configurações.
+// F4 - Scripts.
+// F5 - Atualiza a página.
+
 export function setAppMenu() {
     const mainWindow = getMainWindow();
     const panelWindow = getPanelWindow();
+
+    const localeMenu: MenuItemConstructorOptions[] = [
+        { label: 'Brasil', type: 'radio' },
+        { label: 'Portugal', type: 'radio', enabled: false }
+    ];
 
     const optionsMenu: MenuItemConstructorOptions[] = [
         { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
         { label: 'Atualizar', accelerator: 'F5', role: 'reload' },
         { type: 'separator' },
+        { label: 'Local', submenu: localeMenu },
         { label: 'Configurações', accelerator: 'F3', click: () => showAppConfig('general-config') },
         { type: 'separator' },
         { label: 'Sair', accelerator: 'Esc', role: 'quit' },
@@ -31,6 +43,7 @@ export function setAppMenu() {
 
     const mainMenu = Menu.buildFromTemplate([
         { label: 'Opções', submenu: optionsMenu },
+        { label: 'Scripts', enabled: false, accelerator: 'F4' },
         { label: 'Ajuda', submenu: helpMenu }
     ] satisfies MenuItemConstructorOptions[]);
 

@@ -13,10 +13,12 @@ export interface ErrorLogType extends ErrorLogBase {
     readonly electron: string;
     readonly chrome: string;
     readonly tribal: string | null;
+    readonly locale: string | null;
     readonly pending: boolean;
 }
 
 export type DOMErrorLogBase = {
+    readonly name: string;
     readonly selector: string;
 };
 
@@ -29,6 +31,7 @@ export interface DOMErrorLogType extends DOMErrorLogBase {
     readonly electron: string;
     readonly chrome: string;
     readonly tribal: string | null;
+    readonly locale: string | null;
     readonly pending: boolean;
 };
 
@@ -44,5 +47,6 @@ export interface MainProcessErrorLogType extends MainProcessErrorLogBase {
     readonly electron: string;
     readonly chrome: string;
     readonly tribal: string | null;
+    readonly locale: string | null;
     readonly pending: boolean;
 };

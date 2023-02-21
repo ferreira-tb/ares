@@ -22,7 +22,8 @@ export function setErrorEvents() {
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: browserStore.majorVersion
+                tribal: browserStore.majorVersion,
+                locale: browserStore.locale
             };
 
             await sequelize.transaction(async (transaction) => {
@@ -72,6 +73,7 @@ export function setErrorEvents() {
             assertString(err.selector, 'O seletor informado no relatório de erro é inválido.');
 
             const domErrorLog: Omit<DOMErrorLogType, 'id' | 'pending'> = {
+                name: err.name,
                 url: new URL(e.sender.getURL()).href,
                 world: browserStore.currentWorld,
                 selector: err.selector,
@@ -79,7 +81,8 @@ export function setErrorEvents() {
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: browserStore.majorVersion
+                tribal: browserStore.majorVersion,
+                locale: browserStore.locale
             };
 
             await sequelize.transaction(async (transaction) => {

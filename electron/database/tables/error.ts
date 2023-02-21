@@ -14,6 +14,7 @@ export class ErrorLog extends Model<InferAttributes<ErrorLog>, InferCreationAttr
     declare readonly electron: string;
     declare readonly chrome: string;
     declare readonly tribal: string | null;
+    declare readonly locale: string | null;
     declare readonly pending: CreationOptional<boolean>;
 };
 
@@ -55,6 +56,10 @@ ErrorLog.init({
         type: DataTypes.STRING,
         allowNull: true
     },
+    locale: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     pending: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -64,6 +69,7 @@ ErrorLog.init({
 
 export class DOMErrorLog extends Model<InferAttributes<DOMErrorLog>, InferCreationAttributes<DOMErrorLog>> implements DOMErrorLogType {
     declare readonly id: CreationOptional<number>;
+    declare readonly name: string;
     declare readonly selector: string;
     declare readonly url: string;
     declare readonly world: World | null;
@@ -72,6 +78,7 @@ export class DOMErrorLog extends Model<InferAttributes<DOMErrorLog>, InferCreati
     declare readonly electron: string;
     declare readonly chrome: string;
     declare readonly tribal: string | null;
+    declare readonly locale: string | null;
     declare readonly pending: CreationOptional<boolean>;
 };
 
@@ -80,6 +87,10 @@ DOMErrorLog.init({
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
     selector: {
         type: DataTypes.STRING,
@@ -113,6 +124,10 @@ DOMErrorLog.init({
         type: DataTypes.STRING,
         allowNull: true
     },
+    locale: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     pending: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -132,6 +147,7 @@ export class MainProcessErrorLog extends Model<MPAttributes, MPCreationAttribute
     declare readonly electron: string;
     declare readonly chrome: string;
     declare readonly tribal: string | null;
+    declare readonly locale: string | null;
     declare readonly pending: CreationOptional<boolean>;
 };
 
@@ -166,6 +182,10 @@ MainProcessErrorLog.init({
         allowNull: false
     },
     tribal: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    locale: {
         type: DataTypes.STRING,
         allowNull: true
     },
