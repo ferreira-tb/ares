@@ -1,5 +1,6 @@
 import type { World } from '$types/game.js';
-import type { TribalWarsGameDataType, PlunderInfoType } from '$types/deimos.js';
+import type { TribalWarsGameDataType } from '$types/game.js';
+import type { PlunderInfoType } from '$types/plunder.js';
 
 export type UserAlias = `${string}__USERID__${string}`;
 

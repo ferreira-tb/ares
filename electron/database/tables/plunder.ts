@@ -1,18 +1,28 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$database/database.js';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { PlunderConfigType, PlunderHistoryType, PlunderedAmount } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderHistoryType, PlunderedAmount, BlindAttackPattern } from '$types/plunder.js';
 import type { UserAlias } from '$types/electron.js';
 
 export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCreationAttributes<PlunderConfig>> implements PlunderConfigType {
     declare readonly id: UserAlias;
     declare readonly active: boolean;
+
     declare readonly ignoreWall: boolean;
+    declare readonly wallLevelToIgnore: number;
+
     declare readonly destroyWall: boolean;
+    declare readonly wallLevelToDestroy: number;
+
     declare readonly groupAttack: boolean;
     declare readonly useC: boolean;
+
     declare readonly ignoreDelay: boolean;
+    declare readonly attackDelay: number;
+
     declare readonly blindAttack: boolean;
+    declare readonly blindAttackPattern: BlindAttackPattern;
+
     declare readonly resourceRatio: number;
     declare readonly minutesUntilReload: number;
 };
@@ -34,10 +44,20 @@ PlunderConfig.init({
         allowNull: false,
         defaultValue: false
     },
+    wallLevelToIgnore: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1
+    },
     destroyWall: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
+    },
+    wallLevelToDestroy: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1
     },
     groupAttack: {
         type: DataTypes.BOOLEAN,
@@ -54,10 +74,20 @@ PlunderConfig.init({
         allowNull: false,
         defaultValue: false
     },
+    attackDelay: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 200
+    },
     blindAttack: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
+    },
+    blindAttackPattern: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'min'
     },
     resourceRatio: {
         type: DataTypes.FLOAT,

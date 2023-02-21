@@ -1,7 +1,7 @@
 import { isBoolean, isString, isInteger, toNull } from '@tb-dev/ts-guard';
 import { isWorld } from '$global/utils/guards.js';
-import type { RawTribalWarsGameData, TribalWarsGameDataType } from '$types/deimos.js';
-import type { World } from '$types/game.js';
+import type { RawTribalWarsGameData } from '$types/deimos.js';
+import type { World, TribalWarsGameDataType } from '$types/game.js';
 
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export class TribalWarsGameData implements TribalWarsGameDataType {

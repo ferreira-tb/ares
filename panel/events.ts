@@ -7,9 +7,8 @@ import { resources as resourceList } from '$global/utils/constants.js';
 import { PanelError } from '$panel/error.js';
 import type { Pinia } from 'pinia';
 import type { PlunderedResources } from '$lib/plunder/resources.js';
-import type { TribalWarsGameDataType, PlunderInfoType } from '$types/deimos.js';
-import type { UnitAmount } from '$types/game.js';
-import type { PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
+import type { TribalWarsGameDataType, UnitAmount } from '$types/game.js';
+import type { PlunderConfigType, PlunderedAmount, PlunderInfoType } from '$types/plunder.js';
 
 export function setPanelWindowEvents(pinia: Pinia) {
     const aresStore = useAresStore(pinia);

@@ -18,7 +18,7 @@ export async function queryAvailableUnits() {
         unitStore.$patch(units);
     };
 
-    ipcSend('update-current-village-units', unitStore.toRaw());
+    ipcSend('update-current-village-units', unitStore.raw());
     await nextTick();
 };
 

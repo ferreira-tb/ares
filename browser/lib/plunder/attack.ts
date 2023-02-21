@@ -7,10 +7,10 @@ import type { PlunderedResources } from '$lib/plunder/resources.js';
 export const eventTarget = new EventTarget();
 
 export function prepareAttack(resources: PlunderedResources, button: HTMLAnchorElement) {
-    const store = usePlunderConfigStore();
+    const config = usePlunderConfigStore();
     return new Promise<void>((resolve, reject) => {
         // O jogo possui um limite de cinco ações por segundo.
-        const delay = store.ignoreDelay === true ? 0 : generateIntegerBetween(150, 250);
+        const delay = config.ignoreDelay === true ? 0 : generateIntegerBetween(150, 250);
         const attackTimeout = setTimeout(attack, delay);
         const cleanup = useEventListener(eventTarget, 'stop', stop, { once: true });
 

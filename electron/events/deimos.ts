@@ -2,8 +2,8 @@ import { ipcMain } from 'electron';
 import { readDeimosFile } from '$electron/app/deimos.js';
 import { browserStore, plunderStore, unitStore } from '$interface/interface.js';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
-import type { TribalWarsGameDataType, PlunderInfoType } from '$types/deimos.js';
-import type { UnitAmount } from '$types/game.js';
+import type { PlunderInfoType } from '$types/plunder.js';
+import type { UnitAmount, TribalWarsGameDataType } from '$types/game.js';
 
 export function setDeimosEvents() {
     /** Conteúdo do arquivo `deimos.js`. */

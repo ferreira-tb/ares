@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import type { World } from '$types/game.js';
+import type { World, PiniaAresStore } from '$types/game.js';
 
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export const useAresStore = defineStore('ares', () => {
@@ -95,5 +95,5 @@ export const useAresStore = defineStore('ares', () => {
         currentVillageIron,
         currentVillageTotalResources,
         currentVillageMaxStorage,
-    };
+    } satisfies PiniaAresStore;
 });

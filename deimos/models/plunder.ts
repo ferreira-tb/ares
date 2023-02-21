@@ -1,5 +1,6 @@
 import { assertBoolean, assertInteger } from '@tb-dev/ts-guard';
-import type { RawPlunderInfo, PlunderInfoType } from '$types/deimos.js';
+import type { RawPlunderInfo } from '$types/deimos.js';
+import type { PlunderInfoType } from '$types/plunder.js';
 
 export class PlunderInfo implements PlunderInfoType {
     public readonly hideAttacked: boolean;

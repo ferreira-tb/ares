@@ -1,6 +1,13 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
+import type {
+    PlunderConfigType,
+    PlunderedAmount,
+    BlindAttackPattern,
+    PiniaPlunderInfoStore,
+    PiniaPlunderConfigStore,
+    PiniaPlunderHistoryStore
+} from '$types/plunder.js';
 
 export const usePlunderStore = defineStore('plunder', () => {
     /** Indica se as aldeias sob ataque estão ocultas. */
@@ -16,17 +23,26 @@ export const usePlunderStore = defineStore('plunder', () => {
         page,
         pageSize,
         plunderExhausted
-    };
+    } satisfies PiniaPlunderInfoStore;
 });
 
 export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const active = ref<boolean>(false);
+
     const ignoreWall = ref<boolean>(false);
+    const wallLevelToIgnore = ref<number>(1);
+
     const destroyWall = ref<boolean>(false);
+    const wallLevelToDestroy = ref<number>(1);
+
     const groupAttack = ref<boolean>(false);
     const useC = ref<boolean>(false);
+
     const ignoreDelay = ref<boolean>(false);
+    const attackDelay = ref<number>(200);
+
     const blindAttack = ref<boolean>(false);
+    const blindAttackPattern = ref<BlindAttackPattern>('min');
 
     const resourceRatio = ref<number>(0.8);
     const minutesUntilReload = ref<number>(10);
@@ -35,12 +51,15 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         return {
             active: active.value,
             ignoreWall: ignoreWall.value,
+            wallLevelToIgnore: wallLevelToIgnore.value,
             destroyWall: destroyWall.value,
+            wallLevelToDestroy: wallLevelToDestroy.value,
             groupAttack: groupAttack.value,
             useC: useC.value,
             ignoreDelay: ignoreDelay.value,
+            attackDelay: attackDelay.value,
             blindAttack: blindAttack.value,
-            
+            blindAttackPattern: blindAttackPattern.value,
             resourceRatio: resourceRatio.value,
             minutesUntilReload: minutesUntilReload.value
         };
@@ -49,15 +68,19 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     return {
         active,
         ignoreWall,
+        wallLevelToIgnore,
         destroyWall,
+        wallLevelToDestroy,
         groupAttack,
         useC,
         ignoreDelay,
+        attackDelay,
         blindAttack,
+        blindAttackPattern,
         resourceRatio,
         minutesUntilReload,
         raw
-    };
+    } satisfies PiniaPlunderConfigStore;
 });
 
 export const usePlunderHistoryStore = defineStore('plunder-history', () => {
@@ -92,5 +115,5 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
         attackAmount,
         raw,
         reset
-    };
+    } satisfies PiniaPlunderHistoryStore;
 });
