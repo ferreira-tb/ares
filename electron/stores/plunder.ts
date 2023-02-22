@@ -1,4 +1,4 @@
-import { assertBoolean, assertFinite, assertInteger, assertString, isKeyOf } from '@tb-dev/ts-guard';
+import { assertBoolean, assertFinite, assertInteger, assertString, isKeyOf, arrayIncludes } from '@tb-dev/ts-guard';
 import { assertWallLevel } from '$electron/utils/guards.js';
 import { ProxyStoreError } from '$electron/error.js';
 import type { PlunderedAmount, BlindAttackPattern } from '$types/plunder.js';
@@ -37,7 +37,7 @@ class PlunderConfigProxy implements RemoveMethods<PlunderConfigStore> {
     attackDelay: number = 200;
 
     blindAttack: boolean = false;
-    blindAttackPattern: BlindAttackPattern = 'min';
+    blindAttackPattern: BlindAttackPattern = 'smaller';
 
     resourceRatio: number = 0.8;
     minutesUntilReload: number = 10;
@@ -55,11 +55,12 @@ export function setPlunderConfigProxy() {
                     break;
                 case 'attackDelay':
                     assertInteger(value);
-                    if (value < 100 || value > 1000) return false;
+                    if (value < 100 || value > 5000) return false;
                     break;
                 case 'blindAttackPattern':
                     assertString(value);
-                    if (!['min', 'max'].includes(value)) return false;
+                    const patterns: BlindAttackPattern[] = ['smaller', 'bigger'];
+                    if (!arrayIncludes(patterns, value)) return false;
                     break;
                 case 'resourceRatio':
                     assertFinite(value);

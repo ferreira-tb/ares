@@ -1,20 +1,41 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useIpcRenderer } from '@vueuse/electron';
-import { isObject, assertKeyOf, toNull } from '@tb-dev/ts-guard';
-import { NDivider, NSpace } from 'naive-ui';
-import { ipcInvoke } from '$global/ipc.js';
+import { isObject, assertKeyOf, toNull, isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
+import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
+import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { ModuleConfigError } from '$modules/error.js';
 import InfoResult from '$vue/components/result/InfoResult.vue';
-import WallInput from '$vue/components/WallInput.vue';
+import WallInput from '$vue/components/input/WallInput.vue';
+import NumberImput from '$vue/components/input/NumberInput.vue';
 import Popover from '$vue/components/popover/Popover.vue';
-import type { PlunderConfigType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderConfigKeys, PlunderConfigValues, BlindAttackPattern } from '$types/plunder.js';
 
 const previousConfig = toNull(await ipcInvoke('get-plunder-config'), isObject);
 const config = ref<PlunderConfigType | null>(previousConfig);
 
-const ipcRenderer = useIpcRenderer();
+const blindAttackPattern = ref<BlindAttackPattern>(config.value?.blindAttackPattern ?? 'smaller');
+watch(blindAttackPattern, (v) => updateConfig('blindAttackPattern', v));
+
+// Opções do NSelect.
+interface BlindAttackPatternOption {
+    label: string;
+    value: BlindAttackPattern;
+}
+
+const blindAttackOptions = [
+    {
+        label: 'Menor capacidade',
+        value: 'smaller'
+    },
+    {
+        label: 'Maior capacidade',
+        value: 'bigger'
+    }
+] satisfies BlindAttackPatternOption[];
+
 // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
+const ipcRenderer = useIpcRenderer();
 ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
     try {
         if (!isObject(config.value)) return;
@@ -24,26 +45,111 @@ ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: Plu
         ModuleConfigError.catch(err);
     };
 });
+
+function updateConfig(name: 'wallLevelToIgnore', value: number): void;
+function updateConfig(name: 'wallLevelToDestroy', value: number): void;
+function updateConfig(name: 'attackDelay', value: number): void;
+function updateConfig(name: 'blindAttackPattern', value: BlindAttackPattern): void;
+function updateConfig(name: 'resourceRatio', value: number): void;
+function updateConfig(name: 'minutesUntilReload', value: number): void;
+function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
+    if (!isObject(config.value)) return;
+    Reflect.set(config.value, name, value);
+    ipcSend('update-plunder-config', name, value);
+};
 </script>
 
 <template>
     <section v-if="config">
+        <NDivider title-placement="left">Ataque</NDivider>
+        <NGrid :cols="2" :x-gap="6" :y-gap="10">
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Delay médio entre os ataques</template>
+                    <span>O jogo possui um limite de cinco ações por segundos, então o Ares dá uma atrasadinha em cada
+                        ataque.</span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput :value="config.attackDelay" :min="100" :max="5000" :step="10"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 5000"
+                    @value-updated="(v) => updateConfig('attackDelay', v)" />
+            </NGridItem>
+
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Razão de saque</template>
+                    <span>
+                        Corresponde à razão entre a quantidade de recursos na aldeia e a capacidade de carga do modelo
+                        atacante.
+                        Quanto menor for a razão, maior a chance de tropas serem enviadas desnecessariamente.
+                    </span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput :value="config.resourceRatio" :min="0.2" :max="1" :step="0.05"
+                    :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1"
+                    @value-updated="(v) => updateConfig('resourceRatio', v)" />
+            </NGridItem>
+
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Recarregamento automático</template>
+                    <span>Tempo, em minutos, até que a página seja recarregada automaticamente durante o saque.</span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput :value="config.minutesUntilReload" :min="1" :max="60" :step="1"
+                    :validator="(v) => isPositiveInteger(v) && v >= 1 && v <= 60"
+                    @value-updated="(v) => updateConfig('minutesUntilReload', v)" />
+            </NGridItem>
+
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Lógica do ataque às cegas</template>
+                    <span>
+                        Determina como o Ares escolherá o modelo para atacar quando não houver informações de exploradores.
+                    </span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <div class="plunder-config-select">
+                    <NSelect v-model:value="blindAttackPattern" :options="blindAttackOptions" />
+                </div>
+            </NGridItem>
+        </NGrid>
+
         <NDivider title-placement="left">Muralha</NDivider>
-        <NSpace>
-            <Popover>
-                <template #trigger>Ignorar muralhas maiores que</template>
-                <span>Determina a partir de qual nível de muralha o Ares deve ignorar aldeias.</span>
-            </Popover>
-            <WallInput :value="config.wallLevelToIgnore" @level-updated="(l) => config!.wallLevelToIgnore = l" />
-        </NSpace>
+        <NGrid :cols="2" :x-gap="6" :y-gap="10">
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Ignorar muralhas maiores que</template>
+                    <span>Determina a partir de qual nível de muralha o Ares deve ignorar aldeias.</span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <WallInput :value="config.wallLevelToIgnore" @level-updated="(v) => updateConfig('wallLevelToIgnore', v)" />
+            </NGridItem>
+
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Destruir muralhas maiores que</template>
+                    <span>O Ares não destruirá muralhas cujo nível seja menor que o indicado.</span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <WallInput :value="config.wallLevelToDestroy"
+                    @level-updated="(v) => updateConfig('wallLevelToDestroy', v)" />
+            </NGridItem>
+        </NGrid>
     </section>
 
-    <InfoResult v-else
-        title="Você está logado?"
-        description="É necessário estar logado para acessar as configurações do assistente de saque."
-    />
+    <InfoResult v-else title="Você está logado?"
+        description="É necessário estar logado para acessar as configurações do assistente de saque." />
 </template>
 
 <style scoped>
-
+.plunder-config-select {
+    margin-right: 0.5em;
+}
 </style>

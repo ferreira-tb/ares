@@ -20,6 +20,7 @@ interface Props {
     disabled?: boolean;
     size?: 'tiny' | 'small' | 'medium' | 'large';
     step?: number;
+    marginRight?: number;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -32,7 +33,8 @@ const props = withDefaults(defineProps<Props>(), {
     clearable: false,
     disabled: false,
     size: 'medium',
-    step: 1
+    step: 1,
+    marginRight: 0.5
 });
 
 const emit = defineEmits<{
@@ -57,7 +59,7 @@ assertWallLevel(props.value, AresError);
 </script>
 
 <template>
-        <NInputNumber
+        <NInputNumber class="wall-input"
             v-model:value="inputValue"
             :min="props.min" :max="props.max"
             :keyboard="keyboardOptions"
@@ -71,5 +73,7 @@ assertWallLevel(props.value, AresError);
 </template>
 
 <style scoped>
-
+.wall-input {
+    margin-right: v-bind("`${props.marginRight.toString(10)}em`");
+}
 </style>

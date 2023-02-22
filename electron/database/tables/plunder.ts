@@ -85,7 +85,7 @@ PlunderConfig.init({
     blindAttackPattern: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'min'
+        defaultValue: 'smaller'
     },
     resourceRatio: {
         type: DataTypes.FLOAT,

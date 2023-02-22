@@ -34,7 +34,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const wallLevelToIgnore = ref<number>(1);
     const wallLevelToDestroy = ref<number>(1);
     const attackDelay = ref<number>(200);
-    const blindAttackPattern = ref<BlindAttackPattern>('min');
+    const blindAttackPattern = ref<BlindAttackPattern>('smaller');
     const resourceRatio = ref<number>(0.8);
     const minutesUntilReload = ref<number>(10);
 

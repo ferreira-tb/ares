@@ -11,11 +11,11 @@ export interface PlunderInfoType {
 /**
  * Padrão de ataque quando o Plunder não tem informações dos exploradores.
  * 
- * max: Ataca com a maior capacidade de carga possível.
+ * bigger: Ataca com a maior capacidade de carga possível.
  * 
- * min: Ataca com a menor capacidade de carga possível.
+ * smaller: Ataca com a menor capacidade de carga possível.
  */
-export type BlindAttackPattern = 'max' | 'min';
+export type BlindAttackPattern = 'bigger' | 'smaller';
 
 export type PlunderConfigType = {
     // Painel
@@ -43,7 +43,7 @@ export type PlunderConfigType = {
     attackDelay: number;
     /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
     blindAttackPattern: BlindAttackPattern;
-    /** Razão de recursos que o Plunder deve levar em consideração. */
+    /** Razão entre a quantidade de recursos esperados e a capacidade de carga do modelo atacante. */
     resourceRatio: number;
     /** Minutos até que a página seja recarregada automaticamente. */
     minutesUntilReload: number;
