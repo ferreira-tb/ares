@@ -1,4 +1,4 @@
-import { isString } from '@tb-dev/ts-guard';
+import { isString, isKeyOf } from '@tb-dev/ts-guard';
 import { generateUserAlias } from '$electron/utils/helpers.js';
 import { isUserAlias, isWorld } from '$electron/utils/guards.js';
 import type { CacheProxyType, UserAlias } from '$types/electron.js';
@@ -15,27 +15,29 @@ export function setCacheProxy(
     setWorldProxyState: (world: World) => Promise<void>
 ) {
     return new Proxy(new CacheProxy(), {
-        set(target, key, value, receiver) {
+        set(target: CacheProxy, key: keyof CacheProxy, value: CacheProxy[keyof CacheProxy], receiver: CacheProxy) {
+            if (!isKeyOf(key, target)) return false;
             if (!isString(value)) return true;
 
             // Obtém do target para que a trap "get" não seja acionada.
-            const previousAlias = Reflect.get(target, 'userAlias') as UserAlias | null;
+            const previousAlias = Reflect.get(target, 'userAlias');
             // Agora obtém do receiver (proxy) para que a trap "get" seja acionada.
-            const alias = Reflect.get(receiver, 'userAlias') as UserAlias | null;
+            const alias = Reflect.get(receiver, 'userAlias');
 
             if (isUserAlias(alias) && alias !== previousAlias) {
-                setAliasProxyState(alias);
                 Reflect.set(target, 'userAlias', alias);
+                setAliasProxyState(alias);
             };
 
-            if (key === 'world' && isWorld(value)) {
-                const previousWorld = Reflect.get(target, 'world') as World | null;
+            if (key === 'world') {
+                if (!isWorld(value)) return false;
+                const previousWorld = Reflect.get(target, 'world');
                 if (value !== previousWorld) setWorldProxyState(value);
             };
 
             return Reflect.set(target, key, value);
         },
-        get(target, key) {
+        get(target: CacheProxy, key: keyof CacheProxy) {
             if (key === 'userAlias') {
                 if (!isString(target.player) || !isString(target.world)) return null;
                 return generateUserAlias(target.world, target.player);

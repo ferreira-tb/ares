@@ -1,10 +1,19 @@
 import { ipcMain } from 'electron';
 import { readDeimosFile } from '$electron/app/deimos.js';
-import { aresProxy, plunderProxy, unitProxy, featuresProxy, playerProxy, currentVillageProxy, cacheProxy } from '$interface/index.js';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 import { ProxyStoreError } from '$electron/error.js';
 import type { PlunderInfoType } from '$types/plunder.js';
 import type { UnitAmount, TribalWarsGameDataType } from '$types/game.js';
+
+import {
+    aresProxy,
+    plunderProxy,
+    unitProxy,
+    featuresProxy,
+    playerProxy,
+    currentVillageProxy,
+    cacheProxy
+} from '$interface/index.js';
 
 export function setDeimosEvents() {
     /** Conteúdo do arquivo `deimos.js`. */
@@ -53,7 +62,7 @@ export function setDeimosEvents() {
                         };
                         break;
                     default:
-                        throw new ProxyStoreError(`A chave "${key}" não é válida para o objeto "gameData".`);      
+                        throw new ProxyStoreError(`A chave "${key}" não é válida para o objeto \"gameData\".`);
                 };
             };
 

@@ -13,3 +13,4 @@ export const months = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', '
 
 // Regex.
 export const worldRegex = /^br([sp](?![sp]))*\d+$/;
+export const aliasRegex = /^[a-z]+\d+__USERID__/;
