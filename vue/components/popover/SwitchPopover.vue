@@ -2,7 +2,7 @@
 import { reactive, ref, watch } from 'vue';
 import { NSwitch } from 'naive-ui';
 import { isBoolean } from '@tb-dev/ts-guard';
-import Popover from '$vue/components/Popover.vue';
+import Popover from '$vue/components/popover/Popover.vue';
 
 interface Props {
     value?: boolean;

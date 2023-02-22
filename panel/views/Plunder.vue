@@ -5,7 +5,7 @@ import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plund
 import { ipcSend } from '$global/ipc.js';
 import { Deimos } from '$deimos/shared/ipc.js';
 import Resources from '$panel/components/Resources.vue';
-import SwitchPopover from '$vue/components/SwitchPopover.vue';
+import SwitchPopover from '$vue/components/popover/SwitchPopover.vue';
 
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();

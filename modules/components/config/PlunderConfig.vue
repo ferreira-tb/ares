@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { ref } from 'vue';
 import { useIpcRenderer } from '@vueuse/electron';
-import { isObject, assertKeyOf } from '@tb-dev/ts-guard';
+import { isObject, assertKeyOf, toNull } from '@tb-dev/ts-guard';
 import { NDivider, NSpace } from 'naive-ui';
 import { ipcInvoke } from '$global/ipc.js';
 import { ModuleConfigError } from '$modules/error.js';
-import ErrorResult from '$vue/components/ErrorResult.vue';
+import InfoResult from '$vue/components/result/InfoResult.vue';
 import WallInput from '$vue/components/WallInput.vue';
-import Popover from '$vue/components/Popover.vue';
+import Popover from '$vue/components/popover/Popover.vue';
 import type { PlunderConfigType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
 
-const previousConfig = await ipcInvoke('get-plunder-config');
-const config = isObject(previousConfig) ? reactive(previousConfig) : null;
+const previousConfig = toNull(await ipcInvoke('get-plunder-config'), isObject);
+const config = ref<PlunderConfigType | null>(previousConfig);
 
 const ipcRenderer = useIpcRenderer();
 // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
 ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
     try {
-        if (!isObject(config)) return;
-        assertKeyOf<PlunderConfigType>(key, config, `${key} não é uma configuração válida para o Plunder.`);
+        if (!isObject(config.value)) return;
+        assertKeyOf<PlunderConfigType>(key, config.value, `${key} não é uma configuração válida para o Plunder.`);
         Reflect.set(config, key, value);
     } catch (err) {
         ModuleConfigError.catch(err);
@@ -38,7 +38,10 @@ ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: Plu
         </NSpace>
     </section>
 
-    <ErrorResult v-else description="Não foi possível carregar as configurações do assistente de saque :(" />
+    <InfoResult v-else
+        title="Você está logado?"
+        description="É necessário estar logado para acessar as configurações do assistente de saque."
+    />
 </template>
 
 <style scoped>

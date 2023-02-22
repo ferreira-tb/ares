@@ -7,6 +7,7 @@ import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { getLocaleDateString } from '$global/utils/helpers.js';
 import { ModuleError } from '$modules/error.js';
 import type { DOMErrorLogType } from '$types/error.js';
+import SucessResult from '$vue/components/result/SuccessResult.vue';
 
 const raw = await ipcInvoke('get-dom-error-log');
 assertArray(raw, 'Houve um erro durante a conexão com o banco de dados.');
@@ -43,9 +44,7 @@ function deleteError(id: number) {
                 </NCard>
             </TransitionGroup>
         </template>
-        <div v-else class="bold-green-message">
-            Nenhum erro registrado :)
-        </div>
+        <SucessResult v-else description="Nenhum erro registrado :)" />
     </section>
 </template>
 

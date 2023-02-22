@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ErrorResult from '$vue/components/ErrorResult.vue';
+import TeapotResult from '$vue/components/result/TeapotResult.vue';
 </script>
 
 <template>
-    <ErrorResult description="Não foi possível carregar as configurações :(" />
+    <TeapotResult />
 </template>
 
 <style scoped>
