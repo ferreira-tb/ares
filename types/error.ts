@@ -3,6 +3,7 @@ import type { World } from '$types/game.js';
 export type ErrorLogBase = {
     readonly name: string;
     readonly message: string;
+    readonly stack: string | null;
 };
 
 export interface ErrorLogType extends ErrorLogBase {
@@ -20,6 +21,7 @@ export interface ErrorLogType extends ErrorLogBase {
 export type DOMErrorLogBase = {
     readonly name: string;
     readonly selector: string;
+    readonly stack: string | null;
 };
 
 export interface DOMErrorLogType extends DOMErrorLogBase {
@@ -38,6 +40,7 @@ export interface DOMErrorLogType extends DOMErrorLogBase {
 export type MainProcessErrorLogBase = {
     readonly name: string;
     readonly message: string;
+    readonly stack: string | null;
 };
 
 export interface MainProcessErrorLogType extends MainProcessErrorLogBase {

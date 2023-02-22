@@ -6,11 +6,11 @@ import type { World, TribalWarsGameDataType } from '$types/game.js';
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export class TribalWarsGameData implements TribalWarsGameDataType {
     public readonly locale: string | null;
-    public readonly currentWorld: World | null;
+    public readonly world: World | null;
     public readonly majorVersion: string | null;
-    public readonly currentPlayer: string | null;
-    public readonly currentPlayerId: number | null;
-    public readonly currentPlayerPoints: number | null;
+    public readonly player: string | null;
+    public readonly playerId: number | null;
+    public readonly playerPoints: number | null;
     public readonly villageAmount: number | null;
     public readonly groupId: number | null;
 
@@ -18,7 +18,7 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
     public readonly accountManager: boolean | null;
     public readonly farmAssistant: boolean | null;
 
-    public readonly currentScreen: string | null;
+    public readonly screen: string | null;
     public readonly screenMode: string | null;
     public readonly pregame: boolean | null;
 
@@ -36,11 +36,11 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
 
     constructor(rawGameData: RawTribalWarsGameData) {
         this.locale = toNull(rawGameData.locale, isString);
-        this.currentWorld = isWorld(rawGameData.world) ? rawGameData.world : null;
+        this.world = isWorld(rawGameData.world) ? rawGameData.world : null;
         this.majorVersion = toNull(rawGameData.majorVersion, isString);
-        this.currentPlayer = toNull(rawGameData.player.name, isString);
-        this.currentPlayerId = toNull(rawGameData.player.id, isInteger);
-        this.currentPlayerPoints = isString(rawGameData.player.points) ? Number.parseIntStrict(rawGameData.player.points) : null;
+        this.player = toNull(rawGameData.player.name, isString);
+        this.playerId = toNull(rawGameData.player.id, isInteger);
+        this.playerPoints = isString(rawGameData.player.points) ? Number.parseIntStrict(rawGameData.player.points) : null;
         this.villageAmount = isString(rawGameData.player.villages) ? Number.parseIntStrict(rawGameData.player.villages) : null;
         this.groupId = isString(rawGameData.group_id) ? Number.parseIntStrict(rawGameData.group_id) : null;
 
@@ -49,7 +49,7 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
         // No jogo consta como FarmAssistent, mas no Deimos está como FarmAssistant.
         this.farmAssistant = toNull(rawGameData.features.FarmAssistent.active, isBoolean);
 
-        this.currentScreen = toNull(rawGameData.screen, isString);
+        this.screen = toNull(rawGameData.screen, isString);
         this.screenMode = toNull(rawGameData.mode, isString);
         this.pregame = toNull(rawGameData.pregame, isBoolean);
 
