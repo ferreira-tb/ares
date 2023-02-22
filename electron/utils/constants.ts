@@ -31,3 +31,7 @@ export const devOptions: MenuItemConstructorOptions[] = [
 // Regex.
 export const worldRegex = /^br([sp](?![sp]))*\d+$/;
 export const aliasRegex = /^[a-z]+\d+__USERID__/;
+
+// Proxy keys.
+export const aresKeys = ['locale', 'world', 'majorVersion', 'groupId', 'screen', 'screenMode', 'pregame'] as const;
+export const featuresKeys = ['premium', 'accountManager', 'farmAssistant'] as const;

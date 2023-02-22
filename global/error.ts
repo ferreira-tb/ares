@@ -1,4 +1,5 @@
 import { ipcSend } from '$global/ipc.js';
+import { toNull, isString } from '@tb-dev/ts-guard';
 import type { ErrorLogBase, DOMErrorLogBase } from '$types/error.js';
 
 export class AresError extends Error {
@@ -9,10 +10,15 @@ export class AresError extends Error {
 
     public static catch(err: unknown) {
         if (err instanceof Error) {
+            const errorLog = {
+                name: err.name,
+                stack: toNull(err.stack, isString) as string | null,
+            };
+
             if (err.name === 'DOMAssertionError') {
-                ipcSend('set-dom-error-log', { name: err.name, selector: err.message } satisfies DOMErrorLogBase);
+                ipcSend('set-dom-error-log', { ...errorLog, selector: err.message } satisfies DOMErrorLogBase);
             } else {
-                ipcSend('set-error-log', { name: err.name, message: err.message } satisfies ErrorLogBase);
+                ipcSend('set-error-log', { ...errorLog, message: err.message } satisfies ErrorLogBase);
             };
         };
     };

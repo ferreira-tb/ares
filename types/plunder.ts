@@ -1,5 +1,3 @@
-import type { Ref } from 'vue';
-
 export interface PlunderInfoType {
     /** Indica se as aldeias sob ataque estão ocultas. */
     readonly hideAttacked: boolean;
@@ -9,10 +7,6 @@ export interface PlunderInfoType {
     readonly pageSize: number;
     readonly plunderExhausted: boolean;
 };
-
-export type PiniaPlunderInfoStoreKeys = keyof PlunderInfoType;
-export type PiniaPlunderInfoStoreValues = Ref<PlunderInfoType[keyof PlunderInfoType]>;
-export type PiniaPlunderInfoStore = Record<PiniaPlunderInfoStoreKeys, PiniaPlunderInfoStoreValues>;
 
 /**
  * Padrão de ataque quando o Plunder não tem informações dos exploradores.
@@ -58,20 +52,18 @@ export type PlunderConfigType = {
 export type PlunderConfigKeys = keyof PlunderConfigType;
 export type PlunderConfigValues = PlunderConfigType[PlunderConfigKeys];
 
-export type PiniaPlunderConfigStoreKeys = PlunderConfigKeys | 'raw';
-export type PiniaPlunderConfigStoreActions = () => PlunderConfigType;
-export type PiniaPlunderConfigStoreValues = Ref<PlunderConfigValues> | PiniaPlunderConfigStoreActions;
-export type PiniaPlunderConfigStore = Record<PiniaPlunderConfigStoreKeys, PiniaPlunderConfigStoreValues>;
-
 export type PlunderHistoryType = {
     last: PlunderedAmount;
     total: PlunderedAmount;
 };
 
-export type PiniaPlunderHistoryStoreKeys = keyof PlunderedAmount | 'raw' | 'reset';
-export type PiniaPlunderHistoryStoreActions = (() => PlunderedAmount) | (() => void);
-export type PiniaPlunderHistoryStoreValues = Ref<PlunderedAmount[keyof PlunderedAmount]>;
-export type PiniaPlunderHistoryStore = Record<PiniaPlunderHistoryStoreKeys, PiniaPlunderHistoryStoreValues | PiniaPlunderHistoryStoreActions>;
+export type PlunderedAmount = {
+    wood: number;
+    stone: number;
+    iron: number;
+    total: number;
+    attackAmount: number;
+};
 
 export type PlunderTableButtons = {
     /** Botão A do assistente de saque. */
@@ -93,12 +85,4 @@ export type PlunderTableResources = {
     iron: number;
     /** Total de recursos que se espera ter na aldeia. */
     total: number;
-};
-
-export type PlunderedAmount = {
-    wood: number;
-    stone: number;
-    iron: number;
-    total: number;
-    attackAmount: number;
 };

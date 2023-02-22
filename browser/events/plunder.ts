@@ -11,7 +11,7 @@ export function setPlunderEvents(pinia: Pinia) {
     // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
     ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
         try {
-            assertKeyOf<PlunderConfigType>(key, plunderConfigStore, `${key} não é uma configuração válida para o Plunder.`);
+            assertKeyOf<PlunderConfigType>(key, plunderConfigStore);
             Reflect.set(plunderConfigStore, key, value);
         } catch (err) {
             BrowserError.catch(err);

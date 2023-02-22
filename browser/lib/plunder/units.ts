@@ -1,14 +1,14 @@
 import { nextTick } from 'vue';
 import { assert, isObject } from '@tb-dev/ts-guard';
 import { Deimos } from '$deimos/shared/ipc.js';
-import { useUnitStore } from '$vue/stores/units.js';
+import { useUnitsStore } from '$vue/stores/units.js';
 import { allUnits } from '$global/utils/constants.js';
 import { ipcSend } from '$global/ipc.js';
 import type { AllUnits } from '$types/game.js';
 
 /** Atualiza a quantidade de unidades disponíveis no assistente de saque. */
 export async function queryAvailableUnits() {
-    const unitStore = useUnitStore();
+    const unitStore = useUnitsStore();
     const units = await Deimos.invoke('get-current-village-units');
 
     // Se não foi possível obter as unidades a partir do Deimos, tenta obter do DOM.
@@ -22,7 +22,7 @@ export async function queryAvailableUnits() {
     await nextTick();
 };
 
-function queryUnitsRow(unitStore: ReturnType<typeof useUnitStore>) {
+function queryUnitsRow(unitStore: ReturnType<typeof useUnitsStore>) {
     const selector = '#farm_units #units_home tr:has(td#spear):has(td#sword)';
     const unitsRow = document.queryAndAssert<HTMLTableRowElement>(selector);
 

@@ -6,23 +6,21 @@ import type { UserAlias } from '$types/electron.js';
 
 export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCreationAttributes<PlunderConfig>> implements PlunderConfigType {
     declare readonly id: UserAlias;
+
+    // Painel
     declare readonly active: boolean;
-
     declare readonly ignoreWall: boolean;
-    declare readonly wallLevelToIgnore: number;
-
     declare readonly destroyWall: boolean;
-    declare readonly wallLevelToDestroy: number;
-
     declare readonly groupAttack: boolean;
     declare readonly useC: boolean;
-
     declare readonly ignoreDelay: boolean;
-    declare readonly attackDelay: number;
-
     declare readonly blindAttack: boolean;
-    declare readonly blindAttackPattern: BlindAttackPattern;
 
+    // Configurações
+    declare readonly wallLevelToIgnore: number;
+    declare readonly wallLevelToDestroy: number;
+    declare readonly attackDelay: number;
+    declare readonly blindAttackPattern: BlindAttackPattern;
     declare readonly resourceRatio: number;
     declare readonly minutesUntilReload: number;
 };

@@ -8,6 +8,7 @@ export class ErrorLog extends Model<InferAttributes<ErrorLog>, InferCreationAttr
     declare readonly id: CreationOptional<number>;
     declare readonly name: string;
     declare readonly message: string;
+    declare readonly stack: string | null;
     declare readonly world: World | null;
     declare readonly time: number;
     declare readonly ares: string;
@@ -31,6 +32,10 @@ ErrorLog.init({
     message: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    stack: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     world: {
         type: DataTypes.STRING,
@@ -71,6 +76,7 @@ export class DOMErrorLog extends Model<InferAttributes<DOMErrorLog>, InferCreati
     declare readonly id: CreationOptional<number>;
     declare readonly name: string;
     declare readonly selector: string;
+    declare readonly stack: string | null;
     declare readonly url: string;
     declare readonly world: World | null;
     declare readonly time: number;
@@ -95,6 +101,10 @@ DOMErrorLog.init({
     selector: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    stack: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     url: {
         type: DataTypes.STRING,
@@ -142,6 +152,7 @@ export class MainProcessErrorLog extends Model<MPAttributes, MPCreationAttribute
     declare readonly id: CreationOptional<number>;
     declare readonly name: string;
     declare readonly message: string;
+    declare readonly stack: string | null;
     declare readonly time: number;
     declare readonly ares: string;
     declare readonly electron: string;
@@ -164,6 +175,10 @@ MainProcessErrorLog.init({
     message: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    stack: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     time: {
         type: DataTypes.INTEGER,

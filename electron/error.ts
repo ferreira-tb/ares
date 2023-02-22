@@ -7,7 +7,7 @@ export class MainProcessError extends Error {
     declare public static catch: (err: unknown) => Promise<void>;
 };
 
-export class ProxyStoreError extends Error {
+export class ProxyStoreError extends MainProcessError {
     constructor(message: string) {
         super(message);
         this.name = 'ProxyStoreError';
@@ -16,7 +16,7 @@ export class ProxyStoreError extends Error {
     declare public static catch: (err: unknown) => Promise<void>;
 };
 
-export class DatabaseError extends Error {
+export class DatabaseError extends MainProcessError {
     constructor(message: string) {
         super(message);
         this.name = 'DatabaseError';

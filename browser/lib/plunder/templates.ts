@@ -2,7 +2,7 @@ import { computed, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { assert } from '@tb-dev/ts-guard';
 import { usePlunderConfigStore } from '$vue/stores/plunder.js';
-import { useUnitStore } from '$vue/stores/units.js';
+import { useUnitsStore } from '$vue/stores/units.js';
 import { isFarmUnit } from '$global/utils/guards.js';
 import type { FarmUnits, FarmUnitsAmount } from '$types/game.js';
 
@@ -13,7 +13,7 @@ export class PlunderTemplate {
     carry = 0;
     /** Indica se há tropas o suficiente para o modelo ser usado. */
     readonly ok = computed(() => {
-        const unitStore = useUnitStore();
+        const unitStore = useUnitsStore();
         for (const [key, value] of Object.entries(this.units) as [FarmUnits, number][]) {
             if (unitStore[key] < value) return false;
         };

@@ -1,7 +1,9 @@
 import { assertInteger, assertBoolean, assertFinite, isKeyOf } from '@tb-dev/ts-guard';
-import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world.js';
+import type { WorldConfigStore, WorldUnitStore } from '$types/stores.js';
+import type { UnitDetails } from '$types/world.js';
+import type { RemoveMethods } from '$types/utils.js';
 
-class WorldConfigStore implements WorldConfigType {
+class WorldConfigProxy implements RemoveMethods<WorldConfigStore> {
     speed: number = 1;
     unitSpeed: number = 1;
     tradeCancelTime: number = 300;
@@ -11,30 +13,22 @@ class WorldConfigStore implements WorldConfigType {
     watchtower: boolean = false;
 };
 
-function setWorldConfigStore() {
-    return new Proxy(new WorldConfigStore(), {
+export function setWorldConfigProxy() {
+    return new Proxy(new WorldConfigProxy(), {
         set(target, key, value) {
             if (!isKeyOf(key, target)) return false;
 
             switch (key) {
                 case 'speed':
-                    assertFinite(value);
-                    break;
                 case 'unitSpeed':
                     assertFinite(value);
                     break;
                 case 'tradeCancelTime':
-                    assertInteger(value);
-                    break;
                 case 'commandCancelTime':
                     assertInteger(value);
                     break;
                 case 'archer':
-                    assertBoolean(value);
-                    break;
                 case 'church':
-                    assertBoolean(value);
-                    break;
                 case 'watchtower':
                     assertBoolean(value);
                     break;
@@ -45,7 +39,7 @@ function setWorldConfigStore() {
     });
 };
 
-class WorldUnitStore implements WorldUnitType {
+class WorldUnitProxy implements RemoveMethods<WorldUnitStore> {
     private readonly base: UnitDetails = {
         buildTime: 0,
         pop: 0,
@@ -86,9 +80,8 @@ class WorldUnitStore implements WorldUnitType {
     readonly militia = new Proxy({ ...this.base }, this.handler);
 };
 
-function setWorldUnitStore() {
-    return new WorldUnitStore();
+export function setWorldUnitProxy() {
+    return new WorldUnitProxy();
 };
 
-export type { WorldConfigStore, WorldUnitStore };
-export { setWorldConfigStore, setWorldUnitStore };
+export type { WorldConfigProxy, WorldUnitProxy };

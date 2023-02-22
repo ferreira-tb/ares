@@ -16,8 +16,8 @@ ipcRenderer.on('browser-did-finish-load', () => browserIsLoading.value = false);
 
 // Define a janela de acordo com a página atual no jogo.
 watchEffect(() => {
-    if (arrayIncludes(routeNames, aresStore.currentScreen)) {
-        router.push({ name: aresStore.currentScreen });
+    if (arrayIncludes(routeNames, aresStore.screen)) {
+        router.push({ name: aresStore.screen });
     } else {
         router.push('/');
     };

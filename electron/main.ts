@@ -2,7 +2,7 @@ import '@tb-dev/prototype';
 import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu/menu.js';
 import { sequelize } from '$database/database.js';
-import { UserConfig } from '$interface/interface.js';
+import { UserConfig } from '$interface/index.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants.js';
 import { MainProcessError } from '$electron/error.js';
