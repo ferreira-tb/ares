@@ -19,6 +19,7 @@ export function setErrorEvents() {
             const errorLog: Omit<ErrorLogType, 'id' | 'pending'> = {
                 name: err.name,
                 message: err.message,
+                stack: err.stack,
                 world: browserStore.currentWorld,
                 time: Date.now(),
                 ares: app.getVersion(),
@@ -79,6 +80,7 @@ export function setErrorEvents() {
                 url: new URL(e.sender.getURL()).href,
                 world: browserStore.currentWorld,
                 selector: err.selector,
+                stack: err.stack,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,

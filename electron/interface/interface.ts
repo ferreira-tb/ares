@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import { app, BrowserWindow, MessageChannelMain } from 'electron';
-import { isObject, isKeyOf, isInstanceOf, assertObject } from '@tb-dev/ts-guard';
+import { isObject, isKeyOf, isInstanceOf, assertObject, toNull, isString } from '@tb-dev/ts-guard';
 import { MainProcessError, ProxyStoreError, DatabaseError } from '$electron/error.js';
 import { getPanelWindow, createErrorLog } from '$electron/utils/helpers.js';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos.js';
@@ -46,6 +46,7 @@ async function catchError(err: unknown) {
             const errorLog: Omit<MainProcessErrorLogType, 'id' | 'pending'> = {
                 name: err.name,
                 message: err.message,
+                stack: toNull(err.stack, isString) as string | null,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,

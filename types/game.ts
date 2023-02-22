@@ -61,15 +61,15 @@ export interface TribalWarsGameDataType {
     /** Local. */
     readonly locale: string | null;
     /** Mundo atual. */
-    readonly currentWorld: World | null;
+    readonly world: World | null;
     /** Versão do Tribal Wars. */
     readonly majorVersion: string | null;
     /** Nome do jogador ativo. */
-    readonly currentPlayer: string | null;
+    readonly player: string | null;
     /** ID do jogador ativo. */
-    readonly currentPlayerId: number | null;
+    readonly playerId: number | null;
     /** Pontuação do jogador. */
-    readonly currentPlayerPoints: number | null;
+    readonly playerPoints: number | null;
     /** Quantidade de aldeias que o jogador possui. */
     readonly villageAmount: number | null;
     /** Grupo de aldeias atual. */
@@ -83,7 +83,7 @@ export interface TribalWarsGameDataType {
     readonly farmAssistant: boolean | null;
 
     /** Janela atual. */
-    readonly currentScreen: string | null;
+    readonly screen: string | null;
     /** Modo da janela atual. */
     readonly screenMode: string | null;
     /** Indica se está no modo de pré-jogo. */
