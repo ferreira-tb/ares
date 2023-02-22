@@ -123,7 +123,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
                 <Popover>
-                    <template #trigger>Ignorar muralhas maiores que</template>
+                    <template #trigger>Ignorar muralhas a partir de</template>
                     <span>Determina a partir de qual nível de muralha o Ares deve ignorar aldeias.</span>
                 </Popover>
             </NGridItem>
@@ -133,7 +133,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
 
             <NGridItem>
                 <Popover>
-                    <template #trigger>Destruir muralhas maiores que</template>
+                    <template #trigger>Destruir muralhas a partir de</template>
                     <span>O Ares não destruirá muralhas cujo nível seja menor que o indicado.</span>
                 </Popover>
             </NGridItem>
