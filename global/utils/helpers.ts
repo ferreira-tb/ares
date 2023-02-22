@@ -28,6 +28,16 @@ export function generateIntegerBetween(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min);
 };
 
+/**
+ * Gera um número inteiro aleatório com base em um valor e um intervalo.
+ * @param base Valor base.
+ * @param range Intervalo.
+ */
+export function generateRandomDelay(base: number, range?: number) {
+    if (!isInteger(range)) range = 50;
+    return generateIntegerBetween(base - range, base + range);
+};
+
 export async function* fetchDocuments(urls: string[]) {
     const parser = new DOMParser();
     for (const url of urls) {
