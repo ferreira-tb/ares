@@ -16,7 +16,11 @@ export function setPlunderEvents() {
     // Verifica se o Plunder está ativo.
     ipcMain.handle('is-plunder-active', () => plunderConfigProxy.active);
     // Obtém as configurações do Plunder.
-    ipcMain.handle('get-plunder-config', () => ({ ...plunderConfigProxy }));
+    ipcMain.handle('get-plunder-config', () => {
+        const alias = cacheProxy.userAlias;
+        if (isUserAlias(alias)) return { ...plunderConfigProxy };
+        return null;
+    });
 
     // Recebe as configurações do Plunder do painel ou do módulo de configuração e as salva no banco de dados.
     ipcMain.on('update-plunder-config', async (e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
