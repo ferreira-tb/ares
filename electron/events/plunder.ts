@@ -1,65 +1,48 @@
-import { ipcMain, BrowserWindow } from 'electron';
-import { assertObject, assertPositiveInteger, isObject, isKeyOf, isInstanceOf } from '@tb-dev/ts-guard';
-import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
-import { assertUserAlias } from '$electron/utils/guards.js';
+import { ipcMain, BrowserWindow, type WebContents } from 'electron';
+import { assertObject, assertPositiveInteger, isObject, isKeyOf } from '@tb-dev/ts-guard';
+import { getPanelWindow } from '$electron/utils/helpers.js';
+import { assertUserAlias, isUserAlias } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
 import { MainProcessError } from '$electron/error.js';
-import { isUserAlias } from '$electron/utils/guards.js';
-import { showAppConfig, getActiveModule } from '$electron/app/modules.js';
-import type { PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
-
-import {
-    PlunderHistory,
-    PlunderConfig,
-    plunderConfigStore,
-    plunderHistoryStore,
-    cacheStore
-} from '$interface/interface.js';
+import { showAppConfig } from '$electron/app/modules.js';
+import { PlunderHistory, PlunderConfig, plunderConfigProxy, plunderHistoryProxy, cacheProxy } from '$interface/index.js';
+import type { PlunderedAmount, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
 
 export function setPlunderEvents() {
-    const mainWindow = getMainWindow();
     const panelWindow = getPanelWindow();
 
     // Abre a janela de configurações avançadas do Plunder.
     ipcMain.on('open-plunder-config-window', () => showAppConfig('plunder-config'));
     // Verifica se o Plunder está ativo.
-    ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
+    ipcMain.handle('is-plunder-active', () => plunderConfigProxy.active);
     // Obtém as configurações do Plunder.
-    ipcMain.handle('get-plunder-config', () => ({ ...plunderConfigStore }));
+    ipcMain.handle('get-plunder-config', () => ({ ...plunderConfigProxy }));
 
     // Recebe as configurações do Plunder do painel ou do módulo de configuração e as salva no banco de dados.
-    // Além disso, comunica a mudança aos processos diferentes daquele que enviou os dados.
-    type PlunderKeys = keyof PlunderConfigType;
-    type PlunderValues = PlunderConfigType[PlunderKeys];
-    ipcMain.on('update-plunder-config', async (e, key: PlunderKeys, value: PlunderValues) => {
+    ipcMain.on('update-plunder-config', async (e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
         try {
-            if (!isKeyOf(key, plunderConfigStore)) return;
+            if (!isKeyOf(key, plunderConfigProxy)) return;
 
-            const previousValue = Reflect.get(plunderConfigStore, key);
+            const previousValue = Reflect.get(plunderConfigProxy, key);
             if (previousValue === value) return;
 
             // A confirmação dos tipos é feita no Proxy.
-            Reflect.set(plunderConfigStore, key, value);
+            Reflect.set(plunderConfigProxy, key, value);
 
-            // Comunica a mudança ao browser e aos processos diferentes daquele que enviou os dados.
-            mainWindow.webContents.send('plunder-config-updated', key, value);
-            
-            const configModule = getActiveModule('app-config');
-            if (isInstanceOf(configModule, BrowserWindow) && e.sender !== configModule.webContents) {
-                configModule.webContents.send('plunder-config-updated', key, value);
+            // Comunica a mudança aos processos diferentes daquele que enviou os dados.
+            for (const browserWindow of BrowserWindow.getAllWindows()) {
+                if (browserWindow.webContents !== (e.sender satisfies WebContents)) {
+                    browserWindow.webContents.send('plunder-config-updated', key, value);
+                };
             };
 
-            if (e.sender !== panelWindow.webContents) {
-                panelWindow.webContents.send('plunder-config-updated', key, value);
-            };
-
-            const userAlias = cacheStore.userAlias;
+            const userAlias = cacheProxy.userAlias;
             assertUserAlias(userAlias);
 
             await sequelize.transaction(async (transaction) => {
                 await PlunderConfig.upsert({
                     id: userAlias,
-                    ...plunderConfigStore
+                    ...plunderConfigProxy
                 }, { transaction });
             });
 
@@ -87,18 +70,18 @@ export function setPlunderEvents() {
 
             for (const [key, value] of Object.entries(resources) as [keyof PlunderedAmount, number][]) {
                 assertPositiveInteger(value, 'A quantidade de recursos é inválida.');
-                plunderHistoryStore.last[key] = value;
-                plunderHistoryStore.total[key] += value;
+                plunderHistoryProxy.last[key] = value;
+                plunderHistoryProxy.total[key] += value;
             };
 
-            const userAlias = cacheStore.userAlias;
+            const userAlias = cacheProxy.userAlias;
             assertUserAlias(userAlias);
 
             await sequelize.transaction(async (transaction) => {
                 await PlunderHistory.upsert({
                     id: userAlias,
-                    last: { ...plunderHistoryStore.last },
-                    total: { ...plunderHistoryStore.total }
+                    last: { ...plunderHistoryProxy.last },
+                    total: { ...plunderHistoryProxy.total }
                 }, { transaction });
             });
 
@@ -135,7 +118,7 @@ export function setPlunderEvents() {
 async function getPlunderHistoryAsJSON(): Promise<PlunderHistory | null> {
     try {
         const result = await sequelize.transaction(async (transaction) => {
-            const userAlias = cacheStore.userAlias;
+            const userAlias = cacheProxy.userAlias;
             if (!isUserAlias(userAlias)) return null;
 
             const plunderHistory = await PlunderHistory.findByPk(userAlias, { transaction });

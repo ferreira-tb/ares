@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import type { PiniaCurrentVillageStore } from '$types/stores.js';
+import type { PiniaCurrentVillageStoreType } from '$types/stores.js';
 
 export const useCurrentVillageStore = defineStore('current-village', () => {
     const x = ref<number | null>(null);
@@ -15,7 +15,7 @@ export const useCurrentVillageStore = defineStore('current-village', () => {
     const iron = ref<number | null>(null);
     const maxStorage = ref<number | null>(null);
 
-    const coords = computed(() => [x.value, y.value]);
+    const coords = computed(() => [x.value, y.value] as [number | null, number | null]);
     const totalResources = computed(() => {
         if (wood.value === null) return null;
         if (stone.value === null) return null;
@@ -37,5 +37,5 @@ export const useCurrentVillageStore = defineStore('current-village', () => {
         maxStorage,
         coords,
         totalResources
-    } satisfies PiniaCurrentVillageStore;
+    } satisfies PiniaCurrentVillageStoreType;
 });

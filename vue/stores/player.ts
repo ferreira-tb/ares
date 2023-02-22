@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { PiniaPlayerStore } from '$types/stores.js';
+import type { PiniaPlayerStoreType } from '$types/stores.js';
 
 export const usePlayerStore = defineStore('player', () => {
     const name = ref<string | null>(null);
@@ -13,5 +13,5 @@ export const usePlayerStore = defineStore('player', () => {
         id,
         points,
         villageAmount
-    } satisfies PiniaPlayerStore;
+    } satisfies PiniaPlayerStoreType;
 });

@@ -1,7 +1,8 @@
 import { ipcMain } from 'electron';
 import { readDeimosFile } from '$electron/app/deimos.js';
-import { browserStore, plunderStore, unitStore } from '$interface/interface.js';
+import { aresProxy, plunderProxy, unitProxy, featuresProxy, playerProxy, currentVillageProxy, cacheProxy } from '$interface/index.js';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
+import { ProxyStoreError } from '$electron/error.js';
 import type { PlunderInfoType } from '$types/plunder.js';
 import type { UnitAmount, TribalWarsGameDataType } from '$types/game.js';
 
@@ -23,31 +24,74 @@ export function setDeimosEvents() {
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
     ipcMain.on('update-game-data', (_e, gameData: TribalWarsGameDataType) => {
-        for (const [key, value] of Object.entries(gameData)) {
-            browserStore[key as keyof TribalWarsGameDataType] = value;
-        };
+        try {
+            type GameDataKeys = keyof TribalWarsGameDataType;
+            type GameDataValues = TribalWarsGameDataType[GameDataKeys];
+            
+            for (const [key, value] of Object.entries(gameData) as [GameDataKeys, GameDataValues][]) {
+                switch (key) {
+                    case 'ares':
+                        for (const [aresKey, aresValue] of Object.entries(value)) {
+                            if (aresKey === 'world') Reflect.set(cacheProxy, 'world', aresValue);
+                            Reflect.set(aresProxy, aresKey, aresValue);
+                        };
+                        break;
+                    case 'features':
+                        for (const [featureKey, featureValue] of Object.entries(value)) {
+                            Reflect.set(featuresProxy, featureKey, featureValue);
+                        };
+                        break;
+                    case 'player':
+                        for (const [playerKey, playerValue] of Object.entries(value)) {
+                            if (playerKey === 'name') Reflect.set(cacheProxy, 'player', playerValue);
+                            Reflect.set(playerProxy, playerKey, playerValue);
+                        };
+                        break;
+                    case 'currentVillage':
+                        for (const [villageKey, villageValue] of Object.entries(value)) {
+                            Reflect.set(currentVillageProxy, villageKey, villageValue);
+                        };
+                        break;
+                    default:
+                        throw new ProxyStoreError(`A chave "${key}" não é válida para o objeto "gameData".`);      
+                };
+            };
 
-        const panelWindow = getPanelWindow();
-        panelWindow.webContents.send('patch-panel-game-data', gameData);
+            const panelWindow = getPanelWindow();
+            panelWindow.webContents.send('patch-panel-game-data', gameData);
+
+        } catch (err) {
+            ProxyStoreError.catch(err);
+        };
     });
 
     // Recebe as informações referentes ao assistente de saque, salva-as localmente e então envia-as ao painel.
     ipcMain.on('update-plunder-info', (_e, plunderInfo: PlunderInfoType) => {
-        for (const [key, value] of Object.entries(plunderInfo)) {
-            (plunderStore as any)[key] = value;
-        };
+        try {
+            for (const [key, value] of Object.entries(plunderInfo)) {
+                Reflect.set(plunderProxy, key, value);
+            };
+    
+            const panelWindow = getPanelWindow();
+            panelWindow.webContents.send('patch-panel-plunder-info', plunderInfo);
 
-        const panelWindow = getPanelWindow();
-        panelWindow.webContents.send('patch-panel-plunder-info', plunderInfo);
+        } catch (err) {
+            ProxyStoreError.catch(err);
+        };
     });
 
     // Recebe as informações referentes às unidades da aldeia atual, salva-as localmente e então envia-as ao painel.
     ipcMain.on('update-current-village-units', (_e, units: UnitAmount) => {
-        for (const [key, value] of Object.entries(units)) {
-            unitStore[key as keyof UnitAmount] = value;
-        };
+        try {
+            for (const [key, value] of Object.entries(units)) {
+                Reflect.set(unitProxy, key, value);
+            };
+    
+            const panelWindow = getPanelWindow();
+            panelWindow.webContents.send('patch-panel-current-village-units', units);
 
-        const panelWindow = getPanelWindow();
-        panelWindow.webContents.send('patch-panel-current-village-units', units);
+        } catch (err) {
+            ProxyStoreError.catch(err);
+        };
     });
 };

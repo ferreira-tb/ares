@@ -1,26 +1,27 @@
-import { assertBoolean, assertFinite, assertInteger, assertString } from '@tb-dev/ts-guard';
+import { assertBoolean, assertFinite, assertInteger, assertString, isKeyOf } from '@tb-dev/ts-guard';
 import { assertWallLevel } from '$electron/utils/guards.js';
 import { ProxyStoreError } from '$electron/error.js';
-import type { PlunderStoreType } from '$types/electron.js';
-import type { PlunderConfigType, PlunderHistoryType, PlunderedAmount, BlindAttackPattern } from '$types/plunder.js';
+import type { PlunderedAmount, BlindAttackPattern } from '$types/plunder.js';
+import type { PlunderStore, PlunderConfigStore, PlunderFullHistoryStore } from '$types/stores.js';
+import type { RemoveMethods } from '$types/utils.js';
 
-class PlunderStore implements PlunderStoreType {
+class PlunderProxy implements RemoveMethods<PlunderStore> {
     hideAttacked: boolean = true;
     page: number = 0;
     pageSize: number = 15;
     plunderExhausted: boolean = false;
 };
 
-function setPlunderStore() {
-    return new Proxy(new PlunderStore(), {
+export function setPlunderProxy() {
+    return new Proxy(new PlunderProxy(), {
         set(target, key, value) {
-            if (key in target) return Reflect.set(target, key, value);
-            return false;
+            if(!isKeyOf(key, target)) return false;
+            return Reflect.set(target, key, value);
         }
     });
 };
 
-class PlunderConfigStore implements PlunderConfigType {
+class PlunderConfigProxy implements RemoveMethods<PlunderConfigStore> {
     active: boolean = false;
 
     ignoreWall: boolean = false;
@@ -42,15 +43,13 @@ class PlunderConfigStore implements PlunderConfigType {
     minutesUntilReload: number = 10;
 };
 
-function setPlunderConfigStore() {
-    return new Proxy(new PlunderConfigStore(), {
+export function setPlunderConfigProxy() {
+    return new Proxy(new PlunderConfigProxy(), {
         set(target, key, value) {
-            if (!(key in target)) return false;
+            if (!isKeyOf(key, target)) return false;
     
             switch (key) {
                 case 'wallLevelToIgnore':
-                    assertWallLevel(value, ProxyStoreError);
-                    break;
                 case 'wallLevelToDestroy':
                     assertWallLevel(value, ProxyStoreError);
                     break;
@@ -79,7 +78,7 @@ function setPlunderConfigStore() {
     });
 };
 
-class PlunderHistoryStore implements PlunderHistoryType {
+class PlunderHistoryProxy implements PlunderFullHistoryStore {
     private readonly base: PlunderedAmount = {
         wood: 0,
         stone: 0,
@@ -90,12 +89,9 @@ class PlunderHistoryStore implements PlunderHistoryType {
 
     private readonly handler: ProxyHandler<PlunderedAmount> = {
         set(target, key, value) {
-            if (key in target) {
-                assertInteger(value);
-                return Reflect.set(target, key, value);
-            };
-
-            return false;
+            if (!isKeyOf(key, target)) return false;
+            assertInteger(value);
+            return Reflect.set(target, key, value);
         }
     };
 
@@ -103,9 +99,8 @@ class PlunderHistoryStore implements PlunderHistoryType {
     readonly total: PlunderedAmount = new Proxy({ ...this.base }, this.handler);
 };
 
-function setPlunderHistoryStore() {
-    return new PlunderHistoryStore();
+export function setPlunderHistoryProxy() {
+    return new PlunderHistoryProxy();
 };
 
-export type { PlunderStore, PlunderConfigStore, PlunderHistoryStore };
-export { setPlunderStore, setPlunderConfigStore, setPlunderHistoryStore };
+export type { PlunderProxy, PlunderConfigProxy, PlunderHistoryProxy };

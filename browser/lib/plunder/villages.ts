@@ -5,7 +5,7 @@ import { calcDistance } from '$global/utils/helpers.js';
 import { assertCoordsFromTextContent, parseGameDate } from '$global/utils/parser.js';
 import { PlunderError } from '$browser/error.js';
 import { resources as resourceList } from '$global/utils/constants.js';
-import { useAresStore } from '$vue/stores/ares.js';
+import { useCurrentVillageStore } from '$vue/stores/village.js';
 import type { Coords } from '$types/game.js';
 import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder.js';
 
@@ -94,14 +94,14 @@ export function queryVillagesInfo() {
 };
 
 function queryReport(row: Element, info: PlunderVillageInfo) {
-    const { currentX, currentY } = useAresStore();
+    const { x, y } = useCurrentVillageStore();
     const report = row.queryAndAssert('td a[href*="screen=report"]');
     const coords = assertCoordsFromTextContent(report.textContent);
 
-    assertInteger(currentX);
-    assertInteger(currentY);
+    assertInteger(x);
+    assertInteger(y);
 
-    info.distance = calcDistance(currentX, currentY, coords[0], coords[1]);
+    info.distance = calcDistance(x, y, coords[0], coords[1]);
     info.coords.x = coords[0];
     info.coords.y = coords[1];
 };

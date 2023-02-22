@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 import { assertInteger, assertString, isInstanceOf } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
 import { sequelize } from '$database/database.js';
-import { ErrorLog, DOMErrorLog, MainProcessErrorLog, browserStore } from '$interface/interface.js';
+import { ErrorLog, DOMErrorLog, MainProcessErrorLog, aresProxy } from '$interface/index.js';
 import { getActiveModule, showErrorLog } from '$electron/app/modules.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 
@@ -20,13 +20,13 @@ export function setErrorEvents() {
                 name: err.name,
                 message: err.message,
                 stack: err.stack,
-                world: browserStore.currentWorld,
+                world: aresProxy.world,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: browserStore.majorVersion,
-                locale: browserStore.locale
+                tribal: aresProxy.majorVersion,
+                locale: aresProxy.locale
             };
 
             await sequelize.transaction(async (transaction) => {
@@ -78,15 +78,15 @@ export function setErrorEvents() {
             const domErrorLog: Omit<DOMErrorLogType, 'id' | 'pending'> = {
                 name: err.name,
                 url: new URL(e.sender.getURL()).href,
-                world: browserStore.currentWorld,
+                world: aresProxy.world,
                 selector: err.selector,
                 stack: err.stack,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: browserStore.majorVersion,
-                locale: browserStore.locale
+                tribal: aresProxy.majorVersion,
+                locale: aresProxy.locale
             };
 
             await sequelize.transaction(async (transaction) => {

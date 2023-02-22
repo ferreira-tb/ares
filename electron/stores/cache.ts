@@ -1,37 +1,36 @@
 import { isString } from '@tb-dev/ts-guard';
 import { generateUserAlias } from '$electron/utils/helpers.js';
 import { isUserAlias, isWorld } from '$electron/utils/guards.js';
-import type { CacheStoreType, UserAlias } from '$types/electron.js';
-import type { SetAliasStoreState, SetWorldStoreState } from '$interface/interface.js';
+import type { CacheProxyType, UserAlias } from '$types/electron.js';
 import type { World } from '$types/game.js';
 
-class CacheStore implements CacheStoreType {
+class CacheProxy implements CacheProxyType {
     world: World | null = null;
     player: string | null = null;
     userAlias: UserAlias | null = null;
 };
 
-function setCacheStore(
-    setAliasStoreState: typeof SetAliasStoreState,
-    setWorldStoreState: typeof SetWorldStoreState
+export function setCacheProxy(
+    setAliasProxyState: (alias: UserAlias) => Promise<void>,
+    setWorldProxyState: (world: World) => Promise<void>
 ) {
-    return new Proxy(new CacheStore(), {
+    return new Proxy(new CacheProxy(), {
         set(target, key, value, receiver) {
             if (!isString(value)) return true;
 
             // Obtém do target para que a trap "get" não seja acionada.
             const previousAlias = Reflect.get(target, 'userAlias') as UserAlias | null;
-            // Obtém do receiver (proxy) para que a trap "get" seja acionada.
+            // Agora obtém do receiver (proxy) para que a trap "get" seja acionada.
             const alias = Reflect.get(receiver, 'userAlias') as UserAlias | null;
 
             if (isUserAlias(alias) && alias !== previousAlias) {
-                setAliasStoreState(alias);
+                setAliasProxyState(alias);
                 Reflect.set(target, 'userAlias', alias);
             };
 
             if (key === 'world' && isWorld(value)) {
                 const previousWorld = Reflect.get(target, 'world') as World | null;
-                if (value !== previousWorld) setWorldStoreState(value);
+                if (value !== previousWorld) setWorldProxyState(value);
             };
 
             return Reflect.set(target, key, value);
@@ -47,5 +46,4 @@ function setCacheStore(
     });
 };
 
-export type { CacheStore };
-export { setCacheStore };
+export type { CacheProxy };
