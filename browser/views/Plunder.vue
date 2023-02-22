@@ -80,6 +80,9 @@ async function handleAttack(): Promise<void> {
         /** Informações sobre a aldeia. */
         const info = villagesInfo.getStrict(id);
 
+        // Ignora a linha caso a aldeia tenha muralha e a muralha possua nível superior ao permitido.
+        if (config.ignoreWall === true && info.wallLevel >= config.wallLevelToIgnore) continue;
+
         const templates = await filterTemplates(info.res.total);
         if (templates.length === 0) continue;
 
@@ -132,6 +135,6 @@ function setPlunderTimeout() {
 .auto-reload-message {
     font-style: normal;
     position: absolute;
-    right: 10px;
+    right: 2em;
 }
 </style>
