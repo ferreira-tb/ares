@@ -47,6 +47,10 @@ export type PlunderConfigType = {
     resourceRatio: number;
     /** Minutos até que a página seja recarregada automaticamente. */
     minutesUntilReload: number;
+    /** Distância máxima para os ataques do Plunder. */
+    maxDistance: number;
+    /** Ignora aldeias cujo último ataque ocorreu há uma quantidade de horas superior à indicada. */
+    ignoreOlderThan: number;
 };
 
 export type PlunderConfigKeys = keyof PlunderConfigType;

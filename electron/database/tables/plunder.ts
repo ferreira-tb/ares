@@ -23,6 +23,8 @@ export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCr
     declare readonly blindAttackPattern: BlindAttackPattern;
     declare readonly resourceRatio: number;
     declare readonly minutesUntilReload: number;
+    declare readonly maxDistance: number;
+    declare readonly ignoreOlderThan: number;
 };
 
 PlunderConfig.init({
@@ -93,6 +95,16 @@ PlunderConfig.init({
         defaultValue: 0.8
     },
     minutesUntilReload: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 10
+    },
+    maxDistance: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 20
+    },
+    ignoreOlderThan: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 10

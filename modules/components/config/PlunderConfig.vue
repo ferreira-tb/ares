@@ -52,6 +52,8 @@ function updateConfig(name: 'attackDelay', value: number): void;
 function updateConfig(name: 'blindAttackPattern', value: BlindAttackPattern): void;
 function updateConfig(name: 'resourceRatio', value: number): void;
 function updateConfig(name: 'minutesUntilReload', value: number): void;
+function updateConfig(name: 'maxDistance', value: number): void;
+function updateConfig(name: 'ignoreOlderThan', value: number): void;
 function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
     if (!isObject(config.value)) return;
     Reflect.set(config.value, name, value);
@@ -65,9 +67,36 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
                 <Popover>
+                    <template #trigger>Distância máxima</template>
+                    <span>O Ares não atacará aldeias cuja distância (em campos) é maior do que a indicada.</span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput :value="config.maxDistance" :min="1" :step="1"
+                    :validator="(v) => isPositiveNumber(v) && v >= 1"
+                    @value-updated="(v) => updateConfig('maxDistance', v)" />
+            </NGridItem>
+
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Evitar relatórios mais antigos que</template>
+                    <span>
+                        Se o último ataque ocorreu a uma quantidade de horas superior a indicada, o Ares não atacará a aldeia.
+                    </span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput :value="config.ignoreOlderThan" :min="1" :step="1"
+                    :validator="(v) => isPositiveInteger(v) && v >= 1"
+                    @value-updated="(v) => updateConfig('ignoreOlderThan', v)" />
+            </NGridItem>
+
+            <NGridItem>
+                <Popover>
                     <template #trigger>Delay médio entre os ataques</template>
-                    <span>O jogo possui um limite de cinco ações por segundos, então o Ares dá uma atrasadinha em cada
-                        ataque.</span>
+                    <span>
+                        O jogo possui um limite de cinco ações por segundo, então o Ares dá uma atrasadinha em cada ataque.
+                    </span>
                 </Popover>
             </NGridItem>
             <NGridItem>
@@ -80,8 +109,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
                 <Popover>
                     <template #trigger>Razão de saque</template>
                     <span>
-                        Corresponde à razão entre a quantidade de recursos na aldeia e a capacidade de carga do modelo
-                        atacante.
+                        Corresponde à razão entre a quantidade de recursos na aldeia e a capacidade de carga do modelo atacante.
                         Quanto menor for a razão, maior a chance de tropas serem enviadas desnecessariamente.
                     </span>
                 </Popover>

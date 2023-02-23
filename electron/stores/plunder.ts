@@ -1,9 +1,17 @@
-import { assertBoolean, assertFinite, assertInteger, assertString, isKeyOf, arrayIncludes } from '@tb-dev/ts-guard';
 import { assertWallLevel } from '$electron/utils/guards.js';
 import { ProxyStoreError } from '$electron/error.js';
 import type { PlunderedAmount, BlindAttackPattern } from '$types/plunder.js';
 import type { PlunderStore, PlunderConfigStore, PlunderFullHistoryStore } from '$types/stores.js';
 import type { RemoveMethods } from '$types/utils.js';
+
+import {
+    assertBoolean,
+    assertString,
+    isKeyOf,
+    arrayIncludes,
+    assertPositiveInteger,
+    assertPositiveNumber
+} from '@tb-dev/ts-guard';
 
 class PlunderProxy implements RemoveMethods<PlunderStore> {
     hideAttacked: boolean = true;
@@ -25,22 +33,20 @@ class PlunderConfigProxy implements RemoveMethods<PlunderConfigStore> {
     active: boolean = false;
 
     ignoreWall: boolean = false;
-    wallLevelToIgnore: number = 1;
-
     destroyWall: boolean = false;
-    wallLevelToDestroy: number = 1;
-
     groupAttack: boolean = false;
     useC: boolean = false;
-
     ignoreDelay: boolean = false;
-    attackDelay: number = 200;
-
     blindAttack: boolean = false;
-    blindAttackPattern: BlindAttackPattern = 'smaller';
 
+    wallLevelToIgnore: number = 1;
+    wallLevelToDestroy: number = 1;
+    attackDelay: number = 200;
+    blindAttackPattern: BlindAttackPattern = 'smaller';
     resourceRatio: number = 0.8;
     minutesUntilReload: number = 10;
+    maxDistance: number = 20;
+    ignoreOlderThan: number = 10;
 };
 
 export function setPlunderConfigProxy() {
@@ -54,7 +60,7 @@ export function setPlunderConfigProxy() {
                     assertWallLevel(value, ProxyStoreError);
                     break;
                 case 'attackDelay':
-                    assertInteger(value);
+                    assertPositiveInteger(value);
                     if (value < 100 || value > 5000) return false;
                     break;
                 case 'blindAttackPattern':
@@ -63,12 +69,19 @@ export function setPlunderConfigProxy() {
                     if (!arrayIncludes(patterns, value)) return false;
                     break;
                 case 'resourceRatio':
-                    assertFinite(value);
+                    assertPositiveNumber(value);
                     if (value < 0.2 || value > 1) return false;
                     break;
                 case 'minutesUntilReload':
-                    assertInteger(value);
-                    if (value < 1 || value > 60) return false;
+                    assertPositiveInteger(value);
+                    if (value > 60) return false;
+                    break;
+                case 'maxDistance':
+                    assertPositiveNumber(value);
+                    if (value < 1) return false;
+                    break;
+                case 'ignoreOlderThan':
+                    assertPositiveInteger(value);
                     break;
                 default:
                     assertBoolean(value);
@@ -91,7 +104,7 @@ class PlunderHistoryProxy implements PlunderFullHistoryStore {
     private readonly handler: ProxyHandler<PlunderedAmount> = {
         set(target, key, value) {
             if (!isKeyOf(key, target)) return false;
-            assertInteger(value);
+            assertPositiveInteger(value);
             return Reflect.set(target, key, value);
         }
     };

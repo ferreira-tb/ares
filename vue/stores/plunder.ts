@@ -37,6 +37,8 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const blindAttackPattern = ref<BlindAttackPattern>('smaller');
     const resourceRatio = ref<number>(0.8);
     const minutesUntilReload = ref<number>(10);
+    const maxDistance = ref<number>(20);
+    const ignoreOlderThan = ref<number>(10);
 
     function raw(): PlunderConfigType {
         return {
@@ -52,7 +54,9 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
             blindAttack: blindAttack.value,
             blindAttackPattern: blindAttackPattern.value,
             resourceRatio: resourceRatio.value,
-            minutesUntilReload: minutesUntilReload.value
+            minutesUntilReload: minutesUntilReload.value,
+            maxDistance: maxDistance.value,
+            ignoreOlderThan: ignoreOlderThan.value
         };
     };
 
@@ -70,6 +74,8 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         blindAttackPattern,
         resourceRatio,
         minutesUntilReload,
+        maxDistance,
+        ignoreOlderThan,
         raw
     } satisfies PiniaPlunderConfigStoreType;
 });

@@ -62,7 +62,7 @@ async function handleAttack(): Promise<void> {
     // Seleciona todas as aldeias da tabela e itera sobre elas.
     const villages = plunderList.queryAsMap('tr[data-tb-village]', (e) => e.getAttributeStrict('data-tb-village'));
     for (const [id, village] of villages.entries()) {
-        // Ignora a linha caso ela esteja oculta, removendo-a da tabela.
+        // Ignora caso ela esteja oculta, removendo-a da tabela.
         const style = village.getAttribute('style') ?? '';
         if (/display:\s*none/.test(style)) {
             village.remove();
@@ -70,7 +70,7 @@ async function handleAttack(): Promise<void> {
             continue;
         };
 
-        // Ignora a linha caso a aldeia esteja sob ataque.
+        // Ignora caso a aldeia já esteja sob ataque.
         const attackIcon = village.querySelector('img[src*="attack.png" i]');
         if (attackIcon !== null) {
             villagesInfo.delete(id);
@@ -80,7 +80,11 @@ async function handleAttack(): Promise<void> {
         /** Informações sobre a aldeia. */
         const info = villagesInfo.getStrict(id);
 
-        // Ignora a linha caso a aldeia tenha muralha e a muralha possua nível superior ao permitido.
+        // Ignora caso a aldeia esteja longe demais.
+        if (info.distance > config.maxDistance) continue;
+        // Ignora caso o relatório seja muito antigo.
+        if ((Date.now() - info.lastAttack) > config.ignoreOlderThan * 3600000) continue;
+        // Ignora caso a aldeia tenha muralha e a muralha possua nível superior ao permitido.
         if (config.ignoreWall === true && info.wallLevel >= config.wallLevelToIgnore) continue;
 
         const templates = await filterTemplates(info.res.total);
