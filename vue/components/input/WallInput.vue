@@ -43,7 +43,7 @@ const emit = defineEmits<{
 
 const inputValue = ref(props.value);
 watch(inputValue, (value) => {
-    if (isWallLevel(value)) {
+    if (isWallLevel(value) && value > 0) {
         emit('level-updated', value);
     };
 });
