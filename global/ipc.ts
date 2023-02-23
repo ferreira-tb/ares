@@ -41,6 +41,7 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
 // Geral
 export function ipcSend(channel: 'reload-browser-window'): void;
 export function ipcSend(channel: 'force-reload-browser-window'): void;
+export function ipcSend(channel: 'open-ares-website'): void;
 
 // Configurações
 export function ipcSend(channel: 'open-plunder-config-window'): void;
@@ -64,6 +65,6 @@ export function ipcSend(channel: 'update-game-data', gameData: TribalWarsGameDat
 export function ipcSend(channel: 'update-current-village-units', units: UnitAmount): void;
 export function ipcSend(channel: 'update-plunder-info', plunderInfo: PlunderInfoType): void;
 
-export function ipcSend(channel: string, ...args: any[]) {
+export function ipcSend(channel: string, ...args: any[]): void {
     ipcRenderer.send(channel, ...args);
 };

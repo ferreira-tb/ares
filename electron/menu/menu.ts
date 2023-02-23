@@ -1,7 +1,7 @@
 import { Menu, shell } from 'electron';
 import { showErrorLog, showAppConfig } from '$electron/app/modules.js';
-import { aresURL, gameURL, repoURL, discordURL } from '$electron/utils/constants.js';
-import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
+import { gameURL, repoURL, discordURL } from '$electron/utils/constants.js';
+import { togglePanelWindow, getMainWindow, getPanelWindow, openAresWebsite } from '$electron/utils/helpers.js';
 import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
@@ -34,7 +34,7 @@ export function setAppMenu() {
     ];
     
     const helpMenu: MenuItemConstructorOptions[] = [
-        { label: 'Site', click: () => shell.openExternal(aresURL) },
+        { label: 'Site', click: () => openAresWebsite() },
         { label: 'Repositório', click: () => shell.openExternal(repoURL) },
         { label: 'Discord', click: () => shell.openExternal(discordURL) },
         { type: 'separator' },

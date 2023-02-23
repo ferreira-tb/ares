@@ -2,8 +2,8 @@
 import { ref } from 'vue';
 import { shell } from 'electron';
 import { NButton, NButtonGroup } from 'naive-ui';
-import { ipcInvoke } from '$global/ipc.js';
-import { aresURL, repoURL, discordURL } from '$global/utils/constants.js';
+import { ipcInvoke, ipcSend } from '$global/ipc.js';
+import { repoURL, discordURL } from '$global/utils/constants.js';
 
 const appName = ref<string>(await ipcInvoke('app-name'));
 const appVersion = ref<string>(await ipcInvoke('app-version'));
@@ -16,7 +16,7 @@ const appVersion = ref<string>(await ipcInvoke('app-version'));
             <h2>Uma ferramenta para Tribal Wars</h2>
         </div>
         <NButtonGroup>
-            <NButton round @click="shell.openExternal(aresURL)">Site</NButton>
+            <NButton round @click="ipcSend('open-ares-website')">Site</NButton>
             <NButton round @click="shell.openExternal(repoURL)">Repositório</NButton>
             <NButton round @click="shell.openExternal(discordURL)">Discord</NButton>
         </NButtonGroup>

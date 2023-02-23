@@ -7,7 +7,7 @@ import { setErrorEvents } from '$electron/events/error.js';
 import { setPanelEvents } from '$electron/events/panel.js';
 import { setDeimosEvents } from '$electron/events/deimos.js';
 import { MainProcessError } from '$electron/error.js';
-import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
+import { getMainWindow, getPanelWindow, openAresWebsite } from '$electron/utils/helpers.js';
 import { browserCss } from '$electron/utils/constants.js';
 import { cacheProxy } from '$interface/index.js';
 
@@ -15,15 +15,16 @@ export function setEvents() {
     const mainWindow = getMainWindow();
     const panelWindow = getPanelWindow();
 
-    // Informações gerais.
+    // Geral.
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
     ipcMain.handle('user-alias', () => cacheProxy.userAlias);
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
     ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
+    ipcMain.on('open-ares-website', () => openAresWebsite());
 
-    // Informações do jogo.
+    // Jogo.
     ipcMain.handle('current-world', () => cacheProxy.world);
 
     // Informa ao painel qual é a URL atual sempre que ocorre navegação.
@@ -45,7 +46,7 @@ export function setEvents() {
 
             const { origin } = new URL(url);
             if (/\.?tribalwars/.test(origin)) return;
-            if (/\.?tb\.dev\.br/.test(origin)) return;
+            if (/\.?tb\.dev\.br\/ares/.test(origin)) return;
             e.preventDefault();
         } catch (err) {
             MainProcessError.catch(err);
