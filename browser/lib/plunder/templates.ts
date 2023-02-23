@@ -1,9 +1,9 @@
 import { computed, nextTick } from 'vue';
-import { storeToRefs } from 'pinia';
 import { assert } from '@tb-dev/ts-guard';
 import { usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { useUnitsStore } from '$vue/stores/units.js';
-import { isFarmUnit } from '$global/utils/guards.js';
+import { assertFarmUnit } from '$global/utils/guards.js';
+import { PlunderError } from '$browser/error.js';
 import type { FarmUnits, FarmUnitsAmount } from '$types/game.js';
 
 export class PlunderTemplate {
@@ -86,7 +86,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
         /** O valor no atributo `name` é algo como `spear[11811]`. */
         const unitType = fieldName.replace(/\[\d+\]/g, '');
 
-        assert(isFarmUnit(unitType), `${unitType} não é uma unidade válida.`);
+        assertFarmUnit(unitType, PlunderError, `${unitType} não é uma unidade válida.`);
         field.setAttribute(`data-tb-template-${row}`, unitType);
         
         /** Contém a quantidade de unidades. */
@@ -98,11 +98,12 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * Filtra todos os modelos de saque disponíveis de acordo com a quantidade de recursos na aldeia-alvo.
  * Caso a função retorne uma lista vazia, o ataque não deve ser enviado.
  * Ao fim, os modelos são ordenados de acordo com a capacidade de carga.
+ * 
+ * Se a opção `blindAttack` estiver ativada, todos os modelos com tropas disponíveis são retornados.
  * @param resources - Recursos disponíveis na aldeia-alvo.
  */
 export async function filterTemplates(resources: number): Promise<PlunderTemplate[]> {
     const configStore = usePlunderConfigStore();
-    const { resourceRatio } = storeToRefs(configStore);
 
     // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.
     // Os modelos com capacidade de carga maior que a quantidade de recursos são colocados no grupo `bigger`.
@@ -123,17 +124,28 @@ export async function filterTemplates(resources: number): Promise<PlunderTemplat
         };
     };
 
+    // Retorna sem filtrar se a opção `blindAttack` estiver ativada.
+    if (configStore.blindAttack === true) {
+        return [...smaller, ...bigger];
+    };
+
     // Remove os modelos cuja razão entre a quantidade de recursos e a capacidade de carga é menor que o valor definido pelo usuário.
     // Isso impede que sejam enviadas tropas em excesso para a aldeia-alvo.
     // Quanto menor for a razão, maior a quantidade de tropas sendo enviada desnecessariamente.
     // Não é necessário filtrar os modelos com capacidade de carga menor que a quantidade de recursos, pois eles sempre são válidos.
-    bigger = bigger.filter((template) => resources / template.carry >= resourceRatio.value);
+    bigger = bigger.filter((template) => resources / template.carry >= configStore.resourceRatio);
 
     return [...smaller, ...bigger];
 };
 
 export function pickBestTemplate(templates: PlunderTemplate[]): PlunderTemplate {
-    assert(templates.length > 0, 'Não há modelos de saque disponíveis.');
-    // Seleciona o modelo com maior capacidade de carga.
+    const configStore = usePlunderConfigStore();
+    if (configStore.blindAttack === true && configStore.blindAttackPattern === 'smaller') {
+        // Se a opção `blindAttack` estiver ativada e o padrão de seleção for `smaller`,
+        // seleciona o modelo com menor capacidade de carga.
+        return templates.reduce((prev, curr) => prev.carry < curr.carry ? prev : curr);
+    };
+
+    // Do contrário, apenas seleciona o modelo com maior capacidade de carga.
     return templates.reduce((prev, curr) => prev.carry > curr.carry ? prev : curr);
 };
