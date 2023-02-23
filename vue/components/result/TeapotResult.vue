@@ -5,12 +5,14 @@ interface Props {
     title?: string;
     description?: string;
     size?: 'small' | 'medium' | 'large' | 'huge';
+    userSelect?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     title: 'I\'m a Teapot',
     description: 'Parece que essa página ainda não foi implementada :(',
-    size: 'medium'
+    size: 'medium',
+    userSelect: false
 });
 </script>
 
@@ -30,6 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 <style scoped>
 .teapot-result {
+    user-select: v-bind("props.userSelect ? 'text' : 'none'");
     padding: 1rem;
 }
 

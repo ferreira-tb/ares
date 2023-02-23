@@ -5,12 +5,14 @@ interface Props {
     title?: string;
     description?: string;
     size?: 'small' | 'medium' | 'large' | 'huge';
+    userSelect?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     title: 'Tudo certo!',
     description: 'Perfeitamente balanceado :)',
-    size: 'medium'
+    size: 'medium',
+    userSelect: false
 });
 </script>
 
@@ -30,6 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 <style scoped>
 .sucess-result {
+    user-select: v-bind("props.userSelect ? 'text' : 'none'");
     padding: 1rem;
 }
 

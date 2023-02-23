@@ -10,6 +10,7 @@ interface Props {
     size?: 'small' | 'medium' | 'large' | 'huge';
     showDefaultSlot?: boolean;
     showDefaultFooter?: boolean;
+    userSelect?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -17,7 +18,8 @@ const props = withDefaults(defineProps<Props>(), {
     description: 'Houve um erro :(',
     size: 'medium',
     showDefaultSlot: true,
-    showDefaultFooter: true
+    showDefaultFooter: true,
+    userSelect: false
 });
 </script>
 
@@ -50,6 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 <style scoped>
 .error-result {
+    user-select: v-bind("props.userSelect ? 'text' : 'none'");
     padding: 1rem;
 }
 
