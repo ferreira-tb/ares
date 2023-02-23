@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
                 <slot>
                     <template v-if="props.showDefaultSlot">
                         <div>Por favor, feche a janela e tente novamente.</div>
-                        <div>Se o problema persistir, consulte os detalhes do problema no Registro de Erros e envie em nosso Discord.</div>
+                        <div>Se o problema persistir, consulte os detalhes no Registro de Erros e nos envie pelo Discord.</div>
                     </template>
                 </slot>
             </div>
