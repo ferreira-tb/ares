@@ -10,7 +10,7 @@
     transform: translate(-50%, -50%);
 }
 
-.icon {
+@mixin icon($image-url: '') {
     width: 18px;
     height: 18px;
     display: inline-block;
@@ -21,6 +21,7 @@
     overflow: hidden;
     background-repeat: no-repeat;
     vertical-align: -4px;
+    background-image:  url($image-url);
 }
 
 .bold-green {
@@ -30,16 +31,4 @@
 .loading-text {
     @include to-center();
     @include bold-text-color(var(--color-green));
-}
-
-.bold-green-message {
-    @include bold-text-color(var(--color-green));
-    text-align: center;
-    margin-top: 1em;
-}
-
-.bold-red-message {
-    @include bold-text-color(var(--color-red));
-    text-align: center;
-    margin-top: 1em;
 }
