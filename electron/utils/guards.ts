@@ -1,16 +1,17 @@
-import { isString, AssertionError, isPositiveInteger } from '@tb-dev/ts-guard';
+import { isString, isInteger } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
 import { worldRegex, aliasRegex } from '$electron/utils/constants.js';
 import type { UserAlias } from '$types/electron.js';
-import type { World } from '$types/game.js';
+import type { World, WallLevel } from '$types/game.js';
 
 export function isUserAlias(alias: unknown): alias is UserAlias {
     if (!isString(alias)) return false;
     return aliasRegex.test(alias);
 };
 
-export function assertUserAlias(alias: unknown): asserts alias is UserAlias {
-    if (!isUserAlias(alias)) throw new AssertionError('O alias do usuário é inválido.');
+export function assertUserAlias(alias: unknown, err: typeof MainProcessError, message?: string): asserts alias is UserAlias {
+    if (!isString(message)) message = 'O alias do usuário é inválido.';
+    if (!isUserAlias(alias)) throw new err(message);
 };
 
 export const isWorld = (world: unknown): world is World => {
@@ -28,12 +29,12 @@ export function assertWorldOrNull(world: unknown, err: typeof MainProcessError, 
     if (world !== null) assertWorld(world, err, message);
 };
 
-export const isWallLevel = (level: unknown): level is number => {
-    if (!isPositiveInteger(level)) return false;
-    return level >= 1 && level <= 20;
+export const isWallLevel = (level: unknown): level is WallLevel => {
+    if (!isInteger(level)) return false;
+    return level >= 0 && level <= 20;
 };
 
-export function assertWallLevel(level: unknown, err: typeof MainProcessError, message?: string): asserts level is number {
+export function assertWallLevel(level: unknown, err: typeof MainProcessError, message?: string): asserts level is WallLevel {
     if (!isString(message)) message = 'O nível de muralha informado é inválido.';
     if (!isWallLevel(level)) throw new err(message);
 };

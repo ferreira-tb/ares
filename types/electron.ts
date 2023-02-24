@@ -1,6 +1,6 @@
 import type { World } from '$types/game.js';
 
-export type UserAlias = `${string}__USERID__${string}`;
+export type UserAlias = `${World}__USERID__${string}`;
 
 export interface CacheProxyType {
     world: World | null;

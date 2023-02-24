@@ -1,7 +1,10 @@
 import { app, BrowserWindow } from 'electron';
 import { assertInstanceOf, isInstanceOf } from '@tb-dev/ts-guard';
 import { favicon, aresURL } from '$electron/utils/constants.js';
+import { assertWorld } from '$electron/utils/guards.js';
+import { MainProcessError } from '$electron/error.js';
 import type { UserAlias } from '$types/electron.js';
+import type { World } from '$types/game.js';
 
 export function restartAres() {
     app.relaunch();
@@ -94,7 +97,8 @@ export const openAresWebsite = createAresWebsiteWindow();
 * Ele é usado para diferenciar tanto diferentes jogadores quanto diferentes mundos do mesmo jogador.
 * @param playerName Nome do jogador.
 */
-export function generateUserAlias(world: string, playerName: string): UserAlias {
+export function generateUserAlias(world: World, playerName: string): UserAlias {
     playerName = encodeURIComponent(playerName);
-    return `${world.toLowerCase()}__USERID__${playerName}`;
+    assertWorld(world, MainProcessError);
+    return `${world}__USERID__${playerName}`;
 };

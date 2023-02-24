@@ -75,3 +75,10 @@ export const showErrorLog = createModule('error-log', 'error-log', {
     height: 600,
     title: 'Registro de Erros'
 });
+
+export const showDemolitionConfig = createModule('demolition', 'demolition', {
+    width: 1000,
+    height: 600,
+    title: 'Demolição',
+    minimizable: true
+});

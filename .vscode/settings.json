@@ -18,6 +18,7 @@
         { "icon": "theme", "extensions": ["composable", "composables"], "format": "FileFormat.svg" }
     ],
     "files.exclude": {
-        "**/docs": true
+        "**/docs": true,
+        "**/public": true
     }
 }

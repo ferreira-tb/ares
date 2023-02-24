@@ -3,16 +3,13 @@ import { assertObject, assertPositiveInteger, isObject, isKeyOf } from '@tb-dev/
 import { getPanelWindow } from '$electron/utils/helpers.js';
 import { assertUserAlias, isUserAlias } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
-import { MainProcessError } from '$electron/error.js';
-import { showAppConfig } from '$electron/app/modules.js';
+import { MainProcessEventError } from '$electron/error.js';
 import { PlunderHistory, PlunderConfig, plunderConfigProxy, plunderHistoryProxy, cacheProxy } from '$interface/index.js';
 import type { PlunderedAmount, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
 
 export function setPlunderEvents() {
     const panelWindow = getPanelWindow();
 
-    // Abre a janela de configurações avançadas do Plunder.
-    ipcMain.on('open-plunder-config-window', () => showAppConfig('plunder-config'));
     // Verifica se o Plunder está ativo.
     ipcMain.handle('is-plunder-active', () => plunderConfigProxy.active);
     // Obtém as configurações do Plunder.
@@ -41,7 +38,7 @@ export function setPlunderEvents() {
             };
 
             const userAlias = cacheProxy.userAlias;
-            assertUserAlias(userAlias);
+            assertUserAlias(userAlias, MainProcessEventError);
 
             await sequelize.transaction(async (transaction) => {
                 await PlunderConfig.upsert({
@@ -51,7 +48,7 @@ export function setPlunderEvents() {
             });
 
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -62,7 +59,7 @@ export function setPlunderEvents() {
             assertObject(resources, 'A quantidade de recursos é inválida.');
             panelWindow.webContents.send('patch-panel-plundered-amount', resources);
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -79,7 +76,7 @@ export function setPlunderEvents() {
             };
 
             const userAlias = cacheProxy.userAlias;
-            assertUserAlias(userAlias);
+            assertUserAlias(userAlias, MainProcessEventError);
 
             await sequelize.transaction(async (transaction) => {
                 await PlunderHistory.upsert({
@@ -90,7 +87,7 @@ export function setPlunderEvents() {
             });
 
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -101,7 +98,7 @@ export function setPlunderEvents() {
             assertObject(history, 'Não foi possível obter a quantidade de recursos saqueados.');
             return history.last;
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
             return null;
         };
     });
@@ -113,7 +110,7 @@ export function setPlunderEvents() {
             assertObject(history, 'Não foi possível obter a quantidade total de recursos saqueados.');
             return history.total;
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
             return null;
         };
     });
@@ -134,7 +131,7 @@ async function getPlunderHistoryAsJSON(): Promise<PlunderHistory | null> {
         return result as PlunderHistory | null;
 
     } catch (err) {
-        MainProcessError.catch(err);
+        MainProcessEventError.catch(err);
         return null;
     };
 };

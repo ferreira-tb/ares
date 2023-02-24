@@ -24,3 +24,12 @@ export class DatabaseError extends MainProcessError {
 
     declare public static catch: (err: unknown) => Promise<void>;
 };
+
+export class MainProcessEventError extends MainProcessError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'MainProcessEventError';
+    };
+
+    declare public static catch: (err: unknown) => Promise<void>;
+};

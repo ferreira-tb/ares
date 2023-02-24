@@ -1,13 +1,19 @@
+import type { IntRange, IntRangeToStrings } from '$types/utils.js';
+
+//////// MUNDO
 export type WorldLocale = 'br';
 export type World =
     | `${WorldLocale}${string}` // Mundo padrão.
     | `${WorldLocale}s${string}` // Rodada speed.
     | `${WorldLocale}p${string}`; // Mundo casual.
 
+
+//////// RECURSOS
 export type Resources = 'wood' | 'stone' | 'iron';
 export type ResourcesPTBR = 'Madeira' | 'Argila' | 'Ferro';
 export type ResourceAmount = { [key in Resources]: number };
 
+//////// UNIDADES
 /** Unidades que podem ser usadas no assistente de saque. */
 export type FarmUnits =
     | 'spear'
@@ -35,6 +41,14 @@ export type AllUnits =
 export type FarmUnitsAmount = { [key in FarmUnits]: number };
 export type UnitAmount = { [key in AllUnits]: number };
 export type UnitsAmountAsStrings = { [key in AllUnits]: string };
+
+//////// CONSTRUÇÕES
+export type WallLevel = IntRange<0, 21>;
+export type StringWallLevel = IntRangeToStrings<0, 21>;
+
+//////// OUTROS
+export type DemolitionTroops = Omit<UnitAmount, 'snob' | 'militia' | 'knight'>;
+export type UnitsToDestroyWall = Record<StringWallLevel, DemolitionTroops>;
 
 export type GameScreen =
     | 'am_farm'

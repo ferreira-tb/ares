@@ -6,6 +6,7 @@ html {
     height: 30px;
     padding-left: 0.5em;
     padding-right: 0.5em;
+    user-select: none;
 }
 
 .module-content {
@@ -17,6 +18,7 @@ html {
     padding-right: 0.3em;
     margin-top: 0.5em;
     overflow: hidden;
+    user-select: none;
 }
 
 .module-view {
@@ -24,4 +26,14 @@ html {
     width: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    user-select: none;
+}
+
+.error-log {
+    margin-bottom: 0.5em;
+    user-select: text;
+}
+
+.error-log:last-of-type {
+    margin-bottom: 1em;
 }

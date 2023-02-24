@@ -6,10 +6,11 @@ import { setBrowserEvents } from '$electron/events/browser.js';
 import { setErrorEvents } from '$electron/events/error.js';
 import { setPanelEvents } from '$electron/events/panel.js';
 import { setDeimosEvents } from '$electron/events/deimos.js';
-import { MainProcessError } from '$electron/error.js';
+import { setModuleEvents } from '$electron/events/modules.js';
+import { MainProcessEventError } from '$electron/error.js';
 import { getMainWindow, getPanelWindow, openAresWebsite } from '$electron/utils/helpers.js';
 import { browserCss } from '$electron/utils/constants.js';
-import { cacheProxy } from '$interface/index.js';
+import { cacheProxy, worldConfigProxy, worldUnitProxy } from '$interface/index.js';
 
 export function setEvents() {
     const mainWindow = getMainWindow();
@@ -26,6 +27,9 @@ export function setEvents() {
 
     // Jogo.
     ipcMain.handle('current-world', () => cacheProxy.world);
+    ipcMain.handle('current-world-config', () => ({ ...worldConfigProxy }));
+    ipcMain.handle('current-world-units', () => ({ ...worldUnitProxy }));
+    ipcMain.handle('is-archer-world', () => worldConfigProxy.archer);
 
     // Informa ao painel qual é a URL atual sempre que ocorre navegação.
     // Além disso, insere o CSS e solicita ao browser que atualize o Deimos.
@@ -35,7 +39,7 @@ export function setEvents() {
             panelWindow.webContents.send('browser-did-finish-load');
             await mainWindow.webContents.insertCSS(browserStyle);
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -49,7 +53,7 @@ export function setEvents() {
             if (/\.?tb\.dev\.br\/ares/.test(origin)) return;
             e.preventDefault();
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -59,4 +63,5 @@ export function setEvents() {
     setPlunderEvents();
     setErrorEvents();
     setDeimosEvents();
+    setModuleEvents();
 };

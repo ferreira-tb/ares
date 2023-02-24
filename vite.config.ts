@@ -22,6 +22,7 @@ export default defineConfig({
         target: 'esnext',
         outDir: 'dist',
         emptyOutDir: false,
+        chunkSizeWarningLimit: 2000,
         rollupOptions: {
             external: ['electron'],
             output: {

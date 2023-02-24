@@ -1,9 +1,10 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderConfigType } from '$types/plunder.js';
 import type { PlunderedResources } from '$lib/plunder/resources.js';
-import type { UnitAmount, World, TribalWarsGameDataType } from '$types/game.js';
+import type { UnitAmount, World, TribalWarsGameDataType, UnitsToDestroyWall } from '$types/game.js';
 import type { PlunderedAmount, PlunderInfoType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType, MainProcessErrorLogType } from '$types/error.js';
+import type { WorldConfigType, WorldUnitType } from '$types/world.js';
 import type { UserAlias } from '$types/electron.js';
 
 // Geral
@@ -16,6 +17,11 @@ export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 
 // Jogo
 export async function ipcInvoke(channel: 'current-world'): Promise<World | null>;
+export async function ipcInvoke(channel: 'current-world-config'): Promise<WorldConfigType>;
+export async function ipcInvoke(channel: 'current-world-units'): Promise<WorldUnitType>;
+export async function ipcInvoke(channel: 'is-archer-world'): Promise<boolean>;
+export async function ipcInvoke(channel: 'get-demolition-troops-config'): Promise<UnitsToDestroyWall | null>;
+export async function ipcInvoke(channel: 'destroy-demolition-troops-config', alias: UserAlias): Promise<boolean>;
 
 // Erros
 export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
@@ -45,6 +51,8 @@ export function ipcSend(channel: 'open-ares-website'): void;
 
 // Configurações
 export function ipcSend(channel: 'open-plunder-config-window'): void;
+export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
+export function ipcSend(channel: 'save-demolition-troops-config', alias: UserAlias, units: UnitsToDestroyWall): void;
 
 // Erros
 export function ipcSend(channel: 'open-error-log-window'): void;

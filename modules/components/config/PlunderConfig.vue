@@ -2,14 +2,18 @@
 import { ref, watch } from 'vue';
 import { useIpcRenderer } from '@vueuse/electron';
 import { isObject, assertKeyOf, toNull, isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
-import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
+import { NDivider, NGrid, NGridItem, NSelect, NButton, NButtonGroup, useDialog, useMessage } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { ModuleConfigError } from '$modules/error.js';
+import { assertUserAlias } from '$global/utils/guards';
 import InfoResult from '$vue/components/result/InfoResult.vue';
 import WallInput from '$vue/components/input/WallInput.vue';
 import NumberImput from '$vue/components/input/NumberInput.vue';
 import Popover from '$vue/components/popover/Popover.vue';
 import type { PlunderConfigType, PlunderConfigKeys, PlunderConfigValues, BlindAttackPattern } from '$types/plunder.js';
+
+const dialog = useDialog();
+const message = useMessage();
 
 const previousConfig = toNull(await ipcInvoke('get-plunder-config'), isObject);
 const config = ref<PlunderConfigType | null>(previousConfig);
@@ -59,6 +63,32 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
     Reflect.set(config.value, name, value);
     ipcSend('update-plunder-config', name, value);
 };
+
+function resetDemolitionConfig() {
+    const status = dialog.warning({
+        title: 'Tem certeza?',
+        content: 'Essa ação é irreversível! Não há como voltar atrás.',
+        positiveText: 'Sim',
+        negativeText: 'Cancelar',
+        onPositiveClick: async () => {
+            status.loading = true;
+            try {
+                const userAlias = await ipcInvoke('user-alias');
+                assertUserAlias(userAlias, ModuleConfigError);
+                const result = await ipcInvoke('destroy-demolition-troops-config', userAlias);
+                if (result !== true) throw result;
+                message.success('Resetado com sucesso!', { duration: 2000 });
+
+            } catch (err) {
+                ModuleConfigError.catch(err);
+                message.error('Ocorreu algum erro :(', { duration: 2000 });
+            }; 
+        },
+        onNegativeClick: () => {
+            message.info('Talvez tenha sido melhor assim...', { duration: 2000 });
+        }
+    });
+};
 </script>
 
 <template>
@@ -72,7 +102,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
                 </Popover>
             </NGridItem>
             <NGridItem>
-                <NumberImput :value="config.maxDistance" :min="1" :step="1"
+                <NumberImput :value="config.maxDistance" :min="1" :max="9999" :step="1"
                     :validator="(v) => isPositiveNumber(v) && v >= 1"
                     @value-updated="(v) => updateConfig('maxDistance', v)" />
             </NGridItem>
@@ -86,7 +116,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
                 </Popover>
             </NGridItem>
             <NGridItem>
-                <NumberImput :value="config.ignoreOlderThan" :min="1" :step="1"
+                <NumberImput :value="config.ignoreOlderThan" :min="1" :max="9999" :step="1"
                     :validator="(v) => isPositiveInteger(v) && v >= 1"
                     @value-updated="(v) => updateConfig('ignoreOlderThan', v)" />
             </NGridItem>
@@ -168,6 +198,19 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
             <NGridItem>
                 <WallInput :value="config.wallLevelToDestroy"
                     @level-updated="(v) => updateConfig('wallLevelToDestroy', v)" />
+            </NGridItem>
+
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Tropas de demolição</template>
+                    <span>Por padrão, o Ares envia bárbaros e aríetes para destruir as muralhas, mas você pode mudar isso!</span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <NButtonGroup>
+                    <NButton @click="ipcSend('open-demolition-troops-config-window')">Configurar</NButton>
+                    <NButton @click="resetDemolitionConfig">Resetar</NButton>
+                </NButtonGroup>
             </NGridItem>
         </NGrid>
     </section>

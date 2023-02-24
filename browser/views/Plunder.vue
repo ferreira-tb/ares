@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { isObject } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
@@ -9,6 +9,7 @@ import { queryVillagesInfo, villagesInfo } from '$lib/plunder/villages.js';
 import { queryAvailableUnits } from '$lib/plunder/units.js';
 import { PlunderedResources } from '$lib/plunder/resources.js';
 import { prepareAttack, eventTarget as attackEventTarget } from '$lib/plunder/attack.js';
+import { destroyWall } from '$lib/plunder/wall.js';
 import { PlunderError } from '$browser/error.js';
 import { ipcSend, ipcInvoke } from '$global/ipc.js';
 
@@ -24,13 +25,14 @@ const plunderListTitle = document.queryAndAssert('div[id="am_widget_Farm" i] > h
 const plunderList = document.queryAndAssert('#plunder_list:has(tr[id^="village"]) tbody');
 
 /** Milisegundos entre cada recarregamento automático da página. */
-const plunderTimeout = computed(() => config.minutesUntilReload * 60000);
+const plunderTimeout = ref<number>(config.minutesUntilReload * 60000);
 /** Data do próximo recarregamento automático. */
 const nextAutoReload = computed(() => {
     if (config.active === false) return null;
     return new Date(Date.now() + plunderTimeout.value);
 });
 
+/** Mensagem exibida para o usuário acima da tabela. */
 const autoReloadMessage = computed(() => {
     if (nextAutoReload.value === null) return null;
     const date = nextAutoReload.value.toLocaleDateString('pt-br', { year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -45,14 +47,14 @@ queryVillagesInfo();
 watchEffect(() => {
     // Interrompe qualquer ataque em andamento.
     attackEventTarget.dispatchEvent(new Event('stop'));
-
     // Começa a atacar se o Plunder estiver ativado.
-    if (config.active === true) {
-        handleAttack();
-        setPlunderTimeout();
-    } else {
-        eventTarget.dispatchEvent(new Event('cancelreload'));
-    };
+    if (config.active === true) handleAttack();
+});
+
+watchEffect(() => {
+    eventTarget.dispatchEvent(new Event('cancelreload'));
+    plunderTimeout.value = config.minutesUntilReload * 60000;
+    if (config.active === true) setPlunderTimeout();
 });
 
 async function handleAttack(): Promise<void> {
@@ -84,6 +86,15 @@ async function handleAttack(): Promise<void> {
         if (info.distance > config.maxDistance) continue;
         // Ignora caso o relatório seja muito antigo.
         if ((Date.now() - info.lastAttack) > config.ignoreOlderThan * 3600000) continue;
+
+        // Destrói a muralha da aldeia caso `destroyWall` esteja ativado.
+        // Se o ataque for enviado com sucesso, pula para a próxima aldeia.
+        // Essa opção deve estar sempre antes de `ignoreWall`.
+        if (config.destroyWall === true && info.wallLevel >= config.wallLevelToDestroy) {
+            const destroyed = await destroyWall();
+            if (destroyed === true) continue;
+        };
+
         // Ignora caso a aldeia tenha muralha e a muralha possua nível superior ao permitido.
         if (config.ignoreWall === true && info.wallLevel >= config.wallLevelToIgnore) continue;
 
@@ -139,6 +150,6 @@ function setPlunderTimeout() {
 .auto-reload-message {
     font-style: normal;
     position: absolute;
-    right: 2em;
+    right: 1em;
 }
 </style>

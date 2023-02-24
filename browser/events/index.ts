@@ -22,12 +22,12 @@ export function setBrowserEvents(pinia: Pinia) {
             const gameData = await Deimos.invoke('get-game-data');
             if (gameData === null) return;
 
+            ipcSend('update-game-data', gameData);
             aresStore.$patch(gameData.ares);
             featuresStore.$patch(gameData.features);
             playerStore.$patch(gameData.player);
             currentVillageStore.$patch(gameData.currentVillage);
-            ipcSend('update-game-data', gameData);
-
+            
         } catch (err) {
             BrowserError.catch(err);
         };

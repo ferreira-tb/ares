@@ -47,13 +47,3 @@ function deleteError(id: number) {
         <SucessResult v-else description="Nenhum erro registrado :)" />
     </section>
 </template>
-
-<style scoped>
-.error-log {
-    margin-bottom: 0.5em;
-}
-
-.error-log:last-of-type {
-    margin-bottom: 1em;
-}
-</style>

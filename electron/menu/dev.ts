@@ -1,8 +1,12 @@
 import { BrowserWindow, Menu, MenuItem, type MenuItemConstructorOptions } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
-import { devOptions } from '$electron/utils/constants.js';
 import { getMainWindow, restartAres } from '$electron/utils/helpers.js';
 import { MainProcessError } from '$electron/error.js';
+
+const devOptions: MenuItemConstructorOptions[] = [
+    { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', role: 'forceReload' },
+    { label: 'Inspecionar', accelerator: 'F1', role: 'toggleDevTools' }
+];
 
 /**
  * Adiciona um menu básico à janela, com opções para inspeção e atualização da página.
