@@ -1,5 +1,5 @@
 import { computed, nextTick } from 'vue';
-import { assert, isKeyOf, assertInteger } from '@tb-dev/ts-guard';
+import { assert, isKeyOf, assertInteger, toIntegerStrict, isInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
 import { usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { useUnitsStore } from '$vue/stores/units.js';
@@ -11,12 +11,27 @@ import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
 
 type ConfigReturnType = ReturnType<typeof usePlunderConfigStore>;
 
+class TemplateUnits implements FarmUnitsAmount {
+    spear = 0;
+    sword = 0;
+    axe = 0;
+    spy = 0;
+    light = 0;
+    heavy = 0;
+    knight = 0;
+    archer = 0;
+    marcher = 0;
+};
+
 export class PlunderTemplate {
     /** Tipo do modelo. */
     readonly type: string;
+    /** Quantidade de tropas no modelo. */
+    readonly units: FarmUnitsAmount;
 
     constructor(type: string) {
         this.type = type;
+        this.units = new TemplateUnits();
     };
 
     /** Capacidade de carga. */
@@ -31,17 +46,17 @@ export class PlunderTemplate {
         return true;
     });
 
-    readonly units: FarmUnitsAmount = {
-        spear: 0,
-        sword: 0,
-        axe: 0,
-        spy: 0,
-        light: 0,
-        heavy: 0,
-        knight: 0,
-        archer: 0,
-        marcher: 0
-    };
+    /** 
+     * Sempre que o modelo C é usado, a quantidade de tropas no template é atualizada.
+     * No entanto, o próximo ataque usando o modelo C usará uma quantidade diferente de tropas.
+     * Por isso, é necessário resetar o template para que ele possa ser usado novamente.
+     */
+    public reset() {
+        if (this.type !== 'c') return;
+        for (const key of Object.keys(this.units) as FarmUnits[]) {
+            this.units[key] = 0;
+        };
+    }
 };
 
 /** Representa todos os modelos de saque. */
@@ -180,8 +195,10 @@ async function getTemplateC(info: PlunderVillageInfo): Promise<PlunderTemplate |
         // Atualiza a quantidade de tropas disponíveis no modelo C.
         for (const unit in cUnits) {
             if (!isKeyOf(unit, templateC.units)) continue;
-            assertInteger(cUnits[unit], 'A quantidade de tropas do modelo C não é um número inteiro.');
-            templateC.units[unit] = cUnits[unit];    
+
+            // De maneira completamente aleatória, o jogo às vezes retorna uma string em vez de um número no JSON.
+            // Por isso, é necessário garantir que o valor seja um número inteiro.
+            templateC.units[unit] = toIntegerStrict(cUnits[unit], isInteger);
         };
 
         if (Object.values(templateC.units).every((amount) => amount === 0)) return null;

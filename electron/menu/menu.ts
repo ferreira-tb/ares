@@ -43,7 +43,7 @@ export function setAppMenu() {
 
     const mainMenu = Menu.buildFromTemplate([
         { label: 'Opções', submenu: optionsMenu },
-        { label: 'Scripts', visible: false, enabled: false, accelerator: 'F4' },
+        { label: 'Scripts', enabled: false, accelerator: 'F4' },
         { label: 'Ajuda', submenu: helpMenu }
     ] satisfies MenuItemConstructorOptions[]);
 

@@ -5,9 +5,5 @@ import { Sequelize } from 'sequelize';
 export const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: join(app.getPath('userData'), 'ares.db'),
-    logging: false,
-    pool: {
-        min: 0,
-        max: 10
-    }
+    logging: false
 });

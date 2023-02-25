@@ -115,6 +115,7 @@ async function handleAttack(): Promise<void> {
             assertElement(attackButton, `O botão do modelo ${best.type.toUpperCase()} não foi encontrado.`);
 
             return prepareAttack(plunderedResources, attackButton)
+                .then(() => best.reset())
                 .then(() => villagesInfo.delete(id))
                 .then(() => village.remove())
                 .then(() => handleAttack())
