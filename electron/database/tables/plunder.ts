@@ -23,6 +23,7 @@ export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCr
     // Configurações
     declare readonly wallLevelToIgnore: number;
     declare readonly wallLevelToDestroy: number;
+    declare readonly destroyWallMaxDistance: number;
     declare readonly attackDelay: number;
     declare readonly blindAttackPattern: BlindAttackPattern;
     declare readonly resourceRatio: number;
@@ -62,6 +63,11 @@ PlunderConfig.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1
+    },
+    destroyWallMaxDistance: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 20
     },
     groupAttack: {
         type: DataTypes.BOOLEAN,

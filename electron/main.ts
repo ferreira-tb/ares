@@ -60,4 +60,8 @@ function createWindow() {
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
 
-sequelize.sync().catch(MainProcessError.catch);
+if (process.env.ARES_MODE === 'dev') {
+    sequelize.sync({ alter: { drop: false } }).catch(MainProcessError.catch);
+} else {
+    sequelize.sync().catch(MainProcessError.catch);
+};

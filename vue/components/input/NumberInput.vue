@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
+import { reactive } from 'vue';
+import { useVModel } from '@vueuse/core';
 import { NInputNumber } from 'naive-ui';
 import { isInteger } from '@tb-dev/ts-guard';
 
@@ -9,9 +10,9 @@ type Keyboard = {
 };
 
 interface Props {
+    value: number;
     min?: number;
     max?: number;
-    value?: number;
     arrowUp?: boolean;
     arrowDown?: boolean;
     bordered?: boolean;
@@ -26,7 +27,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     min: 1,
     max: 100,
-    value: 1,
     arrowUp: false,
     arrowDown: false,
     bordered: true,
@@ -39,15 +39,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'value-updated', inputValue: number): void
+  (e: 'update:value', value: number): void
 }>();
 
-const inputValue = ref(props.value);
-watch(inputValue, (value) => {
-    if (props.validator(value)) {
-        emit('value-updated', value);
-    };
-});
+const value = useVModel(props, 'value', emit);
 
 const keyboardOptions: Keyboard = reactive({
     ArrowUp: props.arrowUp,
@@ -57,7 +52,7 @@ const keyboardOptions: Keyboard = reactive({
 
 <template>
         <NInputNumber class="standard-number-input"
-            v-model:value="inputValue"
+            v-model:value="value"
             :min="props.min" :max="props.max"
             :keyboard="keyboardOptions"
             :validator="props.validator"

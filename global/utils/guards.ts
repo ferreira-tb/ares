@@ -1,4 +1,4 @@
-import { isString, isInteger } from '@tb-dev/ts-guard';
+import { isString, isInteger, isPositiveNumber } from '@tb-dev/ts-guard';
 import { farmUnits, worldRegex, aliasRegex } from '$global/utils/constants.js';
 import type { AresError } from '$global/error.js';
 import type { FarmUnits, World, WallLevel } from '$types/game.js';
@@ -43,4 +43,14 @@ export const isWallLevel = (level: unknown): level is WallLevel => {
 export function assertWallLevel(level: unknown, err: typeof AresError, message?: string): asserts level is WallLevel {
     if (!isString(message)) message = 'O nível da muralha é inválido.';
     if (!isWallLevel(level)) throw new err(message);
+};
+
+export const isDistance = (distance: unknown): distance is number => {
+    if (!isPositiveNumber(distance)) return false;
+    return distance >= 1;
+};
+
+export function assertDistance(distance: unknown, err: typeof AresError, message?: string): asserts distance is number {
+    if (!isString(message)) message = 'A distância é inválida.';
+    if (!isDistance(distance)) throw new err(message);
 };

@@ -39,6 +39,8 @@ export type PlunderConfigType = {
     wallLevelToIgnore: number;
     /** Nível da muralha a partir do qual ele deve demolir. */
     wallLevelToDestroy: number;
+    /** Distância máxima para ataques de destruição de muralha. */
+    destroyWallMaxDistance: number;
     /** Delay médio entre os ataques. */
     attackDelay: number;
     /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
@@ -47,7 +49,7 @@ export type PlunderConfigType = {
     resourceRatio: number;
     /** Minutos até que a página seja recarregada automaticamente. */
     minutesUntilReload: number;
-    /** Distância máxima para os ataques do Plunder. */
+    /** Distância máxima para os ataques normais do Plunder. */
     maxDistance: number;
     /** Ignora aldeias cujo último ataque ocorreu há uma quantidade de horas superior à indicada. */
     ignoreOlderThan: number;

@@ -5,7 +5,7 @@ import { isObject, assertKeyOf, toNull, isPositiveInteger, isPositiveNumber } fr
 import { NDivider, NGrid, NGridItem, NSelect, NButton, NButtonGroup, useDialog, useMessage } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { ModuleConfigError } from '$modules/error.js';
-import { assertUserAlias } from '$global/utils/guards';
+import { assertUserAlias, isDistance } from '$global/utils/guards';
 import InfoResult from '$vue/components/result/InfoResult.vue';
 import WallInput from '$vue/components/input/WallInput.vue';
 import NumberImput from '$vue/components/input/NumberInput.vue';
@@ -18,8 +18,25 @@ const message = useMessage();
 const previousConfig = toNull(await ipcInvoke('get-plunder-config'), isObject);
 const config = ref<PlunderConfigType | null>(previousConfig);
 
+const wallLevelToIgnore = ref<number>(config.value?.wallLevelToIgnore ?? 1);
+const wallLevelToDestroy = ref<number>(config.value?.wallLevelToDestroy ?? 1);
+const destroyWallMaxDistance = ref<number>(config.value?.destroyWallMaxDistance ?? 20);
+const attackDelay = ref<number>(config.value?.attackDelay ?? 200);
 const blindAttackPattern = ref<BlindAttackPattern>(config.value?.blindAttackPattern ?? 'smaller');
+const resourceRatio = ref<number>(config.value?.resourceRatio ?? 0.8);
+const minutesUntilReload = ref<number>(config.value?.minutesUntilReload ?? 10);
+const maxDistance = ref<number>(config.value?.maxDistance ?? 20);
+const ignoreOlderThan = ref<number>(config.value?.ignoreOlderThan ?? 10);
+
+watch(wallLevelToIgnore, (v) => updateConfig('wallLevelToIgnore', v));
+watch(wallLevelToDestroy, (v) => updateConfig('wallLevelToDestroy', v));
+watch(destroyWallMaxDistance, (v) => updateConfig('destroyWallMaxDistance', v));
+watch(attackDelay, (v) => updateConfig('attackDelay', v));
 watch(blindAttackPattern, (v) => updateConfig('blindAttackPattern', v));
+watch(resourceRatio, (v) => updateConfig('resourceRatio', v));
+watch(minutesUntilReload, (v) => updateConfig('minutesUntilReload', v));
+watch(maxDistance, (v) => updateConfig('maxDistance', v));
+watch(ignoreOlderThan, (v) => updateConfig('ignoreOlderThan', v));
 
 // Opções do NSelect.
 interface BlindAttackPatternOption {
@@ -50,14 +67,8 @@ ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: Plu
     };
 });
 
-function updateConfig(name: 'wallLevelToIgnore', value: number): void;
-function updateConfig(name: 'wallLevelToDestroy', value: number): void;
-function updateConfig(name: 'attackDelay', value: number): void;
 function updateConfig(name: 'blindAttackPattern', value: BlindAttackPattern): void;
-function updateConfig(name: 'resourceRatio', value: number): void;
-function updateConfig(name: 'minutesUntilReload', value: number): void;
-function updateConfig(name: 'maxDistance', value: number): void;
-function updateConfig(name: 'ignoreOlderThan', value: number): void;
+function updateConfig(name: PlunderConfigKeys, value: number): void;
 function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
     if (!isObject(config.value)) return;
     Reflect.set(config.value, name, value);
@@ -82,7 +93,7 @@ function resetDemolitionConfig() {
             } catch (err) {
                 ModuleConfigError.catch(err);
                 message.error('Ocorreu algum erro :(', { duration: 2000 });
-            }; 
+            };
         },
         onNegativeClick: () => {
             message.info('Talvez tenha sido melhor assim...', { duration: 2000 });
@@ -92,7 +103,7 @@ function resetDemolitionConfig() {
 </script>
 
 <template>
-    <section v-if="config">
+    <section v-if="config" class="plunder-config">
         <NDivider title-placement="left">Ataque</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
@@ -102,23 +113,21 @@ function resetDemolitionConfig() {
                 </Popover>
             </NGridItem>
             <NGridItem>
-                <NumberImput :value="config.maxDistance" :min="1" :max="9999" :step="1"
-                    :validator="(v) => isPositiveNumber(v) && v >= 1"
-                    @value-updated="(v) => updateConfig('maxDistance', v)" />
+                <NumberImput v-model:value="maxDistance" :min="1" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
             </NGridItem>
 
             <NGridItem>
                 <Popover>
                     <template #trigger>Evitar relatórios mais antigos que</template>
                     <span>
-                        Se o último ataque ocorreu a uma quantidade de horas superior a indicada, o Ares não atacará a aldeia.
+                        Se o último ataque ocorreu a uma quantidade de horas superior a indicada, o Ares não atacará a
+                        aldeia.
                     </span>
                 </Popover>
             </NGridItem>
             <NGridItem>
-                <NumberImput :value="config.ignoreOlderThan" :min="1" :max="9999" :step="1"
-                    :validator="(v) => isPositiveInteger(v) && v >= 1"
-                    @value-updated="(v) => updateConfig('ignoreOlderThan', v)" />
+                <NumberImput v-model:value="ignoreOlderThan" :min="1" :max="9999" :step="1"
+                    :validator="(v) => isPositiveInteger(v) && v >= 1" />
             </NGridItem>
 
             <NGridItem>
@@ -130,24 +139,23 @@ function resetDemolitionConfig() {
                 </Popover>
             </NGridItem>
             <NGridItem>
-                <NumberImput :value="config.attackDelay" :min="100" :max="5000" :step="10"
-                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 5000"
-                    @value-updated="(v) => updateConfig('attackDelay', v)" />
+                <NumberImput v-model:value="attackDelay" :min="100" :max="5000" :step="10"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 5000" />
             </NGridItem>
 
             <NGridItem>
                 <Popover>
                     <template #trigger>Razão de saque</template>
                     <span>
-                        Corresponde à razão entre a quantidade de recursos na aldeia e a capacidade de carga do modelo atacante.
+                        Corresponde à razão entre a quantidade de recursos na aldeia e a capacidade de carga do modelo
+                        atacante.
                         Quanto menor for a razão, maior a chance de tropas serem enviadas desnecessariamente.
                     </span>
                 </Popover>
             </NGridItem>
             <NGridItem>
-                <NumberImput :value="config.resourceRatio" :min="0.2" :max="1" :step="0.05"
-                    :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1"
-                    @value-updated="(v) => updateConfig('resourceRatio', v)" />
+                <NumberImput v-model:value="resourceRatio" :min="0.2" :max="1" :step="0.05"
+                    :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1" />
             </NGridItem>
 
             <NGridItem>
@@ -157,9 +165,8 @@ function resetDemolitionConfig() {
                 </Popover>
             </NGridItem>
             <NGridItem>
-                <NumberImput :value="config.minutesUntilReload" :min="1" :max="60" :step="1"
-                    :validator="(v) => isPositiveInteger(v) && v >= 1 && v <= 60"
-                    @value-updated="(v) => updateConfig('minutesUntilReload', v)" />
+                <NumberImput v-model:value="minutesUntilReload" :min="1" :max="60" :step="1"
+                    :validator="(v) => isPositiveInteger(v) && v >= 1 && v <= 60" />
             </NGridItem>
 
             <NGridItem>
@@ -186,24 +193,36 @@ function resetDemolitionConfig() {
                 </Popover>
             </NGridItem>
             <NGridItem>
-                <WallInput :value="config.wallLevelToIgnore" @level-updated="(v) => updateConfig('wallLevelToIgnore', v)" />
+                <WallInput v-model:value="wallLevelToIgnore" />
             </NGridItem>
 
             <NGridItem>
                 <Popover>
-                    <template #trigger>Destruir muralhas a partir de</template>
-                    <span>O Ares não destruirá muralhas cujo nível seja menor que o indicado.</span>
+                    <template #trigger>Demolir muralhas a partir de</template>
+                    <span>O Ares não demolirá muralhas cujo nível seja menor que o indicado.</span>
                 </Popover>
             </NGridItem>
             <NGridItem>
-                <WallInput :value="config.wallLevelToDestroy"
-                    @level-updated="(v) => updateConfig('wallLevelToDestroy', v)" />
+                <WallInput v-model:value="wallLevelToDestroy" />
+            </NGridItem>
+
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Distância máxima para demolição</template>
+                    <span>O Ares não demolirá muralhas de aldeias cuja distância (em campos) é maior do que a
+                        indicada.</span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput v-model:value="destroyWallMaxDistance" :min="1" :max="9999" :step="1"
+                    :validator="(v) => isDistance(v)" />
             </NGridItem>
 
             <NGridItem>
                 <Popover>
                     <template #trigger>Tropas de demolição</template>
-                    <span>Por padrão, o Ares envia bárbaros e aríetes para destruir as muralhas, mas você pode mudar isso!</span>
+                    <span>Por padrão, o Ares envia bárbaros e aríetes para destruir as muralhas, mas você pode mudar
+                        isso!</span>
                 </Popover>
             </NGridItem>
             <NGridItem>
@@ -219,8 +238,12 @@ function resetDemolitionConfig() {
         description="É necessário estar logado para acessar as configurações do assistente de saque." />
 </template>
 
-<style scoped>
-.plunder-config-select {
-    margin-right: 0.5em;
+<style scoped lang="scss">
+.plunder-config {
+    padding-bottom: 2em;
+
+    .plunder-config-select {
+        margin-right: 0.5em;
+    }
 }
 </style>

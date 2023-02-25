@@ -91,7 +91,11 @@ async function handleAttack(): Promise<void> {
         // Se o ataque for enviado com sucesso, pula para a próxima aldeia.
         // Essa opção deve estar sempre antes de `ignoreWall`.
         // Isso para que a aldeia seja ignorada caso a muralha não seja destruída e, claro, `ignoreWall` esteja ativado.
-        if (config.destroyWall === true && info.wallLevel >= config.wallLevelToDestroy) {
+        if (
+            config.destroyWall === true &&
+            info.wallLevel >= config.wallLevelToDestroy &&
+            info.distance <= config.destroyWallMaxDistance
+        ) {
             const destroyed = await destroyWall(info);
             if (destroyed === true) continue;
         };

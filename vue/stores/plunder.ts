@@ -33,6 +33,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     // Configurações
     const wallLevelToIgnore = ref<number>(1);
     const wallLevelToDestroy = ref<number>(1);
+    const destroyWallMaxDistance = ref<number>(20);
     const attackDelay = ref<number>(200);
     const blindAttackPattern = ref<BlindAttackPattern>('smaller');
     const resourceRatio = ref<number>(0.8);
@@ -44,14 +45,16 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         return {
             active: active.value,
             ignoreWall: ignoreWall.value,
-            wallLevelToIgnore: wallLevelToIgnore.value,
             destroyWall: destroyWall.value,
-            wallLevelToDestroy: wallLevelToDestroy.value,
             groupAttack: groupAttack.value,
             useC: useC.value,
             ignoreDelay: ignoreDelay.value,
-            attackDelay: attackDelay.value,
             blindAttack: blindAttack.value,
+
+            wallLevelToIgnore: wallLevelToIgnore.value,
+            wallLevelToDestroy: wallLevelToDestroy.value,
+            destroyWallMaxDistance: destroyWallMaxDistance.value,
+            attackDelay: attackDelay.value,
             blindAttackPattern: blindAttackPattern.value,
             resourceRatio: resourceRatio.value,
             minutesUntilReload: minutesUntilReload.value,
@@ -63,14 +66,16 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     return {
         active,
         ignoreWall,
-        wallLevelToIgnore,
         destroyWall,
-        wallLevelToDestroy,
         groupAttack,
         useC,
         ignoreDelay,
-        attackDelay,
         blindAttack,
+
+        wallLevelToIgnore,
+        wallLevelToDestroy,
+        destroyWallMaxDistance,
+        attackDelay,
         blindAttackPattern,
         resourceRatio,
         minutesUntilReload,

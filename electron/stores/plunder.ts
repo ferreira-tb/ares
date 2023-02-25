@@ -41,6 +41,7 @@ class PlunderConfigProxy implements RemoveMethods<PlunderConfigStore> {
 
     wallLevelToIgnore: number = 1;
     wallLevelToDestroy: number = 1;
+    destroyWallMaxDistance: number = 20;
     attackDelay: number = 200;
     blindAttackPattern: BlindAttackPattern = 'smaller';
     resourceRatio: number = 0.8;
@@ -77,6 +78,7 @@ export function setPlunderConfigProxy() {
                     if (value > 60) return false;
                     break;
                 case 'maxDistance':
+                case 'destroyWallMaxDistance':
                     assertPositiveNumber(value);
                     if (value < 1) return false;
                     break;
