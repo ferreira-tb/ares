@@ -10,7 +10,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
     title: 'I\'m a Teapot',
-    description: 'Parece que essa página ainda não foi implementada :(',
+    description: 'Parece que isso ainda não foi implementado :(',
     size: 'medium',
     userSelect: false
 });
