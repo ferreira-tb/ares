@@ -39,7 +39,7 @@
     "dependencies": {
         "@tb-dev/prototype": "^2.0.1",
         "@tb-dev/prototype-dom": "^2.0.0",
-        "@tb-dev/ts-guard": "^1.6.0",
+        "@tb-dev/ts-guard": "^1.7.0",
         "@tb-dev/ts-guard-dom": "^1.0.0",
         "@vueuse/core": "^9.13.0",
         "@vueuse/electron": "^9.13.0",
