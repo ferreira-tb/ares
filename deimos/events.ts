@@ -1,4 +1,3 @@
-import { assertString } from '@tb-dev/ts-guard';
 import { Deimos } from '$deimos/shared/ipc.js';
 import { DeimosError } from '$deimos/shared/error.js';
 import { TribalWarsGameData } from '$deimos/models/data.js';
@@ -34,33 +33,6 @@ export function setDeimosEvents() {
         } catch (err) {
             DeimosError.catch(err);
             return null;
-        };
-    });
-
-    Deimos.on('show-ui-error-message', (message: string) => {
-        try {
-            assertString(message);
-            UI.ErrorMessage(message);
-        } catch (err) {
-            DeimosError.catch(err);
-        };
-    });
-
-    Deimos.on('show-ui-info-message', (message: string) => {
-        try {
-            assertString(message);
-            UI.InfoMessage(message);
-        } catch (err) {
-            DeimosError.catch(err);
-        };
-    });
-
-    Deimos.on('show-ui-success-message', (message: string) => {
-        try {
-            assertString(message);
-            UI.SuccessMessage(message);
-        } catch (err) {
-            DeimosError.catch(err);
         };
     });
 };
