@@ -1,12 +1,22 @@
 import { ipcMain, BrowserWindow, type WebContents } from 'electron';
 import { assertObject, assertInteger, isKeyOf, isObject, isInteger } from '@tb-dev/ts-guard';
 import { getPanelWindow } from '$electron/utils/helpers.js';
-import { assertUserAlias, isUserAlias, assertWorld } from '$electron/utils/guards.js';
+import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
 import { MainProcessEventError } from '$electron/error.js';
-import { PlunderHistory, PlunderConfig, plunderConfigProxy, plunderHistoryProxy, cacheProxy, WorldUnit } from '$interface/index.js';
 import type { PlunderAttackDetails, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
 import type { UnitAmount, World } from '$types/game.js';
+import type { WorldUnitType } from '$types/world.js';
+
+import {
+    PlunderHistory,
+    PlunderConfig,
+    plunderConfigProxy,
+    plunderHistoryProxy,
+    cacheProxy,
+    WorldUnit,
+    worldUnitProxy
+} from '$interface/index.js';
 
 export function setPlunderEvents() {
     const panelWindow = getPanelWindow();
@@ -115,12 +125,17 @@ export function setPlunderEvents() {
     ipcMain.handle('calc-carry-capacity', async (_e, units: Partial<UnitAmount>, world?: World | null) => {
         try {
             world ??= cacheProxy.world;
-            assertWorld(world, MainProcessEventError);
-            
-            const worldUnitsRow = await WorldUnit.findByPk(world);
-            if (!isObject(worldUnitsRow)) return null;
+            if (!isWorld(world)) return null;
 
-            const worldUnits = worldUnitsRow.toJSON();
+            let worldUnits: WorldUnitType;
+            if (world === cacheProxy.world) {
+                worldUnits = { ...worldUnitProxy };
+            } else {
+                const worldUnitsRow = await WorldUnit.findByPk(world);
+                if (!isObject(worldUnitsRow)) return null;
+                worldUnits = worldUnitsRow.toJSON();
+            };
+            
             const entries = Object.entries(units) as [keyof UnitAmount, number][];
             return entries.reduce((carryCapacity, [unit, amount]) => {
                 const unitCapacity = worldUnits[unit]?.carry;
