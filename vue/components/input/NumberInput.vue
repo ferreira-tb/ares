@@ -34,8 +34,8 @@ const props = withDefaults(defineProps<Props>(), {
     disabled: false,
     size: 'medium',
     step: 1,
-    validator: isInteger,
-    marginRight: 0.5
+    marginRight: 0.5,
+    validator: isInteger
 });
 
 const emit = defineEmits<{
@@ -55,12 +55,12 @@ const keyboardOptions: Keyboard = reactive({
             v-model:value="value"
             :min="props.min" :max="props.max"
             :keyboard="keyboardOptions"
-            :validator="props.validator"
             :bordered="props.bordered"
             :clearable="props.clearable"
             :disabled="props.disabled"
             :size="props.size"
             :step="props.step"
+            :validator="props.validator"
         />
 </template>
 
