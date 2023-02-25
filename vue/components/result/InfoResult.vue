@@ -28,13 +28,13 @@ const props = withDefaults(defineProps<Props>(), {
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .info-result {
     user-select: v-bind("props.userSelect ? 'text' : 'none'");
     padding: 1em;
-}
 
-.default-slot {
-    text-align: center;
+    .default-slot {
+        text-align: center;
+    }
 }
 </style>

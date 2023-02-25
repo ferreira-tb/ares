@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
             <div class="default-slot">
                 <slot></slot>
             </div>
-        
+
             <template #footer>
                 <slot name="footer"></slot>
             </template>
@@ -30,13 +30,13 @@ const props = withDefaults(defineProps<Props>(), {
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .sucess-result {
     user-select: v-bind("props.userSelect ? 'text' : 'none'");
     padding: 1rem;
-}
 
-.default-slot {
-    text-align: center;
+    .default-slot {
+        text-align: center;
+    }
 }
 </style>
