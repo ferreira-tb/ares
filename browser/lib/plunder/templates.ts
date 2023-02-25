@@ -9,6 +9,11 @@ import type { FarmUnits, FarmUnitsAmount } from '$types/game.js';
 export class PlunderTemplate {
     /** Tipo do modelo. */
     readonly type: string;
+    
+    constructor(type: string) {
+        this.type = type;
+    };
+
     /** Capacidade de carga. */
     carry = 0;
     /** Indica se há tropas o suficiente para o modelo ser usado. */
@@ -31,10 +36,6 @@ export class PlunderTemplate {
         knight: 0,
         archer: 0,
         marcher: 0
-    };
-
-    constructor(type: string) {
-        this.type = type;
     };
 };
 
@@ -69,6 +70,10 @@ export function queryTemplateData() {
 
     const bCarryField = bRow.queryAndAssert('td:not(:has(input[data-tb-template-b])):not(:has(input[type*="hidden"]))');
     templateB.carry = bCarryField.parseIntStrict();
+
+    // Cria um modelo vazio para o tipo 'C'.
+    const templateC = new PlunderTemplate('c');
+    allTemplates.set(templateC.type, templateC);
 };
 
 /**
@@ -115,6 +120,8 @@ export async function filterTemplates(resources: number): Promise<PlunderTemplat
     await nextTick();
 
     for (const template of allTemplates.values()) {
+        // Ignora o modelo 'C' e os modelos que não têm tropas disponíveis.
+        if (template.type === 'c') continue;
         if (template.ok.value !== true) continue;
 
         if (template.carry > resources) {

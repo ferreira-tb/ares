@@ -17,6 +17,15 @@ export interface PlunderInfoType {
  */
 export type BlindAttackPattern = 'bigger' | 'smaller';
 
+/**
+ * Padrão de ataque quando o Plunder está usando o modelo C.
+ * 
+ * normal: Tenta utilizar o modelo C, se não for possível, utiliza outro modelo.
+ * 
+ * only: Utiliza apenas o modelo C.
+ */
+export type UseCPattern = 'normal' | 'only';
+
 export type PlunderConfigType = {
     // Painel
     /** Indica se o Plunder está ativado. */
@@ -43,8 +52,6 @@ export type PlunderConfigType = {
     destroyWallMaxDistance: number;
     /** Delay médio entre os ataques. */
     attackDelay: number;
-    /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
-    blindAttackPattern: BlindAttackPattern;
     /** Razão entre a quantidade de recursos esperados e a capacidade de carga do modelo atacante. */
     resourceRatio: number;
     /** Minutos até que a página seja recarregada automaticamente. */
@@ -53,6 +60,11 @@ export type PlunderConfigType = {
     maxDistance: number;
     /** Ignora aldeias cujo último ataque ocorreu há uma quantidade de horas superior à indicada. */
     ignoreOlderThan: number;
+
+    /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
+    blindAttackPattern: BlindAttackPattern;
+    /** Determina o padrão de ataque quando o Plunder está usando o modelo C. */
+    useCPattern: UseCPattern;
 };
 
 export type PlunderConfigKeys = keyof PlunderConfigType;

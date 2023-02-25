@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { PlunderConfigType, PlunderAttackDetails, BlindAttackPattern } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderAttackDetails, BlindAttackPattern, UseCPattern } from '$types/plunder.js';
 import type { PiniaPlunderStoreType, PiniaPlunderConfigStoreType, PiniaPlunderHistoryStoreType } from '$types/stores.js';
 
 export const usePlunderStore = defineStore('plunder', () => {
@@ -35,11 +35,13 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const wallLevelToDestroy = ref<number>(1);
     const destroyWallMaxDistance = ref<number>(20);
     const attackDelay = ref<number>(200);
-    const blindAttackPattern = ref<BlindAttackPattern>('smaller');
     const resourceRatio = ref<number>(0.8);
     const minutesUntilReload = ref<number>(10);
     const maxDistance = ref<number>(20);
     const ignoreOlderThan = ref<number>(10);
+
+    const blindAttackPattern = ref<BlindAttackPattern>('smaller');
+    const useCPattern = ref<UseCPattern>('normal');
 
     function raw(): PlunderConfigType {
         return {
@@ -55,11 +57,13 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
             wallLevelToDestroy: wallLevelToDestroy.value,
             destroyWallMaxDistance: destroyWallMaxDistance.value,
             attackDelay: attackDelay.value,
-            blindAttackPattern: blindAttackPattern.value,
             resourceRatio: resourceRatio.value,
             minutesUntilReload: minutesUntilReload.value,
             maxDistance: maxDistance.value,
-            ignoreOlderThan: ignoreOlderThan.value
+            ignoreOlderThan: ignoreOlderThan.value,
+
+            blindAttackPattern: blindAttackPattern.value,
+            useCPattern: useCPattern.value
         };
     };
 
@@ -76,11 +80,14 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         wallLevelToDestroy,
         destroyWallMaxDistance,
         attackDelay,
-        blindAttackPattern,
         resourceRatio,
         minutesUntilReload,
         maxDistance,
         ignoreOlderThan,
+
+        blindAttackPattern,
+        useCPattern,
+        
         raw
     } satisfies PiniaPlunderConfigStoreType;
 });

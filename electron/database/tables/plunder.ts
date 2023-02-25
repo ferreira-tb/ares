@@ -4,7 +4,7 @@ import { sequelize } from '$database/database.js';
 import { isUserAlias } from '$electron/utils/guards';
 import { DatabaseError } from '$electron/error.js';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { PlunderConfigType, PlunderHistoryType, PlunderAttackDetails, BlindAttackPattern } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderHistoryType, PlunderAttackDetails, BlindAttackPattern, UseCPattern } from '$types/plunder.js';
 import type { UserAlias } from '$types/electron.js';
 import type { CacheProxy } from '$stores/cache.js';
 
@@ -25,11 +25,13 @@ export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCr
     declare readonly wallLevelToDestroy: number;
     declare readonly destroyWallMaxDistance: number;
     declare readonly attackDelay: number;
-    declare readonly blindAttackPattern: BlindAttackPattern;
     declare readonly resourceRatio: number;
     declare readonly minutesUntilReload: number;
     declare readonly maxDistance: number;
     declare readonly ignoreOlderThan: number;
+
+    declare readonly blindAttackPattern: BlindAttackPattern;
+    declare readonly useCPattern: UseCPattern;
 };
 
 PlunderConfig.init({
@@ -39,6 +41,7 @@ PlunderConfig.init({
         allowNull: false,
         unique: true
     },
+
     active: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -49,25 +52,10 @@ PlunderConfig.init({
         allowNull: false,
         defaultValue: false
     },
-    wallLevelToIgnore: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 1
-    },
     destroyWall: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
-    },
-    wallLevelToDestroy: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 1
-    },
-    destroyWallMaxDistance: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        defaultValue: 20
     },
     groupAttack: {
         type: DataTypes.BOOLEAN,
@@ -84,20 +72,32 @@ PlunderConfig.init({
         allowNull: false,
         defaultValue: false
     },
-    attackDelay: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 200
-    },
     blindAttack: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
     },
-    blindAttackPattern: {
-        type: DataTypes.STRING,
+
+    wallLevelToIgnore: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 'smaller'
+        defaultValue: 1
+    },
+    
+    wallLevelToDestroy: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1
+    },
+    destroyWallMaxDistance: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 20
+    },
+    attackDelay: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 200
     },
     resourceRatio: {
         type: DataTypes.FLOAT,
@@ -118,6 +118,17 @@ PlunderConfig.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 10
+    },
+
+    blindAttackPattern: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'smaller' satisfies BlindAttackPattern
+    },
+    useCPattern: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'normal' satisfies UseCPattern
     }
 }, { sequelize, tableName: 'plunder_config', timestamps: true });
 

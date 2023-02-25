@@ -11,8 +11,8 @@ lerna-debug.log*
 .DS_Store
 dist
 dist-ssr
-docs
 coverage
+website
 *.local
 
 /cypress/videos/

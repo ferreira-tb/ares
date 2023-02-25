@@ -10,7 +10,13 @@ import InfoResult from '$vue/components/result/InfoResult.vue';
 import WallInput from '$vue/components/input/WallInput.vue';
 import NumberImput from '$vue/components/input/NumberInput.vue';
 import Popover from '$vue/components/popover/Popover.vue';
-import type { PlunderConfigType, PlunderConfigKeys, PlunderConfigValues, BlindAttackPattern } from '$types/plunder.js';
+import type {
+    PlunderConfigType,
+    PlunderConfigKeys,
+    PlunderConfigValues,
+    BlindAttackPattern,
+    UseCPattern
+} from '$types/plunder.js';
 
 const dialog = useDialog();
 const message = useMessage();
@@ -22,38 +28,25 @@ const wallLevelToIgnore = ref<number>(config.value?.wallLevelToIgnore ?? 1);
 const wallLevelToDestroy = ref<number>(config.value?.wallLevelToDestroy ?? 1);
 const destroyWallMaxDistance = ref<number>(config.value?.destroyWallMaxDistance ?? 20);
 const attackDelay = ref<number>(config.value?.attackDelay ?? 200);
-const blindAttackPattern = ref<BlindAttackPattern>(config.value?.blindAttackPattern ?? 'smaller');
 const resourceRatio = ref<number>(config.value?.resourceRatio ?? 0.8);
 const minutesUntilReload = ref<number>(config.value?.minutesUntilReload ?? 10);
 const maxDistance = ref<number>(config.value?.maxDistance ?? 20);
 const ignoreOlderThan = ref<number>(config.value?.ignoreOlderThan ?? 10);
 
+const blindAttackPattern = ref<BlindAttackPattern>(config.value?.blindAttackPattern ?? 'smaller');
+const useCPattern = ref<UseCPattern>(config.value?.useCPattern ?? 'normal');
+
 watch(wallLevelToIgnore, (v) => updateConfig('wallLevelToIgnore', v));
 watch(wallLevelToDestroy, (v) => updateConfig('wallLevelToDestroy', v));
 watch(destroyWallMaxDistance, (v) => updateConfig('destroyWallMaxDistance', v));
 watch(attackDelay, (v) => updateConfig('attackDelay', v));
-watch(blindAttackPattern, (v) => updateConfig('blindAttackPattern', v));
 watch(resourceRatio, (v) => updateConfig('resourceRatio', v));
 watch(minutesUntilReload, (v) => updateConfig('minutesUntilReload', v));
 watch(maxDistance, (v) => updateConfig('maxDistance', v));
 watch(ignoreOlderThan, (v) => updateConfig('ignoreOlderThan', v));
 
-// Opções do NSelect.
-interface BlindAttackPatternOption {
-    label: string;
-    value: BlindAttackPattern;
-}
-
-const blindAttackOptions = [
-    {
-        label: 'Menor capacidade',
-        value: 'smaller'
-    },
-    {
-        label: 'Maior capacidade',
-        value: 'bigger'
-    }
-] satisfies BlindAttackPatternOption[];
+watch(blindAttackPattern, (v) => updateConfig('blindAttackPattern', v));
+watch(useCPattern, (v) => updateConfig('useCPattern', v));
 
 // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
 const ipcRenderer = useIpcRenderer();
@@ -68,6 +61,7 @@ ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: Plu
 });
 
 function updateConfig(name: 'blindAttackPattern', value: BlindAttackPattern): void;
+function updateConfig(name: 'useCPattern', value: UseCPattern): void;
 function updateConfig(name: PlunderConfigKeys, value: number): void;
 function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
     if (!isObject(config.value)) return;
@@ -100,6 +94,37 @@ function resetDemolitionConfig() {
         }
     });
 };
+
+// Opções dos NSelect.
+type PatternOption<T> = ReadonlyArray<{
+    label: string;
+    value: T;
+}>;
+
+type BlindAttackOptions = PatternOption<BlindAttackPattern>;
+type UseCOptions = PatternOption<UseCPattern>;
+
+const blindAttackOptions = [
+    {
+        label: 'Menor capacidade',
+        value: 'smaller'
+    },
+    {
+        label: 'Maior capacidade',
+        value: 'bigger'
+    }
+] satisfies BlindAttackOptions;
+
+const useCOptions = [
+    {
+        label: 'Normal',
+        value: 'normal'
+    },
+    {
+        label: 'Somente C',
+        value: 'only'
+    }
+] satisfies UseCOptions;
 </script>
 
 <template>
@@ -171,7 +196,7 @@ function resetDemolitionConfig() {
 
             <NGridItem>
                 <Popover>
-                    <template #trigger>Lógica do ataque às cegas</template>
+                    <template #trigger>Padrão do ataque às cegas</template>
                     <span>
                         Determina como o Ares escolherá o modelo para atacar quando não houver informações de exploradores.
                     </span>
@@ -180,6 +205,23 @@ function resetDemolitionConfig() {
             <NGridItem>
                 <div class="plunder-config-select">
                     <NSelect v-model:value="blindAttackPattern" :options="blindAttackOptions" />
+                </div>
+            </NGridItem>
+
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Padrão do modelo C</template>
+                    <span>
+                        Quanto o uso do modelo C está ativado, o Ares tentará enviar ataques usando-o.
+                        Se não conseguir, tentará com algum outro modelo.
+
+                        Você pode alterar esse comportamento de maneira a forçá-lo a usar somente o modelo C.
+                    </span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <div class="plunder-config-select">
+                    <NSelect v-model:value="useCPattern" :options="useCOptions" />
                 </div>
             </NGridItem>
         </NGrid>

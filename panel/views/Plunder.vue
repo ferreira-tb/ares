@@ -96,7 +96,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
             <NGridItem>
                 <SwitchPopover :value="config.useC" @switch-updated="(v) => updateConfig('useC', v)">
                     <template #trigger>Usar modelo C</template>
-                    <span>Determina se o Ares deve usar o modelo C para atacar.</span>
+                    <span>Determina se o Ares deve usar o modelo C quando possível.</span>
                 </SwitchPopover>
             </NGridItem>
 

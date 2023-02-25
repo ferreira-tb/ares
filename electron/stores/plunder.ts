@@ -1,12 +1,11 @@
 import { assertWallLevel } from '$electron/utils/guards.js';
 import { ProxyStoreError } from '$electron/error.js';
-import type { PlunderAttackDetails, BlindAttackPattern } from '$types/plunder.js';
+import type { PlunderAttackDetails, BlindAttackPattern, UseCPattern } from '$types/plunder.js';
 import type { PlunderStore, PlunderConfigStore, PlunderFullHistoryStore } from '$types/stores.js';
 import type { RemoveMethods } from '$types/utils.js';
 
 import {
     assertBoolean,
-    assertString,
     isKeyOf,
     arrayIncludes,
     assertPositiveInteger,
@@ -43,12 +42,18 @@ class PlunderConfigProxy implements RemoveMethods<PlunderConfigStore> {
     wallLevelToDestroy: number = 1;
     destroyWallMaxDistance: number = 20;
     attackDelay: number = 200;
-    blindAttackPattern: BlindAttackPattern = 'smaller';
     resourceRatio: number = 0.8;
     minutesUntilReload: number = 10;
     maxDistance: number = 20;
     ignoreOlderThan: number = 10;
+
+    blindAttackPattern: BlindAttackPattern = 'smaller';
+    useCPattern: UseCPattern = 'normal';
 };
+
+// Patterns.
+export const blindAttackPatterns: BlindAttackPattern[] = ['smaller', 'bigger'];
+export const useCPatterns: UseCPattern[] = ['normal', 'only'];
 
 export function setPlunderConfigProxy() {
     return new Proxy(new PlunderConfigProxy(), {
@@ -63,11 +68,6 @@ export function setPlunderConfigProxy() {
                 case 'attackDelay':
                     assertPositiveInteger(value);
                     if (value < 100 || value > 5000) return false;
-                    break;
-                case 'blindAttackPattern':
-                    assertString(value);
-                    const patterns: BlindAttackPattern[] = ['smaller', 'bigger'];
-                    if (!arrayIncludes(patterns, value)) return false;
                     break;
                 case 'resourceRatio':
                     assertPositiveNumber(value);
@@ -85,6 +85,14 @@ export function setPlunderConfigProxy() {
                 case 'ignoreOlderThan':
                     assertPositiveInteger(value);
                     break;
+
+                case 'blindAttackPattern':
+                    if (!arrayIncludes(blindAttackPatterns, value)) return false;
+                    break;
+                case 'useCPattern':
+                    if (!arrayIncludes(useCPatterns, value)) return false;
+                    break;
+                    
                 default:
                     assertBoolean(value);
             };
