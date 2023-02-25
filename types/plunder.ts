@@ -57,16 +57,17 @@ export type PlunderConfigKeys = keyof PlunderConfigType;
 export type PlunderConfigValues = PlunderConfigType[PlunderConfigKeys];
 
 export type PlunderHistoryType = {
-    last: PlunderedAmount;
-    total: PlunderedAmount;
+    last: PlunderAttackDetails;
+    total: PlunderAttackDetails;
 };
 
-export type PlunderedAmount = {
+export type PlunderAttackDetails = {
     wood: number;
     stone: number;
     iron: number;
     total: number;
     attackAmount: number;
+    destroyedWalls: number;
 };
 
 export type PlunderTableButtons = {

@@ -1,7 +1,7 @@
 import { isObject } from '@tb-dev/ts-guard';
 import { getPanelWindow } from '$electron/utils/helpers.js';
 import { MainProcessError } from '$electron/error.js';
-import type { PlunderedAmount, PlunderHistoryType } from '$types/plunder.js';
+import type { PlunderAttackDetails, PlunderHistoryType } from '$types/plunder.js';
 import type { UserAlias } from '$types/electron.js';
 import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$tables/plunder.js';
 import type { PlunderConfigProxy, PlunderHistoryProxy } from '$stores/plunder.js';
@@ -56,10 +56,10 @@ async function setAllPlunderProxiesState(
     // Histórico do assistente de saque.
     const plunderHistory = (await PlunderHistory.findByPk(alias))?.toJSON();
     if (isObject(plunderHistory)) {
-        for (const [key, value] of Object.entries(plunderHistory) as [keyof PlunderHistoryType, PlunderedAmount][]) {
+        for (const [key, value] of Object.entries(plunderHistory) as [keyof PlunderHistoryType, PlunderAttackDetails][]) {
             if (!isObject(value)) continue;
 
-            for (const [innerKey, innerValue] of Object.entries(value) as [keyof PlunderedAmount, number][]) {
+            for (const [innerKey, innerValue] of Object.entries(value) as [keyof PlunderAttackDetails, number][]) {
                 if (innerKey in plunderHistoryProxy[key]) {
                     // A confirmação dos tipos é feita no Proxy.
                     Reflect.set(plunderHistoryProxy[key], innerKey, innerValue);

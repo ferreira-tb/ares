@@ -1,13 +1,16 @@
 import { assertInteger } from '@tb-dev/ts-guard';
 import { resources } from '$global/utils/constants.js';
+import { PlunderAttack } from '$lib/plunder/attack.js';
 import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
 
-export class PlunderedResources {
-    wood: number;
-    stone: number;
-    iron: number;
+export class PlunderedResources extends PlunderAttack {
+    override wood: number;
+    override stone: number;
+    override iron: number;
 
     constructor(info: PlunderVillageInfo, carry: number) {
+        super();
+        
         this.wood = info.res.wood;
         this.stone = info.res.stone;
         this.iron = info.res.iron;

@@ -6,11 +6,9 @@ import { usePlayerStore } from '$vue/stores/player.js';
 import { useCurrentVillageStore } from '$vue/stores/village.js';
 import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { useUnitsStore } from '$vue/stores/units.js';
-import { resources as resourceList } from '$global/utils/constants.js';
 import { PanelError } from '$panel/error.js';
-import type { PlunderedResources } from '$lib/plunder/resources.js';
 import type { TribalWarsGameDataType, UnitAmount } from '$types/game.js';
-import type { PlunderConfigType, PlunderedAmount, PlunderInfoType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderAttackDetails, PlunderInfoType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
 
 export function setPanelWindowEvents() {
     const aresStore = useAresStore();
@@ -32,17 +30,19 @@ export function setPanelWindowEvents() {
         };
     });
 
-    ipcRenderer.on('patch-panel-plundered-amount', (_e, resources: PlunderedResources) => {
+    ipcRenderer.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
         try {
             if (plunderConfigStore.active === false) return;
-        
-            resourceList.forEach((res) => {
-                assertKeyOf(res, resources, 'Não foi possível atualizar a quantidade de recursos saqueados.');
-                assertInteger(resources[res], 'A quantidade de recursos não é um número inteiro.');
-                plunderHistoryStore[res] += resources[res];
-            });
-    
-            plunderHistoryStore.attackAmount++;
+            for (const [key, value] of Object.entries(details)) {
+                assertKeyOf<PlunderAttackDetails>(key, plunderHistoryStore, `${key} não é uma chave válida para o Plunder.`);
+                assertInteger(value, `${key} não é um número inteiro.`);
+
+                // O valor de `total` é gerado automaticamente por um `computed` e não deve ser atualizado manualmente.
+                if (key === 'total') continue;
+
+                plunderHistoryStore[key] += value;
+            };
+
         } catch (err) {
             PanelError.catch(err);
         };
@@ -57,6 +57,6 @@ export function setPanelWindowEvents() {
     
     ipcRenderer.on('patch-panel-plunder-info', (_e, info: PlunderInfoType) => plunderStore.$patch(info));
     ipcRenderer.on('patch-panel-plunder-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
-    ipcRenderer.on('patch-panel-plunder-history', (_e, history: PlunderedAmount) => plunderHistoryStore.$patch(history));
+    ipcRenderer.on('patch-panel-plunder-history', (_e, history: PlunderAttackDetails) => plunderHistoryStore.$patch(history));
     ipcRenderer.on('patch-panel-current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
 };

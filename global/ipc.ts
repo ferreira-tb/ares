@@ -1,8 +1,8 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderConfigType } from '$types/plunder.js';
-import type { PlunderedResources } from '$lib/plunder/resources.js';
+import type { PlunderAttack } from '$lib/plunder/attack.js';
 import type { UnitAmount, World, TribalWarsGameDataType, UnitsToDestroyWall } from '$types/game.js';
-import type { PlunderedAmount, PlunderInfoType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
+import type { PlunderAttackDetails, PlunderInfoType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType, MainProcessErrorLogType } from '$types/error.js';
 import type { WorldConfigType, WorldUnitType } from '$types/world.js';
 import type { UserAlias } from '$types/electron.js';
@@ -31,8 +31,8 @@ export async function ipcInvoke(channel: 'get-main-process-error-log'): Promise<
 // Plunder
 export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-plunder-config'): Promise<PlunderConfigType | null>;
-export async function ipcInvoke(channel: 'get-last-plundered-amount'): Promise<PlunderedAmount | null>;
-export async function ipcInvoke(channel: 'get-total-plundered-amount'): Promise<PlunderedAmount | null>;
+export async function ipcInvoke(channel: 'get-last-plunder-attack-details'): Promise<PlunderAttackDetails | null>;
+export async function ipcInvoke(channel: 'get-total-plunder-attack-details'): Promise<PlunderAttackDetails | null>;
 
 // Deimos
 export async function ipcInvoke(channel: 'get-deimos-file'): Promise<string | null>;
@@ -64,8 +64,8 @@ export function ipcSend(channel: 'delete-main-process-error-log', id: number): v
 
 // Plunder
 export function ipcSend(channel: 'update-plunder-config', key: PlunderConfigKeys, value: PlunderConfigValues): void;
-export function ipcSend(channel: 'update-plundered-amount', resources: PlunderedResources): void;
-export function ipcSend(channel: 'save-plundered-amount', resources: PlunderedAmount): void;
+export function ipcSend(channel: 'plunder-attack-sent', plunderAttack: PlunderAttack): void;
+export function ipcSend(channel: 'save-plunder-attack-details', details: PlunderAttackDetails): void;
 
 // Deimos
 export function ipcSend(channel: 'script-tag-is-ready'): void;

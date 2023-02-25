@@ -14,7 +14,7 @@ const history = usePlunderHistoryStore();
 
 // Se o Plunder estiver ativado, atualiza o histórico com as informações salvas.
 if (props.plunderStatus === true) {
-    const lastPlundered = await ipcInvoke('get-last-plundered-amount');
+    const lastPlundered = await ipcInvoke('get-last-plunder-attack-details');
     if (lastPlundered) history.$patch({ 
         wood: lastPlundered.wood,
         stone: lastPlundered.stone,

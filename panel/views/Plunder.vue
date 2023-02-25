@@ -19,7 +19,7 @@ watch(() => config.active, (value) => {
         // Se não houve saque, não é necessário realizar essa operação.
         const currentHistoryState = history.raw();
         if (Object.values(currentHistoryState).every((value) => value > 0)) {
-            ipcSend('save-plundered-amount', currentHistoryState);
+            ipcSend('save-plunder-attack-details', currentHistoryState);
         };
 
         history.reset();

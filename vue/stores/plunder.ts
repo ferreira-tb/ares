@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { PlunderConfigType, PlunderedAmount, BlindAttackPattern } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderAttackDetails, BlindAttackPattern } from '$types/plunder.js';
 import type { PiniaPlunderStoreType, PiniaPlunderConfigStoreType, PiniaPlunderHistoryStoreType } from '$types/stores.js';
 
 export const usePlunderStore = defineStore('plunder', () => {
@@ -85,15 +85,17 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
     const stone = ref<number>(0);
     const iron = ref<number>(0);
     const attackAmount = ref<number>(0);
+    const destroyedWalls = ref<number>(0);
     const total = computed(() => wood.value + stone.value + iron.value);
 
-    function raw(): PlunderedAmount {
+    function raw(): PlunderAttackDetails {
         return {
             wood: wood.value,
             stone: stone.value,
             iron: iron.value,
             attackAmount: attackAmount.value,
-            total: total.value
+            total: total.value,
+            destroyedWalls: destroyedWalls.value
         };
     };
 
@@ -109,6 +111,7 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
         stone,
         iron,
         total,
+        destroyedWalls,
         attackAmount,
         raw,
         reset

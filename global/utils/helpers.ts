@@ -1,4 +1,4 @@
-import { assertString, isInteger } from '@tb-dev/ts-guard';
+import { assertString, isPositiveInteger, isInteger } from '@tb-dev/ts-guard';
 
 /** Calcula distância em campos entre duas coordenadas. */
 export function calcDistance(originX: number, originY: number, destX: number, destY: number) {
@@ -18,7 +18,7 @@ export function getResponseTime() {
 export function wait(extra?: number) {
     let time = getResponseTime();
     if (time <= 0) time = 500;
-    if (isInteger(extra)) time += extra;
+    if (isPositiveInteger(extra)) time += extra;
     
     return new Promise<void>((resolve) => setTimeout(resolve, time));
 };

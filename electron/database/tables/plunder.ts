@@ -1,8 +1,12 @@
 import { DataTypes, Model } from 'sequelize';
+import { isObject } from '@tb-dev/ts-guard';
 import { sequelize } from '$database/database.js';
+import { isUserAlias } from '$electron/utils/guards';
+import { DatabaseError } from '$electron/error.js';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { PlunderConfigType, PlunderHistoryType, PlunderedAmount, BlindAttackPattern } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderHistoryType, PlunderAttackDetails, BlindAttackPattern } from '$types/plunder.js';
 import type { UserAlias } from '$types/electron.js';
+import type { CacheProxy } from '$stores/cache.js';
 
 export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCreationAttributes<PlunderConfig>> implements PlunderConfigType {
     declare readonly id: UserAlias;
@@ -113,8 +117,28 @@ PlunderConfig.init({
 
 export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, InferCreationAttributes<PlunderHistory>> implements PlunderHistoryType {
     declare readonly id: UserAlias;
-    declare readonly last: PlunderedAmount;
-    declare readonly total: PlunderedAmount;
+    declare readonly last: PlunderAttackDetails;
+    declare readonly total: PlunderAttackDetails;
+
+    public static async getHistoryAsJSON(cacheProxy: CacheProxy): Promise<PlunderHistory | null> {
+        try {
+            const result = await sequelize.transaction(async (transaction) => {
+                const userAlias = cacheProxy.userAlias;
+                if (!isUserAlias(userAlias)) return null;
+    
+                const plunderHistory = await PlunderHistory.findByPk(userAlias, { transaction });
+                if (!isObject(plunderHistory)) return null;
+    
+                return plunderHistory.toJSON();
+            });
+    
+            return result as PlunderHistory | null;
+    
+        } catch (err) {
+            DatabaseError.catch(err);
+            return null;
+        };
+    }
 };
 
 PlunderHistory.init({

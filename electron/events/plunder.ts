@@ -1,11 +1,11 @@
 import { ipcMain, BrowserWindow, type WebContents } from 'electron';
-import { assertObject, assertPositiveInteger, isObject, isKeyOf } from '@tb-dev/ts-guard';
+import { assertObject, assertInteger, isKeyOf } from '@tb-dev/ts-guard';
 import { getPanelWindow } from '$electron/utils/helpers.js';
 import { assertUserAlias, isUserAlias } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
 import { MainProcessEventError } from '$electron/error.js';
 import { PlunderHistory, PlunderConfig, plunderConfigProxy, plunderHistoryProxy, cacheProxy } from '$interface/index.js';
-import type { PlunderedAmount, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
+import type { PlunderAttackDetails, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
 
 export function setPlunderEvents() {
     const panelWindow = getPanelWindow();
@@ -53,24 +53,22 @@ export function setPlunderEvents() {
     });
 
     // Emitido pelo browser após cada ataque realizado pelo Plunder.
-    // Atualiza a quantidade de recursos saqueados no painel.
-    ipcMain.on('update-plundered-amount', (_e, resources: PlunderedAmount) => {
+    ipcMain.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
         try {
-            assertObject(resources, 'A quantidade de recursos é inválida.');
-            panelWindow.webContents.send('patch-panel-plundered-amount', resources);
+            assertObject(details, 'Erro ao atualizar os detalhes do ataque: o objeto é inválido.');
+            panelWindow.webContents.send('plunder-attack-sent', details);
         } catch (err) {
             MainProcessEventError.catch(err);
         };
     });
 
     // Emitido pelo browser quando o Plunder é desativado.
-    // Salva a quantidade de recursos saqueados durante a última execução do Plunder.
-    ipcMain.on('save-plundered-amount', async (_e, resources: PlunderedAmount) => {
+    ipcMain.on('save-plunder-attack-details', async (_e, details: PlunderAttackDetails) => {
         try {
-            assertObject(resources, 'A quantidade de recursos é inválida.');
+            assertObject(details, 'Erro ao salvar os detalhes do ataque: o objeto é inválido.');
 
-            for (const [key, value] of Object.entries(resources) as [keyof PlunderedAmount, number][]) {
-                assertPositiveInteger(value, 'A quantidade de recursos é inválida.');
+            for (const [key, value] of Object.entries(details) as [keyof PlunderAttackDetails, number][]) {
+                assertInteger(value, 'Erro ao salvar os detalhes do ataque: valor inválido.');
                 plunderHistoryProxy.last[key] = value;
                 plunderHistoryProxy.total[key] += value;
             };
@@ -91,11 +89,10 @@ export function setPlunderEvents() {
         };
     });
 
-    // Obtém a quantidade de recursos saqueados durante a última execução do Plunder.
-    ipcMain.handle('get-last-plundered-amount', async () => {
+    ipcMain.handle('get-last-plunder-attack-details', async () => {
         try {
-            const history = await getPlunderHistoryAsJSON();
-            assertObject(history, 'Não foi possível obter a quantidade de recursos saqueados.');
+            const history = await PlunderHistory.getHistoryAsJSON(cacheProxy);
+            assertObject(history, 'Erro ao obter os detalhes do último ataque: o objeto é inválido.');
             return history.last;
         } catch (err) {
             MainProcessEventError.catch(err);
@@ -103,35 +100,14 @@ export function setPlunderEvents() {
         };
     });
 
-    // Obtém a quantidade total de recursos saqueados em determinado mundo.
-    ipcMain.handle('get-total-plundered-amount', async () => {
+    ipcMain.handle('get-total-plunder-attack-details', async () => {
         try {
-            const history = await getPlunderHistoryAsJSON();
-            assertObject(history, 'Não foi possível obter a quantidade total de recursos saqueados.');
+            const history = await PlunderHistory.getHistoryAsJSON(cacheProxy);
+            assertObject(history, 'Erro ao obter o histórico de ataques: o objeto é inválido.');
             return history.total;
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
         };
     });
-};
-
-async function getPlunderHistoryAsJSON(): Promise<PlunderHistory | null> {
-    try {
-        const result = await sequelize.transaction(async (transaction) => {
-            const userAlias = cacheProxy.userAlias;
-            if (!isUserAlias(userAlias)) return null;
-
-            const plunderHistory = await PlunderHistory.findByPk(userAlias, { transaction });
-            if (!isObject(plunderHistory)) return null;
-
-            return plunderHistory.toJSON();
-        });
-
-        return result as PlunderHistory | null;
-
-    } catch (err) {
-        MainProcessEventError.catch(err);
-        return null;
-    };
 };

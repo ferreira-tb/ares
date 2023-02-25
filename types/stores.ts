@@ -1,6 +1,6 @@
 import type { ComputedRef, Ref } from 'vue';
 import type { TribalWarsGameDataType } from '$types/game.js';
-import type { PlunderInfoType, PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
+import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails } from '$types/plunder.js';
 import type { UnitAmount } from '$types/game.js';
 import type { RemoveMethods } from '$types/utils.js';
 import type { WorldConfigType, WorldUnitType } from '$types/world.js';
@@ -53,8 +53,8 @@ export type PiniaPlunderConfigActions = PlunderConfigStore['raw'];
 export type PiniaPlunderConfigStoreType = Record<PiniaPlunderConfigKeys, PiniaPlunderConfigValues | PiniaPlunderConfigActions>;
 
 ////// PLUNDER HISTORY
-export interface PlunderHistoryStore extends PlunderedAmount {
-    raw(): PlunderedAmount;
+export interface PlunderHistoryStore extends PlunderAttackDetails {
+    raw(): PlunderAttackDetails;
     reset(): void;
 };
 

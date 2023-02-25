@@ -1,6 +1,6 @@
 import { assertWallLevel } from '$electron/utils/guards.js';
 import { ProxyStoreError } from '$electron/error.js';
-import type { PlunderedAmount, BlindAttackPattern } from '$types/plunder.js';
+import type { PlunderAttackDetails, BlindAttackPattern } from '$types/plunder.js';
 import type { PlunderStore, PlunderConfigStore, PlunderFullHistoryStore } from '$types/stores.js';
 import type { RemoveMethods } from '$types/utils.js';
 
@@ -93,15 +93,16 @@ export function setPlunderConfigProxy() {
 };
 
 class PlunderHistoryProxy implements PlunderFullHistoryStore {
-    private readonly base: PlunderedAmount = {
+    private readonly base: PlunderAttackDetails = {
         wood: 0,
         stone: 0,
         iron: 0,
         total: 0,
+        destroyedWalls: 0,
         attackAmount: 0
     };
 
-    private readonly handler: ProxyHandler<PlunderedAmount> = {
+    private readonly handler: ProxyHandler<PlunderAttackDetails> = {
         set(target, key, value) {
             if (!isKeyOf(key, target)) return false;
             assertPositiveInteger(value);
@@ -109,8 +110,8 @@ class PlunderHistoryProxy implements PlunderFullHistoryStore {
         }
     };
 
-    readonly last: PlunderedAmount = new Proxy({ ...this.base }, this.handler);
-    readonly total: PlunderedAmount = new Proxy({ ...this.base }, this.handler);
+    readonly last: PlunderAttackDetails = new Proxy({ ...this.base }, this.handler);
+    readonly total: PlunderAttackDetails = new Proxy({ ...this.base }, this.handler);
 };
 
 export function setPlunderHistoryProxy() {

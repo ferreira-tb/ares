@@ -41,6 +41,7 @@ export type AllUnits =
 export type FarmUnitsAmount = { [key in FarmUnits]: number };
 export type UnitAmount = { [key in AllUnits]: number };
 export type UnitsAmountAsStrings = { [key in AllUnits]: string };
+export type PlaceUnitsAmount = Partial<Omit<UnitAmount, 'militia'>>;
 
 //////// CONSTRUÇÕES
 export type WallLevel = IntRange<0, 21>;
