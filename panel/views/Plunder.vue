@@ -3,7 +3,6 @@ import { computed, watch } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
 import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcSend } from '$global/ipc.js';
-import { Deimos } from '$deimos/shared/ipc.js';
 import Resources from '$panel/components/Resources.vue';
 import SwitchPopover from '$vue/components/popover/SwitchPopover.vue';
 import type { PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
@@ -14,19 +13,15 @@ const history = usePlunderHistoryStore();
 const plunderButtonText = computed(() => config.active === false ? 'Saquear' : 'Parar');
 
 watch(() => config.active, (value) => {
+    if (value !== false) return;
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
-    if (value === false) {
-        // Se não houve saque, não é necessário realizar essa operação.
-        const currentHistoryState = history.raw();
-        if (Object.values(currentHistoryState).every((value) => value > 0)) {
-            ipcSend('save-plunder-attack-details', currentHistoryState);
-        };
-
-        history.reset();
-        Deimos.send('show-ui-success-message', 'O saque foi interrompido.');
-    } else {
-        Deimos.send('show-ui-success-message', 'O saque foi iniciado.');
+    // Se não houve saque, não é necessário realizar essa operação.
+    const currentHistoryState = history.raw();
+    if (Object.values(currentHistoryState).every((value) => value > 0)) {
+        ipcSend('save-plunder-attack-details', currentHistoryState);
     };
+
+    history.reset();
 });
 
 function updateConfig(name: 'active', value: boolean): void;
