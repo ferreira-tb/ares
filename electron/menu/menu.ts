@@ -24,7 +24,7 @@ export function setAppMenu() {
         { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
         { label: 'Atualizar', accelerator: 'F5', role: 'reload' },
         { type: 'separator' },
-        { label: 'Local', submenu: localeMenu },
+        { label: 'Região', submenu: localeMenu },
         { label: 'Configurações', accelerator: 'F3', click: () => showAppConfig('general-config') },
         { type: 'separator' },
         { label: 'Sair', accelerator: 'Esc', role: 'quit' },
@@ -43,7 +43,7 @@ export function setAppMenu() {
 
     const mainMenu = Menu.buildFromTemplate([
         { label: 'Opções', submenu: optionsMenu },
-        { label: 'Scripts', enabled: false, accelerator: 'F4' },
+        { label: 'Scripts', visible: false, enabled: false, accelerator: 'F4' },
         { label: 'Ajuda', submenu: helpMenu }
     ] satisfies MenuItemConstructorOptions[]);
 

@@ -1,16 +1,21 @@
 import { isString, isInteger, isPositiveNumber } from '@tb-dev/ts-guard';
-import { farmUnits, worldRegex, aliasRegex } from '$global/utils/constants.js';
+import { farmUnits, worldRegex, aliasRegex, allUnits } from '$global/utils/constants.js';
 import type { AresError } from '$global/error.js';
-import type { FarmUnits, World, WallLevel } from '$types/game.js';
+import type { FarmUnits, World, WallLevel, AllUnits } from '$types/game.js';
 import type { UserAlias } from '$types/electron.js';
 
-/**
- * Verifica se a string passada é um nome válido de unidade usada para saque.
- * @param unit Nome da unidade.
- */
-export const isFarmUnit = (unit: string): unit is FarmUnits => farmUnits.includes(unit as FarmUnits);
+/** Verifica se o valor passado é um nome válido de unidade. */
+export const isUnit = (unit: unknown): unit is AllUnits => allUnits.includes(unit as AllUnits);
 
-export function assertFarmUnit(unit: string, err: typeof AresError, message?: string): asserts unit is FarmUnits {
+export function assertUnit(unit: unknown, err: typeof AresError, message?: string): asserts unit is AllUnits {
+    if (!isString(message)) message = 'O nome da unidade é inválido.';
+    if (!isUnit(unit)) throw new err(message);
+};
+
+/** Verifica se o valor passado é um nome válido de unidade usada para saque. */
+export const isFarmUnit = (unit: unknown): unit is FarmUnits => farmUnits.includes(unit as FarmUnits);
+
+export function assertFarmUnit(unit: unknown, err: typeof AresError, message?: string): asserts unit is FarmUnits {
     if (!isString(message)) message = 'O nome da unidade é inválido.';
     if (!isFarmUnit(unit)) throw new err(message);
 };

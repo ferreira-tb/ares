@@ -4,7 +4,7 @@ import { useEventListener } from '@vueuse/core';
 import { isObject } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
 import { usePlunderConfigStore } from '$vue/stores/plunder.js';
-import { filterTemplates, pickBestTemplate, queryTemplateData } from '$lib/plunder/templates.js';
+import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$lib/plunder/villages.js';
 import { queryAvailableUnits } from '$lib/plunder/units.js';
 import { PlunderedResources } from '$lib/plunder/resources.js';
@@ -103,16 +103,14 @@ async function handleAttack(): Promise<void> {
         // Ignora caso a aldeia tenha muralha e a muralha possua nível superior ao permitido.
         if (config.ignoreWall === true && info.wallLevel >= config.wallLevelToIgnore) continue;
 
-        const templates = await filterTemplates(info.res.total);
-        if (templates.length === 0) continue;
-
-        // Seleciona o modelo com a maior capacidade de carga.
-        const best = pickBestTemplate(templates);
+        // Seleciona o modelo mais adequado para o ataque.
+        const best = await pickBestTemplate(info);
+        if (best === null) continue;
 
         // Informações que serão enviadas ao painel.
         const plunderedResources = new PlunderedResources(info, best.carry);
 
-        if (best.type === 'a' || best.type === 'b') {
+        if (best.type === 'a' || best.type === 'b' || best.type === 'c') {
             const attackButton = info.button[best.type];
             assertElement(attackButton, `O botão do modelo ${best.type.toUpperCase()} não foi encontrado.`);
 

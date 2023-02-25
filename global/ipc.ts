@@ -22,6 +22,7 @@ export async function ipcInvoke(channel: 'current-world-units'): Promise<WorldUn
 export async function ipcInvoke(channel: 'is-archer-world'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-demolition-troops-config'): Promise<UnitsToDestroyWall | null>;
 export async function ipcInvoke(channel: 'destroy-demolition-troops-config', alias: UserAlias): Promise<boolean>;
+export async function ipcInvoke(channel: 'calc-carry-capacity', units: Partial<UnitAmount>, world?: World): Promise<number | null>;
 
 // Erros
 export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;

@@ -1,11 +1,12 @@
 import { ipcMain, BrowserWindow, type WebContents } from 'electron';
-import { assertObject, assertInteger, isKeyOf } from '@tb-dev/ts-guard';
+import { assertObject, assertInteger, isKeyOf, isObject, isInteger } from '@tb-dev/ts-guard';
 import { getPanelWindow } from '$electron/utils/helpers.js';
-import { assertUserAlias, isUserAlias } from '$electron/utils/guards.js';
+import { assertUserAlias, isUserAlias, assertWorld } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
 import { MainProcessEventError } from '$electron/error.js';
-import { PlunderHistory, PlunderConfig, plunderConfigProxy, plunderHistoryProxy, cacheProxy } from '$interface/index.js';
+import { PlunderHistory, PlunderConfig, plunderConfigProxy, plunderHistoryProxy, cacheProxy, WorldUnit } from '$interface/index.js';
 import type { PlunderAttackDetails, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
+import type { UnitAmount, World } from '$types/game.js';
 
 export function setPlunderEvents() {
     const panelWindow = getPanelWindow();
@@ -105,6 +106,28 @@ export function setPlunderEvents() {
             const history = await PlunderHistory.getHistoryAsJSON(cacheProxy);
             assertObject(history, 'Erro ao obter o histórico de ataques: o objeto é inválido.');
             return history.total;
+        } catch (err) {
+            MainProcessEventError.catch(err);
+            return null;
+        };
+    });
+
+    ipcMain.handle('calc-carry-capacity', async (_e, units: Partial<UnitAmount>, world?: World | null) => {
+        try {
+            world ??= cacheProxy.world;
+            assertWorld(world, MainProcessEventError);
+            
+            const worldUnitsRow = await WorldUnit.findByPk(world);
+            if (!isObject(worldUnitsRow)) return null;
+
+            const worldUnits = worldUnitsRow.toJSON();
+            const entries = Object.entries(units) as [keyof UnitAmount, number][];
+            return entries.reduce((carryCapacity, [unit, amount]) => {
+                const unitCapacity = worldUnits[unit]?.carry;
+                if (isInteger(unitCapacity)) carryCapacity += unitCapacity * amount;
+                return carryCapacity;
+            }, 0);
+
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
