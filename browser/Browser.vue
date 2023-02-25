@@ -11,7 +11,7 @@ const aresStore = useAresStore();
 
 // Define a janela de acordo com a página atual no jogo.
 watchEffect(() => {
-    const screen = aresStore.currentScreen;
+    const screen = aresStore.screen;
     if (arrayIncludes(routeNames, screen)) {
         router.push({ name: screen });
     } else {

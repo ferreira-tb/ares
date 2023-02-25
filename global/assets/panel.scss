@@ -1,0 +1,22 @@
+html {
+    overflow: hidden;
+}
+
+body {
+    -webkit-app-region: drag;
+}
+
+main {
+    user-select: none;
+    text-align: center;
+}
+
+button {
+    -webkit-app-region: no-drag;
+}
+
+.browser-spin {
+    position: fixed;
+    bottom: 2px;
+    right: 5px;
+}

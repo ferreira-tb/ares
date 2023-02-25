@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcInvoke } from '$global/ipc.js';
-import WoodIcon from '$vue/icons/WoodIcon.vue';
-import StoneIcon from '$vue/icons/StoneIcon.vue';
-import IronIcon from '$vue/icons/IronIcon.vue';
-import StorageIcon from '$vue/icons/StorageIcon.vue';
+import WoodIcon from '$vue/components/icons/resources/WoodIcon.vue';
+import StoneIcon from '$vue/components/icons/resources/StoneIcon.vue';
+import IronIcon from '$vue/components/icons/resources/IronIcon.vue';
+import StorageIcon from '$vue/components/icons/buildings/StorageIcon.vue';
 
 const props = defineProps<{
     plunderStatus: boolean;
@@ -14,7 +14,7 @@ const history = usePlunderHistoryStore();
 
 // Se o Plunder estiver ativado, atualiza o histórico com as informações salvas.
 if (props.plunderStatus === true) {
-    const lastPlundered = await ipcInvoke('get-last-plundered-amount');
+    const lastPlundered = await ipcInvoke('get-last-plunder-attack-details');
     if (lastPlundered) history.$patch({ 
         wood: lastPlundered.wood,
         stone: lastPlundered.stone,

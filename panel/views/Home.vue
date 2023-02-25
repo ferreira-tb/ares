@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { shell } from 'electron';
-import { ipcInvoke } from '$global/ipc.js';
-import { aresURL, repoURL, discordURL } from '$global/utils/constants.js';
-import { VBtn as Button } from 'vuetify/components/VBtn';
+import { NButton, NButtonGroup } from 'naive-ui';
+import { ipcInvoke, ipcSend } from '$global/ipc.js';
+import { repoURL, discordURL } from '$global/utils/constants.js';
 
 const appName = ref<string>(await ipcInvoke('app-name'));
 const appVersion = ref<string>(await ipcInvoke('app-version'));
@@ -12,14 +12,14 @@ const appVersion = ref<string>(await ipcInvoke('app-version'));
 <template>
     <main>
         <div class="title-area">
-            <h1 class="green-text bold">{{ appName.toUpperCase() }}</h1>
+            <h1 class="bold-green">{{ appName.toUpperCase() }}</h1>
             <h2>Uma ferramenta para Tribal Wars</h2>
         </div>
-        <div class="button-area">
-            <Button size="small" @click="shell.openExternal(aresURL)">Site</Button>
-            <Button size="small" @click="shell.openExternal(repoURL)">Git Hub</Button>
-            <Button size="small" @click="shell.openExternal(discordURL)">Discord</Button>
-        </div>
+        <NButtonGroup>
+            <NButton round @click="ipcSend('open-ares-website')">Site</NButton>
+            <NButton round @click="shell.openExternal(repoURL)">Repositório</NButton>
+            <NButton round @click="shell.openExternal(discordURL)">Discord</NButton>
+        </NButtonGroup>
         <div class="footer-area">
             <p>{{ appVersion }}</p>
         </div>
@@ -27,11 +27,6 @@ const appVersion = ref<string>(await ipcInvoke('app-version'));
 </template>
 
 <style scoped>
-main {
-    text-align: center;
-    user-select: none;
-}
-
 .title-area {
     margin-bottom: 1em;
 }
@@ -42,17 +37,6 @@ h1 {
 
 h2 {
     font-size: 1.2em;
-}
-
-.button-area {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    align-items: center;
-    justify-items: center;
-}
-.button-area > button {
-    width: 95%;
-    max-width: 150px;
 }
 
 .footer-area {

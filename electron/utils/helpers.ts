@@ -1,21 +1,14 @@
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { app, dialog, BrowserWindow } from 'electron';
-import { assertInstanceOf } from '@tb-dev/ts-guard';
+import { app, BrowserWindow } from 'electron';
+import { assertInstanceOf, isInstanceOf } from '@tb-dev/ts-guard';
+import { favicon, aresURL } from '$electron/utils/constants.js';
+import { assertWorld } from '$electron/utils/guards.js';
+import { MainProcessError } from '$electron/error.js';
 import type { UserAlias } from '$types/electron.js';
+import type { World } from '$types/game.js';
 
-export async function createErrorLog(error: Error) {
-    try {
-        // Gera um arquivo de log com a data e a pilha de erros.
-        const date = new Date().toLocaleString('pt-br');
-        const logPath = path.join(app.getPath('userData'), 'ares_error.log');
-        const logContent = `${date}\n${error.stack}\n\n`;
-        await fs.appendFile(logPath, logContent);
-
-    } catch {
-        // Se não for possível gerar o log, emite um alerta.
-        dialog.showErrorBox('ERRO CRÍTICO', `Um erro crítico ocorreu. Contate o desenvolvedor.\n\n${error.stack}`);
-    };
+export function restartAres() {
+    app.relaunch();
+    app.quit();
 };
 
 export const getMainWindow = () => {
@@ -48,13 +41,64 @@ export function togglePanelWindow() {
     };
 };
 
+function createAresWebsiteWindow() {
+    const aresWebsite = new Map<'ares', BrowserWindow>();
+
+    return function() {
+        // Se a janela já estiver aberta, foca-a.
+        const previousWindow = aresWebsite.get('ares');
+        if (isInstanceOf(previousWindow, BrowserWindow) && !previousWindow.isDestroyed()) {
+            if (!previousWindow.isVisible()) {
+                previousWindow.show();
+            } else {
+                previousWindow.focus();
+            };
+            return;
+        };
+
+        const aresWindow = new BrowserWindow({
+            parent: getMainWindow(),
+            width: 1200,
+            height: 800,
+            useContentSize: true,
+            show: false,
+            minimizable: true,
+            maximizable: true,
+            resizable: true,
+            fullscreenable: false,
+            title: 'Ares',
+            icon: favicon,
+            autoHideMenuBar: true,
+            webPreferences: {
+                devTools: process.env.ARES_MODE === 'dev'
+            }
+        });
+
+        aresWindow.setMenu(null);
+        aresWindow.loadURL(aresURL);
+        aresWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+
+        aresWindow.once('ready-to-show', () =>  {
+            aresWebsite.set('ares', aresWindow);
+            aresWindow.show();
+        });
+
+        // Remove do mapa quando a janela for fechada.
+        aresWindow.once('closed', () => aresWebsite.delete('ares'));
+    };
+};
+
+/** Abre uma janela para o site do Ares. */
+export const openAresWebsite = createAresWebsiteWindow();
+
 /**
 * Retorna o alias do usuário, no padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`.
 
 * Ele é usado para diferenciar tanto diferentes jogadores quanto diferentes mundos do mesmo jogador.
 * @param playerName Nome do jogador.
 */
-export function generateUserAlias(world: string, playerName: string): UserAlias {
+export function generateUserAlias(world: World, playerName: string): UserAlias {
     playerName = encodeURIComponent(playerName);
-    return `${world.toLowerCase()}__USERID__${playerName}`;
+    assertWorld(world, MainProcessError);
+    return `${world}__USERID__${playerName}`;
 };

@@ -1,12 +1,13 @@
 import { useMutationObserver, useEventListener } from '@vueuse/core';
-import { assert, assertInteger } from '@tb-dev/ts-guard';
+import { assertInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
 import { calcDistance } from '$global/utils/helpers.js';
 import { assertCoordsFromTextContent, parseGameDate } from '$global/utils/parser.js';
 import { PlunderError } from '$browser/error.js';
 import { resources as resourceList } from '$global/utils/constants.js';
-import { useAresStore } from '$vue/stores/ares.js';
-import type { Coords } from '$types/game.js';
+import { useCurrentVillageStore } from '$vue/stores/village.js';
+import { assertWallLevel } from '$global/utils/guards.js';
+import type { Coords, WallLevel } from '$types/game.js';
 import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder.js';
 
 export class PlunderVillageInfo {
@@ -17,7 +18,7 @@ export class PlunderVillageInfo {
     /** Indica se há informações obtidas por exploradores. */
     spyInfo: boolean = false;
     /** Nível da muralha. */
-    wallLevel: number = 0;
+    wallLevel: WallLevel = 0;
     /** Distância até à aldeia. */
     distance: number = Infinity;
     /** Indica se o botão C está ativo ou não. */
@@ -94,14 +95,14 @@ export function queryVillagesInfo() {
 };
 
 function queryReport(row: Element, info: PlunderVillageInfo) {
-    const { currentX, currentY } = useAresStore();
+    const { x, y } = useCurrentVillageStore();
     const report = row.queryAndAssert('td a[href*="screen=report"]');
     const coords = assertCoordsFromTextContent(report.textContent);
 
-    assertInteger(currentX);
-    assertInteger(currentY);
+    assertInteger(x);
+    assertInteger(y);
 
-    info.distance = calcDistance(currentX, currentY, coords[0], coords[1]);
+    info.distance = calcDistance(x, y, coords[0], coords[1]);
     info.coords.x = coords[0];
     info.coords.y = coords[1];
 };
@@ -172,9 +173,7 @@ function queryWallLevel(resourcesField: Element | null, info: PlunderVillageInfo
     assertElement(wallLevelField, 'O campo com o nível da muralha não foi encontrado');
 
     const wallLevel = wallLevelField.parseIntStrict();
-    const errorMessage = 'O valor encontrado não corresponde ao nível da muralha';
-    assert(wallLevel >= 0, errorMessage);
-    assert(wallLevel <= 20, errorMessage);
+    assertWallLevel(wallLevel, PlunderError, 'O valor encontrado não corresponde ao nível da muralha');
 
     info.wallLevel = wallLevel;
 };

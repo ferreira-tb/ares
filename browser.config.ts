@@ -11,6 +11,7 @@ export default defineConfig({
             '$browser': fileURLToPath(new URL('./browser', import.meta.url)),
             '$lib': fileURLToPath(new URL('./browser/lib', import.meta.url)),
             '$global': fileURLToPath(new URL('./global', import.meta.url)),
+            '$assets': fileURLToPath(new URL('./global/assets', import.meta.url)),
             '$vue': fileURLToPath(new URL('./vue', import.meta.url)),
             '$deimos': fileURLToPath(new URL('./deimos', import.meta.url)),
             '$phobos': fileURLToPath(new URL('./phobos', import.meta.url)),
@@ -23,7 +24,7 @@ export default defineConfig({
         outDir: 'dist',
         emptyOutDir: false,
         lib: {
-            entry: join(__dirname, 'browser/browser.ts'),
+            entry: join(__dirname, 'browser/index.ts'),
             fileName: 'browser',
             name: 'browser',
             formats: ['cjs']

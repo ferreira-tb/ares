@@ -1,4 +1,4 @@
-import { assertString, isInteger } from '@tb-dev/ts-guard';
+import { assertString, isPositiveInteger, isInteger } from '@tb-dev/ts-guard';
 
 /** Calcula distância em campos entre duas coordenadas. */
 export function calcDistance(originX: number, originY: number, destX: number, destY: number) {
@@ -18,7 +18,7 @@ export function getResponseTime() {
 export function wait(extra?: number) {
     let time = getResponseTime();
     if (time <= 0) time = 500;
-    if (isInteger(extra)) time += extra;
+    if (isPositiveInteger(extra)) time += extra;
     
     return new Promise<void>((resolve) => setTimeout(resolve, time));
 };
@@ -26,6 +26,16 @@ export function wait(extra?: number) {
 /** Gera um número inteiro entre dois outros. */
 export function generateIntegerBetween(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min);
+};
+
+/**
+ * Gera um número inteiro aleatório com base em um valor e um intervalo.
+ * @param base Valor base.
+ * @param range Intervalo.
+ */
+export function generateRandomDelay(base: number, range?: number) {
+    if (!isInteger(range)) range = 50;
+    return generateIntegerBetween(base - range, base + range);
 };
 
 export async function* fetchDocuments(urls: string[]) {

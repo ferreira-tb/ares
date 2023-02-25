@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { computed, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { isObject } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
 import { usePlunderConfigStore } from '$vue/stores/plunder.js';
-import { filterTemplates, pickBestTemplate, queryTemplateData } from '$lib/plunder/templates.js';
+import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$lib/plunder/villages.js';
 import { queryAvailableUnits } from '$lib/plunder/units.js';
 import { PlunderedResources } from '$lib/plunder/resources.js';
 import { prepareAttack, eventTarget as attackEventTarget } from '$lib/plunder/attack.js';
+import { destroyWall } from '$lib/plunder/wall.js';
 import { PlunderError } from '$browser/error.js';
 import { ipcSend, ipcInvoke } from '$global/ipc.js';
 
@@ -24,13 +25,14 @@ const plunderListTitle = document.queryAndAssert('div[id="am_widget_Farm" i] > h
 const plunderList = document.queryAndAssert('#plunder_list:has(tr[id^="village"]) tbody');
 
 /** Milisegundos entre cada recarregamento automático da página. */
-const plunderTimeout = computed(() => config.minutesUntilReload * 60000);
+const plunderTimeout = ref<number>(config.minutesUntilReload * 60000);
 /** Data do próximo recarregamento automático. */
 const nextAutoReload = computed(() => {
     if (config.active === false) return null;
     return new Date(Date.now() + plunderTimeout.value);
 });
 
+/** Mensagem exibida para o usuário acima da tabela. */
 const autoReloadMessage = computed(() => {
     if (nextAutoReload.value === null) return null;
     const date = nextAutoReload.value.toLocaleDateString('pt-br', { year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -45,14 +47,14 @@ queryVillagesInfo();
 watchEffect(() => {
     // Interrompe qualquer ataque em andamento.
     attackEventTarget.dispatchEvent(new Event('stop'));
-
     // Começa a atacar se o Plunder estiver ativado.
-    if (config.active === true) {
-        handleAttack();
-        setPlunderTimeout();
-    } else {
-        eventTarget.dispatchEvent(new Event('cancelreload'));
-    };
+    if (config.active === true) handleAttack();
+});
+
+watchEffect(() => {
+    eventTarget.dispatchEvent(new Event('cancelreload'));
+    plunderTimeout.value = config.minutesUntilReload * 60000;
+    if (config.active === true) setPlunderTimeout();
 });
 
 async function handleAttack(): Promise<void> {
@@ -62,7 +64,7 @@ async function handleAttack(): Promise<void> {
     // Seleciona todas as aldeias da tabela e itera sobre elas.
     const villages = plunderList.queryAsMap('tr[data-tb-village]', (e) => e.getAttributeStrict('data-tb-village'));
     for (const [id, village] of villages.entries()) {
-        // Ignora a linha caso ela esteja oculta, removendo-a da tabela.
+        // Ignora caso ela esteja oculta, removendo-a da tabela.
         const style = village.getAttribute('style') ?? '';
         if (/display:\s*none/.test(style)) {
             village.remove();
@@ -70,7 +72,7 @@ async function handleAttack(): Promise<void> {
             continue;
         };
 
-        // Ignora a linha caso a aldeia esteja sob ataque.
+        // Ignora caso a aldeia já esteja sob ataque.
         const attackIcon = village.querySelector('img[src*="attack.png" i]');
         if (attackIcon !== null) {
             villagesInfo.delete(id);
@@ -80,20 +82,40 @@ async function handleAttack(): Promise<void> {
         /** Informações sobre a aldeia. */
         const info = villagesInfo.getStrict(id);
 
-        const templates = await filterTemplates(info.res.total);
-        if (templates.length === 0) continue;
+        // Ignora caso a aldeia esteja longe demais.
+        if (info.distance > config.maxDistance) continue;
+        // Ignora caso o relatório seja muito antigo.
+        if ((Date.now() - info.lastAttack) > config.ignoreOlderThan * 3600000) continue;
 
-        // Seleciona o modelo com a maior capacidade de carga.
-        const best = pickBestTemplate(templates);
+        // Destrói a muralha da aldeia caso `destroyWall` esteja ativado.
+        // Se o ataque for enviado com sucesso, pula para a próxima aldeia.
+        // Essa opção deve estar sempre antes de `ignoreWall`.
+        // Isso para que a aldeia seja ignorada caso a muralha não seja destruída e, claro, `ignoreWall` esteja ativado.
+        if (
+            config.destroyWall === true &&
+            info.wallLevel >= config.wallLevelToDestroy &&
+            info.distance <= config.destroyWallMaxDistance
+        ) {
+            const destroyed = await destroyWall(info);
+            if (destroyed === true) continue;
+        };
+
+        // Ignora caso a aldeia tenha muralha e a muralha possua nível superior ao permitido.
+        if (config.ignoreWall === true && info.wallLevel >= config.wallLevelToIgnore) continue;
+
+        // Seleciona o modelo mais adequado para o ataque.
+        const best = await pickBestTemplate(info);
+        if (best === null) continue;
 
         // Informações que serão enviadas ao painel.
         const plunderedResources = new PlunderedResources(info, best.carry);
 
-        if (best.type === 'a' || best.type === 'b') {
+        if (best.type === 'a' || best.type === 'b' || best.type === 'c') {
             const attackButton = info.button[best.type];
             assertElement(attackButton, `O botão do modelo ${best.type.toUpperCase()} não foi encontrado.`);
 
             return prepareAttack(plunderedResources, attackButton)
+                .then(() => best.reset())
                 .then(() => villagesInfo.delete(id))
                 .then(() => village.remove())
                 .then(() => handleAttack())
@@ -132,6 +154,6 @@ function setPlunderTimeout() {
 .auto-reload-message {
     font-style: normal;
     position: absolute;
-    right: 10px;
+    right: 1em;
 }
 </style>

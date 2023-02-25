@@ -1,0 +1,39 @@
+html {
+    overflow: hidden;
+}
+
+.module-nav-bar {
+    height: 30px;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    user-select: none;
+}
+
+.module-content {
+    position: absolute;
+    top: 30px;
+    bottom: 0;
+    width: 100%;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    margin-top: 0.5em;
+    overflow: hidden;
+    user-select: none;
+}
+
+.module-view {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    user-select: none;
+}
+
+.error-log {
+    margin-bottom: 0.5em;
+    user-select: text;
+}
+
+.error-log:last-of-type {
+    margin-bottom: 1em;
+}

@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderAttackDetails, BlindAttackPattern, UseCPattern } from '$types/plunder.js';
+import type { PiniaPlunderStoreType, PiniaPlunderConfigStoreType, PiniaPlunderHistoryStoreType } from '$types/stores.js';
 
 export const usePlunderStore = defineStore('plunder', () => {
     /** Indica se as aldeias sob ataque estão ocultas. */
@@ -16,10 +17,11 @@ export const usePlunderStore = defineStore('plunder', () => {
         page,
         pageSize,
         plunderExhausted
-    };
+    } satisfies PiniaPlunderStoreType;
 });
 
 export const usePlunderConfigStore = defineStore('plunder-config', () => {
+    // Painel
     const active = ref<boolean>(false);
     const ignoreWall = ref<boolean>(false);
     const destroyWall = ref<boolean>(false);
@@ -28,8 +30,18 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const ignoreDelay = ref<boolean>(false);
     const blindAttack = ref<boolean>(false);
 
+    // Configurações
+    const wallLevelToIgnore = ref<number>(1);
+    const wallLevelToDestroy = ref<number>(1);
+    const destroyWallMaxDistance = ref<number>(20);
+    const attackDelay = ref<number>(200);
     const resourceRatio = ref<number>(0.8);
     const minutesUntilReload = ref<number>(10);
+    const maxDistance = ref<number>(20);
+    const ignoreOlderThan = ref<number>(10);
+
+    const blindAttackPattern = ref<BlindAttackPattern>('smaller');
+    const useCPattern = ref<UseCPattern>('normal');
 
     function raw(): PlunderConfigType {
         return {
@@ -40,9 +52,18 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
             useC: useC.value,
             ignoreDelay: ignoreDelay.value,
             blindAttack: blindAttack.value,
-            
+
+            wallLevelToIgnore: wallLevelToIgnore.value,
+            wallLevelToDestroy: wallLevelToDestroy.value,
+            destroyWallMaxDistance: destroyWallMaxDistance.value,
+            attackDelay: attackDelay.value,
             resourceRatio: resourceRatio.value,
-            minutesUntilReload: minutesUntilReload.value
+            minutesUntilReload: minutesUntilReload.value,
+            maxDistance: maxDistance.value,
+            ignoreOlderThan: ignoreOlderThan.value,
+
+            blindAttackPattern: blindAttackPattern.value,
+            useCPattern: useCPattern.value
         };
     };
 
@@ -54,10 +75,21 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         useC,
         ignoreDelay,
         blindAttack,
+
+        wallLevelToIgnore,
+        wallLevelToDestroy,
+        destroyWallMaxDistance,
+        attackDelay,
         resourceRatio,
         minutesUntilReload,
+        maxDistance,
+        ignoreOlderThan,
+
+        blindAttackPattern,
+        useCPattern,
+        
         raw
-    };
+    } satisfies PiniaPlunderConfigStoreType;
 });
 
 export const usePlunderHistoryStore = defineStore('plunder-history', () => {
@@ -65,15 +97,17 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
     const stone = ref<number>(0);
     const iron = ref<number>(0);
     const attackAmount = ref<number>(0);
+    const destroyedWalls = ref<number>(0);
     const total = computed(() => wood.value + stone.value + iron.value);
 
-    function raw(): PlunderedAmount {
+    function raw(): PlunderAttackDetails {
         return {
             wood: wood.value,
             stone: stone.value,
             iron: iron.value,
             attackAmount: attackAmount.value,
-            total: total.value
+            total: total.value,
+            destroyedWalls: destroyedWalls.value
         };
     };
 
@@ -89,8 +123,9 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
         stone,
         iron,
         total,
+        destroyedWalls,
         attackAmount,
         raw,
         reset
-    };
+    } satisfies PiniaPlunderHistoryStoreType;
 });

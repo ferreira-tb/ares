@@ -12,6 +12,7 @@ lerna-debug.log*
 dist
 dist-ssr
 coverage
+website
 *.local
 
 /cypress/videos/

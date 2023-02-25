@@ -1,9 +1,10 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import type { UnitAmount } from '$types/game.js';
+import type { PiniaUnitsStoreType } from '$types/stores.js';
 
 /** Unidades na aldeia atual. */
-export const useUnitStore = defineStore('unit', () => {
+export const useUnitsStore = defineStore('unit', () => {
     const spear = ref<number>(0);
     const sword = ref<number>(0);
     const axe = ref<number>(0);
@@ -18,7 +19,7 @@ export const useUnitStore = defineStore('unit', () => {
     const snob = ref<number>(0);
     const militia = ref<number>(0);
 
-    function toRaw(): UnitAmount {
+    function raw(): UnitAmount {
         return {
             spear: spear.value,
             sword: sword.value,
@@ -50,6 +51,6 @@ export const useUnitStore = defineStore('unit', () => {
         knight,
         snob,
         militia,
-        toRaw
-    };
+        raw
+    } satisfies PiniaUnitsStoreType;
 });

@@ -1,4 +1,4 @@
-import { UserConfig } from '$interface/interface.js';
+import { UserConfig } from '$interface/index.js';
 import { getPanelWindow } from '$electron/utils/helpers.js';
 
 export function setPanelEvents() {

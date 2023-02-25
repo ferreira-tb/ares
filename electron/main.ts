@@ -2,7 +2,7 @@ import '@tb-dev/prototype';
 import { app, BrowserWindow } from 'electron';
 import { setAppMenu } from '$electron/menu/menu.js';
 import { sequelize } from '$database/database.js';
-import { UserConfig } from '$interface/interface.js';
+import { UserConfig } from '$interface/index.js';
 import { setEvents } from '$electron/events/index.js';
 import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants.js';
 import { MainProcessError } from '$electron/error.js';
@@ -24,13 +24,10 @@ function createWindow() {
     
     const panelWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 300,
-        minWidth: 300,
-        maxWidth: 500,
-        height: 200,
-        minHeight: 200,
-        maxHeight: 500,
+        width: 350,
+        height: 250,
         show: false,
+        resizable: false,
         fullscreenable: false,
         frame: false,
         titleBarStyle: 'hidden',
@@ -63,4 +60,8 @@ function createWindow() {
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
 
-sequelize.sync().catch(MainProcessError.catch);
+if (process.env.ARES_MODE === 'dev') {
+    sequelize.sync({ alter: { drop: false } }).catch(MainProcessError.catch);
+} else {
+    sequelize.sync().catch(MainProcessError.catch);
+};

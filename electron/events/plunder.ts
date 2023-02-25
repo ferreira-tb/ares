@@ -1,135 +1,151 @@
-import { ipcMain } from 'electron';
-import { assertObject, assertPositiveInteger, isObject, isKeyOf } from '@tb-dev/ts-guard';
-import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
-import { assertUserAlias } from '$electron/utils/guards.js';
+import { ipcMain, BrowserWindow, type WebContents } from 'electron';
+import { assertObject, assertInteger, isKeyOf, isObject, isInteger } from '@tb-dev/ts-guard';
+import { getPanelWindow } from '$electron/utils/helpers.js';
+import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
-import { MainProcessError } from '$electron/error.js';
-import { isUserAlias } from '$electron/utils/guards.js';
-import type { PlunderConfigType, PlunderedAmount } from '$types/plunder.js';
+import { MainProcessEventError } from '$electron/error.js';
+import type { PlunderAttackDetails, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
+import type { UnitAmount, World } from '$types/game.js';
+import type { WorldUnitType } from '$types/world.js';
 
 import {
     PlunderHistory,
     PlunderConfig,
-    plunderConfigStore,
-    plunderHistoryStore,
-    cacheStore
-} from '$interface/interface.js';
+    plunderConfigProxy,
+    plunderHistoryProxy,
+    cacheProxy,
+    WorldUnit,
+    worldUnitProxy
+} from '$interface/index.js';
 
 export function setPlunderEvents() {
-    const mainWindow = getMainWindow();
     const panelWindow = getPanelWindow();
 
-    ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
-    ipcMain.handle('get-plunder-config', () => ({ ...plunderConfigStore }));
+    // Verifica se o Plunder está ativo.
+    ipcMain.handle('is-plunder-active', () => plunderConfigProxy.active);
+    
+    // Obtém as configurações do Plunder.
+    ipcMain.handle('get-plunder-config', () => {
+        const alias = cacheProxy.userAlias;
+        if (isUserAlias(alias)) return { ...plunderConfigProxy };
+        return null;
+    });
 
-    ipcMain.on('update-plunder-config', async (_e, plunderConfig: PlunderConfigType) => {
+    // Recebe as configurações do Plunder do painel ou do módulo de configuração e as salva no banco de dados.
+    ipcMain.on('update-plunder-config', async (e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
         try {
-            for (const [key, value] of Object.entries(plunderConfig)) {
-                if (!isKeyOf(key, plunderConfigStore)) continue;
+            if (!isKeyOf(key, plunderConfigProxy)) return;
+            const previousValue = Reflect.get(plunderConfigProxy, key);
+            if (previousValue === value) return;
 
-                const previousValue = Reflect.get(plunderConfigStore, key);
-                if (previousValue === value) continue;
-                
-                // A confirmação dos tipos é feita no Proxy.
-                Reflect.set(plunderConfigStore, key, value);
-                mainWindow.webContents.send('plunder-config-updated', key, value);
+            // A confirmação dos tipos é feita no Proxy.
+            Reflect.set(plunderConfigProxy, key, value);
+
+            // Comunica a mudança aos processos diferentes daquele que enviou os dados.
+            for (const browserWindow of BrowserWindow.getAllWindows()) {
+                if (browserWindow.webContents !== (e.sender satisfies WebContents)) {
+                    browserWindow.webContents.send('plunder-config-updated', key, value);
+                };
             };
 
-            const userAlias = cacheStore.userAlias;
-            assertUserAlias(userAlias);
+            const userAlias = cacheProxy.userAlias;
+            assertUserAlias(userAlias, MainProcessEventError);
 
             await sequelize.transaction(async (transaction) => {
                 await PlunderConfig.upsert({
                     id: userAlias,
-                    ...plunderConfigStore
+                    ...plunderConfigProxy
                 }, { transaction });
             });
 
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
     // Emitido pelo browser após cada ataque realizado pelo Plunder.
-    // Atualiza a quantidade de recursos saqueados no painel.
-    ipcMain.on('update-plundered-amount', (_e, resources: PlunderedAmount) => {
+    ipcMain.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
         try {
-            assertObject(resources, 'A quantidade de recursos é inválida.');
-            panelWindow.webContents.send('patch-panel-plundered-amount', resources);
+            assertObject(details, 'Erro ao atualizar os detalhes do ataque: o objeto é inválido.');
+            panelWindow.webContents.send('plunder-attack-sent', details);
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
     // Emitido pelo browser quando o Plunder é desativado.
-    // Salva a quantidade de recursos saqueados durante a última execução do Plunder.
-    ipcMain.on('save-plundered-amount', async (_e, resources: PlunderedAmount) => {
+    ipcMain.on('save-plunder-attack-details', async (_e, details: PlunderAttackDetails) => {
         try {
-            assertObject(resources, 'A quantidade de recursos é inválida.');
+            assertObject(details, 'Erro ao salvar os detalhes do ataque: o objeto é inválido.');
 
-            for (const [key, value] of Object.entries(resources) as [keyof PlunderedAmount, number][]) {
-                assertPositiveInteger(value, 'A quantidade de recursos é inválida.');
-                plunderHistoryStore.last[key] = value;
-                plunderHistoryStore.total[key] += value;
+            for (const [key, value] of Object.entries(details) as [keyof PlunderAttackDetails, number][]) {
+                assertInteger(value, 'Erro ao salvar os detalhes do ataque: valor inválido.');
+                plunderHistoryProxy.last[key] = value;
+                plunderHistoryProxy.total[key] += value;
             };
 
-            const userAlias = cacheStore.userAlias;
-            assertUserAlias(userAlias);
-    
+            const userAlias = cacheProxy.userAlias;
+            assertUserAlias(userAlias, MainProcessEventError);
+
             await sequelize.transaction(async (transaction) => {
                 await PlunderHistory.upsert({
                     id: userAlias,
-                    last: { ...plunderHistoryStore.last },
-                    total: { ...plunderHistoryStore.total }
+                    last: { ...plunderHistoryProxy.last },
+                    total: { ...plunderHistoryProxy.total }
                 }, { transaction });
             });
-            
+
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
-    // Obtém a quantidade de recursos saqueados durante a última execução do Plunder.
-    ipcMain.handle('get-last-plundered-amount', async () => {
+    ipcMain.handle('get-last-plunder-attack-details', async () => {
         try {
-            const history = await getPlunderHistoryAsJSON();
-            assertObject(history, 'Não foi possível obter a quantidade de recursos saqueados.');
+            const history = await PlunderHistory.getHistoryAsJSON(cacheProxy);
+            assertObject(history, 'Erro ao obter os detalhes do último ataque: o objeto é inválido.');
             return history.last;
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
             return null;
         };
     });
 
-    // Obtém a quantidade total de recursos saqueados em determinado mundo.
-    ipcMain.handle('get-total-plundered-amount', async () => {
+    ipcMain.handle('get-total-plunder-attack-details', async () => {
         try {
-            const history = await getPlunderHistoryAsJSON();
-            assertObject(history, 'Não foi possível obter a quantidade total de recursos saqueados.');
+            const history = await PlunderHistory.getHistoryAsJSON(cacheProxy);
+            assertObject(history, 'Erro ao obter o histórico de ataques: o objeto é inválido.');
             return history.total;
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
             return null;
         };
     });
-};
 
-async function getPlunderHistoryAsJSON(): Promise<PlunderHistory | null> {
-    try {
-        const result = await sequelize.transaction(async (transaction) => {
-            const userAlias = cacheStore.userAlias;
-            if (!isUserAlias(userAlias)) return null;
+    ipcMain.handle('calc-carry-capacity', async (_e, units: Partial<UnitAmount>, world?: World | null) => {
+        try {
+            world ??= cacheProxy.world;
+            if (!isWorld(world)) return null;
+
+            let worldUnits: WorldUnitType;
+            if (world === cacheProxy.world) {
+                worldUnits = { ...worldUnitProxy };
+            } else {
+                const worldUnitsRow = await WorldUnit.findByPk(world);
+                if (!isObject(worldUnitsRow)) return null;
+                worldUnits = worldUnitsRow.toJSON();
+            };
             
-            const plunderHistory = await PlunderHistory.findByPk(userAlias, { transaction });
-            if (!isObject(plunderHistory)) return null;
+            const entries = Object.entries(units) as [keyof UnitAmount, number][];
+            return entries.reduce((carryCapacity, [unit, amount]) => {
+                const unitCapacity = worldUnits[unit]?.carry;
+                if (isInteger(unitCapacity)) carryCapacity += unitCapacity * amount;
+                return carryCapacity;
+            }, 0);
 
-            return plunderHistory.toJSON();
-        });
-
-        return result as PlunderHistory | null;
-
-    } catch (err) {
-        MainProcessError.catch(err);
-        return null;
-    };
+        } catch (err) {
+            MainProcessEventError.catch(err);
+            return null;
+        };
+    });
 };

@@ -3,6 +3,7 @@ import type { World } from '$types/game.js';
 export type ErrorLogBase = {
     readonly name: string;
     readonly message: string;
+    readonly stack: string | null;
 };
 
 export interface ErrorLogType extends ErrorLogBase {
@@ -13,11 +14,14 @@ export interface ErrorLogType extends ErrorLogBase {
     readonly electron: string;
     readonly chrome: string;
     readonly tribal: string | null;
+    readonly locale: string | null;
     readonly pending: boolean;
 }
 
 export type DOMErrorLogBase = {
+    readonly name: string;
     readonly selector: string;
+    readonly stack: string | null;
 };
 
 export interface DOMErrorLogType extends DOMErrorLogBase {
@@ -29,12 +33,14 @@ export interface DOMErrorLogType extends DOMErrorLogBase {
     readonly electron: string;
     readonly chrome: string;
     readonly tribal: string | null;
+    readonly locale: string | null;
     readonly pending: boolean;
 };
 
 export type MainProcessErrorLogBase = {
     readonly name: string;
     readonly message: string;
+    readonly stack: string | null;
 };
 
 export interface MainProcessErrorLogType extends MainProcessErrorLogBase {
@@ -44,5 +50,6 @@ export interface MainProcessErrorLogType extends MainProcessErrorLogBase {
     readonly electron: string;
     readonly chrome: string;
     readonly tribal: string | null;
+    readonly locale: string | null;
     readonly pending: boolean;
 };

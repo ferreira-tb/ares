@@ -1,4 +1,3 @@
-/// <reference types="vitest/config" />
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
@@ -11,6 +10,7 @@ export default defineConfig({
             '$browser': fileURLToPath(new URL('./browser', import.meta.url)),
             '$lib': fileURLToPath(new URL('./browser/lib', import.meta.url)),
             '$global': fileURLToPath(new URL('./global', import.meta.url)),
+            '$assets': fileURLToPath(new URL('./global/assets', import.meta.url)),
             '$vue': fileURLToPath(new URL('./vue', import.meta.url)),
             '$deimos': fileURLToPath(new URL('./deimos', import.meta.url)),
             '$phobos': fileURLToPath(new URL('./phobos', import.meta.url)),
@@ -21,7 +21,8 @@ export default defineConfig({
     build: {
         target: 'esnext',
         outDir: 'dist',
-        emptyOutDir: true,
+        emptyOutDir: false,
+        chunkSizeWarningLimit: 2000,
         rollupOptions: {
             external: ['electron'],
             output: {
@@ -30,9 +31,5 @@ export default defineConfig({
                 interop: 'auto'
             }
         }
-    },
-    test: {
-        globals: true,
-        environment: 'jsdom'
     }
 });

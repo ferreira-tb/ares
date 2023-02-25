@@ -1,4 +1,33 @@
+export interface PlunderInfoType {
+    /** Indica se as aldeias sob ataque estão ocultas. */
+    readonly hideAttacked: boolean;
+    /** Página atual. */
+    readonly page: number;
+    /** Quantidade de aldeias por página. */
+    readonly pageSize: number;
+    readonly plunderExhausted: boolean;
+};
+
+/**
+ * Padrão de ataque quando o Plunder não tem informações dos exploradores.
+ * 
+ * bigger: Ataca com a maior capacidade de carga possível.
+ * 
+ * smaller: Ataca com a menor capacidade de carga possível.
+ */
+export type BlindAttackPattern = 'bigger' | 'smaller';
+
+/**
+ * Padrão de ataque quando o Plunder está usando o modelo C.
+ * 
+ * normal: Tenta utilizar o modelo C, se não for possível, utiliza outro modelo.
+ * 
+ * only: Utiliza apenas o modelo C.
+ */
+export type UseCPattern = 'normal' | 'only';
+
 export type PlunderConfigType = {
+    // Painel
     /** Indica se o Plunder está ativado. */
     active: boolean;
     /** Determina se o Plunder deve atacar aldeias com muralha. */
@@ -14,15 +43,45 @@ export type PlunderConfigType = {
     /** Se ativado, o Plunder não levará em consideração as informações dos exploradores. */
     blindAttack: boolean;
 
-    /** Razão de recursos que o Plunder deve levar em consideração. */
+    // Configurações
+    /** Nível da muralha a partir do qual ele deve ignorar. */
+    wallLevelToIgnore: number;
+    /** Nível da muralha a partir do qual ele deve demolir. */
+    wallLevelToDestroy: number;
+    /** Distância máxima para ataques de destruição de muralha. */
+    destroyWallMaxDistance: number;
+    /** Delay médio entre os ataques. */
+    attackDelay: number;
+    /** Razão entre a quantidade de recursos esperados e a capacidade de carga do modelo atacante. */
     resourceRatio: number;
     /** Minutos até que a página seja recarregada automaticamente. */
     minutesUntilReload: number;
+    /** Distância máxima para os ataques normais do Plunder. */
+    maxDistance: number;
+    /** Ignora aldeias cujo último ataque ocorreu há uma quantidade de horas superior à indicada. */
+    ignoreOlderThan: number;
+
+    /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
+    blindAttackPattern: BlindAttackPattern;
+    /** Determina o padrão de ataque quando o Plunder está usando o modelo C. */
+    useCPattern: UseCPattern;
 };
 
+export type PlunderConfigKeys = keyof PlunderConfigType;
+export type PlunderConfigValues = PlunderConfigType[PlunderConfigKeys];
+
 export type PlunderHistoryType = {
-    last: PlunderedAmount;
-    total: PlunderedAmount;
+    last: PlunderAttackDetails;
+    total: PlunderAttackDetails;
+};
+
+export type PlunderAttackDetails = {
+    wood: number;
+    stone: number;
+    iron: number;
+    total: number;
+    attackAmount: number;
+    destroyedWalls: number;
 };
 
 export type PlunderTableButtons = {
@@ -45,12 +104,4 @@ export type PlunderTableResources = {
     iron: number;
     /** Total de recursos que se espera ter na aldeia. */
     total: number;
-};
-
-export type PlunderedAmount = {
-    wood: number;
-    stone: number;
-    iron: number;
-    total: number;
-    attackAmount: number;
 };

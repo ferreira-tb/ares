@@ -2,9 +2,9 @@ import { app, ipcMain, BrowserWindow } from 'electron';
 import { URL } from 'url';
 import { Op } from 'sequelize';
 import { assertInteger, assertString, isInstanceOf } from '@tb-dev/ts-guard';
-import { MainProcessError } from '$electron/error.js';
+import { MainProcessEventError } from '$electron/error.js';
 import { sequelize } from '$database/database.js';
-import { ErrorLog, DOMErrorLog, MainProcessErrorLog, browserStore } from '$interface/interface.js';
+import { ErrorLog, DOMErrorLog, MainProcessErrorLog, aresProxy } from '$interface/index.js';
 import { getActiveModule } from '$electron/app/modules.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 
@@ -17,12 +17,14 @@ export function setErrorEvents() {
             const errorLog: Omit<ErrorLogType, 'id' | 'pending'> = {
                 name: err.name,
                 message: err.message,
-                world: browserStore.currentWorld,
+                stack: err.stack,
+                world: aresProxy.world,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: browserStore.majorVersion
+                tribal: aresProxy.majorVersion,
+                locale: aresProxy.locale
             };
 
             await sequelize.transaction(async (transaction) => {
@@ -34,7 +36,7 @@ export function setErrorEvents() {
             });
 
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -46,7 +48,7 @@ export function setErrorEvents() {
             });
 
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -62,7 +64,7 @@ export function setErrorEvents() {
             return result;
 
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
             return null;
         };
     });
@@ -72,14 +74,17 @@ export function setErrorEvents() {
             assertString(err.selector, 'O seletor informado no relatório de erro é inválido.');
 
             const domErrorLog: Omit<DOMErrorLogType, 'id' | 'pending'> = {
+                name: err.name,
                 url: new URL(e.sender.getURL()).href,
-                world: browserStore.currentWorld,
+                world: aresProxy.world,
                 selector: err.selector,
+                stack: err.stack,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: browserStore.majorVersion
+                tribal: aresProxy.majorVersion,
+                locale: aresProxy.locale
             };
 
             await sequelize.transaction(async (transaction) => {
@@ -91,7 +96,7 @@ export function setErrorEvents() {
             });
 
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         }; 
     });
 
@@ -103,7 +108,7 @@ export function setErrorEvents() {
             });
             
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -119,7 +124,7 @@ export function setErrorEvents() {
             return result;
 
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
             return null;
         };
     });
@@ -132,7 +137,7 @@ export function setErrorEvents() {
             });
             
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -148,7 +153,7 @@ export function setErrorEvents() {
             return result;
 
         } catch (err) {
-            MainProcessError.catch(err);
+            MainProcessEventError.catch(err);
             return null;
         };
     });
