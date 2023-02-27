@@ -122,12 +122,12 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
 /**
  * Filtra todos os modelos de saque disponíveis de acordo com a quantidade de recursos na aldeia-alvo.
  * Caso a função retorne uma lista vazia, o ataque não deve ser enviado.
- * Ao fim, os modelos são ordenados de acordo com a capacidade de carga.
  * 
  * Se a opção `blindAttack` estiver ativada, todos os modelos com tropas disponíveis são retornados.
- * @param resources - Recursos disponíveis na aldeia-alvo.
+ * @param info - Informações sobre a aldeia-alvo.
+ * @param config - Configurações do assistente de saque.
  */
-async function filterTemplates(resources: number, config: ConfigReturnType): Promise<PlunderTemplate[]> {
+async function filterTemplates(info: PlunderVillageInfo, config: ConfigReturnType): Promise<PlunderTemplate[]> {
     // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.
     // Os modelos com capacidade de carga maior que a quantidade de recursos são colocados no grupo `bigger`.
     // Os demais são colocados no grupo `smaller`.
@@ -137,6 +137,7 @@ async function filterTemplates(resources: number, config: ConfigReturnType): Pro
     // Aguarda para certificar-se de que a lista de modelos foi atualizada.
     await nextTick();
 
+    const resources = info.res.total;
     for (const template of allTemplates.values()) {
         // Ignora o modelo 'C' e os modelos que não têm tropas disponíveis.
         if (template.type === 'c') continue;
@@ -150,7 +151,7 @@ async function filterTemplates(resources: number, config: ConfigReturnType): Pro
     };
 
     // Retorna sem filtrar se a opção `blindAttack` estiver ativada.
-    if (config.blindAttack === true) {
+    if (config.blindAttack === true && info.spyInfo === false) {
         return [...smaller, ...bigger];
     };
 
@@ -159,7 +160,6 @@ async function filterTemplates(resources: number, config: ConfigReturnType): Pro
     // Quanto menor for a razão, maior a quantidade de tropas sendo enviada desnecessariamente.
     // Não é necessário filtrar os modelos com capacidade de carga menor que a quantidade de recursos, pois eles sempre são válidos.
     bigger = bigger.filter((template) => resources / template.carry >= config.resourceRatio);
-
     return [...smaller, ...bigger];
 };
 
@@ -172,10 +172,14 @@ export async function pickBestTemplate(info: PlunderVillageInfo): Promise<Plunde
         if (templateC === null && config.useCPattern === 'only') return null;
     };
 
-    const templates = await filterTemplates(info.res.total, config);
+    const templates = await filterTemplates(info, config);
     if (templates.length === 0) return null;
 
-    if (config.blindAttack === true && config.blindAttackPattern === 'smaller') {
+    if (
+        info.spyInfo === false &&
+        config.blindAttack === true &&
+        config.blindAttackPattern === 'smaller'
+    ) {
         // Se a opção `blindAttack` estiver ativada e o padrão de seleção for `smaller`,
         // seleciona o modelo com menor capacidade de carga.
         return templates.reduce((prev, curr) => prev.carry < curr.carry ? prev : curr);
