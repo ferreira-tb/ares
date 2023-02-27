@@ -78,6 +78,19 @@ export type PlunderConfigType = {
 export type PlunderConfigKeys = keyof PlunderConfigType;
 export type PlunderConfigValues = PlunderConfigType[PlunderConfigKeys];
 
+export type PlunderPanelConfig = Pick<PlunderConfigType,
+    | 'active'
+    | 'ignoreWall'
+    | 'destroyWall'
+    | 'groupAttack'
+    | 'useC'
+    | 'ignoreDelay'
+    | 'blindAttack'
+>;
+
+export type PlunderPanelConfigKeys = keyof PlunderPanelConfig;
+export type PlunderPanelConfigValues = PlunderPanelConfig[PlunderPanelConfigKeys];
+
 export type PlunderHistoryType = {
     last: PlunderAttackDetails;
     total: PlunderAttackDetails;

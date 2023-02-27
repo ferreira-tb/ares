@@ -9,7 +9,7 @@ import { assertUserAlias, isDistance } from '$global/utils/guards';
 import InfoResult from '$vue/components/result/InfoResult.vue';
 import WallInput from '$vue/components/input/WallInput.vue';
 import NumberImput from '$vue/components/input/NumberInput.vue';
-import Popover from '$vue/components/popover/Popover.vue';
+import LabelPopover from '$vue/components/popover/LabelPopover.vue';
 import type {
     PlunderConfigType,
     PlunderConfigKeys,
@@ -24,6 +24,7 @@ const message = useMessage();
 const previousConfig = toNull(await ipcInvoke('get-plunder-config'), isObject);
 const config = ref<PlunderConfigType | null>(previousConfig);
 
+// Refs das configurações.
 const wallLevelToIgnore = ref<number>(config.value?.wallLevelToIgnore ?? 1);
 const wallLevelToDestroy = ref<number>(config.value?.wallLevelToDestroy ?? 1);
 const destroyWallMaxDistance = ref<number>(config.value?.destroyWallMaxDistance ?? 20);
@@ -37,6 +38,7 @@ const plunderedResourcesRatio = ref<number>(config.value?.plunderedResourcesRati
 const blindAttackPattern = ref<BlindAttackPattern>(config.value?.blindAttackPattern ?? 'smaller');
 const useCPattern = ref<UseCPattern>(config.value?.useCPattern ?? 'normal');
 
+// Watchers.
 watch(wallLevelToIgnore, (v) => updateConfig('wallLevelToIgnore', v));
 watch(wallLevelToDestroy, (v) => updateConfig('wallLevelToDestroy', v));
 watch(destroyWallMaxDistance, (v) => updateConfig('destroyWallMaxDistance', v));
@@ -131,23 +133,23 @@ const useCOptions = [
         <NDivider title-placement="left">Ataque</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Distância máxima</template>
                     <span>O Ares não atacará aldeias cuja distância (em campos) é maior do que a indicada.</span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <NumberImput v-model:value="maxDistance" :min="1" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
             </NGridItem>
 
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Evitar relatórios mais antigos que</template>
                     <span>
                         Se o último ataque ocorreu a uma quantidade de horas superior a indicada, o Ares não atacará a
                         aldeia.
                     </span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <NumberImput v-model:value="ignoreOlderThan" :min="1" :max="9999" :step="1"
@@ -155,12 +157,12 @@ const useCOptions = [
             </NGridItem>
 
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Delay médio entre os ataques</template>
                     <span>
                         O jogo possui um limite de cinco ações por segundo, então o Ares dá uma atrasadinha em cada ataque.
                     </span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <NumberImput v-model:value="attackDelay" :min="100" :max="5000" :step="10"
@@ -168,14 +170,14 @@ const useCOptions = [
             </NGridItem>
 
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Razão de saque</template>
                     <span>
                         Corresponde à razão entre a quantidade de recursos na aldeia e a capacidade de carga do modelo
                         atacante.
                         Quanto menor for a razão, maior a chance de tropas serem enviadas desnecessariamente.
                     </span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <NumberImput v-model:value="resourceRatio" :min="0.2" :max="1" :step="0.05"
@@ -183,10 +185,10 @@ const useCOptions = [
             </NGridItem>
 
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Recarregamento automático</template>
                     <span>Tempo, em minutos, até que a página seja recarregada automaticamente durante o saque.</span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <NumberImput v-model:value="minutesUntilReload" :min="1" :max="60" :step="1"
@@ -194,12 +196,12 @@ const useCOptions = [
             </NGridItem>
 
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Padrão do ataque às cegas</template>
                     <span>
                         Determina como o Ares escolherá o modelo para atacar quando não houver informações de exploradores.
                     </span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <div class="plunder-config-select">
@@ -208,7 +210,7 @@ const useCOptions = [
             </NGridItem>
 
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Padrão do modelo C</template>
                     <span>
                         Quanto o uso do modelo C está ativado, o Ares tentará enviar ataques usando-o.
@@ -216,7 +218,7 @@ const useCOptions = [
 
                         Você pode alterar esse comportamento de maneira a forçá-lo a usar somente o modelo C.
                     </span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <div class="plunder-config-select">
@@ -228,31 +230,31 @@ const useCOptions = [
         <NDivider title-placement="left">Muralha</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Ignorar muralhas a partir de</template>
                     <span>Determina a partir de qual nível de muralha o Ares deve ignorar aldeias.</span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <WallInput v-model:value="wallLevelToIgnore" />
             </NGridItem>
 
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Demolir muralhas a partir de</template>
                     <span>O Ares não demolirá muralhas cujo nível seja menor que o indicado.</span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <WallInput v-model:value="wallLevelToDestroy" />
             </NGridItem>
 
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Distância máxima para demolição</template>
                     <span>O Ares não demolirá muralhas de aldeias cuja distância (em campos) é maior do que a
                         indicada.</span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <NumberImput v-model:value="destroyWallMaxDistance" :min="1" :max="9999" :step="1"
@@ -260,11 +262,11 @@ const useCOptions = [
             </NGridItem>
 
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Tropas de demolição</template>
                     <span>Por padrão, o Ares envia bárbaros e aríetes para destruir as muralhas, mas você pode mudar
                         isso!</span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <NButtonGroup>
@@ -277,13 +279,13 @@ const useCOptions = [
         <NDivider title-placement="left">Outros</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
-                <Popover>
+                <LabelPopover>
                     <template #trigger>Estimativa de saque</template>
                     <span>
                         Por padrão, o Ares sempre considera que o modelo atacante saqueará 100% de sua capacidade de carga.
                         Você pode alterar isso para que ele considere uma porcentagem menor.
                     </span>
-                </Popover>
+                </LabelPopover>
             </NGridItem>
             <NGridItem>
                 <NumberImput v-model:value="plunderedResourcesRatio" :min="0.2" :max="1" :step="0.05"

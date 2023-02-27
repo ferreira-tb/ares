@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
+import { reactive } from 'vue';
+import { useVModel } from '@vueuse/core';
 import { NSwitch } from 'naive-ui';
-import { isBoolean } from '@tb-dev/ts-guard';
-import Popover from '$vue/components/popover/Popover.vue';
+import LabelPopover from '$vue/components/popover/LabelPopover.vue';
 
 interface Props {
     value?: boolean;
@@ -33,15 +33,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-    (e: 'switch-updated', value: boolean): void
+    (e: 'update:value', value: boolean): void
 }>();
 
-const switchValue = ref(props.value);
-watch(switchValue, (value) => {
-    if (isBoolean(value)) {
-        emit('switch-updated', value);
-    };
-});
+const value = useVModel(props, 'value', emit);
 
 const popoverStyle = reactive({
     maxWidth: `${props.popMaxWidth}px`,
@@ -52,25 +47,24 @@ const popoverStyle = reactive({
 <template>
     <div class="switch-popover">
         <NSwitch
-            v-model:value="switchValue"
+            v-model:value="value"
             :size="props.size"
             :round="props.round"
             :disabled="props.disabled"
         />
 
-        <Popover
+        <LabelPopover
             :delay="props.popDelay"
             :animated="props.popAnimated"
             :scrollable="props.popScrollable"
             :keep-alive-on-hover="props.popKeepAliveOnHover"
             :style="popoverStyle"
-            :trigger-is-label="true"
         >
             <template #trigger>
                 <slot name="trigger"></slot>
             </template>
             <slot></slot>
-        </Popover>
+        </LabelPopover>
     </div>
 </template>
 

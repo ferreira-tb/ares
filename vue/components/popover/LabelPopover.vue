@@ -9,7 +9,6 @@ interface Props {
     keepAliveOnHover?: boolean;
     maxWidth?: number;
     maxHeight?: number;
-    triggerIsLabel?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -18,8 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
     scrollable: true,
     keepAliveOnHover: true,
     maxWidth: 250,
-    maxHeight: 100,
-    triggerIsLabel: true
+    maxHeight: 100
 });
 
 const style = reactive({
@@ -29,15 +27,10 @@ const style = reactive({
 </script>
 
 <template>
-    <NPopover
-        :delay="props.delay"
-        :animated="props.animated"
-        :scrollable="props.scrollable"
-        :keep-alive-on-hover="props.keepAliveOnHover"
-        :style="style"
-    >
+    <NPopover :delay="props.delay" :animated="props.animated" :scrollable="props.scrollable"
+        :keep-alive-on-hover="props.keepAliveOnHover" :style="style">
         <template #trigger>
-            <span :class="{ 'trigger-label': props.triggerIsLabel }">
+            <span class="trigger-label">
                 <slot name="trigger"></slot>
             </span>
         </template>

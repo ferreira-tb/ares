@@ -5,7 +5,6 @@ import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plund
 import { ipcSend } from '$global/ipc.js';
 import Resources from '$panel/components/Resources.vue';
 import SwitchPopover from '$vue/components/popover/SwitchPopover.vue';
-import type { PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
 
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
@@ -13,6 +12,8 @@ const history = usePlunderHistoryStore();
 const plunderButtonText = computed(() => config.active === false ? 'Saquear' : 'Parar');
 
 watch(() => config.active, (value) => {
+    ipcSend('update-plunder-config', 'active', value);
+
     if (value !== false) return;
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
     // Se não houve saque, não é necessário realizar essa operação.
@@ -24,17 +25,12 @@ watch(() => config.active, (value) => {
     history.reset();
 });
 
-function updateConfig(name: 'active', value: boolean): void;
-function updateConfig(name: 'ignoreWall', value: boolean): void;
-function updateConfig(name: 'groupAttack', value: boolean): void;
-function updateConfig(name: 'destroyWall', value: boolean): void;
-function updateConfig(name: 'useC', value: boolean): void;
-function updateConfig(name: 'ignoreDelay', value: boolean): void;
-function updateConfig(name: 'blindAttack', value: boolean): void;
-function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
-    Reflect.set(config, name, value);
-    ipcSend('update-plunder-config', name, value);
-};
+watch(() => config.ignoreWall, (v) => ipcSend('update-plunder-config', 'ignoreWall', v));
+watch(() => config.destroyWall, (v) => ipcSend('update-plunder-config', 'destroyWall', v));
+watch(() => config.groupAttack, (v) => ipcSend('update-plunder-config', 'groupAttack', v));
+watch(() => config.useC, (v) => ipcSend('update-plunder-config', 'useC', v));
+watch(() => config.ignoreDelay, (v) => ipcSend('update-plunder-config', 'ignoreDelay', v));
+watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAttack', v));
 </script>
 
 <template>
@@ -42,7 +38,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
         <div class="button-area">
             <NButtonGroup>
                 <NButton round @click="ipcSend('open-custom-plunder-template-window')">Modelos</NButton>
-                <NButton round @click="updateConfig('active', !config.active)">{{ plunderButtonText }}</NButton>
+                <NButton round @click="config.active = !config.active">{{ plunderButtonText }}</NButton>
                 <NButton round @click="ipcSend('open-plunder-config-window')">Configurações</NButton>
             </NButtonGroup>
         </div>
@@ -58,7 +54,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
 
         <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
             <NGridItem>
-                <SwitchPopover :value="config.ignoreWall" @switch-updated="(v) => updateConfig('ignoreWall', v)">
+                <SwitchPopover v-model:value="config.ignoreWall">
                     <template #trigger>Ignorar muralha</template>
                     <span>
                         Determina se o Ares deve evitar aldeias com muralha.
@@ -68,7 +64,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover :value="config.groupAttack" @switch-updated="(v) => updateConfig('groupAttack', v)">
+                <SwitchPopover v-model:value="config.groupAttack">
                     <template #trigger>Ataque em grupo</template>
                     <span>
                         Permite enviar ataques de mais de uma aldeia.
@@ -78,7 +74,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover :value="config.destroyWall" @switch-updated="(v) => updateConfig('destroyWall', v)">
+                <SwitchPopover v-model:value="config.destroyWall">
                     <template #trigger>Destruir muralha</template>
                     <span>
                         Determina se o Ares deve destruir as muralhas das aldeias.
@@ -89,14 +85,14 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover :value="config.useC" @switch-updated="(v) => updateConfig('useC', v)">
+                <SwitchPopover v-model:value="config.useC">
                     <template #trigger>Usar modelo C</template>
                     <span>Determina se o Ares deve usar o modelo C quando possível.</span>
                 </SwitchPopover>
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover :value="config.ignoreDelay" @switch-updated="(v) => updateConfig('ignoreDelay', v)">
+                <SwitchPopover v-model:value="config.ignoreDelay">
                     <template #trigger>Ignorar delay</template>
                     <span>
                         O jogo possui um limite de cinco ações por segundo.
@@ -107,7 +103,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover :value="config.blindAttack" @switch-updated="(v) => updateConfig('blindAttack', v)">
+                <SwitchPopover v-model:value="config.blindAttack">
                     <template #trigger>Ataque às cegas</template>
                     <span>Ataca mesmo se não houver informações sobre a aldeia.</span>
                 </SwitchPopover>
