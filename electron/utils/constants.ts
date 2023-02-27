@@ -25,6 +25,17 @@ export const moduleHtml = join(__dirname, 'modules.html');
 export const worldRegex = /^br([sp](?![sp]))*\d+$/;
 export const aliasRegex = /^br([sp](?![sp]))*\d+__USERID__/;
 
+export const gameURLRegex = /\.?tribalwars\.com\.br/;
+export const aresURLRegex = /\.?tb\.dev\.br\/ares/;
+export const authorURLRegex = /\.?github\.com\/ferreira\-tb/;
+export const repoURLRegex = /\.?github\.com\/ferreira\-tb\/ares/;
+
+export const allowedOriginRegexList = [
+    gameURLRegex,
+    aresURLRegex,
+    authorURLRegex
+] as const;
+
 // Proxy keys.
 export const aresKeys = ['locale', 'world', 'majorVersion', 'groupId', 'screen', 'screenMode', 'pregame'] as const;
 export const featuresKeys = ['premium', 'accountManager', 'farmAssistant'] as const;

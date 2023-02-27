@@ -1,6 +1,6 @@
 import { isString, isInteger } from '@tb-dev/ts-guard';
 import { MainProcessError } from '$electron/error.js';
-import { worldRegex, aliasRegex } from '$electron/utils/constants.js';
+import { worldRegex, aliasRegex, allowedOriginRegexList } from '$electron/utils/constants.js';
 import type { UserAlias } from '$types/electron.js';
 import type { World, WallLevel } from '$types/game.js';
 
@@ -37,4 +37,9 @@ export const isWallLevel = (level: unknown): level is WallLevel => {
 export function assertWallLevel(level: unknown, err: typeof MainProcessError, message?: string): asserts level is WallLevel {
     if (!isString(message)) message = 'O nível de muralha informado é inválido.';
     if (!isWallLevel(level)) throw new err(message);
+};
+
+export function isAllowedURL(url: string): boolean {
+    const { origin } = new URL(url);
+    return allowedOriginRegexList.some((regex) => regex.test(origin));
 };

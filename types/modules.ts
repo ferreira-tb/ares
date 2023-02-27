@@ -33,3 +33,7 @@ export type ErrorModuleRoutes = 'normal-errors' | 'dom-errors' | 'main-process-e
 export type ConfigModuleRoutes = 'general-config' | 'plunder-config';
 
 export type ModuleRoutes = ModuleNames | ErrorModuleRoutes | ConfigModuleRoutes;
+
+
+////// WEBSITE
+export type WebsiteModuleNames = 'ares' | 'repo' | 'issues';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shell } from 'electron';
 import { NResult, NButton, NButtonGroup } from 'naive-ui';
-import { discordURL, issuesURL } from '$global/utils/constants.js';
+import { discordURL } from '$global/utils/constants.js';
 import { ipcSend } from '$global/ipc.js';
 
 interface Props {
@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
                 <slot name="footer">
                     <template v-if="props.showDefaultFooter">
                         <NButtonGroup>
-                            <NButton round @click="shell.openExternal(issuesURL)">Issues</NButton>
+                            <NButton round @click="ipcSend('open-issues-website')">Issues</NButton>
                             <NButton round @click="ipcSend('open-error-log-window')">Registro de Erros</NButton>
                             <NButton round @click="shell.openExternal(discordURL)">Discord</NButton>
                         </NButtonGroup>

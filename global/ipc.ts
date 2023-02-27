@@ -64,6 +64,8 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
 export function ipcSend(channel: 'reload-browser-window'): void;
 export function ipcSend(channel: 'force-reload-browser-window'): void;
 export function ipcSend(channel: 'open-ares-website'): void;
+export function ipcSend(channel: 'open-repo-website'): void;
+export function ipcSend(channel: 'open-issues-website'): void;
 
 // Configurações
 export function ipcSend(channel: 'open-plunder-config-window'): void;

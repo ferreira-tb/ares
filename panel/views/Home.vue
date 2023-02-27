@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { shell } from 'electron';
 import { NButton, NButtonGroup } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$global/ipc.js';
-import { repoURL, discordURL } from '$global/utils/constants.js';
+import { discordURL } from '$global/utils/constants.js';
 
 const appName = ref<string>(await ipcInvoke('app-name'));
 const appVersion = ref<string>(await ipcInvoke('app-version'));
@@ -17,7 +17,7 @@ const appVersion = ref<string>(await ipcInvoke('app-version'));
         </div>
         <NButtonGroup>
             <NButton round @click="ipcSend('open-ares-website')">Site</NButton>
-            <NButton round @click="shell.openExternal(repoURL)">Repositório</NButton>
+            <NButton round @click="ipcSend('open-repo-website')">Repositório</NButton>
             <NButton round @click="shell.openExternal(discordURL)">Discord</NButton>
         </NButtonGroup>
         <div class="footer-area">

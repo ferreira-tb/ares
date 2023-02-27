@@ -33,3 +33,12 @@ export class MainProcessEventError extends MainProcessError {
 
     declare public static catch: (err: unknown) => Promise<void>;
 };
+
+export class ModuleCreationError extends MainProcessError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'ModuleCreationError';
+    };
+
+    declare public static catch: (err: unknown) => Promise<void>;
+};

@@ -1,6 +1,5 @@
 import { app, BrowserWindow } from 'electron';
-import { assertInstanceOf, isInstanceOf } from '@tb-dev/ts-guard';
-import { favicon, aresURL } from '$electron/utils/constants.js';
+import { assertInstanceOf } from '@tb-dev/ts-guard';
 import { assertWorld } from '$electron/utils/guards.js';
 import { MainProcessError } from '$electron/error.js';
 import type { UserAlias } from '$types/electron.js';
@@ -40,57 +39,6 @@ export function togglePanelWindow() {
         panelWindow.show();
     };
 };
-
-function createAresWebsiteWindow() {
-    const aresWebsite = new Map<'ares', BrowserWindow>();
-
-    return function() {
-        // Se a janela já estiver aberta, foca-a.
-        const previousWindow = aresWebsite.get('ares');
-        if (isInstanceOf(previousWindow, BrowserWindow) && !previousWindow.isDestroyed()) {
-            if (!previousWindow.isVisible()) {
-                previousWindow.show();
-            } else {
-                previousWindow.focus();
-            };
-            return;
-        };
-
-        const aresWindow = new BrowserWindow({
-            parent: getMainWindow(),
-            width: 1200,
-            height: 800,
-            useContentSize: true,
-            show: false,
-            minimizable: true,
-            maximizable: true,
-            resizable: true,
-            fullscreenable: false,
-            title: 'Ares',
-            icon: favicon,
-            autoHideMenuBar: true,
-            webPreferences: {
-                spellcheck: false,
-                devTools: process.env.ARES_MODE === 'dev'
-            }
-        });
-
-        aresWindow.setMenu(null);
-        aresWindow.loadURL(aresURL);
-        aresWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-
-        aresWindow.once('ready-to-show', () =>  {
-            aresWebsite.set('ares', aresWindow);
-            aresWindow.show();
-        });
-
-        // Remove do mapa quando a janela for fechada.
-        aresWindow.once('closed', () => aresWebsite.delete('ares'));
-    };
-};
-
-/** Abre uma janela para o site do Ares. */
-export const openAresWebsite = createAresWebsiteWindow();
 
 /**
 * Retorna o alias do usuário, no padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`.

@@ -1,7 +1,7 @@
 import { Menu, shell } from 'electron';
-import { showErrorLog, showAppConfig } from '$electron/app/modules.js';
-import { gameURL, repoURL, discordURL } from '$electron/utils/constants.js';
-import { togglePanelWindow, getMainWindow, getPanelWindow, openAresWebsite, restartAres } from '$electron/utils/helpers.js';
+import { showErrorLog, showAppConfig, openAresWebsite, openRepoWebsite, openIssuesWebsite } from '$electron/app/modules.js';
+import { gameURL, discordURL } from '$electron/utils/constants.js';
+import { togglePanelWindow, getMainWindow, getPanelWindow, restartAres } from '$electron/utils/helpers.js';
 import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
@@ -36,10 +36,11 @@ export function setAppMenu() {
     
     const helpMenu: MenuItemConstructorOptions[] = [
         { label: 'Site', click: () => openAresWebsite() },
-        { label: 'Repositório', click: () => shell.openExternal(repoURL) },
+        { label: 'Repositório', click: () => openRepoWebsite() },
         { label: 'Discord', click: () => shell.openExternal(discordURL) },
         { type: 'separator' },
-        { label: 'Registro de erros', click: () => showErrorLog() }
+        { label: 'Registro de erros', click: () => showErrorLog() },
+        { label: 'Problemas conhecidos', click: () => openIssuesWebsite() }
     ];
 
     const mainMenu = Menu.buildFromTemplate([
