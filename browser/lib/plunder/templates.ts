@@ -1,4 +1,5 @@
 import { computed, nextTick } from 'vue';
+import { ipcRenderer } from 'electron';
 import { assert, isKeyOf, assertInteger, toIntegerStrict, isInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
 import { usePlunderConfigStore } from '$vue/stores/plunder.js';
@@ -8,6 +9,8 @@ import { PlunderError } from '$browser/error.js';
 import { ipcInvoke } from '$global/ipc.js';
 import type { FarmUnits, FarmUnitsAmount, UnitAmount } from '$types/game.js';
 import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
+import type { CustomPlunderTemplateType } from '$types/plunder.js';
+import type { UserAlias } from '$types/electron.js';
 
 type ConfigReturnType = ReturnType<typeof usePlunderConfigStore>;
 
@@ -28,10 +31,13 @@ export class PlunderTemplate {
     readonly type: string;
     /** Quantidade de tropas no modelo. */
     readonly units: FarmUnitsAmount;
+    /** Alias do criador do modelo. Somente válido para modelos personalizados. */
+    readonly alias: UserAlias | null;
 
-    constructor(type: string) {
+    constructor(type: string, alias: UserAlias | null = null) {
         this.type = type;
         this.units = new TemplateUnits();
+        this.alias = alias;
     };
 
     /** Capacidade de carga. */
@@ -61,9 +67,20 @@ export class PlunderTemplate {
 
 /** Representa todos os modelos de saque. */
 const allTemplates = new Map<string, PlunderTemplate>();
+ipcRenderer.on('custom-plunder-template-saved', async (_e, template: CustomPlunderTemplateType) => {
+    const plunderTemplate = await parseCustomPlunderTemplate(template);
+    allTemplates.set(plunderTemplate.type, plunderTemplate);
+});
+
+ipcRenderer.on('custom-plunder-template-destroyed', (_e, template: CustomPlunderTemplateType) => {
+    const templateInMap = allTemplates.get(template.type);
+    if (templateInMap && templateInMap.alias === template.alias) {
+        allTemplates.delete(templateInMap.type);
+    };
+});
 
 /** Obtêm informações sobre os modelos de saque. */
-export function queryTemplateData() {
+export async function queryTemplateData() {
     // Cria os modelos de saque base e os adiciona ao mapa.
     const templateA = new PlunderTemplate('a');
     const templateB = new PlunderTemplate('b');
@@ -94,6 +111,15 @@ export function queryTemplateData() {
     // Cria um modelo vazio para o tipo 'C'.
     const templateC = new PlunderTemplate('c');
     allTemplates.set(templateC.type, templateC);
+
+    // Obtêm os modelos personalizados.
+    const customTemplates = await ipcInvoke('get-custom-plunder-templates');
+    if (Array.isArray(customTemplates)) {
+        for (const template of customTemplates) {
+            const plunderTemplate = await parseCustomPlunderTemplate(template);
+            allTemplates.set(plunderTemplate.type, plunderTemplate);
+        };
+    };
 };
 
 /**
@@ -220,4 +246,20 @@ async function getTemplateC(info: PlunderVillageInfo): Promise<PlunderTemplate |
         PlunderError.catch(err);
         return null;
     };
+};
+
+async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType): Promise<PlunderTemplate> {
+    const plunderTemplate = new PlunderTemplate(template.type, template.alias);
+
+    for (const [unit, amount] of Object.entries(template.units) as [FarmUnits, number][]) {
+        assertFarmUnit(unit, PlunderError, `${unit} não é uma unidade válida.`);
+        assertInteger(amount, `${amount} não é um número inteiro.`);
+        plunderTemplate.units[unit] = amount;
+    };
+
+    const carry = await ipcInvoke('calc-carry-capacity', plunderTemplate.units);
+    assertInteger(carry, `A capacidade de carga do modelo ${template.type} não é um número inteiro.`);
+    plunderTemplate.carry = carry;
+
+    return plunderTemplate;
 };

@@ -64,6 +64,12 @@ function sendAttack(button: HTMLAnchorElement) {
     });
 };
 
+/**
+ * Envia um ataque com as unidades especificadas a partir da praça de reunião.
+ * É necessário primeiro abrir a praça de reunião usando a função `openPlace()`.
+ * @param units Unidades que serão enviadas.
+ * @returns `true` se o ataque foi enviado com sucesso, `false` caso contrário.
+ */
 export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<boolean> {
     try {
         const isArcherWorld = await ipcInvoke('is-archer-world');
@@ -96,7 +102,7 @@ export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<bool
             assert(unitAmount === units[unitName], `A quantidade de tropas sendo enviada é diferente da quantidade exigida.`);
         };
 
-        confirmationButton.click();
+        await sendAttack(confirmationButton);
         return true;
 
     } catch (err) {
@@ -108,6 +114,7 @@ export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<bool
     };
 };
 
+/** Confirma o envio do ataque pela pop-up da praça de reunião. */
 function submitAndWaitConfirmationPopup(commandForm: Element) {
     return new Promise<void>(async (resolve, reject) => {
         const observer = useMutationObserver(document.body, (mutations) => {
