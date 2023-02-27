@@ -1,6 +1,7 @@
 import { assertInteger } from '@tb-dev/ts-guard';
 import { resources } from '$global/utils/constants.js';
 import { PlunderAttack } from '$lib/plunder/attack.js';
+import { usePlunderConfigStore } from '$vue/stores/plunder.js';
 import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
 
 export class PlunderedResources extends PlunderAttack {
@@ -10,6 +11,8 @@ export class PlunderedResources extends PlunderAttack {
 
     constructor(info: PlunderVillageInfo, carry: number) {
         super();
+
+        const { plunderedResourcesRatio } = usePlunderConfigStore();
         
         this.wood = info.res.wood;
         this.stone = info.res.stone;
@@ -21,11 +24,11 @@ export class PlunderedResources extends PlunderAttack {
 
         [this.wood, this.stone, this.iron].forEach((amount, index) => {
             // Se houver mais recursos do que a carga suporta, calcula quanto de cada recurso deve ser saqueado.
-            if (total > carry) amount = Math.floor((amount / total) * carry);
+            if (total > carry) amount = Math.ceil((amount / total) * carry);
             assertInteger(amount, 'A quantidade de recursos esperada não é válida.');
 
             const resName = resources[index];
-            this[resName] = amount;     
+            this[resName] = Math.ceil(amount * plunderedResourcesRatio);
         });
     };
 };

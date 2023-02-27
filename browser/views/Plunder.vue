@@ -110,6 +110,7 @@ async function handleAttack(): Promise<void> {
 
         // Informações que serão enviadas ao painel.
         const plunderedResources = new PlunderedResources(info, best.carry);
+        console.log(plunderedResources);
 
         if (best.type === 'a' || best.type === 'b' || best.type === 'c') {
             const attackButton = info.button[best.type];

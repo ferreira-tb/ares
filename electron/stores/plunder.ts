@@ -47,6 +47,7 @@ class PlunderConfigProxy implements RemoveMethods<PlunderConfigStore> {
     minutesUntilReload: number = 10;
     maxDistance: number = 20;
     ignoreOlderThan: number = 10;
+    plunderedResourcesRatio: number = 1;
 
     blindAttackPattern: BlindAttackPattern = 'smaller';
     useCPattern: UseCPattern = 'normal';
@@ -71,6 +72,7 @@ export function setPlunderConfigProxy() {
                     if (value < 100 || value > 5000) return false;
                     break;
                 case 'resourceRatio':
+                case 'plunderedResourcesRatio':
                     assertPositiveNumber(value);
                     if (value < 0.2 || value > 1) return false;
                     break;

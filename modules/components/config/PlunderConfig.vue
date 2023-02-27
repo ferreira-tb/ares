@@ -32,6 +32,7 @@ const resourceRatio = ref<number>(config.value?.resourceRatio ?? 0.8);
 const minutesUntilReload = ref<number>(config.value?.minutesUntilReload ?? 10);
 const maxDistance = ref<number>(config.value?.maxDistance ?? 20);
 const ignoreOlderThan = ref<number>(config.value?.ignoreOlderThan ?? 10);
+const plunderedResourcesRatio = ref<number>(config.value?.plunderedResourcesRatio ?? 1);
 
 const blindAttackPattern = ref<BlindAttackPattern>(config.value?.blindAttackPattern ?? 'smaller');
 const useCPattern = ref<UseCPattern>(config.value?.useCPattern ?? 'normal');
@@ -44,6 +45,7 @@ watch(resourceRatio, (v) => updateConfig('resourceRatio', v));
 watch(minutesUntilReload, (v) => updateConfig('minutesUntilReload', v));
 watch(maxDistance, (v) => updateConfig('maxDistance', v));
 watch(ignoreOlderThan, (v) => updateConfig('ignoreOlderThan', v));
+watch(plunderedResourcesRatio, (v) => updateConfig('plunderedResourcesRatio', v));
 
 watch(blindAttackPattern, (v) => updateConfig('blindAttackPattern', v));
 watch(useCPattern, (v) => updateConfig('useCPattern', v));
@@ -269,6 +271,23 @@ const useCOptions = [
                     <NButton @click="ipcSend('open-demolition-troops-config-window')">Configurar</NButton>
                     <NButton @click="resetDemolitionConfig">Resetar</NButton>
                 </NButtonGroup>
+            </NGridItem>
+        </NGrid>
+
+        <NDivider title-placement="left">Outros</NDivider>
+        <NGrid :cols="2" :x-gap="6" :y-gap="10">
+            <NGridItem>
+                <Popover>
+                    <template #trigger>Estimativa de saque</template>
+                    <span>
+                        Por padrão, o Ares sempre considera que o modelo atacante saqueará 100% de sua capacidade de carga.
+                        Você pode alterar isso para que ele considere uma porcentagem menor.
+                    </span>
+                </Popover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput v-model:value="plunderedResourcesRatio" :min="0.2" :max="1" :step="0.05"
+                    :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1" />
             </NGridItem>
         </NGrid>
     </section>

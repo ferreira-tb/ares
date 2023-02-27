@@ -39,6 +39,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const minutesUntilReload = ref<number>(10);
     const maxDistance = ref<number>(20);
     const ignoreOlderThan = ref<number>(10);
+    const plunderedResourcesRatio = ref<number>(1);
 
     const blindAttackPattern = ref<BlindAttackPattern>('smaller');
     const useCPattern = ref<UseCPattern>('normal');
@@ -61,6 +62,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
             minutesUntilReload: minutesUntilReload.value,
             maxDistance: maxDistance.value,
             ignoreOlderThan: ignoreOlderThan.value,
+            plunderedResourcesRatio: plunderedResourcesRatio.value,
 
             blindAttackPattern: blindAttackPattern.value,
             useCPattern: useCPattern.value
@@ -84,6 +86,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         minutesUntilReload,
         maxDistance,
         ignoreOlderThan,
+        plunderedResourcesRatio,
 
         blindAttackPattern,
         useCPattern,

@@ -63,6 +63,11 @@ export type PlunderConfigType = {
     maxDistance: number;
     /** Ignora aldeias cujo último ataque ocorreu há uma quantidade de horas superior à indicada. */
     ignoreOlderThan: number;
+    /**
+     * Por padrão, o Plunder sempre assume que o modelo saqueou 100% de sua capacidade de carga.
+     * No entanto, essa opção permite ao usuário alterar o valor padrão.
+     */
+    plunderedResourcesRatio: number;
 
     /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
     blindAttackPattern: BlindAttackPattern;
