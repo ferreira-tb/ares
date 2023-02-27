@@ -48,7 +48,7 @@ export function setModuleEvents() {
     });
 
     // Modelos do Plunder.
-    ipcMain.handle('get-custom-plunder-template', async (_e, alias: UserAlias | null): Promise<CustomPlunderTemplateType[] | null> => {
+    ipcMain.handle('get-custom-plunder-templates', async (_e, alias: UserAlias | null): Promise<CustomPlunderTemplateType[] | null> => {
         alias ??= cacheProxy.userAlias;
         if (!isUserAlias(alias)) return null;
         const customPlunderTemplates = await CustomPlunderTemplate.getCustomPlunderTemplates(alias);

@@ -46,7 +46,7 @@ export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-plunder-config'): Promise<PlunderConfigType | null>;
 export async function ipcInvoke(channel: 'get-last-plunder-attack-details'): Promise<PlunderAttackDetails | null>;
 export async function ipcInvoke(channel: 'get-total-plunder-attack-details'): Promise<PlunderAttackDetails | null>;
-export async function ipcInvoke(channel: 'get-custom-plunder-template', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
+export async function ipcInvoke(channel: 'get-custom-plunder-templates', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
 export async function ipcInvoke(channel: 'save-custom-plunder-template', template: CustomPlunderTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'destroy-custom-plunder-template', template: CustomPlunderTemplateType): Promise<boolean>;
 

@@ -8,8 +8,9 @@ import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$lib/plunder/villages.js';
 import { queryAvailableUnits } from '$lib/plunder/units.js';
 import { PlunderedResources } from '$lib/plunder/resources.js';
-import { prepareAttack, eventTarget as attackEventTarget } from '$lib/plunder/attack.js';
+import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } from '$lib/plunder/attack.js';
 import { destroyWall } from '$lib/plunder/wall.js';
+import { openPlace } from '$lib/plunder/place.js';
 import { PlunderError } from '$browser/error.js';
 import { ipcSend, ipcInvoke } from '$global/ipc.js';
 
@@ -41,7 +42,7 @@ const autoReloadMessage = computed(() => {
 });
 
 // Reune informações necessárias para o funcionamento do Plunder.
-queryTemplateData();
+await queryTemplateData();
 queryVillagesInfo();
 
 watchEffect(() => {
@@ -122,8 +123,17 @@ async function handleAttack(): Promise<void> {
                 .catch(PlunderError.catch);
 
         } else {
-            // TODO: implementar ataque com modelos personalizados.
-            continue;
+            await openPlace(info.button.place);
+            const status = await sendAttackFromPlace(best.units);
+            if (status === false) {
+                throw new PlunderError(`O ataque usando o modelo ${best.type.toUpperCase()} falhou.`);
+            };
+
+            ipcSend('plunder-attack-sent', plunderedResources);
+            villagesInfo.delete(id);
+            village.remove();
+            
+            return handleAttack().catch(PlunderError.catch);
         };
     };
 };
