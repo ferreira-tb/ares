@@ -37,6 +37,7 @@ function createModule(name: ModuleNames, defaultRoute: ModuleRoutes, options: Mo
             icon: favicon,
             autoHideMenuBar: true,
             webPreferences: {
+                spellcheck: false,
                 nodeIntegration: true,
                 contextIsolation: false,
                 devTools: process.env.ARES_MODE === 'dev'
@@ -80,5 +81,12 @@ export const showDemolitionConfig = createModule('demolition', 'demolition', {
     width: 1000,
     height: 600,
     title: 'Demolição',
+    minimizable: true
+});
+
+export const showCustomPlunderTemplate = createModule('custom-plunder-template', 'custom-plunder-template', {
+    width: 1000,
+    height: 600,
+    title: 'Modelos',
     minimizable: true
 });

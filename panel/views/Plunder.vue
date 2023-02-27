@@ -41,7 +41,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
     <main>
         <div class="button-area">
             <NButtonGroup>
-                <NButton round disabled>Modelos</NButton>
+                <NButton round @click="ipcSend('open-custom-plunder-template-window')">Modelos</NButton>
                 <NButton round @click="updateConfig('active', !config.active)">{{ plunderButtonText }}</NButton>
                 <NButton round @click="ipcSend('open-plunder-config-window')">Configurações</NButton>
             </NButtonGroup>

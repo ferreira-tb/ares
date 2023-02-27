@@ -1,3 +1,6 @@
+import type { FarmUnitsAmount, UnitsToDestroyWall } from '$types/game.js';
+import type { UserAlias } from '$types/electron.js';
+
 export interface PlunderInfoType {
     /** Indica se as aldeias sob ataque estão ocultas. */
     readonly hideAttacked: boolean;
@@ -104,4 +107,22 @@ export type PlunderTableResources = {
     iron: number;
     /** Total de recursos que se espera ter na aldeia. */
     total: number;
+};
+
+export type CustomPlunderTemplateType = {
+    /** Alias do usuário. */
+    alias: UserAlias;
+    /** Nome do modelo. */
+    type: string;
+    /** Descrição do modelo. */
+    description: string | null;
+    /** Quantidade de unidades de cada tipo. */
+    readonly units: Omit<FarmUnitsAmount, 'knight'>;
+};
+
+export type DemolitionTemplateType = {
+    /** Alias do usuário. */
+    alias: UserAlias;
+    /** Modelos. */
+    units: UnitsToDestroyWall;
 };

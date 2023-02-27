@@ -70,6 +70,7 @@ function createAresWebsiteWindow() {
             icon: favicon,
             autoHideMenuBar: true,
             webPreferences: {
+                spellcheck: false,
                 devTools: process.env.ARES_MODE === 'dev'
             }
         });
@@ -101,4 +102,9 @@ export function generateUserAlias(world: World, playerName: string): UserAlias {
     playerName = encodeURIComponent(playerName);
     assertWorld(world, MainProcessError);
     return `${world}__USERID__${playerName}`;
+};
+
+export function getPlayerNameFromAlias(alias: UserAlias): string {
+    const encodedPlayerName = alias.replace(/^[a-z]+\d+__USERID__/, '');
+    return decodeURIComponent(encodedPlayerName);
 };

@@ -1,6 +1,6 @@
 import { UserConfig } from '$tables/config.js';
 import { ErrorLog, DOMErrorLog, MainProcessErrorLog } from '$tables/error.js';
-import { PlunderHistory, PlunderConfig } from '$tables/plunder.js';
+import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$tables/plunder.js';
 import { User } from '$tables/user.js';
 import { WorldConfig, WorldUnit } from '$tables/world.js';
 
@@ -48,6 +48,8 @@ export {
     MainProcessErrorLog,
     PlunderHistory,
     PlunderConfig,
+    CustomPlunderTemplate,
+    DemolitionTemplate,
     User,
     WorldConfig,
     WorldUnit

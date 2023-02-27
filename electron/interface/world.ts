@@ -68,10 +68,7 @@ async function setWorldConfigState(world: World, WorldConfig: typeof WorldConfig
 
             // Salva o registro no banco de dados.
             worldConfig = await sequelize.transaction(async (transaction) => {
-                return await WorldConfig.create({
-                    id: world,
-                    ...state
-                }, { transaction });
+                return (await WorldConfig.create({ id: world, ...state }, { transaction })).toJSON();
             });
         };
     
@@ -118,10 +115,7 @@ async function setWorldUnitState(world: World, WorldUnit: typeof WorldUnitTable,
 
             // Salva o registro no banco de dados.
             worldUnit = await sequelize.transaction(async (transaction) => {
-                return await WorldUnit.create({
-                    id: world,
-                    ...state
-                }, { transaction });
+                return (await WorldUnit.create({ id: world, ...state }, { transaction })).toJSON();
             });
         };
     

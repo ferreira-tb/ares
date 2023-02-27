@@ -11,10 +11,7 @@ import { NConfigProvider, NDialogProvider, NMessageProvider, darkTheme } from 'n
                     <template v-if="Component">
                         <Transition name="fade" mode="out-in">
                             <Suspense>
-
                                 <component :is="Component" />
-
-
                                 <template #fallback>
                                     <span class="loading-text">Carregando...</span>
                                 </template>

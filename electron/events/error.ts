@@ -1,7 +1,7 @@
 import { app, ipcMain, BrowserWindow } from 'electron';
 import { URL } from 'url';
 import { Op } from 'sequelize';
-import { assertInteger, assertString, isInstanceOf } from '@tb-dev/ts-guard';
+import { assertInteger, assertString } from '@tb-dev/ts-guard';
 import { MainProcessEventError } from '$electron/error.js';
 import { sequelize } from '$database/database.js';
 import { ErrorLog, DOMErrorLog, MainProcessErrorLog, aresProxy } from '$interface/index.js';
@@ -27,13 +27,14 @@ export function setErrorEvents() {
                 locale: aresProxy.locale
             };
 
-            await sequelize.transaction(async (transaction) => {
-                const newRow = await ErrorLog.create(errorLog, { transaction });
-                const errorModule = getActiveModule('error-log');
-                if (isInstanceOf(errorModule, BrowserWindow)) {
-                    errorModule.webContents.send('error-log-updated', newRow.toJSON());
-                };
+            const newRow = await sequelize.transaction(async (transaction) => {
+                return await ErrorLog.create(errorLog, { transaction });
             });
+
+            const errorModule = getActiveModule('error-log');
+            if (errorModule instanceof BrowserWindow) {
+                errorModule.webContents.send('error-log-updated', newRow.toJSON());
+            };
 
         } catch (err) {
             MainProcessEventError.catch(err);
@@ -54,14 +55,14 @@ export function setErrorEvents() {
 
     ipcMain.handle('get-error-log', async () => {
         try {
-            const result = await sequelize.transaction(async (transaction) => {
+            await sequelize.transaction(async (transaction) => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
                 const expiration = Date.thirtyDaysAgo();
                 await ErrorLog.destroy({ where: { time: { [Op.lte]: expiration } }, transaction });
-                return await ErrorLog.findAll({ raw: true, transaction });
             });
             
-            return result;
+            const errors = await ErrorLog.findAll();
+            return errors.map((error) => error.toJSON());
 
         } catch (err) {
             MainProcessEventError.catch(err);
@@ -87,13 +88,14 @@ export function setErrorEvents() {
                 locale: aresProxy.locale
             };
 
-            await sequelize.transaction(async (transaction) => {
-                const newRow = await DOMErrorLog.create(domErrorLog, { transaction });
-                const errorModule = getActiveModule('error-log');
-                if (isInstanceOf(errorModule, BrowserWindow)) {
-                    errorModule.webContents.send('dom-error-log-updated', newRow.toJSON());
-                };
+            const newRow = await sequelize.transaction(async (transaction) => {
+                return await DOMErrorLog.create(domErrorLog, { transaction });
             });
+
+            const errorModule = getActiveModule('error-log');
+            if (errorModule instanceof BrowserWindow) {
+                errorModule.webContents.send('dom-error-log-updated', newRow.toJSON());
+            };
 
         } catch (err) {
             MainProcessEventError.catch(err);
@@ -114,14 +116,14 @@ export function setErrorEvents() {
 
     ipcMain.handle('get-dom-error-log', async () => {
         try {
-            const result = await sequelize.transaction(async (transaction) => {
+            await sequelize.transaction(async (transaction) => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
                 const expiration = Date.thirtyDaysAgo();
                 await DOMErrorLog.destroy({ where: { time: { [Op.lte]: expiration } }, transaction });
-                return await DOMErrorLog.findAll({ raw: true, transaction });
             });
-            
-            return result;
+
+            const errors = await DOMErrorLog.findAll();
+            return errors.map((error) => error.toJSON());
 
         } catch (err) {
             MainProcessEventError.catch(err);
@@ -143,14 +145,14 @@ export function setErrorEvents() {
 
     ipcMain.handle('get-main-process-error-log', async () => {
         try {
-            const result = await sequelize.transaction(async (transaction) => {
+            await sequelize.transaction(async (transaction) => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
                 const expiration = Date.thirtyDaysAgo();
                 await MainProcessErrorLog.destroy({ where: { time: { [Op.lte]: expiration } }, transaction });
-                return await MainProcessErrorLog.findAll({ raw: true, transaction });
             });
             
-            return result;
+            const errors = await MainProcessErrorLog.findAll();
+            return errors.map((error) => error.toJSON());
 
         } catch (err) {
             MainProcessEventError.catch(err);

@@ -6,6 +6,8 @@ export type ModuleConstructorOptions = Pick<BrowserWindowConstructorOptions,
     | 'height'
     | 'title'
     | 'minimizable'
+    | 'maximizable'
+    | 'resizable'
 >;
 
 export interface ModuleRouteToPush {
@@ -23,7 +25,7 @@ export type ModuleRouteRecordRawStrict<T> = Omit<ModuleRouteRecordRaw, 'name' | 
     children?: ModuleRouteRecordRawStrict<T>[];
 };
 
-export type SingleModules = 'default' | 'demolition';
+export type SingleModules = 'default' | 'demolition' | 'custom-plunder-template';
 export type NestedModules = 'app-config' | 'error-log';
 export type ModuleNames = NestedModules | SingleModules;
 

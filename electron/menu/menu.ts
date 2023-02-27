@@ -1,7 +1,7 @@
 import { Menu, shell } from 'electron';
 import { showErrorLog, showAppConfig } from '$electron/app/modules.js';
 import { gameURL, repoURL, discordURL } from '$electron/utils/constants.js';
-import { togglePanelWindow, getMainWindow, getPanelWindow, openAresWebsite } from '$electron/utils/helpers.js';
+import { togglePanelWindow, getMainWindow, getPanelWindow, openAresWebsite, restartAres } from '$electron/utils/helpers.js';
 import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
@@ -27,6 +27,7 @@ export function setAppMenu() {
         { label: 'Região', submenu: localeMenu },
         { label: 'Configurações', accelerator: 'F3', click: () => showAppConfig('general-config') },
         { type: 'separator' },
+        { label: 'Reiniciar', click: () => restartAres() },
         { label: 'Sair', accelerator: 'Esc', role: 'quit' },
 
         // Não-visíveis.

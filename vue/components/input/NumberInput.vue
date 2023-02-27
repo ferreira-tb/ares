@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { NInputNumber } from 'naive-ui';
 import { isInteger } from '@tb-dev/ts-guard';
@@ -20,7 +20,7 @@ interface Props {
     disabled?: boolean;
     size?: 'tiny' | 'small' | 'medium' | 'large';
     step?: number;
-    marginRight?: number;
+    marginRight?: number | boolean;
     validator?: (value: number) => boolean;
 };
 
@@ -48,6 +48,16 @@ const keyboardOptions: Keyboard = reactive({
     ArrowUp: props.arrowUp,
     ArrowDown: props.arrowDown
 });
+
+const computedMarginRight = computed(() => {
+    if (props.marginRight === true) {
+        return '0.5em';
+    } else if (props.marginRight === false) {
+        return '0';
+    } else {
+        return `${props.marginRight.toString(10)}em`;
+    }
+});
 </script>
 
 <template>
@@ -66,6 +76,6 @@ const keyboardOptions: Keyboard = reactive({
 
 <style scoped>
 .standard-number-input {
-    margin-right: v-bind("`${props.marginRight.toString(10)}em`");
+    margin-right: v-bind("computedMarginRight");
 }
 </style>

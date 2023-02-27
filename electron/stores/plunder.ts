@@ -3,6 +3,7 @@ import { ProxyStoreError } from '$electron/error.js';
 import type { PlunderAttackDetails, BlindAttackPattern, UseCPattern } from '$types/plunder.js';
 import type { PlunderStore, PlunderConfigStore, PlunderFullHistoryStore } from '$types/stores.js';
 import type { RemoveMethods } from '$types/utils.js';
+import type { WallLevel } from '$types/game.js';
 
 import {
     assertBoolean,
@@ -38,8 +39,8 @@ class PlunderConfigProxy implements RemoveMethods<PlunderConfigStore> {
     ignoreDelay: boolean = false;
     blindAttack: boolean = false;
 
-    wallLevelToIgnore: number = 1;
-    wallLevelToDestroy: number = 1;
+    wallLevelToIgnore: WallLevel = 1;
+    wallLevelToDestroy: WallLevel = 1;
     destroyWallMaxDistance: number = 20;
     attackDelay: number = 200;
     resourceRatio: number = 0.8;

@@ -4,7 +4,7 @@ import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { openPlace } from '$lib/plunder/place.js';
 import { sendAttackFromPlace, PlunderAttack } from '$lib/plunder/attack.js';
 import { PlunderError } from '$browser/error.js';
-import type { DemolitionTroops } from '$types/game.js';
+import type { DemolitionTroops, StringWallLevel } from '$types/game.js';
 import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
 
 export async function destroyWall(info: PlunderVillageInfo): Promise<boolean> {
@@ -13,9 +13,9 @@ export async function destroyWall(info: PlunderVillageInfo): Promise<boolean> {
         if (info.wallLevel === 0) return true;
 
         // Obtém as unidades necessárias para destruir a muralha.
-        const demolitionTroops = await ipcInvoke('get-demolition-troops-config');
-        assertObject(demolitionTroops, 'Não foi possível obter a configuração de tropas de demolição.');
-        const neededUnits: DemolitionTroops = Reflect.get(demolitionTroops, info.wallLevel.toString(10));
+        const demolitionTemplate = await ipcInvoke('get-demolition-troops-config');
+        assertObject(demolitionTemplate, 'Não foi possível obter a configuração de tropas de demolição.');
+        const neededUnits: DemolitionTroops = demolitionTemplate.units[info.wallLevel.toString(10) as StringWallLevel];
         assertObject(neededUnits, 'Não foi possível obter as unidades necessárias para destruir a muralha.');
 
         // Verifica se há unidades o suficiente para destruir a muralha.

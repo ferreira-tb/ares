@@ -47,7 +47,7 @@ export function catchError(
 
                 } catch {
                     // Se não for possível gerar o log, emite um alerta.
-                    const errorMessage = `Um erro crítico ocorreu. Contate o desenvolvedor.\n\n${(err as Error).stack}`;
+                    const errorMessage = `Contate o desenvolvedor.\n\n${(err as Error).stack}`;
                     dialog.showErrorBox('ERRO CRÍTICO', errorMessage);
                 };
             };

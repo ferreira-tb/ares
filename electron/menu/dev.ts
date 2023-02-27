@@ -1,6 +1,6 @@
 import { BrowserWindow, Menu, MenuItem, type MenuItemConstructorOptions } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
-import { getMainWindow, restartAres } from '$electron/utils/helpers.js';
+import { getMainWindow } from '$electron/utils/helpers.js';
 import { MainProcessError } from '$electron/error.js';
 
 const devOptions: MenuItemConstructorOptions[] = [
@@ -37,7 +37,6 @@ export function setBrowserDevMenu(menu: Menu) {
 
     const devMenu: MenuItemConstructorOptions[] = [
         ...devOptions,
-        { label: 'Reiniciar', click: () => restartAres() },
         { type: 'separator' },
         { label: 'Erros', submenu: errorMenu }
     ];

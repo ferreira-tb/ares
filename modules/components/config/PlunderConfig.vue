@@ -72,7 +72,7 @@ function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
 function resetDemolitionConfig() {
     const status = dialog.warning({
         title: 'Tem certeza?',
-        content: 'Essa ação é irreversível! Não há como voltar atrás.',
+        content: 'Essa ação é irreversível!',
         positiveText: 'Sim',
         negativeText: 'Cancelar',
         onPositiveClick: async () => {
@@ -82,15 +82,12 @@ function resetDemolitionConfig() {
                 assertUserAlias(userAlias, ModuleConfigError);
                 const result = await ipcInvoke('destroy-demolition-troops-config', userAlias);
                 if (result !== true) throw result;
-                message.success('Resetado com sucesso!', { duration: 2000 });
+                message.success('Resetado com sucesso!');
 
             } catch (err) {
                 ModuleConfigError.catch(err);
-                message.error('Ocorreu algum erro :(', { duration: 2000 });
+                message.error('Ocorreu algum erro :(');
             };
-        },
-        onNegativeClick: () => {
-            message.info('Talvez tenha sido melhor assim...', { duration: 2000 });
         }
     });
 };

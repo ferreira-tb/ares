@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { h, computed, ref, reactive, watch } from 'vue';
-import { NDataTable } from 'naive-ui';
+import { NDataTable, useMessage } from 'naive-ui';
 import { isObject, assertObject, assertKeyOf, toIntegerStrict, isInteger, assertSameType } from '@tb-dev/ts-guard';
-import { ipcInvoke, ipcSend } from '$global/ipc.js';
+import { ipcInvoke } from '$global/ipc.js';
 import { assertUserAlias } from '$global/utils/guards.js';
 import { ModuleConfigError } from '$modules/error.js';
 import ErrorResult from '$vue/components/result/ErrorResult.vue';
@@ -20,17 +20,19 @@ import CatapultIcon from '$vue/components/icons/units/CatapultIcon.vue';
 import type { PaginationProps, DataTableBaseColumn } from 'naive-ui';
 import type { DemolitionTroops } from '$types/game.js';
 
+const message = useMessage();
+
 interface DemolitionData extends DemolitionTroops {
     level: number;
 };
 
-const archerWorld = await ipcInvoke('is-archer-world');
+const isArcherWorld = await ipcInvoke('is-archer-world');
 const userAlias = await ipcInvoke('user-alias');
-const troops = await ipcInvoke('get-demolition-troops-config');
+const template = await ipcInvoke('get-demolition-troops-config');
 const demolitionData = reactive<DemolitionData[]>([]);
 
-if (isObject(troops)) {
-    for (const [wallLevel, units] of Object.entries(troops)) {
+if (isObject(template)) {
+    for (const [wallLevel, units] of Object.entries(template.units)) {
         const level = Number.parseIntStrict(wallLevel);
         if (level === 0) continue;
         demolitionData.push({ level, ...units });
@@ -52,7 +54,7 @@ const columns: DataTableBaseColumn[] = [
 ];
 
 // Se o mundo possui arqueiros, adiciona as colunas de arqueiros e arqueiros a cavalo.
-if (archerWorld === true) {
+if (isArcherWorld === true) {
     columns.splice(4, 0, { title: () => h(ArcherIcon), key: 'archer' });
     columns.splice(7, 0, { title: () => h(MarcherIcon), key: 'marcher' });
 };
@@ -83,22 +85,30 @@ const pagination = computed<PaginationProps>(() => ({
     page: page.value
 }));
 
-watch(demolitionData, (newData) => {
-    assertObject(troops);
-    assertUserAlias(userAlias, ModuleConfigError);
-    for (const data of newData) {
-        const { level, ...units } = data;
-        const key = level.toString(10);
-        assertKeyOf(key, troops);
-        troops[key] = units;
-    };
+watch(demolitionData, async (newData) => {
+    try {
+        assertObject(template);
+        assertUserAlias(userAlias, ModuleConfigError);
+        for (const data of newData) {
+            const { level, ...units } = data;
+            const key = level.toString(10);
+            assertKeyOf(key, template.units);
+            template.units[key] = units;
+        };
 
-    ipcSend('save-demolition-troops-config', userAlias, troops);
+        const status = await ipcInvoke('save-demolition-troops-config', template);
+        if (status !== true) throw status;
+        message.success('Tudo certo!');
+
+    } catch (err) {
+        message.error('Ocorreu algum erro :(');
+        ModuleConfigError.catch(err);
+    };
 });
 </script>
 
 <template>
-    <main v-if="troops && userAlias">
+    <main v-if="template && userAlias">
         <NDataTable
             table-layout="fixed"
             :row-key="(row: DemolitionData) => row.level"

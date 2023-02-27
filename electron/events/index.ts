@@ -8,9 +8,11 @@ import { setPanelEvents } from '$electron/events/panel.js';
 import { setDeimosEvents } from '$electron/events/deimos.js';
 import { setModuleEvents } from '$electron/events/modules.js';
 import { MainProcessEventError } from '$electron/error.js';
-import { getMainWindow, getPanelWindow, openAresWebsite } from '$electron/utils/helpers.js';
+import { getMainWindow, getPanelWindow, openAresWebsite, getPlayerNameFromAlias } from '$electron/utils/helpers.js';
 import { browserCss } from '$electron/utils/constants.js';
 import { cacheProxy, worldConfigProxy, worldUnitProxy } from '$interface/index.js';
+import { isUserAlias } from '$electron/utils/guards.js';
+import type { UserAlias } from '$types/electron.js';
 
 export function setEvents() {
     const mainWindow = getMainWindow();
@@ -30,6 +32,11 @@ export function setEvents() {
     ipcMain.handle('current-world-config', () => ({ ...worldConfigProxy }));
     ipcMain.handle('current-world-units', () => ({ ...worldUnitProxy }));
     ipcMain.handle('is-archer-world', () => worldConfigProxy.archer);
+
+    ipcMain.handle('player-name', (_e, alias: UserAlias): string | null => {
+        if (!isUserAlias(alias)) return cacheProxy.player;
+        return getPlayerNameFromAlias(alias);
+    });
 
     // Informa ao painel qual é a URL atual sempre que ocorre navegação.
     // Além disso, insere o CSS e solicita ao browser que atualize o Deimos.

@@ -17,6 +17,7 @@ function createWindow() {
         title: 'Ares',
         icon: favicon,
         webPreferences: {
+            spellcheck: false,
             preload: browserJs,
             devTools: process.env.ARES_MODE === 'dev'
         }
@@ -32,6 +33,7 @@ function createWindow() {
         frame: false,
         titleBarStyle: 'hidden',
         webPreferences: {
+            spellcheck: false,
             nodeIntegration: true,
             contextIsolation: false,
             devTools: process.env.ARES_MODE === 'dev'

@@ -1,4 +1,5 @@
 import { assertString, isPositiveInteger, isInteger } from '@tb-dev/ts-guard';
+import type { UserAlias } from '$types/electron.js';
 
 /** Calcula distância em campos entre duas coordenadas. */
 export function calcDistance(originX: number, originY: number, destX: number, destY: number) {
@@ -74,4 +75,9 @@ export function getLocaleDateString(raw?: number, includeTime: boolean = false):
 
         return `${date} ${time}`;
     };
+};
+
+export function getPlayerNameFromAlias(alias: UserAlias): string {
+    const encodedPlayerName = alias.replace(/^[a-z]+\d+__USERID__/, '');
+    return decodeURIComponent(encodedPlayerName);
 };

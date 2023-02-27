@@ -52,10 +52,7 @@ export function setPlunderEvents() {
             assertUserAlias(userAlias, MainProcessEventError);
 
             await sequelize.transaction(async (transaction) => {
-                await PlunderConfig.upsert({
-                    id: userAlias,
-                    ...plunderConfigProxy
-                }, { transaction });
+                await PlunderConfig.upsert({ id: userAlias, ...plunderConfigProxy }, { transaction });
             });
 
         } catch (err) {
@@ -100,10 +97,10 @@ export function setPlunderEvents() {
         };
     });
 
-    ipcMain.handle('get-last-plunder-attack-details', async () => {
+    ipcMain.handle('get-last-plunder-attack-details', async (): Promise<PlunderAttackDetails | null> => {
         try {
             const history = await PlunderHistory.getHistoryAsJSON(cacheProxy);
-            assertObject(history, 'Erro ao obter os detalhes do último ataque: o objeto é inválido.');
+            if (!isObject(history)) return null;
             return history.last;
         } catch (err) {
             MainProcessEventError.catch(err);
@@ -111,10 +108,10 @@ export function setPlunderEvents() {
         };
     });
 
-    ipcMain.handle('get-total-plunder-attack-details', async () => {
+    ipcMain.handle('get-total-plunder-attack-details', async (): Promise<PlunderAttackDetails | null> => {
         try {
             const history = await PlunderHistory.getHistoryAsJSON(cacheProxy);
-            assertObject(history, 'Erro ao obter o histórico de ataques: o objeto é inválido.');
+            if (!isObject(history)) return null;
             return history.total;
         } catch (err) {
             MainProcessEventError.catch(err);
