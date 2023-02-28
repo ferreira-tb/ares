@@ -29,6 +29,5 @@ website
 *.sln
 *.sw?
 
-public
 out
 *.env
