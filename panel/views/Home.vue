@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { shell } from 'electron';
 import { NButton, NButtonGroup } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { discordURL } from '$global/utils/constants.js';
 
-const appName = ref<string>(await ipcInvoke('app-name'));
-const appVersion = ref<string>(await ipcInvoke('app-version'));
+const appName = await ipcInvoke('app-name');
+const appVersion = await ipcInvoke('app-version');
 </script>
 
 <template>
@@ -26,17 +25,17 @@ const appVersion = ref<string>(await ipcInvoke('app-version'));
     </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .title-area {
     margin-bottom: 1em;
-}
 
-h1 {
-    font-size: 2em;
-}
+    h1 {
+        font-size: 2em;
+    }
 
-h2 {
-    font-size: 1.2em;
+    h2 {
+        font-size: 1.2em;
+    }
 }
 
 .footer-area {
