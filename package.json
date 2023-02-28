@@ -33,7 +33,10 @@
         "script": "npm-run-all script:*",
         "script:css": "node scripts/css.mjs",
         "script:html": "node scripts/html.mjs",
-        "start": "npm run clear && npm run build && npm run main"
+        "start": "npm run clear && npm run build && npm run main",
+        "forge:start": "electron-forge start",
+        "forge:package": "electron-forge package",
+        "forge:make": "electron-forge make"
     },
     "dependencies": {
         "@tb-dev/prototype": "^2.0.1",
@@ -49,6 +52,8 @@
         "vue-router": "^4.1.6"
     },
     "devDependencies": {
+        "@electron-forge/cli": "^6.0.5",
+        "@electron-forge/maker-zip": "^6.0.5",
         "@rollup/plugin-commonjs": "^24.0.1",
         "@rollup/plugin-json": "^6.0.0",
         "@rollup/plugin-node-resolve": "^15.0.1",
