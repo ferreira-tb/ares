@@ -1,20 +1,26 @@
-.scrollbar::-webkit-scrollbar {
-    width: 20px;
+@mixin scrollbar() {
+    &::-webkit-scrollbar {
+        width: 20px;
+    }
+
+    &::-webkit-scrollbar-corner {
+        background: var(--color-background);
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: var(--color-background);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--color-background-mute);
+        border-radius: 6px;
+        border: 4px solid var(--color-background);
+        background-clip: content-box;
+        min-width: 32px;
+        min-height: 32px;
+    }
 }
 
-.scrollbar::-webkit-scrollbar-corner {
-    background: var(--color-background);
-}
-
-.scrollbar::-webkit-scrollbar-track {
-    background-color: var(--color-background);
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-    background-color: var(--color-background-mute);
-    border-radius: 6px;
-    border: 4px solid var(--color-background);
-    background-clip: content-box;
-    min-width: 32px;
-    min-height: 32px;
+.tb-scrollbar {
+    @include scrollbar();
 }

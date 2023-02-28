@@ -29,7 +29,7 @@
             "$global/*": [
                 "./global/*"
             ],
-            "$assets/*": [
+            "$styles/*": [
                 "./global/assets/*"
             ],
             "$vue/*": [

@@ -43,7 +43,7 @@ watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAt
             </NButtonGroup>
         </div>
 
-        <Transition name="fade" mode="out-in">
+        <Transition name="tb-fade" mode="out-in">
             <Suspense>
                 <Resources :plunder-status="config.active" />
                 <template #fallback class="loading-text">

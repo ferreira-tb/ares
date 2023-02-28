@@ -9,7 +9,7 @@ import { NConfigProvider, NDialogProvider, NMessageProvider, darkTheme } from 'n
             <NDialogProvider>
                 <NMessageProvider>
                     <template v-if="Component">
-                        <Transition name="fade" mode="out-in">
+                        <Transition name="tb-fade" mode="out-in">
                             <Suspense>
                                 <component :is="Component" />
                                 <template #fallback>

@@ -1,5 +1,4 @@
-import '$assets/main.scss';
-import '$assets/panel.scss';
+import '$panel/assets/main.scss';
 import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';

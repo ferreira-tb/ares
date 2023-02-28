@@ -30,7 +30,7 @@ function deleteError(id: number) {
 <template>
     <section>
         <template v-if="errors.length > 0">
-            <TransitionGroup name="fade" mode="out-in">
+            <TransitionGroup name="tb-fade" mode="out-in">
                 <NCard
                     v-for="error of errors"
                     :key="error.id"

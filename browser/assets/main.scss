@@ -1,9 +1,7 @@
-.tb-fade-enter-active,
-.tb-fade-leave-active {
-    transition: opacity 0.3s ease;
-}
+@use '$styles/variables.scss';
+@use '$styles/transitions.scss';
+@use '$styles/scrollbar.scss';
 
-.tb-fade-enter-from,
-.tb-fade-leave-to {
-    opacity: 0;
+body {
+    @include scrollbar.scrollbar();
 }

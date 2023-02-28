@@ -45,7 +45,7 @@ function removeTemplate(template: CustomPlunderTemplateType) {
                 />
             </Suspense>
 
-            <div v-if="templates.length > 0" class="template-grid scrollbar">
+            <div v-if="templates.length > 0" class="template-grid tb-scrollbar">
                 <NGrid :cols="4" :x-gap="8" :y-gap="10">
                     <NGridItem v-for="template of templates" :key="uuid(template.type)">
                         <TemplateCard :template="template" @template-destroyed="removeTemplate" />

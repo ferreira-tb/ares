@@ -29,9 +29,9 @@ onMounted(async () => {
     </nav>
 
     <div class="module-content">
-        <RouterView class="module-view scrollbar" v-slot="{ Component }">
+        <RouterView class="module-view tb-scrollbar" v-slot="{ Component }">
             <template v-if="Component">
-                <Transition name="fade" mode="out-in">
+                <Transition name="tb-fade" mode="out-in">
                     <KeepAlive>
                         <Suspense>
                             <component :is="Component" />

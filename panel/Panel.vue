@@ -28,7 +28,7 @@ watchEffect(() => {
     <NConfigProvider :theme="darkTheme">
         <RouterView v-slot="{ Component }">
             <template v-if="Component">
-                <Transition name="fade" mode="out-in">
+                <Transition name="tb-fade" mode="out-in">
                     <Suspense>
                         <component :is="Component" />
                         <template #fallback>
