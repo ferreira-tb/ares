@@ -1,9 +1,10 @@
-import { assertObject } from '@tb-dev/ts-guard';
+import { assertObject, assertInteger } from '@tb-dev/ts-guard';
 import { useUnitsStore } from '$vue/stores/units.js';
 import { ipcInvoke, ipcSend } from '$global/ipc.js';
 import { openPlace } from '$lib/plunder/place.js';
-import { sendAttackFromPlace, PlunderAttack } from '$lib/plunder/attack.js';
+import { sendAttackFromPlace } from '$lib/plunder/attack.js';
 import { PlunderError } from '$browser/error.js';
+import { PlunderAttackWithLoot } from '$lib/plunder/resources.js';
 import type { DemolitionTroops, StringWallLevel } from '$types/game.js';
 import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
 
@@ -29,7 +30,9 @@ export async function destroyWall(info: PlunderVillageInfo): Promise<boolean> {
 
         // Se o ataque foi enviado com sucesso, atualiza o histórico.
         if (status === true) {
-            const attack = new PlunderAttack();
+            const carry = await ipcInvoke('calc-carry-capacity', neededUnits);
+            assertInteger(carry, 'Não foi possível calcular a capacidade de carga.');
+            const attack = new PlunderAttackWithLoot(info, carry);
             attack.destroyedWalls = info.wallLevel;
             ipcSend('plunder-attack-sent', attack);
         };

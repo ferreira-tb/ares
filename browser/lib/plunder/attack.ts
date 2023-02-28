@@ -12,7 +12,7 @@ export const eventTarget = new EventTarget();
 
 export class PlunderAttack implements Omit<PlunderAttackDetails, 'total'> {
     // Já incluso o ataque enviado.
-    attackAmount: number = 1;
+    readonly attackAmount: number = 1;
     wood: number = 0;
     stone: number = 0;
     iron: number = 0;

@@ -4,7 +4,7 @@ import { PlunderAttack } from '$lib/plunder/attack.js';
 import { usePlunderConfigStore } from '$vue/stores/plunder.js';
 import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
 
-export class PlunderedResources extends PlunderAttack {
+export class PlunderAttackWithLoot extends PlunderAttack {
     override wood: number;
     override stone: number;
     override iron: number;
@@ -12,8 +12,6 @@ export class PlunderedResources extends PlunderAttack {
     constructor(info: PlunderVillageInfo, carry: number) {
         super();
 
-        const { plunderedResourcesRatio } = usePlunderConfigStore();
-        
         this.wood = info.res.wood;
         this.stone = info.res.stone;
         this.iron = info.res.iron;
@@ -22,6 +20,7 @@ export class PlunderedResources extends PlunderAttack {
         let total = this.wood + this.stone + this.iron;
         if (total === 0) total = Infinity;
 
+        const { plunderedResourcesRatio } = usePlunderConfigStore();
         [this.wood, this.stone, this.iron].forEach((amount, index) => {
             // Se houver mais recursos do que a carga suporta, calcula quanto de cada recurso deve ser saqueado.
             if (total > carry) amount = Math.ceil((amount / total) * carry);

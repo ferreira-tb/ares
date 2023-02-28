@@ -7,7 +7,7 @@ import { usePlunderConfigStore } from '$vue/stores/plunder.js';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates.js';
 import { queryVillagesInfo, villagesInfo } from '$lib/plunder/villages.js';
 import { queryAvailableUnits } from '$lib/plunder/units.js';
-import { PlunderedResources } from '$lib/plunder/resources.js';
+import { PlunderAttackWithLoot } from '$lib/plunder/resources.js';
 import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } from '$lib/plunder/attack.js';
 import { destroyWall } from '$lib/plunder/wall.js';
 import { openPlace } from '$lib/plunder/place.js';
@@ -109,14 +109,13 @@ async function handleAttack(): Promise<void> {
         if (best === null) continue;
 
         // Informações que serão enviadas ao painel.
-        const plunderedResources = new PlunderedResources(info, best.carry);
-        console.log(plunderedResources);
+        const plunderAttack = new PlunderAttackWithLoot(info, best.carry);
 
         if (best.type === 'a' || best.type === 'b' || best.type === 'c') {
             const attackButton = info.button[best.type];
             assertElement(attackButton, `O botão do modelo ${best.type.toUpperCase()} não foi encontrado.`);
 
-            return prepareAttack(plunderedResources, attackButton)
+            return prepareAttack(plunderAttack, attackButton)
                 .then(() => best.reset())
                 .then(() => villagesInfo.delete(id))
                 .then(() => village.remove())
@@ -130,7 +129,7 @@ async function handleAttack(): Promise<void> {
                 throw new PlunderError(`O ataque usando o modelo ${best.type.toUpperCase()} falhou.`);
             };
 
-            ipcSend('plunder-attack-sent', plunderedResources);
+            ipcSend('plunder-attack-sent', plunderAttack);
             villagesInfo.delete(id);
             village.remove();
             
