@@ -146,8 +146,7 @@ function createWebsiteModule(name: WebsiteModuleNames, url: string) {
                 if (!isAllowedURL(url)) e.preventDefault();
             });
 
-            websiteWindow.once('close', () => websiteWindow.removeAllListeners('will-navigate'));
-            websiteWindow.once('closed', () => activeWebsiteModules.delete(name));
+            websiteWindow.once('close', () => activeWebsiteModules.delete(name));
 
         } catch (err) {
             ModuleCreationError.catch(err);

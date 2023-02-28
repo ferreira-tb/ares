@@ -1,4 +1,6 @@
+import * as fs from 'fs';
 import { join, resolve } from 'path';
+import type { WebContents } from 'electron';
 import type { World } from '$types/game.js';
 
 // URL
@@ -16,10 +18,12 @@ export const worldUnitURL = (world: World) => `https://${world}.tribalwars.com.b
 export const favicon = resolve(__dirname, '../public/favicon.ico');
 export const indexHtml = join(__dirname, 'index.html');
 export const browserJs = join(__dirname, 'browser.js');
-export const browserCss = join(__dirname, 'browser.css');
 export const deimosJs = join(__dirname, 'deimos.js');
 export const phobosJs = join(__dirname, 'phobos.js');
 export const moduleHtml = join(__dirname, 'modules.html');
+
+// CSS
+export const browserCss = fs.readFileSync(join(__dirname, 'browser.css'), { encoding: 'utf8' });
 
 // Regex.
 export const worldRegex = /^br([sp](?![sp]))*\d+$/;
@@ -39,6 +43,23 @@ export const allowedOriginRegexList = [
 // Proxy keys.
 export const aresKeys = ['locale', 'world', 'majorVersion', 'groupId', 'screen', 'screenMode', 'pregame'] as const;
 export const featuresKeys = ['premium', 'accountManager', 'farmAssistant'] as const;
+
+// Outros.
+type WindowOpenHandler = ReturnType<Parameters<WebContents['setWindowOpenHandler']>[0]>;
+export const windowOpenHandler: WindowOpenHandler = {
+    action: 'allow',
+    outlivesOpener: false,
+    overrideBrowserWindowOptions: {
+        show: false,
+        width: 1200,
+        height: 1000,
+        icon: favicon,
+        webPreferences: {
+            spellcheck: false,
+            devTools: process.env.ARES_MODE === 'dev'
+        }
+    }
+};
 
 // Mapas.
 export const unitsToDestroyWall = {

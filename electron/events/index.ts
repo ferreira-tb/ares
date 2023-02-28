@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import { app, ipcMain } from 'electron';
 import { setPlunderEvents } from '$electron/events/plunder.js';
 import { setBrowserEvents } from '$electron/events/browser.js';
@@ -6,9 +5,7 @@ import { setErrorEvents } from '$electron/events/error.js';
 import { setPanelEvents } from '$electron/events/panel.js';
 import { setDeimosEvents } from '$electron/events/deimos.js';
 import { setModuleEvents } from '$electron/events/modules.js';
-import { MainProcessEventError } from '$electron/error.js';
-import { getMainWindow, getPanelWindow, getPlayerNameFromAlias } from '$electron/utils/helpers.js';
-import { browserCss } from '$electron/utils/constants.js';
+import { getMainWindow, getPanelWindow, getPlayerNameFromAlias, insertCSS } from '$electron/utils/helpers.js';
 import { cacheProxy, worldConfigProxy, worldUnitProxy } from '$interface/index.js';
 import { isUserAlias, isAllowedURL } from '$electron/utils/guards.js';
 import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules.js';
@@ -53,14 +50,7 @@ export function setEvents() {
         if (!isAllowedURL(url)) e.preventDefault();
     });
 
-    const browserStyle = fs.readFileSync(browserCss, { encoding: 'utf8' });
-    mainWindow.webContents.on('did-navigate', async () => {
-        try {
-            await mainWindow.webContents.insertCSS(browserStyle);
-        } catch (err) {
-            MainProcessEventError.catch(err);
-        };
-    });
+    mainWindow.webContents.on('did-navigate', () => insertCSS(mainWindow));
 
     // Outros eventos.
     setBrowserEvents();

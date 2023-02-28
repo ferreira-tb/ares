@@ -4,8 +4,10 @@ import { setAppMenu } from '$electron/menu/menu.js';
 import { sequelize } from '$database/database.js';
 import { UserConfig } from '$interface/index.js';
 import { setEvents } from '$electron/events/index.js';
-import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants.js';
+import { gameURL, favicon, indexHtml, browserJs, windowOpenHandler } from '$electron/utils/constants.js';
 import { MainProcessError } from '$electron/error.js';
+import { isAllowedURL } from '$electron/utils/guards.js';
+import { insertCSS } from '$electron/utils/helpers.js';
 
 process.env.ARES_MODE = 'dev';
 
@@ -47,7 +49,23 @@ function createWindow() {
     setAppMenu();
     
     mainWindow.maximize();
-    mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        if (!isAllowedURL(url)) return { action: 'deny' };
+        return windowOpenHandler;
+    });
+
+    mainWindow.webContents.on('did-create-window', (newWindow) => {
+        newWindow.setMenu(null);
+        newWindow.maximize();
+
+        newWindow.webContents.on('will-navigate', (e, url) => {
+            if (!isAllowedURL(url)) e.preventDefault();
+        });
+
+        newWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+        newWindow.webContents.on('did-navigate', () => insertCSS(newWindow));
+        newWindow.once('ready-to-show', () => newWindow.show());
+    });
     
     mainWindow.loadURL(gameURL);
     panelWindow.loadFile(indexHtml);

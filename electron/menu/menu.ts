@@ -27,7 +27,7 @@ export function setAppMenu() {
         { label: 'Região', submenu: localeMenu },
         { label: 'Configurações', accelerator: 'F3', click: () => showAppConfig('general-config') },
         { type: 'separator' },
-        { label: 'Reiniciar', click: () => restartAres() },
+        { label: 'Reiniciar', accelerator: 'CmdOrCtrl+Esc', click: () => restartAres() },
         { label: 'Sair', accelerator: 'Esc', role: 'quit' },
 
         // Não-visíveis.

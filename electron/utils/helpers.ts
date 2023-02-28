@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
 import { assertWorld } from '$electron/utils/guards.js';
 import { MainProcessError } from '$electron/error.js';
+import { browserCss } from '$electron/utils/constants.js';
 import type { UserAlias } from '$types/electron.js';
 import type { World } from '$types/game.js';
 
@@ -37,6 +38,19 @@ export function togglePanelWindow() {
 
     } else {
         panelWindow.show();
+    };
+};
+
+/**
+ * Insere CSS na janela.
+ * @param win Instância do BrowserWindow.
+ * @param css CSS a ser inserido. Se omitido, será usado o CSS padrão do browser.
+ */
+export async function insertCSS(win: BrowserWindow, css: string = browserCss) {
+    try {
+        await win.webContents.insertCSS(css);
+    } catch (err) {
+        MainProcessError.catch(err);
     };
 };
 
