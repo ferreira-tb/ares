@@ -16,5 +16,8 @@
         { "icon": "nix", "extensions": ["panel"], "format": "FileFormat.svg" },
         { "icon": "www", "extensions": ["global"], "format": "FileFormat.svg" },
         { "icon": "theme", "extensions": ["composable", "composables"], "format": "FileFormat.svg" }
+    ],
+    "conventionalCommits.scopes": [
+        "browser"
     ]
 }

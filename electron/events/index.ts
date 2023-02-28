@@ -42,22 +42,24 @@ export function setEvents() {
         return getPlayerNameFromAlias(alias);
     });
 
-    // Informa ao painel qual é a URL atual sempre que ocorre navegação.
-    // Além disso, insere o CSS e solicita ao browser que atualize o Deimos.
-    const browserStyle = fs.readFileSync(browserCss, { encoding: 'utf8' });
-    mainWindow.webContents.on('did-finish-load', async () => {
-        try {
-            panelWindow.webContents.send('browser-did-finish-load');
-            await mainWindow.webContents.insertCSS(browserStyle);
-        } catch (err) {
-            MainProcessEventError.catch(err);
-        };
+    // Informa ao painel que o navegador terminou de carregar.
+    mainWindow.webContents.on('did-finish-load', () => {
+        panelWindow.webContents.send('browser-did-finish-load');
     });
 
     // Impede que o usuário navegue para fora da página do jogo.
     mainWindow.webContents.on('will-navigate', (e, url) => {
         panelWindow.webContents.send('browser-will-navigate');
         if (!isAllowedURL(url)) e.preventDefault();
+    });
+
+    const browserStyle = fs.readFileSync(browserCss, { encoding: 'utf8' });
+    mainWindow.webContents.on('did-navigate', async () => {
+        try {
+            await mainWindow.webContents.insertCSS(browserStyle);
+        } catch (err) {
+            MainProcessEventError.catch(err);
+        };
     });
 
     // Outros eventos.
