@@ -46,7 +46,7 @@
         "@vueuse/core": "^9.13.0",
         "@vueuse/electron": "^9.13.0",
         "pinia": "^2.0.33",
-        "sequelize": "^6.29.0",
+        "sequelize": "^6.29.1",
         "sqlite3": "^5.1.4",
         "vue": "^3.2.47",
         "vue-router": "^4.1.6"
