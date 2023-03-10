@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watchEffect } from 'vue';
 import { usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcInvoke } from '$global/ipc.js';
 import WoodIcon from '$vue/components/icons/resources/WoodIcon.vue';
@@ -12,16 +13,18 @@ const props = defineProps<{
 
 const history = usePlunderHistoryStore();
 
-// Se o Plunder estiver ativado, atualiza o histórico com as informações salvas.
-if (props.plunderStatus === true) {
-    const lastPlundered = await ipcInvoke('get-last-plunder-attack-details');
-    if (lastPlundered) history.$patch({ 
-        wood: lastPlundered.wood,
-        stone: lastPlundered.stone,
-        iron: lastPlundered.iron,
-        attackAmount: lastPlundered.attackAmount,
-    });
-};
+watchEffect(async () => {
+    // Se o Plunder estiver ativado, atualiza o histórico com as informações salvas.
+    if (props.plunderStatus === true) {
+        const lastPlundered = await ipcInvoke('get-last-plunder-attack-details');
+        if (lastPlundered) history.$patch({ 
+            wood: lastPlundered.wood,
+            stone: lastPlundered.stone,
+            iron: lastPlundered.iron,
+            attackAmount: lastPlundered.attackAmount,
+        });
+    };
+});
 </script>
 
 <template>

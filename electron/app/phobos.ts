@@ -1,8 +1,9 @@
 import { URL } from 'url';
-import { BrowserView, type WebPreferences } from 'electron';
+import { BrowserView, MessageChannelMain, ipcMain } from 'electron';
 import { assertString, assertInstanceOf, isInstanceOf } from '@tb-dev/ts-guard';
-import { getMainWindow } from '$electron/utils/helpers.js';
+import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
 import { phobosJs } from '$electron/utils/constants.js';
+import type { WebPreferences } from 'electron';
 import type { PhobosNames, PhobosOptions } from '$types/phobos.js';
 
 const activePhobos = new Map<PhobosNames, BrowserView>();
@@ -65,7 +66,30 @@ export async function createPhobos(name: PhobosNames, url: URL, options?: Phobos
     activePhobos.set(name, phobos);
     await phobos.webContents.loadURL(url.href);
 
+    phobos.webContents.setAudioMuted(true);
     return phobos;
+};
+
+/** Phobos permanente. */
+export async function createPhobosWorker(): Promise<BrowserView> {
+    const mainWindow = getMainWindow();
+    const url = mainWindow.webContents.getURL();
+    const phobos = await createPhobos('worker', new URL(url), { override: true });
+    phobos.webContents.on('will-navigate', (e) => e.preventDefault());
+
+    const panelWindow = getPanelWindow();
+    panelWindow.webContents.send('did-override-phobos-worker');
+
+    return new Promise<BrowserView>((resolve, reject) => {
+        ipcMain.once('phobos-worker-port-is-gone', () => {
+            const { port1, port2 } = new MessageChannelMain();
+            panelWindow.webContents.postMessage('port', null, [port1]);
+            phobos.webContents.postMessage('port', null, [port2]);
+            resolve(phobos);
+        });
+
+        setTimeout(() => reject(), 3000);
+    });
 };
 
 export function getPhobosByName(name: PhobosNames) {

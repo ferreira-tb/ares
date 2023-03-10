@@ -3,6 +3,7 @@ import { assertString } from '@tb-dev/ts-guard';
 import { fetchWorldConfig } from '$phobos/world/config.js';
 import { fetchWorldUnit } from '$phobos/world/unit.js';
 import { PhobosError } from '$phobos/error.js';
+import { handleWorker } from '$phobos/worker/index.js';
 import type { PhobosPortMessage } from '$types/phobos.js';
 
 export function setPhobosEvents() {
@@ -16,6 +17,9 @@ function handlePort(port: MessagePort) {
             assertString(channel, 'O canal não é uma string.');
             
             switch (channel) {
+                case 'worker':
+                    handleWorker(port);
+                    break;
                 case 'fetch-world-config':
                     fetchWorldConfig(port);
                     break;

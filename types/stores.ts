@@ -4,6 +4,7 @@ import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails } from '$
 import type { UnitAmount } from '$types/game.js';
 import type { RemoveMethods } from '$types/utils.js';
 import type { WorldConfigType, WorldUnitType } from '$types/world.js';
+import type { PanelStoreType } from '$types/panel.js';
 
 ////// ARES
 export type AresStore = TribalWarsGameDataType['ares'];
@@ -84,3 +85,9 @@ export type WorldConfigStore = WorldConfigType;
 
 ////// WORLD UNIT
 export type WorldUnitStore = WorldUnitType;
+
+////// PANEL
+export type PanelStore = PanelStoreType;
+export type PiniaPanelKeys = keyof PanelStore;
+export type PiniaPanelValues = Ref<PanelStore[keyof PanelStore]>;
+export type PiniaPanelStoreType = Record<PiniaPanelKeys, PiniaPanelValues>;

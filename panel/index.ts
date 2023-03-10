@@ -4,7 +4,7 @@ import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '$panel/router/router.js';
-import { setPanelWindowEvents } from '$panel/events.js';
+import { setPanelEvents } from '$panel/events/index.js';
 import { PanelError } from '$panel/error.js';
 import Panel from '$panel/Panel.vue';
 
@@ -19,7 +19,7 @@ panel.use(router);
 panel.config.errorHandler = PanelError.catch;
 
 // Eventos.
-setPanelWindowEvents();
+setPanelEvents();
 
 router.push('/');
 panel.mount('#app');

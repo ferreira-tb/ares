@@ -22,6 +22,7 @@ export async function ipcInvoke(channel: 'user-alias'): Promise<UserAlias | null
 export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
+export async function ipcInvoke(channel: 'main-window-url'): Promise<string>;
 
 // Configurações
 export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
@@ -70,6 +71,9 @@ export function ipcSend(channel: 'open-issues-website'): void;
 // Configurações
 export function ipcSend(channel: 'open-plunder-config-window'): void;
 export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
+
+// Painel
+export function ipcSend(channel: 'phobos-worker-port-is-gone'): void;
 
 // Erros
 export function ipcSend(channel: 'open-error-log-window'): void;

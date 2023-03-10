@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import { join, resolve } from 'path';
-import type { WebContents } from 'electron';
 import type { World } from '$types/game.js';
 
 // URL
@@ -43,23 +42,6 @@ export const allowedOriginRegexList = [
 // Proxy keys.
 export const aresKeys = ['locale', 'world', 'majorVersion', 'groupId', 'screen', 'screenMode', 'pregame'] as const;
 export const featuresKeys = ['premium', 'accountManager', 'farmAssistant'] as const;
-
-// Outros.
-type WindowOpenHandler = ReturnType<Parameters<WebContents['setWindowOpenHandler']>[0]>;
-export const windowOpenHandler: WindowOpenHandler = {
-    action: 'allow',
-    outlivesOpener: false,
-    overrideBrowserWindowOptions: {
-        show: false,
-        width: 1200,
-        height: 1000,
-        icon: favicon,
-        webPreferences: {
-            spellcheck: false,
-            devTools: process.env.ARES_MODE === 'dev'
-        }
-    }
-};
 
 // Mapas.
 export const unitsToDestroyWall = {

@@ -2,8 +2,8 @@ import { app, BrowserWindow } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
 import { assertWorld } from '$electron/utils/guards.js';
 import { MainProcessError } from '$electron/error.js';
-import { browserCss } from '$electron/utils/constants.js';
-import type { UserAlias } from '$types/electron.js';
+import { browserCss, favicon } from '$electron/utils/constants.js';
+import type { UserAlias, WindowOpenHandler } from '$types/electron.js';
 import type { World } from '$types/game.js';
 
 export function restartAres() {
@@ -39,6 +39,31 @@ export function togglePanelWindow() {
     } else {
         panelWindow.show();
     };
+};
+
+export function getWindowOpenHandler(child: boolean = true): WindowOpenHandler {
+    const windowOpenHandler: Required<WindowOpenHandler> = {
+        action: 'allow',
+        outlivesOpener: false,
+        overrideBrowserWindowOptions: {
+            show: false,
+            width: 1200,
+            height: 1000,
+            icon: favicon,
+            webPreferences: {
+                spellcheck: false,
+                nodeIntegration: false,
+                contextIsolation: true,
+                devTools: process.env.ARES_MODE === 'dev'
+            }
+        }
+    };
+
+    if (child) {
+        windowOpenHandler.overrideBrowserWindowOptions.parent = getMainWindow();
+    };
+
+    return windowOpenHandler;
 };
 
 /**

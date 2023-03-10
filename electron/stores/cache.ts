@@ -9,7 +9,7 @@ class CacheProxy implements CacheProxyType {
     world: World | null = null;
     player: string | null = null;
     userAlias: UserAlias | null = null;
-
+    
     demolitionTroops: DemolitionTemplateType | null = null;
 };
 
