@@ -6,7 +6,6 @@ import { useFeaturesStore } from '$vue/stores/features.js';
 import { ipcSend } from '$global/ipc.js';
 import Resources from '$panel/components/Resources.vue';
 import SwitchPopover from '$vue/components/popover/SwitchPopover.vue';
-import PlunderGroups from '$panel/components/PlunderGroups.vue';
 
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
@@ -110,13 +109,6 @@ watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAt
                 </SwitchPopover>
             </NGridItem>
         </NGrid>
-
-        <Suspense>
-            <PlunderGroups v-show="config.groupAttack && features.premium === true" />
-            <template #fallback>
-                <span class="to-center bold-green">Procurando grupos...</span>
-            </template>
-        </Suspense>
     </main>
 </template>
 

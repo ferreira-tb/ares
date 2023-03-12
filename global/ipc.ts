@@ -72,9 +72,6 @@ export function ipcSend(channel: 'open-issues-website'): void;
 export function ipcSend(channel: 'open-plunder-config-window'): void;
 export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
 
-// Painel
-export function ipcSend(channel: 'phobos-worker-port-is-gone'): void;
-
 // Erros
 export function ipcSend(channel: 'open-error-log-window'): void;
 export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;

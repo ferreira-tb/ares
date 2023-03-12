@@ -15,7 +15,8 @@ export default defineConfig({
             '$deimos': fileURLToPath(new URL('./deimos', import.meta.url)),
             '$phobos': fileURLToPath(new URL('./phobos', import.meta.url)),
             '$modules': fileURLToPath(new URL('./modules', import.meta.url)),
-            '$panel': fileURLToPath(new URL('./panel', import.meta.url))
+            '$panel': fileURLToPath(new URL('./panel', import.meta.url)),
+            '$icons': fileURLToPath(new URL('./vue/components/icons', import.meta.url))
         }
     },
     build: {

@@ -5,7 +5,6 @@ import { usePlayerStore } from '$vue/stores/player.js';
 import { useCurrentVillageStore } from '$vue/stores/village.js';
 import { useUnitsStore } from '$vue/stores/units.js';
 import { setPlunderEvents } from '$panel/events/plunder.js';
-import { setPhobosEvents } from '$panel/events/phobos.js';
 import type { TribalWarsGameDataType, UnitAmount } from '$types/game.js';
 
 export function setPanelEvents() {
@@ -25,5 +24,4 @@ export function setPanelEvents() {
     ipcRenderer.on('patch-panel-current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
 
     setPlunderEvents();
-    setPhobosEvents();
 };

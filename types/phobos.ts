@@ -14,7 +14,6 @@ export interface PhobosOptions extends BrowserViewConstructorOptions {
 };
 
 export type PhobosNames =
-    | 'worker'
     | 'fetch-world-config'
     | 'fetch-world-unit';
 

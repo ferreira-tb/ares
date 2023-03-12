@@ -2,10 +2,10 @@
 import { watchEffect } from 'vue';
 import { usePlunderHistoryStore } from '$vue/stores/plunder.js';
 import { ipcInvoke } from '$global/ipc.js';
-import WoodIcon from '$vue/components/icons/resources/WoodIcon.vue';
-import StoneIcon from '$vue/components/icons/resources/StoneIcon.vue';
-import IronIcon from '$vue/components/icons/resources/IronIcon.vue';
-import StorageIcon from '$vue/components/icons/buildings/StorageIcon.vue';
+import WoodIcon from '$icons/resources/WoodIcon.vue';
+import StoneIcon from '$icons/resources/StoneIcon.vue';
+import IronIcon from '$icons/resources/IronIcon.vue';
+import StorageIcon from '$icons/buildings/StorageIcon.vue';
 
 const props = defineProps<{
     plunderStatus: boolean;
