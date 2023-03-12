@@ -7,6 +7,7 @@ import type { TribalWarsGameDataType } from '$types/game.js';
 export class TribalWarsGameData implements TribalWarsGameDataType {
     public readonly ares: TribalWarsGameDataType['ares'];
     public readonly features: TribalWarsGameDataType['features'];
+    public readonly groups: TribalWarsGameDataType['groups'];
     public readonly player: TribalWarsGameDataType['player'];
     public readonly currentVillage: TribalWarsGameDataType['currentVillage'];
 
@@ -18,7 +19,6 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
             screen: toNull(rawGameData.screen, isString),
             screenMode: toNull(rawGameData.mode, isString),
             pregame: toNull(rawGameData.pregame, isBoolean),
-            groupId: isString(rawGameData.group_id) ? Number.parseIntStrict(rawGameData.group_id) : null
         };
 
         this.features = {
@@ -26,6 +26,10 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
             accountManager: toNull(rawGameData.features.AccountManager.active, isBoolean),
             // No jogo consta como FarmAssistent, mas no Deimos está como FarmAssistant.
             farmAssistant: toNull(rawGameData.features.FarmAssistent.active, isBoolean)
+        };
+
+        this.groups = {
+            groupId: isString(rawGameData.group_id) ? Number.parseIntStrict(rawGameData.group_id) : null
         };
 
         this.player = {

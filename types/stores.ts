@@ -55,6 +55,15 @@ export type MechanusFeaturesStoreType = {
     [K in keyof FeaturesStore]: MechanusRef<FeaturesStore[K]>;
 };
 
+////// GROUPS
+export type GroupsStore = TribalWarsGameDataType['groups'];
+export type PiniaGroupsStoreType = {
+    [K in keyof GroupsStore]: Ref<GroupsStore[K]>;
+};
+export type MechanusGroupsStoreType = {
+    [K in keyof GroupsStore]: MechanusRef<GroupsStore[K]>;
+};
+
 ////// PLUNDER INFO
 export type PlunderStore = PlunderInfoType;
 export type PiniaPlunderStoreType = {

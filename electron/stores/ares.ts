@@ -1,5 +1,5 @@
 import { ref, type Mechanus } from 'mechanus';
-import { stringOrNullRef, worldOrNullRef, booleanOrNullRef, integerOrNullRef } from '$electron/utils/mechanus';
+import { stringOrNullRef, worldOrNullRef, booleanOrNullRef } from '$electron/utils/mechanus';
 import type { World } from '$types/game';
 import type { MechanusAresStoreType } from '$types/stores';
 
@@ -8,7 +8,6 @@ export function defineAresStore(mechanus: Mechanus) {
         locale: ref<string | null>(null, stringOrNullRef),
         world: ref<World | null>(null, worldOrNullRef),
         majorVersion: ref<string | null>(null, stringOrNullRef),
-        groupId: ref<number | null>(null, integerOrNullRef),
 
         screen: ref<string | null>(null, stringOrNullRef),
         screenMode: ref<string | null>(null, stringOrNullRef),

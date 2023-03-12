@@ -14,6 +14,7 @@ import { defineFeaturesStore } from '$stores/features';
 import { definePlayerStore } from '$stores/player';
 import { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/world';
 import { defineCurrentVillageStore } from '$stores/village';
+import { defineGroupsStore } from '$electron/stores/groups';
 
 import { patchAliasRelatedStores } from '$interface/alias';
 import { patchWorldRelatedStores } from '$interface/world';
@@ -33,6 +34,7 @@ export const usePlayerStore = definePlayerStore(mechanus);
 export const useCurrentVillageStore = defineCurrentVillageStore(mechanus);
 export const useWorldConfigStore = defineWorldConfigStore(mechanus);
 export const worldUnitsMap = createWorldUnitStoresMap(mechanus);
+export const useGroupsStore = defineGroupsStore(mechanus);
 export const useCacheStore = defineCacheStore(mechanus);
 
 const worldArgs = [
