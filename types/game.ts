@@ -65,6 +65,12 @@ export type Coords = {
     y: number;
 };
 
+export type VillageGroup = {
+    readonly id: number;
+    readonly name: string;
+    readonly type: 'dynamic' | 'static';
+};
+
 export interface TribalWarsGameDataType {
     readonly ares: {
         /** Local. */

@@ -2,7 +2,7 @@ import type { ComputedRef, Ref } from 'vue';
 import type { MechanusComputedRef, MechanusRef, MechanusStore } from 'mechanus';
 import type { AllUnits, TribalWarsGameDataType } from '$types/game';
 import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails } from '$types/plunder';
-import type { UnitAmount } from '$types/game';
+import type { UnitAmount, VillageGroup } from '$types/game';
 import type { RemoveMethods } from '$types/utils';
 import type { WorldConfigType } from '$types/world';
 import type { UnitDetails } from '$types/world';
@@ -28,8 +28,8 @@ export type MechanusPlayerStoreType = {
 ////// CURRENT VILLAGE
 type CurrentVillageType = TribalWarsGameDataType['currentVillage'];
 export interface CurrentVillageStore extends CurrentVillageType {
-    coords: [CurrentVillageType['x'], CurrentVillageType['y']];
-    totalResources: number | null;
+    readonly coords: [CurrentVillageType['x'], CurrentVillageType['y']];
+    readonly totalResources: number | null;
 };
 
 export type PiniaCurrentVillageStoreType = {
@@ -56,7 +56,11 @@ export type MechanusFeaturesStoreType = {
 };
 
 ////// GROUPS
-export type GroupsStore = TribalWarsGameDataType['groups'];
+type GameDataGroups = TribalWarsGameDataType['groups'];
+export interface GroupsStore extends GameDataGroups {
+    /** Todos os grupos de aldeias referentes ao alias atual. */
+    readonly all: VillageGroup[];
+};
 export type PiniaGroupsStoreType = {
     [K in keyof GroupsStore]: Ref<GroupsStore[K]>;
 };
