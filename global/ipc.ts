@@ -22,6 +22,7 @@ export async function ipcInvoke(channel: 'user-alias'): Promise<UserAlias | null
 export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
+export async function ipcInvoke(channel: 'main-window-url'): Promise<string>;
 
 // Configurações
 export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;

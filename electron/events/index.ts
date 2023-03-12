@@ -22,6 +22,7 @@ export function setEvents() {
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
     ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
+    ipcMain.handle('main-window-url', () => mainWindow.webContents.getURL());
 
     // Website.
     ipcMain.on('open-ares-website', () => openAresWebsite());

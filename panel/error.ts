@@ -6,3 +6,10 @@ export class PanelError extends AresError {
         this.name = 'PanelError';
     };
 };
+
+export class PanelPlunderError extends PanelError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'PanelPlunderError';
+    };
+};

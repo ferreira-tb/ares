@@ -73,6 +73,10 @@ export type PlunderConfigType = {
     blindAttackPattern: BlindAttackPattern;
     /** Determina o padrão de ataque quando o Plunder está usando o modelo C. */
     useCPattern: UseCPattern;
+
+    // Variáveis.
+    /** ID do grupo que será utilizado para atacar. */
+    plunderGroupID: number;
 };
 
 export type PlunderConfigKeys = keyof PlunderConfigType;

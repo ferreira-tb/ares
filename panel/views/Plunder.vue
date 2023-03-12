@@ -2,12 +2,14 @@
 import { computed, watch } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
 import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
+import { useFeaturesStore } from '$vue/stores/features.js';
 import { ipcSend } from '$global/ipc.js';
 import Resources from '$panel/components/Resources.vue';
 import SwitchPopover from '$vue/components/popover/SwitchPopover.vue';
 
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
+const features = useFeaturesStore();
 
 const plunderButtonText = computed(() => config.active === false ? 'Saquear' : 'Parar');
 
@@ -43,14 +45,7 @@ watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAt
             </NButtonGroup>
         </div>
 
-        <Transition name="tb-fade" mode="out-in">
-            <Suspense>
-                <Resources :plunder-status="config.active" />
-                <template #fallback class="loading-text">
-                    Carregando...
-                </template>
-            </Suspense>
-        </Transition>
+        <Resources :plunder-status="config.active" />
 
         <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
             <NGridItem>
@@ -64,12 +59,17 @@ watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAt
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover v-model:value="config.groupAttack">
+                <SwitchPopover v-model:value="config.groupAttack" :disabled="features.premium === false">
                     <template #trigger>Ataque em grupo</template>
-                    <span>
-                        Permite enviar ataques de mais de uma aldeia.
-                        Recomenda-se que o grupo usado seja dinâmico.
-                    </span>
+                    <div class="popover-div">
+                        <span>Permite enviar ataques de mais de uma aldeia.</span>
+
+                        <span>Grupos manuais geram <span class="bold">loops infinitos</span>, que aumentam, e muito, a chance de
+                            surgirem captchas. Por causa disso, apenas grupos dinâmicos são permitidos.
+                        </span>
+
+                        <span>Não é possível utilizar essa opção sem uma conta premium ativa.</span>
+                    </div>
                 </SwitchPopover>
             </NGridItem>
 
@@ -112,7 +112,7 @@ watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAt
     </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .button-area {
     display: flex;
     justify-content: center;
@@ -122,5 +122,15 @@ watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAt
 .switch-area {
     -webkit-app-region: no-drag;
     margin-top: 1em;
+
+    .popover-div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
 }
 </style>

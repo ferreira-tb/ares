@@ -9,6 +9,7 @@ import {
     assertBoolean,
     isKeyOf,
     arrayIncludes,
+    assertInteger,
     assertPositiveInteger,
     assertPositiveNumber
 } from '@tb-dev/ts-guard';
@@ -51,6 +52,8 @@ class PlunderConfigProxy implements RemoveMethods<PlunderConfigStore> {
 
     blindAttackPattern: BlindAttackPattern = 'smaller';
     useCPattern: UseCPattern = 'normal';
+
+    plunderGroupID: number = 0;
 };
 
 // Patterns.
@@ -94,6 +97,11 @@ export function setPlunderConfigProxy() {
                     break;
                 case 'useCPattern':
                     if (!arrayIncludes(useCPatterns, value)) return false;
+                    break;
+
+                case 'plunderGroupID':
+                    assertInteger(value);
+                    if (value < 0) return false;
                     break;
                     
                 default:

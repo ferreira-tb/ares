@@ -44,6 +44,8 @@ export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCr
 
     declare readonly blindAttackPattern: BlindAttackPattern;
     declare readonly useCPattern: UseCPattern;
+
+    declare readonly plunderGroupID: number;
 };
 
 PlunderConfig.init({
@@ -161,6 +163,12 @@ PlunderConfig.init({
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'normal' satisfies UseCPattern
+    },
+
+    plunderGroupID: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
     }
 }, { sequelize, tableName: 'plunder_config', timestamps: true });
 

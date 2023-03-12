@@ -32,7 +32,7 @@ watchEffect(() => {
                     <Suspense>
                         <component :is="Component" />
                         <template #fallback>
-                            <span class="loading-text">Carregando...</span>
+                            <span class="to-center bold-green">Carregando...</span>
                         </template>
                     </Suspense>
                 </Transition>

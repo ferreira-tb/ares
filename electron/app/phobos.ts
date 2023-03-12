@@ -1,8 +1,9 @@
 import { URL } from 'url';
-import { BrowserView, type WebPreferences } from 'electron';
+import { BrowserView } from 'electron';
 import { assertString, assertInstanceOf, isInstanceOf } from '@tb-dev/ts-guard';
 import { getMainWindow } from '$electron/utils/helpers.js';
 import { phobosJs } from '$electron/utils/constants.js';
+import type { WebPreferences } from 'electron';
 import type { PhobosNames, PhobosOptions } from '$types/phobos.js';
 
 const activePhobos = new Map<PhobosNames, BrowserView>();
@@ -65,6 +66,7 @@ export async function createPhobos(name: PhobosNames, url: URL, options?: Phobos
     activePhobos.set(name, phobos);
     await phobos.webContents.loadURL(url.href);
 
+    phobos.webContents.setAudioMuted(true);
     return phobos;
 };
 

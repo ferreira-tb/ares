@@ -13,8 +13,12 @@ export interface PhobosOptions extends BrowserViewConstructorOptions {
     overrideUrl?: boolean;
 };
 
-export type PhobosNames = 'fetch-world-config' | 'fetch-world-unit';
+export type PhobosNames =
+    | 'fetch-world-config'
+    | 'fetch-world-unit';
+
+export type PhobosChannel = PhobosNames;
 
 export interface PhobosPortMessage extends Record<string, any> {
-    channel: PhobosNames;
+    channel: PhobosChannel;
 };

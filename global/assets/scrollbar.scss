@@ -1,20 +1,25 @@
-@mixin scrollbar() {
+@mixin scrollbar(
+    $track: var(--color-background),
+    $thumb: var(--color-background-mute),
+    $thumb-border: var(--color-background),
+    $corner: var(--color-background)
+) {
     &::-webkit-scrollbar {
         width: 20px;
     }
 
     &::-webkit-scrollbar-corner {
-        background: var(--color-background);
+        background: $corner;
     }
 
     &::-webkit-scrollbar-track {
-        background-color: var(--color-background);
+        background-color: $track;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: var(--color-background-mute);
+        background-color: $thumb;
         border-radius: 6px;
-        border: 4px solid var(--color-background);
+        border: 4px solid $thumb-border;
         background-clip: content-box;
         min-width: 32px;
         min-height: 32px;

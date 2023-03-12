@@ -43,6 +43,9 @@
             ],
             "$deimos/*": [
                 "./deimos/*"
+            ],
+            "$icons/*": [
+                "./vue/components/icons/*"
             ]
         },
         "lib": [

@@ -1,7 +1,7 @@
 {
     "name": "ares",
     "productName": "Ares",
-    "version": "1.0.0-alpha.15",
+    "version": "1.0.0-alpha.16",
     "description": "Ferramenta para Tribal Wars",
     "author": {
         "name": "Andrew Ferreira",
@@ -45,6 +45,7 @@
         "@tb-dev/ts-guard-dom": "^1.0.0",
         "@vueuse/core": "^9.13.0",
         "@vueuse/electron": "^9.13.0",
+        "mechanus": "^1.0.1",
         "pinia": "^2.0.33",
         "sequelize": "^6.29.3",
         "sqlite3": "^5.1.4",

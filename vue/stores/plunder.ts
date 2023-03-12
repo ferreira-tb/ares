@@ -44,6 +44,9 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const blindAttackPattern = ref<BlindAttackPattern>('smaller');
     const useCPattern = ref<UseCPattern>('normal');
 
+    // Variáveis
+    const plunderGroupID = ref<number>(0);
+
     function raw(): PlunderConfigType {
         return {
             active: active.value,
@@ -65,7 +68,9 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
             plunderedResourcesRatio: plunderedResourcesRatio.value,
 
             blindAttackPattern: blindAttackPattern.value,
-            useCPattern: useCPattern.value
+            useCPattern: useCPattern.value,
+
+            plunderGroupID: plunderGroupID.value
         };
     };
 
@@ -90,6 +95,8 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
 
         blindAttackPattern,
         useCPattern,
+
+        plunderGroupID,
         
         raw
     } satisfies PiniaPlunderConfigStoreType;
