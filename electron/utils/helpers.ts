@@ -1,10 +1,13 @@
 import { app, BrowserWindow } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
-import { assertWorld } from '$electron/utils/guards.js';
-import { MainProcessError } from '$electron/error.js';
-import { browserCss, favicon } from '$electron/utils/constants.js';
-import type { UserAlias, WindowOpenHandler } from '$types/electron.js';
-import type { World } from '$types/game.js';
+import { assertWorld } from '$electron/utils/guards';
+import { MainProcessError } from '$electron/error';
+import { browserCss, favicon } from '$electron/utils/constants';
+import type { MechanusStore } from 'mechanus';
+import type { UserAlias, WindowOpenHandler } from '$types/electron';
+import type { AllUnits, World } from '$types/game';
+import type { UnitDetails, WorldUnitType } from '$types/world';
+import type { createWorldUnitStoresMap } from '$stores/world';
 
 export function restartAres() {
     app.relaunch();
@@ -94,4 +97,13 @@ export function generateUserAlias(world: World, playerName: string): UserAlias {
 export function getPlayerNameFromAlias(alias: UserAlias): string {
     const encodedPlayerName = alias.replace(/^[a-z]+\d+__USERID__/, '');
     return decodeURIComponent(encodedPlayerName);
+};
+
+export function extractWorldUnitsFromMap(worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>): WorldUnitType {
+    type UnitsMapEntries = [AllUnits, () => MechanusStore<UnitDetails>];
+    return Object.entries(worldUnitsMap).reduce((acc, [key, useStore]: UnitsMapEntries) => {
+        const unitStore = useStore();
+        acc[key] = { ...unitStore };
+        return acc;
+    }, {} as WorldUnitType);
 };

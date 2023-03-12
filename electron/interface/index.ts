@@ -1,45 +1,66 @@
-import { UserConfig } from '$tables/config.js';
-import { ErrorLog, DOMErrorLog, MainProcessErrorLog } from '$tables/error.js';
-import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$tables/plunder.js';
-import { User } from '$tables/user.js';
-import { WorldConfig, WorldUnit } from '$tables/world.js';
+import { Mechanus, watch, storeToRefs } from 'mechanus';
 
-import { setPlunderProxy, setPlunderConfigProxy, setPlunderHistoryProxy } from '$stores/plunder.js';
-import { setAresProxy } from '$stores/ares.js';
-import { setCacheProxy } from '$stores/cache.js';
-import { setUnitsProxy } from '$stores/units.js';
-import { setFeaturesProxy } from '$stores/features.js';
-import { setPlayerProxy } from '$stores/player.js';
-import { setWorldConfigProxy, setWorldUnitProxy } from '$stores/world.js';
-import { setCurrentVillageProxy } from '$stores/village.js';
+import { UserConfig } from '$tables/config';
+import { ErrorLog, DOMErrorLog, MainProcessErrorLog } from '$tables/error';
+import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$tables/plunder';
+import { User } from '$tables/user';
+import { WorldConfig, WorldUnit } from '$tables/world';
 
-import { setAliasProxyState } from '$interface/alias.js';
-import { setWorldProxyState } from '$interface/world.js';
-import { catchError } from '$interface/error.js';
+import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores } from '$stores/plunder';
+import { defineAresStore } from '$stores/ares';
+import { defineCacheStore } from '$stores/cache';
+import { defineUnitsStore } from '$stores/units';
+import { defineFeaturesStore } from '$stores/features';
+import { definePlayerStore } from '$stores/player';
+import { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/world';
+import { defineCurrentVillageStore } from '$stores/village';
 
-import { MainProcessError } from '$electron/error.js';
+import { patchAliasRelatedStores } from '$interface/alias';
+import { patchWorldRelatedStores } from '$interface/world';
+import { catchError } from '$interface/error';
 
-export const aresProxy = setAresProxy();
-export const plunderProxy = setPlunderProxy();
-export const plunderConfigProxy = setPlunderConfigProxy();
-export const plunderHistoryProxy = setPlunderHistoryProxy();
-export const featuresProxy = setFeaturesProxy();
-export const unitProxy = setUnitsProxy();
-export const playerProxy = setPlayerProxy(User);
-export const currentVillageProxy = setCurrentVillageProxy();
-export const worldConfigProxy = setWorldConfigProxy();
-export const worldUnitProxy = setWorldUnitProxy();
+import { MainProcessError } from '$electron/error';
 
-const aliasArgs = [PlunderConfig, PlunderHistory, plunderConfigProxy, plunderHistoryProxy] as const;
-const worldArgs = [WorldConfig, WorldUnit, worldConfigProxy, worldUnitProxy] as const;
+export const mechanus = new Mechanus();
 
-export const cacheProxy = setCacheProxy(
-    setAliasProxyState(...aliasArgs),
-    setWorldProxyState(...worldArgs)
-);
+export const useAresStore = defineAresStore(mechanus);
+export const usePlunderStore = definePlunderStore(mechanus);
+export const usePlunderConfigStore = definePlunderConfigStore(mechanus);
+export const { useLastPlunderHistoryStore, useTotalPlunderHistoryStore } = setPlunderHistoryStores(mechanus);
+export const useFeaturesStore = defineFeaturesStore(mechanus);
+export const useUnitsStore = defineUnitsStore(mechanus);
+export const usePlayerStore = definePlayerStore(mechanus);
+export const useCurrentVillageStore = defineCurrentVillageStore(mechanus);
+export const useWorldConfigStore = defineWorldConfigStore(mechanus);
+export const worldUnitsMap = createWorldUnitStoresMap(mechanus);
+export const useCacheStore = defineCacheStore(mechanus);
 
-// Erros.
-MainProcessError.catch = catchError(aresProxy, MainProcessErrorLog);
+const worldArgs = [
+    WorldConfig,
+    WorldUnit,
+    useWorldConfigStore,
+    worldUnitsMap
+] as const;
+
+const aliasArgs = [
+    PlunderConfig,
+    PlunderHistory,
+    usePlunderConfigStore,
+    useLastPlunderHistoryStore,
+    useTotalPlunderHistoryStore
+] as const;
+
+////// WATCHERS
+const { name: playerName } = storeToRefs(usePlayerStore());
+watch(playerName, (name) => User.savePlayerAsUser(name));
+
+// Essas funções retornam outras funções, que, por sua vez, serão usadas como callbacks.
+const { world, userAlias } = storeToRefs(useCacheStore());
+watch(world, patchWorldRelatedStores(...worldArgs));
+watch(userAlias, patchAliasRelatedStores(...aliasArgs));
+
+////// ERROS
+MainProcessError.catch = catchError(useAresStore(), MainProcessErrorLog);
 
 export {
     UserConfig,

@@ -24,9 +24,14 @@ export function assertWorld(world: unknown, err: typeof MainProcessError, messag
     if (!isWorld(world)) throw new err(message);
 };
 
+export const isWorldOrNull = (world: unknown): world is World | null => {
+    if (world === null) return true;
+    return isWorld(world);
+};
+
 export function assertWorldOrNull(world: unknown, err: typeof MainProcessError, message?: string): asserts world is World | null {
     if (!isString(message)) message = 'O mundo informado é inválido.';
-    if (world !== null) assertWorld(world, err, message);
+    if (!isWorldOrNull(world)) throw new err(message);
 };
 
 export const isWallLevel = (level: unknown): level is WallLevel => {

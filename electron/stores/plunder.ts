@@ -1,142 +1,149 @@
-import { assertWallLevel } from '$electron/utils/guards.js';
-import { ProxyStoreError } from '$electron/error.js';
-import type { PlunderAttackDetails, BlindAttackPattern, UseCPattern } from '$types/plunder.js';
-import type { PlunderStore, PlunderConfigStore, PlunderFullHistoryStore } from '$types/stores.js';
-import type { RemoveMethods } from '$types/utils.js';
-import type { WallLevel } from '$types/game.js';
+import { ref } from 'mechanus';
+import { isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
+import type { WallLevel } from '$types/game';
+import type { BlindAttackPattern, UseCPattern } from '$types/plunder';
+import type { Mechanus, MechanusRefOptions } from 'mechanus';
 
 import {
-    assertBoolean,
-    isKeyOf,
-    arrayIncludes,
-    assertInteger,
-    assertPositiveInteger,
-    assertPositiveNumber
-} from '@tb-dev/ts-guard';
+    integerRef,
+    booleanRef,
+    positiveIntegerRef,
+    positiveNumberRef,
+    arrayIncludesRef,
+    wallLevelRef
+} from '$electron/utils/mechanus';
 
-class PlunderProxy implements RemoveMethods<PlunderStore> {
-    hideAttacked: boolean = true;
-    page: number = 0;
-    pageSize: number = 15;
-    plunderExhausted: boolean = false;
-};
+import type {
+    MechanusPlunderStoreType,
+    MechanusPlunderConfigStoreType,
+    MechanusPlunderHistoryStoreType
+} from '$types/stores';
 
-export function setPlunderProxy() {
-    return new Proxy(new PlunderProxy(), {
-        set(target, key, value) {
-            if(!isKeyOf(key, target)) return false;
-            return Reflect.set(target, key, value);
-        }
-    });
-};
-
-class PlunderConfigProxy implements RemoveMethods<PlunderConfigStore> {
-    active: boolean = false;
-
-    ignoreWall: boolean = false;
-    destroyWall: boolean = false;
-    groupAttack: boolean = false;
-    useC: boolean = false;
-    ignoreDelay: boolean = false;
-    blindAttack: boolean = false;
-
-    wallLevelToIgnore: WallLevel = 1;
-    wallLevelToDestroy: WallLevel = 1;
-    destroyWallMaxDistance: number = 20;
-    attackDelay: number = 200;
-    resourceRatio: number = 0.8;
-    minutesUntilReload: number = 10;
-    maxDistance: number = 20;
-    ignoreOlderThan: number = 10;
-    plunderedResourcesRatio: number = 1;
-
-    blindAttackPattern: BlindAttackPattern = 'smaller';
-    useCPattern: UseCPattern = 'normal';
-
-    plunderGroupID: number = 0;
+export function definePlunderStore(mechanus: Mechanus) {
+    return mechanus.define('plunder', {
+        hideAttacked: ref<boolean>(true, booleanRef),
+        page: ref<number>(0, integerRef),
+        pageSize: ref<number>(15, integerRef),
+        plunderExhausted: ref<boolean>(false, booleanRef)
+    } satisfies MechanusPlunderStoreType);
 };
 
 // Patterns.
 export const blindAttackPatterns: BlindAttackPattern[] = ['smaller', 'bigger'];
 export const useCPatterns: UseCPattern[] = ['normal', 'only'];
 
-export function setPlunderConfigProxy() {
-    return new Proxy(new PlunderConfigProxy(), {
-        set(target, key, value) {
-            if (!isKeyOf(key, target)) return false;
-    
-            switch (key) {
-                case 'wallLevelToIgnore':
-                case 'wallLevelToDestroy':
-                    assertWallLevel(value, ProxyStoreError);
-                    break;
-                case 'attackDelay':
-                    assertPositiveInteger(value);
-                    if (value < 100 || value > 5000) return false;
-                    break;
-                case 'resourceRatio':
-                case 'plunderedResourcesRatio':
-                    assertPositiveNumber(value);
-                    if (value < 0.2 || value > 1) return false;
-                    break;
-                case 'minutesUntilReload':
-                    assertPositiveInteger(value);
-                    if (value > 60) return false;
-                    break;
-                case 'maxDistance':
-                case 'destroyWallMaxDistance':
-                    assertPositiveNumber(value);
-                    if (value < 1) return false;
-                    break;
-                case 'ignoreOlderThan':
-                    assertPositiveInteger(value);
-                    break;
-
-                case 'blindAttackPattern':
-                    if (!arrayIncludes(blindAttackPatterns, value)) return false;
-                    break;
-                case 'useCPattern':
-                    if (!arrayIncludes(useCPatterns, value)) return false;
-                    break;
-
-                case 'plunderGroupID':
-                    assertInteger(value);
-                    if (value < 0) return false;
-                    break;
-                    
-                default:
-                    assertBoolean(value);
-            };
-    
-            return Reflect.set(target, key, value);
-        }
-    });
-};
-
-class PlunderHistoryProxy implements PlunderFullHistoryStore {
-    private readonly base: PlunderAttackDetails = {
-        wood: 0,
-        stone: 0,
-        iron: 0,
-        total: 0,
-        destroyedWalls: 0,
-        attackAmount: 0
+export function definePlunderConfigStore(mechanus: Mechanus) {
+    const attackDelayValidator = (): MechanusRefOptions<number> => {
+        const refOptions = { ...positiveIntegerRef };
+        refOptions.validator = (value: unknown): value is number => {
+            return isPositiveInteger(value) && value >= 100 && value <= 5000;
+        };
+        return refOptions;
     };
 
-    private readonly handler: ProxyHandler<PlunderAttackDetails> = {
-        set(target, key, value) {
-            if (!isKeyOf(key, target)) return false;
-            assertPositiveInteger(value);
-            return Reflect.set(target, key, value);
-        }
+    const ratioValidator = (): MechanusRefOptions<number> => {
+        const refOptions = { ...positiveNumberRef };
+        refOptions.validator = (value: unknown): value is number => {
+            return isPositiveNumber(value) && value >= 0.2 && value <= 1;
+        };
+        return refOptions;
     };
 
-    readonly last: PlunderAttackDetails = new Proxy({ ...this.base }, this.handler);
-    readonly total: PlunderAttackDetails = new Proxy({ ...this.base }, this.handler);
+    const minutesUntilReloadValidator = (): MechanusRefOptions<number> => {
+        const refOptions = { ...positiveIntegerRef };
+        refOptions.validator = (value: unknown): value is number => {
+            return isPositiveInteger(value) && value >= 1 && value <= 60;
+        };
+        return refOptions;
+    };
+
+    const maxDistanceValidator = (): MechanusRefOptions<number> => {
+        const refOptions = { ...positiveNumberRef };
+        refOptions.validator = (value: unknown): value is number => {
+            return isPositiveNumber(value) && value >= 1
+        };
+        return refOptions;
+    };
+
+    const plunderGroupValidator = (): MechanusRefOptions<number> => {
+        const refOptions = { ...positiveIntegerRef };
+        refOptions.validator = (value: unknown): value is number => {
+            return isPositiveInteger(value) || value === 0;
+        };
+        return refOptions;
+    };
+
+    const active = ref<boolean>(false, booleanRef);
+
+    const ignoreWall = ref<boolean>(false, booleanRef);
+    const destroyWall = ref<boolean>(false, booleanRef);
+    const groupAttack = ref<boolean>(false, booleanRef);
+    const useC = ref<boolean>(false, booleanRef);
+    const ignoreDelay = ref<boolean>(false, booleanRef);
+    const blindAttack = ref<boolean>(false, booleanRef);
+
+    const wallLevelToIgnore = ref<WallLevel>(1, wallLevelRef);
+    const wallLevelToDestroy = ref<WallLevel>(1, wallLevelRef);
+    const destroyWallMaxDistance = ref<number>(20, maxDistanceValidator());
+    const attackDelay = ref<number>(200, attackDelayValidator());
+    const resourceRatio = ref<number>(0.8, ratioValidator());
+    const minutesUntilReload = ref<number>(10, minutesUntilReloadValidator());
+    const maxDistance = ref<number>(20, maxDistanceValidator());
+    const ignoreOlderThan = ref<number>(10, positiveIntegerRef);
+    const plunderedResourcesRatio = ref<number>(1, ratioValidator());
+
+    const blindAttackPattern = ref<BlindAttackPattern>('smaller', arrayIncludesRef(blindAttackPatterns));
+    const useCPattern = ref<UseCPattern>('normal', arrayIncludesRef(useCPatterns));
+
+    const plunderGroupID = ref<number>(0, plunderGroupValidator());
+
+    return mechanus.define('plunderConfig', {
+        active,
+        ignoreWall,
+        destroyWall,
+        groupAttack,
+        useC,
+        ignoreDelay,
+        blindAttack,
+
+        wallLevelToIgnore,
+        wallLevelToDestroy,
+        destroyWallMaxDistance,
+        attackDelay,
+        resourceRatio,
+        minutesUntilReload,
+        maxDistance,
+        ignoreOlderThan,
+        plunderedResourcesRatio,
+
+        blindAttackPattern,
+        useCPattern,
+
+        plunderGroupID
+    } satisfies MechanusPlunderConfigStoreType);
 };
 
-export function setPlunderHistoryProxy() {
-    return new PlunderHistoryProxy();
-};
+export function setPlunderHistoryStores(mechanus: Mechanus) {
+    const useLastPlunderHistoryStore = mechanus.define('lastPlunderHistory', {
+        wood: ref<number>(0, positiveIntegerRef),
+        stone: ref<number>(0, positiveIntegerRef),
+        iron: ref<number>(0, positiveIntegerRef),
+        total: ref<number>(0, positiveIntegerRef),
+        destroyedWalls: ref<number>(0, positiveIntegerRef),
+        attackAmount: ref<number>(0, positiveIntegerRef)
+    } satisfies MechanusPlunderHistoryStoreType);
 
-export type { PlunderProxy, PlunderConfigProxy, PlunderHistoryProxy };
+    const useTotalPlunderHistoryStore = mechanus.define('totalPlunderHistory', {
+        wood: ref<number>(0, positiveIntegerRef),
+        stone: ref<number>(0, positiveIntegerRef),
+        iron: ref<number>(0, positiveIntegerRef),
+        total: ref<number>(0, positiveIntegerRef),
+        destroyedWalls: ref<number>(0, positiveIntegerRef),
+        attackAmount: ref<number>(0, positiveIntegerRef)
+    } satisfies MechanusPlunderHistoryStoreType);
+
+    return {
+        useLastPlunderHistoryStore,
+        useTotalPlunderHistoryStore
+    };
+};

@@ -6,16 +6,24 @@ import type { PlunderInfoType } from '$types/plunder.js';
 import type { UnitAmount, TribalWarsGameDataType } from '$types/game.js';
 
 import {
-    aresProxy,
-    plunderProxy,
-    unitProxy,
-    featuresProxy,
-    playerProxy,
-    currentVillageProxy,
-    cacheProxy
+    useAresStore,
+    usePlayerStore,
+    useUnitsStore,
+    useFeaturesStore,
+    usePlunderStore,
+    useCurrentVillageStore,
+    useCacheStore
 } from '$interface/index.js';
 
 export function setDeimosEvents() {
+    const aresStore = useAresStore();
+    const playerStore = usePlayerStore();
+    const unitsStore = useUnitsStore();
+    const featuresStore = useFeaturesStore();
+    const plunderStore = usePlunderStore();
+    const currentVillageStore = useCurrentVillageStore();
+    const cacheStore = useCacheStore();
+
     /** Conteúdo do arquivo `deimos.js`. */
     let deimos: string | null = null;
 
@@ -41,24 +49,24 @@ export function setDeimosEvents() {
                 switch (key) {
                     case 'ares':
                         for (const [aresKey, aresValue] of Object.entries(value)) {
-                            if (aresKey === 'world') Reflect.set(cacheProxy, 'world', aresValue);
-                            Reflect.set(aresProxy, aresKey, aresValue);
+                            if (aresKey === 'world') Reflect.set(cacheStore, 'world', aresValue);
+                            Reflect.set(aresStore, aresKey, aresValue);
                         };
                         break;
                     case 'features':
                         for (const [featureKey, featureValue] of Object.entries(value)) {
-                            Reflect.set(featuresProxy, featureKey, featureValue);
+                            Reflect.set(featuresStore, featureKey, featureValue);
                         };
                         break;
                     case 'player':
                         for (const [playerKey, playerValue] of Object.entries(value)) {
-                            if (playerKey === 'name') Reflect.set(cacheProxy, 'player', playerValue);
-                            Reflect.set(playerProxy, playerKey, playerValue);
+                            if (playerKey === 'name') Reflect.set(cacheStore, 'player', playerValue);
+                            Reflect.set(playerStore, playerKey, playerValue);
                         };
                         break;
                     case 'currentVillage':
                         for (const [villageKey, villageValue] of Object.entries(value)) {
-                            Reflect.set(currentVillageProxy, villageKey, villageValue);
+                            Reflect.set(currentVillageStore, villageKey, villageValue);
                         };
                         break;
                     default:
@@ -78,7 +86,7 @@ export function setDeimosEvents() {
     ipcMain.on('update-plunder-info', (_e, plunderInfo: PlunderInfoType) => {
         try {
             for (const [key, value] of Object.entries(plunderInfo)) {
-                Reflect.set(plunderProxy, key, value);
+                Reflect.set(plunderStore, key, value);
             };
     
             const panelWindow = getPanelWindow();
@@ -92,8 +100,8 @@ export function setDeimosEvents() {
     // Recebe as informações referentes às unidades da aldeia atual, salva-as localmente e então envia-as ao painel.
     ipcMain.on('update-current-village-units', (_e, units: UnitAmount) => {
         try {
-            for (const [key, value] of Object.entries(units)) {
-                Reflect.set(unitProxy, key, value);
+            for (const [key, value] of Object.entries(units) as [keyof UnitAmount, number][]) {
+                unitsStore[key] = value;
             };
     
             const panelWindow = getPanelWindow();

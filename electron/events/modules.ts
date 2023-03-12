@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { isObject } from '@tb-dev/ts-guard';
 import { isUserAlias } from '$electron/utils/guards.js';
 import { getMainWindow } from '$electron/utils/helpers.js';
-import { cacheProxy, DemolitionTemplate, CustomPlunderTemplate } from '$interface/index.js';
+import { useCacheStore, DemolitionTemplate, CustomPlunderTemplate } from '$interface/index.js';
 import type { UserAlias } from '$types/electron.js';
 import type { CustomPlunderTemplateType, DemolitionTemplateType } from '$types/plunder.js';
 
@@ -14,6 +14,8 @@ import {
 } from '$electron/app/modules.js';
 
 export function setModuleEvents() {
+    const cacheStore = useCacheStore();
+
     //////// INICIALIZAÇÃO
     ipcMain.on('open-error-log-window', () => showErrorLog());
     ipcMain.on('open-demolition-troops-config-window', () => showDemolitionConfig());
@@ -23,13 +25,13 @@ export function setModuleEvents() {
     //////// OUTROS
     // Demolição.
     ipcMain.handle('get-demolition-troops-config', async (_e, alias: UserAlias | null): Promise<DemolitionTemplateType | null> => {
-        alias ??= cacheProxy.userAlias;
+        alias ??= cacheStore.userAlias;
         if (!isUserAlias(alias)) return null;
 
-        let demolitionTroops: DemolitionTemplateType | null = cacheProxy.demolitionTroops;
+        let demolitionTroops: DemolitionTemplateType | null = cacheStore.demolitionTroops;
         if (!isObject(demolitionTroops) || demolitionTroops.alias !== alias) {
             demolitionTroops = await DemolitionTemplate.getDemolitionTroopsConfig(alias);
-            if (alias === cacheProxy.userAlias) cacheProxy.demolitionTroops = demolitionTroops;
+            if (alias === cacheStore.userAlias) cacheStore.demolitionTroops = demolitionTroops;
         };
         
         return demolitionTroops;
@@ -37,19 +39,23 @@ export function setModuleEvents() {
 
     ipcMain.handle('save-demolition-troops-config', async (_e, template: DemolitionTemplateType): Promise<boolean> => {
         const status = await DemolitionTemplate.saveDemolitionTroopsConfig(template);
-        if (status === true && template.alias === cacheProxy.userAlias) cacheProxy.demolitionTroops = template;
+        if (status === true && template.alias === cacheStore.userAlias) {
+            cacheStore.demolitionTroops = template;
+        };
         return status;
     });
 
     ipcMain.handle('destroy-demolition-troops-config', async (_e, alias: UserAlias): Promise<boolean> => {
         const status = await DemolitionTemplate.destroyDemolitionTroopsConfig(alias);
-        if (status === true && alias === cacheProxy.userAlias) cacheProxy.demolitionTroops = null;
+        if (status === true && alias === cacheStore.userAlias) {
+            cacheStore.demolitionTroops = null;
+        };
         return status;
     });
 
     // Modelos do Plunder.
     ipcMain.handle('get-custom-plunder-templates', async (_e, alias: UserAlias | null): Promise<CustomPlunderTemplateType[] | null> => {
-        alias ??= cacheProxy.userAlias;
+        alias ??= cacheStore.userAlias;
         if (!isUserAlias(alias)) return null;
         const customPlunderTemplates = await CustomPlunderTemplate.getCustomPlunderTemplates(alias);
         if (!Array.isArray(customPlunderTemplates)) return null;

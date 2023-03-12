@@ -1,6 +1,6 @@
 import { ipcMain, BrowserWindow, type WebContents } from 'electron';
 import { assertObject, assertInteger, isKeyOf, isObject, isInteger } from '@tb-dev/ts-guard';
-import { getPanelWindow } from '$electron/utils/helpers.js';
+import { getPanelWindow, extractWorldUnitsFromMap } from '$electron/utils/helpers.js';
 import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards.js';
 import { sequelize } from '$database/database.js';
 import { MainProcessEventError } from '$electron/error.js';
@@ -11,35 +11,40 @@ import type { WorldUnitType } from '$types/world.js';
 import {
     PlunderHistory,
     PlunderConfig,
-    plunderConfigProxy,
-    plunderHistoryProxy,
-    cacheProxy,
+    usePlunderConfigStore,
+    useLastPlunderHistoryStore,
+    useTotalPlunderHistoryStore,
+    useCacheStore,
     WorldUnit,
-    worldUnitProxy
+    worldUnitsMap
 } from '$interface/index.js';
 
 export function setPlunderEvents() {
     const panelWindow = getPanelWindow();
+    const cacheStore = useCacheStore();
+    const plunderConfigStore = usePlunderConfigStore();
+    const lastPlunderHistoryStore = useLastPlunderHistoryStore();
+    const totalPlunderHistoryStore = useTotalPlunderHistoryStore();
 
     // Verifica se o Plunder está ativo.
-    ipcMain.handle('is-plunder-active', () => plunderConfigProxy.active);
+    ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
     
     // Obtém as configurações do Plunder.
     ipcMain.handle('get-plunder-config', () => {
-        const alias = cacheProxy.userAlias;
-        if (isUserAlias(alias)) return { ...plunderConfigProxy };
+        const alias = cacheStore.userAlias;
+        if (isUserAlias(alias)) return { ...plunderConfigStore };
         return null;
     });
 
     // Recebe as configurações do Plunder do painel ou do módulo de configuração e as salva no banco de dados.
     ipcMain.on('update-plunder-config', async (e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
         try {
-            if (!isKeyOf(key, plunderConfigProxy)) return;
-            const previousValue = Reflect.get(plunderConfigProxy, key);
+            if (!isKeyOf(key, plunderConfigStore)) return;
+            const previousValue = Reflect.get(plunderConfigStore, key);
             if (previousValue === value) return;
 
-            // A confirmação dos tipos é feita no Proxy.
-            Reflect.set(plunderConfigProxy, key, value);
+            // A confirmação dos tipos é feita na store.
+            Reflect.set(plunderConfigStore, key, value);
 
             // Comunica a mudança aos processos diferentes daquele que enviou os dados.
             for (const browserWindow of BrowserWindow.getAllWindows()) {
@@ -48,11 +53,11 @@ export function setPlunderEvents() {
                 };
             };
 
-            const userAlias = cacheProxy.userAlias;
+            const userAlias = cacheStore.userAlias;
             assertUserAlias(userAlias, MainProcessEventError);
 
             await sequelize.transaction(async (transaction) => {
-                await PlunderConfig.upsert({ id: userAlias, ...plunderConfigProxy }, { transaction });
+                await PlunderConfig.upsert({ id: userAlias, ...plunderConfigStore }, { transaction });
             });
 
         } catch (err) {
@@ -77,18 +82,18 @@ export function setPlunderEvents() {
 
             for (const [key, value] of Object.entries(details) as [keyof PlunderAttackDetails, number][]) {
                 assertInteger(value, 'Erro ao salvar os detalhes do ataque: valor inválido.');
-                plunderHistoryProxy.last[key] = value;
-                plunderHistoryProxy.total[key] += value;
+                lastPlunderHistoryStore[key] = value;
+                totalPlunderHistoryStore[key] += value;
             };
 
-            const userAlias = cacheProxy.userAlias;
+            const userAlias = cacheStore.userAlias;
             assertUserAlias(userAlias, MainProcessEventError);
 
             await sequelize.transaction(async (transaction) => {
                 await PlunderHistory.upsert({
                     id: userAlias,
-                    last: { ...plunderHistoryProxy.last },
-                    total: { ...plunderHistoryProxy.total }
+                    last: { ...lastPlunderHistoryStore },
+                    total: { ...totalPlunderHistoryStore }
                 }, { transaction });
             });
 
@@ -99,7 +104,7 @@ export function setPlunderEvents() {
 
     ipcMain.handle('get-last-plunder-attack-details', async (): Promise<PlunderAttackDetails | null> => {
         try {
-            const history = await PlunderHistory.getHistoryAsJSON(cacheProxy);
+            const history = await PlunderHistory.getHistoryAsJSON(cacheStore);
             if (!isObject(history)) return null;
             return history.last;
         } catch (err) {
@@ -110,7 +115,7 @@ export function setPlunderEvents() {
 
     ipcMain.handle('get-total-plunder-attack-details', async (): Promise<PlunderAttackDetails | null> => {
         try {
-            const history = await PlunderHistory.getHistoryAsJSON(cacheProxy);
+            const history = await PlunderHistory.getHistoryAsJSON(cacheStore);
             if (!isObject(history)) return null;
             return history.total;
         } catch (err) {
@@ -121,12 +126,12 @@ export function setPlunderEvents() {
 
     ipcMain.handle('calc-carry-capacity', async (_e, units: Partial<UnitAmount>, world?: World | null) => {
         try {
-            world ??= cacheProxy.world;
+            world ??= cacheStore.world;
             if (!isWorld(world)) return null;
 
             let worldUnits: WorldUnitType;
-            if (world === cacheProxy.world) {
-                worldUnits = { ...worldUnitProxy };
+            if (world === cacheStore.world) {       
+                worldUnits = extractWorldUnitsFromMap(worldUnitsMap);
             } else {
                 const worldUnitsRow = await WorldUnit.findByPk(world);
                 if (!isObject(worldUnitsRow)) return null;

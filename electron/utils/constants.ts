@@ -43,6 +43,11 @@ export const allowedOriginRegexList = [
 export const aresKeys = ['locale', 'world', 'majorVersion', 'groupId', 'screen', 'screenMode', 'pregame'] as const;
 export const featuresKeys = ['premium', 'accountManager', 'farmAssistant'] as const;
 
+// Jogo.
+export const resources = ['wood', 'stone', 'iron'] as const;
+export const farmUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'marcher', 'heavy', 'knight'] as const;
+export const allUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'marcher', 'heavy', 'ram', 'catapult', 'knight', 'snob', 'militia'] as const;
+
 // Mapas.
 export const unitsToDestroyWall = {
     '0': {

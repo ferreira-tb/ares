@@ -8,8 +8,9 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
     declare readonly id: CreationOptional<number>;
     declare readonly name: string;
 
-    public static async savePlayerAsUser(playerName: string) {
+    public static async savePlayerAsUser(playerName: string | null) {
         try {
+            if (playerName === null) return;
             await sequelize.transaction(async (transaction) => {
                 const name = encodeURIComponent(playerName);
                 const user = await User.findOne({ where: { name }, transaction });

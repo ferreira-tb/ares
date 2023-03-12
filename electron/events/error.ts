@@ -4,11 +4,13 @@ import { Op } from 'sequelize';
 import { assertInteger, assertString } from '@tb-dev/ts-guard';
 import { MainProcessEventError } from '$electron/error.js';
 import { sequelize } from '$database/database.js';
-import { ErrorLog, DOMErrorLog, MainProcessErrorLog, aresProxy } from '$interface/index.js';
+import { ErrorLog, DOMErrorLog, MainProcessErrorLog, useAresStore } from '$interface/index.js';
 import { getActiveModule } from '$electron/app/modules.js';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error.js';
 
 export function setErrorEvents() {
+    const aresStore = useAresStore();
+
     ipcMain.on('set-error-log', async (_e, err: ErrorLogBase) => {
         try {
             assertString(err.name, 'O nome do erro é inválido.');
@@ -18,13 +20,13 @@ export function setErrorEvents() {
                 name: err.name,
                 message: err.message,
                 stack: err.stack,
-                world: aresProxy.world,
+                world: aresStore.world,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: aresProxy.majorVersion,
-                locale: aresProxy.locale
+                tribal: aresStore.majorVersion,
+                locale: aresStore.locale
             };
 
             const newRow = await sequelize.transaction(async (transaction) => {
@@ -77,15 +79,15 @@ export function setErrorEvents() {
             const domErrorLog: Omit<DOMErrorLogType, 'id' | 'pending'> = {
                 name: err.name,
                 url: new URL(e.sender.getURL()).href,
-                world: aresProxy.world,
+                world: aresStore.world,
                 selector: err.selector,
                 stack: err.stack,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: aresProxy.majorVersion,
-                locale: aresProxy.locale
+                tribal: aresStore.majorVersion,
+                locale: aresStore.locale
             };
 
             const newRow = await sequelize.transaction(async (transaction) => {

@@ -1,35 +1,37 @@
 import { URL } from 'url';
 import { MessageChannelMain } from 'electron';
 import { isObject, isKeyOf, assertObject } from '@tb-dev/ts-guard';
-import { MainProcessError } from '$electron/error.js';
-import { createPhobos, destroyPhobos } from '$electron/app/phobos.js';
+import { MainProcessError } from '$electron/error';
+import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { worldConfigURL, worldUnitURL } from '$electron/utils/constants';
-import { sequelize } from '$database/database.js';
-import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world.js';
-import type { PhobosPortMessage } from '$types/phobos.js';
-import type { World } from '$types/game.js';
-import type { WorldConfig as WorldConfigTable, WorldUnit as WorldUnitTable } from '$tables/world.js';
-import type { WorldConfigProxy, WorldUnitProxy } from '$stores/world.js';
+import { isWorld } from '$electron/utils/guards';
+import { sequelize } from '$database/database';
+import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world';
+import type { PhobosPortMessage } from '$types/phobos';
+import type { World } from '$types/game';
+import type { WorldConfig as WorldConfigTable, WorldUnit as WorldUnitTable } from '$tables/world';
+import type { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/world';
 
 /**
  * Define o estado das stores de acordo com o mundo atual.
  * 
  * Essa função deve ser chamada sempre que o mundo for alterado.
- * A responsabilidade de chamar essa função é do Proxy `cacheProxy`.
+ * A responsabilidade de chamar essa função é do watch no index da interface.
  * 
  * Ao contrário da função `setProxyState`, essa função não é chamada quando o jogador muda.
  */
-export function setWorldProxyState(
+export function patchWorldRelatedStores(
     WorldConfig: typeof WorldConfigTable,
     WorldUnit: typeof WorldUnitTable,
-    worldConfigProxy: WorldConfigProxy,
-    worldUnitProxy: WorldUnitProxy
+    useWorldConfigStore: ReturnType<typeof defineWorldConfigStore>,
+    worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>
 ) {
-    return async function(world: World) {
+    return async function(world: World | null) {
         try {
+            if (!isWorld(world)) return;
             await Promise.all([
-                setWorldConfigState(world, WorldConfig, worldConfigProxy),
-                setWorldUnitState(world, WorldUnit, worldUnitProxy)
+                patchWorldConfigStoreState(world, WorldConfig, useWorldConfigStore),
+                patchWorldUnitStoresState(world, WorldUnit, worldUnitsMap)
             ]);
             
         } catch (err) {
@@ -38,8 +40,14 @@ export function setWorldProxyState(
     };
 };
 
-async function setWorldConfigState(world: World, WorldConfig: typeof WorldConfigTable, worldConfigProxy: WorldConfigProxy) {
+async function patchWorldConfigStoreState(
+    world: World,
+    WorldConfig: typeof WorldConfigTable,
+    useWorldConfigStore: ReturnType<typeof defineWorldConfigStore>
+) {
     try {
+        const worldConfigStore = useWorldConfigStore();
+
         let worldConfig = (await WorldConfig.findByPk(world))?.toJSON();
         if (!isObject(worldConfig)) {
             // Se não houver configurações para o mundo atual, cria um novo registro.
@@ -73,11 +81,11 @@ async function setWorldConfigState(world: World, WorldConfig: typeof WorldConfig
         };
     
         for (const [key, value] of Object.entries(worldConfig)) {
-            // A propriedade `id` existe no banco de dados, mas não no Proxy.
-            if (!isKeyOf(key, worldConfigProxy)) continue;
+            // A propriedade `id` existe no banco de dados, mas não na store.
+            if (!isKeyOf(key, worldConfigStore)) continue;
             
-            // A confirmação dos tipos é feita no Proxy.
-            Reflect.set(worldConfigProxy, key, value);
+            // A confirmação dos tipos é feita na store.
+            Reflect.set(worldConfigStore, key, value);
         };
 
     } catch (err) {
@@ -85,7 +93,11 @@ async function setWorldConfigState(world: World, WorldConfig: typeof WorldConfig
     };
 };
 
-async function setWorldUnitState(world: World, WorldUnit: typeof WorldUnitTable, worldUnitProxy: WorldUnitProxy) {
+async function patchWorldUnitStoresState(
+    world: World,
+    WorldUnit: typeof WorldUnitTable,
+    worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>
+) {
     try {
         let worldUnit = (await WorldUnit.findByPk(world))?.toJSON();
         if (!isObject(worldUnit)) {
@@ -122,12 +134,15 @@ async function setWorldUnitState(world: World, WorldUnit: typeof WorldUnitTable,
         for (const [key, value] of Object.entries(worldUnit) as [keyof WorldUnitType, UnitDetails | null][]) {
             // Em mundos sem arqueiros, as propriedades `archer` e `marcher` são `null`.
             if (!isObject(value)) continue;
-            // A propriedade `id` existe no banco de dados, mas não no Proxy.
-            if (!isKeyOf(key, worldUnitProxy)) continue;
+            // A propriedade `id` existe no banco de dados, mas não na store.
+            if (!worldUnitsMap.has(key)) continue;
     
+            const useUnit = worldUnitsMap.getStrict(key);
+            const unitStore = useUnit();
+
             for (const [innerKey, innerValue] of Object.entries(value) as [keyof UnitDetails, number][]) {
-                // A confirmação dos tipos é feita no Proxy.
-                Reflect.set(worldUnitProxy[key], innerKey, innerValue);
+                // A confirmação dos tipos é feita na store.
+                Reflect.set(unitStore, innerKey, innerValue);
             };
         };
 
