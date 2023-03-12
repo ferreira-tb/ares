@@ -4,12 +4,12 @@ import { app, dialog, BrowserWindow } from 'electron';
 import { isInstanceOf, isString, toNull } from '@tb-dev/ts-guard';
 import { sequelize } from '$database/database.js';
 import { getActiveModule } from '$electron/app/modules.js';
-import type { AresProxy } from '$stores/ares.js';
+import type { useAresStore } from '$interface/index';
 import type { MainProcessErrorLog as MainProcessErrorLogTable } from '$interface/index.js';
 import type { MainProcessErrorLogType } from '$types/error.js';
 
 export function catchError(
-    aresProxy: AresProxy,
+    aresStore: ReturnType<typeof useAresStore>,
     MainProcessErrorLog: typeof MainProcessErrorLogTable
 ) {
     return async function (err: unknown) {
@@ -23,8 +23,8 @@ export function catchError(
                     ares: app.getVersion(),
                     chrome: process.versions.chrome,
                     electron: process.versions.electron,
-                    tribal: aresProxy.majorVersion,
-                    locale: aresProxy.locale
+                    tribal: aresStore.majorVersion,
+                    locale: aresStore.locale
                 };
 
                 await sequelize.transaction(async (transaction) => {

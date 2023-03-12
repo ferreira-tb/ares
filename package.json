@@ -39,13 +39,13 @@
         "forge:make": "electron-forge make"
     },
     "dependencies": {
-        "@tb-dev/prototype": "^2.0.1",
+        "@tb-dev/prototype": "^2.0.2",
         "@tb-dev/prototype-dom": "^3.0.0",
         "@tb-dev/ts-guard": "^2.0.0",
         "@tb-dev/ts-guard-dom": "^1.0.0",
         "@vueuse/core": "^9.13.0",
         "@vueuse/electron": "^9.13.0",
-        "mechanus": "^1.0.1",
+        "mechanus": "^1.0.5",
         "pinia": "^2.0.33",
         "sequelize": "^6.29.3",
         "sqlite3": "^5.1.4",

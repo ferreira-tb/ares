@@ -1,31 +1,21 @@
-import { assertInteger, isKeyOf } from '@tb-dev/ts-guard';
-import type { UnitsStore } from '$types/stores.js';
-import type { RemoveMethods } from '$types/utils.js';
+import { ref, type Mechanus } from 'mechanus';
+import { integerRef } from '$electron/utils/mechanus';
+import { MechanusUnitsStoreType } from '$types/stores';
 
-class UnitsProxy implements RemoveMethods<UnitsStore> {
-    archer: number = 0;
-    axe: number = 0;
-    light: number = 0;
-    marcher: number = 0;
-    ram: number = 0;
-    spear: number = 0;
-    spy: number = 0;
-    sword: number = 0;
-    heavy: number = 0;
-    catapult: number = 0;
-    knight: number = 0;
-    snob: number = 0;
-    militia: number = 0;
+export function defineUnitsStore(mechanus: Mechanus) {
+    return mechanus.define('units', {
+        archer: ref<number>(0, integerRef),
+        axe: ref<number>(0, integerRef),
+        light: ref<number>(0, integerRef),
+        marcher: ref<number>(0, integerRef),
+        ram: ref<number>(0, integerRef),
+        spear: ref<number>(0, integerRef),
+        spy: ref<number>(0, integerRef),
+        sword: ref<number>(0, integerRef),
+        heavy: ref<number>(0, integerRef),
+        catapult: ref<number>(0, integerRef),
+        knight: ref<number>(0, integerRef),
+        snob: ref<number>(0, integerRef),
+        militia: ref<number>(0, integerRef)
+    } satisfies MechanusUnitsStoreType);
 };
-
-export function setUnitsProxy() {
-    return new Proxy(new UnitsProxy(), {
-        set(target, key, value) {
-            if (!isKeyOf(key, target)) return false;
-            assertInteger(value, 'O valor não é um número inteiro.');
-            return Reflect.set(target, key, value);
-        }
-    });
-};
-
-export type { UnitsProxy };

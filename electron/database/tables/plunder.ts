@@ -6,7 +6,7 @@ import { DatabaseError } from '$electron/error.js';
 import { unitsToDestroyWall } from '$electron/utils/constants.js';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import type { UserAlias } from '$types/electron.js';
-import type { CacheProxy } from '$stores/cache.js';
+import type { useCacheStore } from '$interface/index';
 import type { WallLevel, UnitsToDestroyWall } from '$types/game.js';
 
 import type {
@@ -177,9 +177,9 @@ export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, Infer
     declare readonly last: PlunderAttackDetails;
     declare readonly total: PlunderAttackDetails;
 
-    public static async getHistoryAsJSON(cacheProxy: CacheProxy): Promise<PlunderHistoryType | null> {
+    public static async getHistoryAsJSON(cacheStore: ReturnType<typeof useCacheStore>): Promise<PlunderHistoryType | null> {
         try {
-            const userAlias = cacheProxy.userAlias;
+            const userAlias = cacheStore.userAlias;
             if (!isUserAlias(userAlias)) return null;
 
             const plunderHistory = await PlunderHistory.findByPk(userAlias);

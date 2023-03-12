@@ -1,21 +1,11 @@
-import { assertBooleanOrNull, isKeyOf } from '@tb-dev/ts-guard';
-import type { FeaturesStore } from '$types/stores.js';
-import type { RemoveMethods } from '$types/utils.js';
+import { ref, type Mechanus } from 'mechanus';
+import { booleanOrNullRef } from '$electron/utils/mechanus';
+import { MechanusFeaturesStoreType } from '$types/stores';
 
-class FeaturesProxy implements RemoveMethods<FeaturesStore> {
-    premium: boolean | null = null;
-    accountManager: boolean | null = null;
-    farmAssistant: boolean | null = null;
+export function defineFeaturesStore(mechanus: Mechanus) {
+    return mechanus.define('features', {
+        premium: ref<boolean | null>(null, booleanOrNullRef),
+        accountManager: ref<boolean | null>(null, booleanOrNullRef),
+        farmAssistant: ref<boolean | null>(null, booleanOrNullRef)
+    } satisfies MechanusFeaturesStoreType);
 };
-
-export function setFeaturesProxy() {
-    return new Proxy(new FeaturesProxy(), {
-        set(target, key, value) {
-            if (!isKeyOf(key, target)) return false;
-            assertBooleanOrNull(value, 'O valor não é um booleano ou nulo.');
-            return Reflect.set(target, key, value);
-        }
-    });
-};
-
-export type { FeaturesProxy };

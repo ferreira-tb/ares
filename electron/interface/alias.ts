@@ -1,10 +1,11 @@
 import { isObject } from '@tb-dev/ts-guard';
-import { getPanelWindow } from '$electron/utils/helpers.js';
-import { MainProcessError } from '$electron/error.js';
-import type { PlunderAttackDetails, PlunderHistoryType } from '$types/plunder.js';
-import type { UserAlias } from '$types/electron.js';
-import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$tables/plunder.js';
-import type { PlunderConfigProxy, PlunderHistoryProxy } from '$stores/plunder.js';
+import { getPanelWindow } from '$electron/utils/helpers';
+import { isUserAlias } from '$electron/utils/guards';
+import { MainProcessError } from '$electron/error';
+import type { PlunderAttackDetails, PlunderHistoryType } from '$types/plunder';
+import type { UserAlias } from '$types/electron';
+import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$tables/plunder';
+import type { definePlunderConfigStore, setPlunderHistoryStores } from '$stores/plunder';
 
 /**
  * Define o estado das stores de acordo com o alias atual.
@@ -14,38 +15,52 @@ import type { PlunderConfigProxy, PlunderHistoryProxy } from '$stores/plunder.js
  * 
  * Entende-se como "alias" o padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`.
  */
-export function setAliasProxyState(
+export function patchAliasRelatedStores(
     PlunderConfig: typeof PlunderConfigTable,
     PlunderHistory: typeof PlunderHistoryTable,
-    plunderConfigProxy: PlunderConfigProxy,
-    plunderHistoryProxy: PlunderHistoryProxy
+    usePlunderConfigStore: ReturnType<typeof definePlunderConfigStore>,
+    useLastPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useLastPlunderHistoryStore'],
+    useTotalPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useTotalPlunderHistoryStore']
 ) {
-    const args = [PlunderConfig, PlunderHistory, plunderConfigProxy, plunderHistoryProxy] as const;
-    return async function (alias: UserAlias) {
-        try {       
-            await Promise.all([setAllPlunderProxiesState(alias, ...args)]);
+    const args = [
+        PlunderConfig,
+        PlunderHistory,
+        usePlunderConfigStore,
+        useLastPlunderHistoryStore,
+        useTotalPlunderHistoryStore
+    ] as const;
+
+    return async function (alias: UserAlias | null) {
+        try {
+            if (!isUserAlias(alias)) return;
+            await Promise.all([
+                patchAllPlunderStoresState(alias, ...args)
+            ]);
         } catch (err) {
             MainProcessError.catch(err);
         };
     };
 };
 
-async function setAllPlunderProxiesState(
+async function patchAllPlunderStoresState(
     alias: UserAlias,
     PlunderConfig: typeof PlunderConfigTable,
     PlunderHistory: typeof PlunderHistoryTable,
-    plunderConfigProxy: PlunderConfigProxy,
-    plunderHistoryProxy: PlunderHistoryProxy
+    usePlunderConfigStore: ReturnType<typeof definePlunderConfigStore>,
+    useLastPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useLastPlunderHistoryStore'],
+    useTotalPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useTotalPlunderHistoryStore']
 ) {
     const panelWindow = getPanelWindow();
+    const plunderConfigStore = usePlunderConfigStore();
+    const lastPlunderHistoryStore = useLastPlunderHistoryStore();
+    const totalPlunderHistoryStore = useTotalPlunderHistoryStore();
 
     // Configurações do assistente de saque.
     const plunderConfig = (await PlunderConfig.findByPk(alias))?.toJSON();
     if (isObject(plunderConfig)) {
         for (const [key, value] of Object.entries(plunderConfig)) {
-            if (key in plunderConfigProxy) {
-                // A confirmação dos tipos é feita no Proxy.
-                Reflect.set(plunderConfigProxy, key, value);
+            if (key in plunderConfigStore) {
+                Reflect.set(plunderConfigStore, key, value);
             };
         };
 
@@ -59,10 +74,18 @@ async function setAllPlunderProxiesState(
         for (const [key, value] of Object.entries(plunderHistory) as [keyof PlunderHistoryType, PlunderAttackDetails][]) {
             if (!isObject(value)) continue;
 
-            for (const [innerKey, innerValue] of Object.entries(value) as [keyof PlunderAttackDetails, number][]) {
-                if (innerKey in plunderHistoryProxy[key]) {
-                    // A confirmação dos tipos é feita no Proxy.
-                    Reflect.set(plunderHistoryProxy[key], innerKey, innerValue);
+            if (key === 'last') {
+                for (const [innerKey, innerValue] of Object.entries(value)) {
+                    if (innerKey in lastPlunderHistoryStore) {
+                        Reflect.set(lastPlunderHistoryStore, innerKey, innerValue);
+                    };
+                };
+                
+            } else if (key === 'total') {
+                for (const [innerKey, innerValue] of Object.entries(value)) {
+                    if (innerKey in totalPlunderHistoryStore) {
+                        Reflect.set(totalPlunderHistoryStore, innerKey, innerValue);
+                    };
                 };
             };
         };
