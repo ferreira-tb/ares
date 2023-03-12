@@ -5,7 +5,7 @@ import { arrayIncludes } from '@tb-dev/ts-guard';
 import { routeNames, router } from '$browser/router/router.js';
 import { useAresStore } from '$vue/stores/ares.js';
 import { getPlunderInfo } from '$lib/plunder/info.js';
-import ScriptTag from '$browser/components/ScriptTag.vue';
+import DeimosTag from '$browser/components/DeimosTag.vue';
 
 const aresStore = useAresStore();
 
@@ -24,7 +24,7 @@ watchEffect(() => {
 
 <template>
     <Suspense>
-        <ScriptTag />
+        <DeimosTag />
     </Suspense>
 
     <RouterView v-slot="{ Component }">
