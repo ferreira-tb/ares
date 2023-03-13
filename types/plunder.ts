@@ -68,15 +68,13 @@ export type PlunderConfigType = {
      * No entanto, essa opção permite ao usuário alterar o valor padrão.
      */
     plunderedResourcesRatio: number;
+    /** ID do grupo que será utilizado para atacar. */
+    plunderGroupID: number | null;
 
     /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
     blindAttackPattern: BlindAttackPattern;
     /** Determina o padrão de ataque quando o Plunder está usando o modelo C. */
     useCPattern: UseCPattern;
-
-    // Variáveis.
-    /** ID do grupo que será utilizado para atacar. */
-    plunderGroupID: number;
 };
 
 export type PlunderConfigKeys = keyof PlunderConfigType;

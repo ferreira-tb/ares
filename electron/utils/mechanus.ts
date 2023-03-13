@@ -14,7 +14,8 @@ import {
     isPositiveInteger,
     isPositiveNumber,
     isObjectOrNull,
-    isFiniteNumber
+    isFiniteNumber,
+    isPositiveIntegerOrNull
 } from '@tb-dev/ts-guard';
 
 export const arrayIncludesRef = <T>(array: T[]): MechanusRefOptions<T> => ({
@@ -61,6 +62,12 @@ export const integerOrNullRef: MechanusRefOptions<number | null> = {
 
 export const positiveIntegerRef: MechanusRefOptions<number> = {
     validator: isPositiveInteger,
+    throwOnInvalid: true,
+    errorClass: ProxyStoreError
+};
+
+export const positiveIntegerOrNullRef: MechanusRefOptions<number | null> = {
+    validator: isPositiveIntegerOrNull,
     throwOnInvalid: true,
     errorClass: ProxyStoreError
 };
