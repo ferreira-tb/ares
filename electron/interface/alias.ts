@@ -110,6 +110,7 @@ async function patchAllPlunderStoresState(
 async function patchGroupsStoreState(useGroupsStore: ReturnType<typeof defineGroupsStore>) {
     try {
         const mainWindow = getMainWindow();
+        const panelWindow = getPanelWindow();
         const groupsStore = useGroupsStore();
         const { all } = storeToRefs(groupsStore);
 
@@ -141,6 +142,7 @@ async function patchGroupsStoreState(useGroupsStore: ReturnType<typeof defineGro
 
         all.value.clear();
         groups.forEach((group) => all.value.add(group));
+        panelWindow.webContents.send('patch-panel-groups-set', all.value);
 
     } catch (err) {
         AliasPatchError.catch(err);

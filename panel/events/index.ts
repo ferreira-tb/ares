@@ -6,7 +6,7 @@ import { useCurrentVillageStore } from '$vue/stores/village';
 import { useUnitsStore } from '$vue/stores/units';
 import { useGroupsStore } from '$vue/stores/groups';
 import { setPlunderEvents } from '$panel/events/plunder';
-import type { TribalWarsGameDataType, UnitAmount } from '$types/game';
+import type { TribalWarsGameDataType, UnitAmount, VillageGroup } from '$types/game';
 
 export function setPanelEvents() {
     const aresStore = useAresStore();
@@ -25,6 +25,7 @@ export function setPanelEvents() {
     });
     
     ipcRenderer.on('patch-panel-current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
+    ipcRenderer.on('patch-panel-groups-set', (_e, groups: Set<VillageGroup>) => groupsStore.$patch({ all: groups }));
 
     setPlunderEvents();
 };
