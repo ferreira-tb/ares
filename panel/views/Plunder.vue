@@ -1,17 +1,29 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed, watch, watchEffect } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
-import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plunder.js';
-import { useFeaturesStore } from '$vue/stores/features.js';
-import { ipcSend } from '$global/ipc.js';
+import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plunder';
+import { useFeaturesStore } from '$vue/stores/features';
+import { useGroupsStore } from '$vue/stores/groups';
+import { ipcSend } from '$global/ipc';
 import Resources from '$panel/components/Resources.vue';
 import SwitchPopover from '$vue/components/popover/SwitchPopover.vue';
 
 const config = usePlunderConfigStore();
 const history = usePlunderHistoryStore();
 const features = useFeaturesStore();
+const groups = useGroupsStore();
 
 const plunderButtonText = computed(() => config.active === false ? 'Saquear' : 'Parar');
+
+// Não deve ser possível ativar o ataque em grupo se não houver grupos dinâmicos.
+const dynamicGroupsAmount = computed(() => {
+    let amount = 0;
+    groups.all.forEach((group) => {
+        if (group.type === 'dynamic') amount++;
+    });
+
+    return amount;
+});
 
 watch(() => config.active, (value) => {
     ipcSend('update-plunder-config', 'active', value);
@@ -33,6 +45,14 @@ watch(() => config.groupAttack, (v) => ipcSend('update-plunder-config', 'groupAt
 watch(() => config.useC, (v) => ipcSend('update-plunder-config', 'useC', v));
 watch(() => config.ignoreDelay, (v) => ipcSend('update-plunder-config', 'ignoreDelay', v));
 watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAttack', v));
+
+watchEffect(() => {
+    if (features.premium === false || dynamicGroupsAmount.value === 0) {
+        config.groupAttack = false;
+    } else if (features.farmAssistant === false) {
+        config.active = false;
+    };
+});
 </script>
 
 <template>
@@ -40,7 +60,9 @@ watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAt
         <div class="button-area">
             <NButtonGroup>
                 <NButton round @click="ipcSend('open-custom-plunder-template-window')">Modelos</NButton>
-                <NButton round @click="config.active = !config.active">{{ plunderButtonText }}</NButton>
+                <NButton round @click="config.active = !config.active" :disabled="features.farmAssistant === false">
+                    {{ plunderButtonText }}
+                </NButton>
                 <NButton round @click="ipcSend('open-plunder-config-window')">Configurações</NButton>
             </NButtonGroup>
         </div>
@@ -59,17 +81,14 @@ watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAt
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover v-model:value="config.groupAttack" :disabled="features.premium === false">
+                <SwitchPopover
+                    v-model:value="config.groupAttack"
+                    :disabled="features.premium === false || dynamicGroupsAmount === 0"
+                >
                     <template #trigger>Ataque em grupo</template>
-                    <div class="popover-div">
-                        <span>Permite enviar ataques de mais de uma aldeia.</span>
-
-                        <span>Grupos manuais geram <span class="bold">loops infinitos</span>, que aumentam, e muito, a chance de
-                            surgirem captchas. Por causa disso, apenas grupos dinâmicos são permitidos.
-                        </span>
-
-                        <span>Não é possível utilizar essa opção sem uma conta premium ativa.</span>
-                    </div>
+                    <span>Permite enviar ataques de mais de uma aldeia. Grupos manuais geram loops infinitos,
+                        que aumentam, e muito, a chance de surgirem captchas. Por causa disso, apenas grupos dinâmicos são permitidos.
+                        Não é possível utilizar essa opção sem uma conta premium ativa.</span>
                 </SwitchPopover>
             </NGridItem>
 
@@ -112,7 +131,7 @@ watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAt
     </main>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .button-area {
     display: flex;
     justify-content: center;
@@ -122,15 +141,5 @@ watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAt
 .switch-area {
     -webkit-app-region: no-drag;
     margin-top: 1em;
-
-    .popover-div {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5em;
-    }
-
-    .bold {
-        font-weight: bold;
-    }
 }
 </style>
