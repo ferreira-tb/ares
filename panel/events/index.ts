@@ -1,11 +1,12 @@
 import { ipcRenderer } from 'electron';
-import { useAresStore } from '$vue/stores/ares.js';
-import { useFeaturesStore } from '$vue/stores/features.js';
-import { usePlayerStore } from '$vue/stores/player.js';
-import { useCurrentVillageStore } from '$vue/stores/village.js';
-import { useUnitsStore } from '$vue/stores/units.js';
-import { setPlunderEvents } from '$panel/events/plunder.js';
-import type { TribalWarsGameDataType, UnitAmount } from '$types/game.js';
+import { useAresStore } from '$vue/stores/ares';
+import { useFeaturesStore } from '$vue/stores/features';
+import { usePlayerStore } from '$vue/stores/player';
+import { useCurrentVillageStore } from '$vue/stores/village';
+import { useUnitsStore } from '$vue/stores/units';
+import { useGroupsStore } from '$vue/stores/groups';
+import { setPlunderEvents } from '$panel/events/plunder';
+import type { TribalWarsGameDataType, UnitAmount } from '$types/game';
 
 export function setPanelEvents() {
     const aresStore = useAresStore();
@@ -13,12 +14,14 @@ export function setPanelEvents() {
     const playerStore = usePlayerStore();
     const currentVillageStore = useCurrentVillageStore();
     const unitStore = useUnitsStore();
+    const groupsStore = useGroupsStore();
 
     ipcRenderer.on('patch-panel-game-data', (_e, data: TribalWarsGameDataType) => {
         aresStore.$patch(data.ares);
         featuresStore.$patch(data.features);
         playerStore.$patch(data.player);
         currentVillageStore.$patch(data.currentVillage);
+        groupsStore.$patch(data.groups);
     });
     
     ipcRenderer.on('patch-panel-current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
