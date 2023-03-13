@@ -1,9 +1,9 @@
 import { ipcRenderer } from 'electron';
 import { assertKeyOf } from '@tb-dev/ts-guard';
-import { usePlunderConfigStore } from '$vue/stores/plunder.js';
-import { BrowserError } from '$browser/error.js';
+import { usePlunderConfigStore } from '$vue/stores/plunder';
+import { BrowserError } from '$browser/error';
 import type { Pinia } from 'pinia';
-import type { PlunderConfigType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
+import type { PlunderConfigType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder';
 
 export function setPlunderEvents(pinia: Pinia) {
     const plunderConfigStore = usePlunderConfigStore(pinia);

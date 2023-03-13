@@ -2,8 +2,8 @@
 import { reactive } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { NInputNumber } from 'naive-ui';
-import { isWallLevel, assertWallLevel } from '$global/utils/guards.js';
-import { AresError } from '$global/error.js';
+import { isWallLevel, assertWallLevel } from '$global/utils/guards';
+import { AresError } from '$global/error';
 
 type Keyboard = {
     ArrowUp?: boolean | undefined;

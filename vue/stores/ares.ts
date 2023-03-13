@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { World } from '$types/game.js';
-import type { PiniaAresStoreType } from '$types/stores.js';
+import type { World } from '$types/game';
+import type { PiniaAresStoreType } from '$types/stores';
 
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export const useAresStore = defineStore('ares', () => {

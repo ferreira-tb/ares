@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { shell } from 'electron';
 import { NResult, NButton, NButtonGroup } from 'naive-ui';
-import { discordURL } from '$global/utils/constants.js';
-import { ipcSend } from '$global/ipc.js';
+import { discordURL } from '$global/utils/constants';
+import { ipcSend } from '$global/ipc';
 
 interface Props {
     title?: string;

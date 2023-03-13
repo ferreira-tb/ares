@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { toRaw } from 'vue';
 import { NCard, NSpace, useDialog, useMessage } from 'naive-ui';
-import { ipcInvoke } from '$global/ipc.js';
-import { ModuleError } from '$modules/error.js';
+import { ipcInvoke } from '$global/ipc';
+import { ModuleError } from '$modules/error';
 import ArcherIcon from '$icons/units/ArcherIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';
 import HeavyIcon from '$icons/units/HeavyIcon.vue';
@@ -11,7 +11,7 @@ import MarcherIcon from '$icons/units/MarcherIcon.vue';
 import SpearIcon from '$icons/units/SpearIcon.vue';
 import SpyIcon from '$icons/units/SpyIcon.vue';
 import SwordIcon from '$icons/units/SwordIcon.vue';
-import type { CustomPlunderTemplateType } from '$types/plunder.js';
+import type { CustomPlunderTemplateType } from '$types/plunder';
 
 const dialog = useDialog();
 const message = useMessage();

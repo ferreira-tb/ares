@@ -1,4 +1,4 @@
-import type { World } from '$types/game.js';
+import type { World } from '$types/game';
 
 export type ErrorLogBase = {
     readonly name: string;

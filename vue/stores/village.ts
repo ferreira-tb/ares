@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import type { PiniaCurrentVillageStoreType } from '$types/stores.js';
+import type { PiniaCurrentVillageStoreType } from '$types/stores';
 
 export const useCurrentVillageStore = defineStore('current-village', () => {
     const x = ref<number | null>(null);

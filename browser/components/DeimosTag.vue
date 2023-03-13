@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount } from 'vue';
 import { assertString } from '@tb-dev/ts-guard';
-import { ipcInvoke, ipcSend } from '$global/ipc.js';
+import { ipcInvoke, ipcSend } from '$global/ipc';
 
 const deimos = await ipcInvoke('get-deimos-file');
 assertString(deimos, 'Não foi possível iniciar o Deimos.');

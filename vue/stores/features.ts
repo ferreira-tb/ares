@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { PiniaFeaturesStoreType } from '$types/stores.js';
+import type { PiniaFeaturesStoreType } from '$types/stores';
 
 export const useFeaturesStore = defineStore('features', () => {
     const premium = ref<boolean | null>(null);

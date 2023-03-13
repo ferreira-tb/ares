@@ -1,4 +1,4 @@
-import type { AllUnits } from '$types/game.js';
+import type { AllUnits } from '$types/game';
 
 export type WorldConfigType = {
     /** Velocidade do mundo (FLOAT). */

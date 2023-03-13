@@ -1,4 +1,4 @@
-import type { Resources, ResourcesPTBR, UnitsAmountAsStrings } from '$types/game.js';
+import type { Resources, ResourcesPTBR, UnitsAmountAsStrings } from '$types/game';
 
 export type ActivePossible = {
     readonly active: boolean;
