@@ -10,7 +10,8 @@ import {
     positiveIntegerRef,
     positiveNumberRef,
     arrayIncludesRef,
-    wallLevelRef
+    wallLevelRef,
+    positiveIntegerOrNullRef
 } from '$electron/utils/mechanus';
 
 import type {
@@ -65,14 +66,6 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         return refOptions;
     };
 
-    const plunderGroupValidator = (): MechanusRefOptions<number> => {
-        const refOptions = { ...positiveIntegerRef };
-        refOptions.validator = (value: unknown): value is number => {
-            return isPositiveInteger(value) || value === 0;
-        };
-        return refOptions;
-    };
-
     const active = ref<boolean>(false, booleanRef);
 
     const ignoreWall = ref<boolean>(false, booleanRef);
@@ -91,12 +84,11 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const maxDistance = ref<number>(20, maxDistanceValidator());
     const ignoreOlderThan = ref<number>(10, positiveIntegerRef);
     const plunderedResourcesRatio = ref<number>(1, ratioValidator());
+    const plunderGroupID = ref<number | null>(null, positiveIntegerOrNullRef);
 
     const blindAttackPattern = ref<BlindAttackPattern>('smaller', arrayIncludesRef(blindAttackPatterns));
     const useCPattern = ref<UseCPattern>('normal', arrayIncludesRef(useCPatterns));
-
-    const plunderGroupID = ref<number>(0, plunderGroupValidator());
-
+    
     return mechanus.define('plunderConfig', {
         active,
         ignoreWall,
@@ -115,11 +107,10 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         maxDistance,
         ignoreOlderThan,
         plunderedResourcesRatio,
+        plunderGroupID,
 
         blindAttackPattern,
         useCPattern,
-
-        plunderGroupID
     } satisfies MechanusPlunderConfigStoreType);
 };
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useIpcRenderer } from '@vueuse/electron';
 import { isObject, assertKeyOf, toNull, isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
 import { NDivider, NGrid, NGridItem, NSelect, NButton, NButtonGroup, useDialog, useMessage } from 'naive-ui';
@@ -23,6 +23,7 @@ const message = useMessage();
 
 const previousConfig = toNull(await ipcInvoke('get-plunder-config'), isObject);
 const config = ref<PlunderConfigType | null>(previousConfig);
+const groups = ref(await ipcInvoke('get-village-groups'));
 
 // Refs das configurações.
 const wallLevelToIgnore = ref<number>(config.value?.wallLevelToIgnore ?? 1);
@@ -34,6 +35,7 @@ const minutesUntilReload = ref<number>(config.value?.minutesUntilReload ?? 10);
 const maxDistance = ref<number>(config.value?.maxDistance ?? 20);
 const ignoreOlderThan = ref<number>(config.value?.ignoreOlderThan ?? 10);
 const plunderedResourcesRatio = ref<number>(config.value?.plunderedResourcesRatio ?? 1);
+const plunderGroupID = ref<number | null>(config.value?.plunderGroupID ?? null);
 
 const blindAttackPattern = ref<BlindAttackPattern>(config.value?.blindAttackPattern ?? 'smaller');
 const useCPattern = ref<UseCPattern>(config.value?.useCPattern ?? 'normal');
@@ -48,6 +50,7 @@ watch(minutesUntilReload, (v) => updateConfig('minutesUntilReload', v));
 watch(maxDistance, (v) => updateConfig('maxDistance', v));
 watch(ignoreOlderThan, (v) => updateConfig('ignoreOlderThan', v));
 watch(plunderedResourcesRatio, (v) => updateConfig('plunderedResourcesRatio', v));
+watch(plunderGroupID, (v) => updateConfig('plunderGroupID', v));
 
 watch(blindAttackPattern, (v) => updateConfig('blindAttackPattern', v));
 watch(useCPattern, (v) => updateConfig('useCPattern', v));
@@ -64,6 +67,7 @@ ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: Plu
     };
 });
 
+function updateConfig(name: 'plunderGroupID', value: number | null): void;
 function updateConfig(name: 'blindAttackPattern', value: BlindAttackPattern): void;
 function updateConfig(name: 'useCPattern', value: UseCPattern): void;
 function updateConfig(name: PlunderConfigKeys, value: number): void;
@@ -126,6 +130,16 @@ const useCOptions = [
         value: 'only'
     }
 ] satisfies UseCOptions;
+
+const plunderGroupOptions = computed(() => {
+    const groupsArray = Array.from(groups.value).filter((group) => group.type === 'dynamic');
+    const options = groupsArray.map((group) => ({
+        label: group.name,
+        value: group.id
+    }));
+
+    return options.sort((a, b) => a.label.localeCompare(b.label, 'pt-br'));
+});
 </script>
 
 <template>
@@ -186,17 +200,6 @@ const useCOptions = [
 
             <NGridItem>
                 <LabelPopover>
-                    <template #trigger>Recarregamento automático</template>
-                    <span>Tempo, em minutos, até que a página seja recarregada automaticamente durante o saque.</span>
-                </LabelPopover>
-            </NGridItem>
-            <NGridItem>
-                <NumberImput v-model:value="minutesUntilReload" :min="1" :max="60" :step="1"
-                    :validator="(v) => isPositiveInteger(v) && v >= 1 && v <= 60" />
-            </NGridItem>
-
-            <NGridItem>
-                <LabelPopover>
                     <template #trigger>Padrão do ataque às cegas</template>
                     <span>
                         Determina como o Ares escolherá o modelo para atacar quando não houver informações de exploradores.
@@ -223,6 +226,26 @@ const useCOptions = [
             <NGridItem>
                 <div class="plunder-config-select">
                     <NSelect v-model:value="useCPattern" :options="useCOptions" />
+                </div>
+            </NGridItem>
+        </NGrid>
+
+        <NDivider title-placement="left">Grupo</NDivider>
+        <NGrid :cols="2" :x-gap="6" :y-gap="10">
+            <NGridItem>
+                <LabelPopover>
+                    <template #trigger>Grupo de ataque</template>
+                    <span>Determina qual grupo será utilizado ao se atacar em grupo. Apenas grupos dinâmicos são permitidos.</span>
+                </LabelPopover>
+            </NGridItem>
+            <NGridItem>
+                <div class="plunder-config-select">
+                    <NSelect
+                        v-model:value="plunderGroupID"
+                        :options="plunderGroupOptions"
+                        placeholder="Selecione um grupo"
+                        :disabled="plunderGroupOptions.length === 0"
+                    />
                 </div>
             </NGridItem>
         </NGrid>
@@ -278,6 +301,17 @@ const useCOptions = [
 
         <NDivider title-placement="left">Outros</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
+            <NGridItem>
+                <LabelPopover>
+                    <template #trigger>Recarregamento automático</template>
+                    <span>Tempo, em minutos, até que a página seja recarregada automaticamente durante o saque.</span>
+                </LabelPopover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput v-model:value="minutesUntilReload" :min="1" :max="60" :step="1"
+                    :validator="(v) => isPositiveInteger(v) && v >= 1 && v <= 60" />
+            </NGridItem>
+
             <NGridItem>
                 <LabelPopover>
                     <template #trigger>Estimativa de saque</template>

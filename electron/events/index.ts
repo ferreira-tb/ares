@@ -1,14 +1,14 @@
 import { app, ipcMain } from 'electron';
-import { setPlunderEvents } from '$electron/events/plunder.js';
-import { setBrowserEvents } from '$electron/events/browser.js';
-import { setErrorEvents } from '$electron/events/error.js';
-import { setPanelEvents } from '$electron/events/panel.js';
-import { setDeimosEvents } from '$electron/events/deimos.js';
-import { setModuleEvents } from '$electron/events/modules.js';
-import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$interface/index.js';
-import { isUserAlias, isAllowedURL } from '$electron/utils/guards.js';
-import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules.js';
-import type { UserAlias } from '$types/electron.js';
+import { setPlunderEvents } from '$electron/events/plunder';
+import { setBrowserEvents } from '$electron/events/browser';
+import { setErrorEvents } from '$electron/events/error';
+import { setPanelEvents } from '$electron/events/panel';
+import { setDeimosEvents } from '$electron/events/deimos';
+import { setModuleEvents } from '$electron/events/modules';
+import { useCacheStore, useWorldConfigStore, worldUnitsMap, useGroupsStore } from '$interface/index';
+import { isUserAlias, isAllowedURL } from '$electron/utils/guards';
+import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
+import type { UserAlias } from '$types/electron';
 
 import {
     getMainWindow,
@@ -16,7 +16,7 @@ import {
     getPlayerNameFromAlias,
     insertCSS,
     extractWorldUnitsFromMap
-} from '$electron/utils/helpers.js';
+} from '$electron/utils/helpers';
 
 export function setEvents() {
     const mainWindow = getMainWindow();
@@ -24,6 +24,7 @@ export function setEvents() {
 
     const cacheStore = useCacheStore();
     const worldConfigStore = useWorldConfigStore();
+    const groupsStore = useGroupsStore();
 
     // Geral.
     ipcMain.handle('app-name', () => app.getName());
@@ -49,6 +50,8 @@ export function setEvents() {
         if (!isUserAlias(alias)) return cacheStore.player;
         return getPlayerNameFromAlias(alias);
     });
+
+    ipcMain.handle('get-village-groups', () => groupsStore.all);
 
     // Informa ao painel que o navegador terminou de carregar.
     mainWindow.webContents.on('did-finish-load', () => {

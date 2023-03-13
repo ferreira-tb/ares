@@ -1,7 +1,7 @@
 import { URL } from 'url';
 import { MessageChannelMain } from 'electron';
 import { isObject, isKeyOf, assertObject } from '@tb-dev/ts-guard';
-import { MainProcessError } from '$electron/error';
+import { WorldPatchError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { worldConfigURL, worldUnitURL } from '$electron/utils/constants';
 import { isWorld } from '$electron/utils/guards';
@@ -35,7 +35,7 @@ export function patchWorldRelatedStores(
             ]);
             
         } catch (err) {
-            MainProcessError.catch(err);
+            WorldPatchError.catch(err);
         };
     };
 };
@@ -89,7 +89,7 @@ async function patchWorldConfigStoreState(
         };
 
     } catch (err) {
-        MainProcessError.catch(err);
+        WorldPatchError.catch(err);
     };
 };
 
@@ -147,6 +147,6 @@ async function patchWorldUnitStoresState(
         };
 
     } catch (err) {
-        MainProcessError.catch(err);
+        WorldPatchError.catch(err);
     };
 };

@@ -12,7 +12,8 @@ import {
     useFeaturesStore,
     usePlunderStore,
     useCurrentVillageStore,
-    useCacheStore
+    useCacheStore,
+    useGroupsStore
 } from '$interface/index.js';
 
 export function setDeimosEvents() {
@@ -22,6 +23,7 @@ export function setDeimosEvents() {
     const featuresStore = useFeaturesStore();
     const plunderStore = usePlunderStore();
     const currentVillageStore = useCurrentVillageStore();
+    const groupsStore = useGroupsStore();
     const cacheStore = useCacheStore();
 
     /** Conteúdo do arquivo `deimos.js`. */
@@ -56,6 +58,11 @@ export function setDeimosEvents() {
                     case 'features':
                         for (const [featureKey, featureValue] of Object.entries(value)) {
                             Reflect.set(featuresStore, featureKey, featureValue);
+                        };
+                        break;
+                    case 'groups':
+                        for (const [groupKey, groupValue] of Object.entries(value)) {
+                            Reflect.set(groupsStore, groupKey, groupValue);
                         };
                         break;
                     case 'player':

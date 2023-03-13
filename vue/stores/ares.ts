@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { defineStore } from 'pinia';
 import type { World } from '$types/game.js';
 import type { PiniaAresStoreType } from '$types/stores.js';
 
@@ -8,8 +8,7 @@ export const useAresStore = defineStore('ares', () => {
     const locale = ref<string | null>(null);
     const world = ref<World | null>(null);
     const majorVersion = ref<string | null>(null);
-    const groupId = ref<number | null>(null);
-
+    
     const screen = ref<string | null>(null);
     const screenMode = ref<string | null>(null);
     const pregame = ref<boolean | null>(null);
@@ -18,7 +17,6 @@ export const useAresStore = defineStore('ares', () => {
         locale,
         world,
         majorVersion,
-        groupId,
         screen,
         screenMode,
         pregame,

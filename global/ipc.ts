@@ -1,9 +1,9 @@
 import { ipcRenderer } from 'electron';
-import type { PlunderAttack } from '$lib/plunder/attack.js';
-import type { UnitAmount, World, TribalWarsGameDataType } from '$types/game.js';
-import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType, MainProcessErrorLogType } from '$types/error.js';
-import type { WorldConfigType, WorldUnitType } from '$types/world.js';
-import type { UserAlias } from '$types/electron.js';
+import type { PlunderAttack } from '$lib/plunder/attack';
+import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$types/game';
+import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType, MainProcessErrorLogType } from '$types/error';
+import type { WorldConfigType, WorldUnitType } from '$types/world';
+import type { UserAlias } from '$types/electron';
 
 import type {
     PlunderAttackDetails,
@@ -13,7 +13,7 @@ import type {
     CustomPlunderTemplateType,
     DemolitionTemplateType,
     PlunderConfigType
-} from '$types/plunder.js';
+} from '$types/plunder';
 
 // Geral
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
@@ -36,6 +36,7 @@ export async function ipcInvoke(channel: 'current-world-units'): Promise<WorldUn
 export async function ipcInvoke(channel: 'player-name', alias?: UserAlias): Promise<string | null>;
 export async function ipcInvoke(channel: 'is-archer-world'): Promise<boolean>;
 export async function ipcInvoke(channel: 'calc-carry-capacity', units: Partial<UnitAmount>, world?: World): Promise<number | null>;
+export async function ipcInvoke(channel: 'get-village-groups'): Promise<Set<VillageGroup>>;
 
 // Erros
 export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;

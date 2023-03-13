@@ -4,6 +4,7 @@ import { allUnits } from '$electron/utils/constants';
 import type { AllUnits } from '$types/game';
 import type { UnitDetails } from '$types/world';
 import type { Mechanus, MechanusStore } from 'mechanus';
+import type { MechanusWorldConfigStoreType, MechanusWorldUnitStoreType, WorldUnitStoresMap } from '$types/stores';
 
 export function defineWorldConfigStore(mechanus: Mechanus) {
     return mechanus.define('worldConfig', {
@@ -14,7 +15,7 @@ export function defineWorldConfigStore(mechanus: Mechanus) {
         archer: ref(false, booleanRef),
         church: ref(false, booleanRef),
         watchtower: ref(false, booleanRef)
-    });
+    } satisfies MechanusWorldConfigStoreType);
 };
 
 export function createWorldUnitStoresMap(mechanus: Mechanus) {
@@ -29,8 +30,8 @@ export function createWorldUnitStoresMap(mechanus: Mechanus) {
             defenseCavalry: ref(0, integerRef),
             defenseArcher: ref(0, integerRef),
             carry: ref(0, integerRef)
-        }));
+        } satisfies MechanusWorldUnitStoreType));
     });
 
-    return worldUnitMap as ReadonlyMap<AllUnits, () => MechanusStore<UnitDetails>>;
+    return worldUnitMap as WorldUnitStoresMap;
 };

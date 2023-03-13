@@ -31,19 +31,19 @@ watchEffect(async () => {
     <div class="res-area">
         <div>
             <WoodIcon />
-            <span>{{ history.wood }}</span>
+            <span>{{ history.wood.toLocaleString('pt-br') }}</span>
         </div>
         <div>
             <StoneIcon />
-            <span>{{ history.stone }}</span>
+            <span>{{ history.stone.toLocaleString('pt-br') }}</span>
         </div>
         <div>
             <IronIcon />
-            <span>{{ history.iron }}</span>
+            <span>{{ history.iron.toLocaleString('pt-br') }}</span>
         </div>
         <div>
             <StorageIcon />
-            <span>{{ history.total }}</span>
+            <span>{{ history.total.toLocaleString('pt-br') }}</span>
         </div>
     </div>
 </template>

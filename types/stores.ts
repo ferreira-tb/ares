@@ -1,10 +1,11 @@
 import type { ComputedRef, Ref } from 'vue';
-import type { MechanusComputedRef, MechanusRef } from 'mechanus';
-import type { TribalWarsGameDataType } from '$types/game.js';
-import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails } from '$types/plunder.js';
-import type { UnitAmount } from '$types/game.js';
-import type { RemoveMethods } from '$types/utils.js';
-import type { WorldConfigType, WorldUnitType } from '$types/world.js';
+import type { MechanusComputedRef, MechanusRef, MechanusStore } from 'mechanus';
+import type { AllUnits, TribalWarsGameDataType } from '$types/game';
+import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails } from '$types/plunder';
+import type { UnitAmount, VillageGroup } from '$types/game';
+import type { RemoveMethods } from '$types/utils';
+import type { WorldConfigType } from '$types/world';
+import type { UnitDetails } from '$types/world';
 
 ////// ARES
 export type AresStore = TribalWarsGameDataType['ares'];
@@ -27,8 +28,8 @@ export type MechanusPlayerStoreType = {
 ////// CURRENT VILLAGE
 type CurrentVillageType = TribalWarsGameDataType['currentVillage'];
 export interface CurrentVillageStore extends CurrentVillageType {
-    coords: [CurrentVillageType['x'], CurrentVillageType['y']];
-    totalResources: number | null;
+    readonly coords: [CurrentVillageType['x'], CurrentVillageType['y']];
+    readonly totalResources: number | null;
 };
 
 export type PiniaCurrentVillageStoreType = {
@@ -52,6 +53,19 @@ export type PiniaFeaturesStoreType = {
 };
 export type MechanusFeaturesStoreType = {
     [K in keyof FeaturesStore]: MechanusRef<FeaturesStore[K]>;
+};
+
+////// GROUPS
+type GameDataGroups = TribalWarsGameDataType['groups'];
+export interface GroupsStore extends GameDataGroups {
+    /** Todos os grupos de aldeias referentes ao alias atual. */
+    readonly all: Set<VillageGroup>;
+};
+export type PiniaGroupsStoreType = {
+    [K in keyof GroupsStore]: Ref<GroupsStore[K]>;
+};
+export type MechanusGroupsStoreType = {
+    [K in keyof GroupsStore]: MechanusRef<GroupsStore[K]>;
 };
 
 ////// PLUNDER INFO
@@ -113,6 +127,12 @@ export type MechanusUnitsStoreType = {
 
 ////// WORLD CONFIG
 export type WorldConfigStore = WorldConfigType;
+export type MechanusWorldConfigStoreType = {
+    [K in keyof WorldConfigStore]: MechanusRef<WorldConfigStore[K]>;
+};
 
 ////// WORLD UNIT
-export type WorldUnitStore = WorldUnitType;
+export type WorldUnitStoresMap = ReadonlyMap<AllUnits, () => MechanusStore<UnitDetails>>;
+export type MechanusWorldUnitStoreType = {
+    [K in keyof UnitDetails]: MechanusRef<UnitDetails[K]>;
+};

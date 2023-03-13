@@ -12,8 +12,6 @@ export class ProxyStoreError extends MainProcessError {
         super(message);
         this.name = 'ProxyStoreError';
     };
-
-    declare public static catch: (err: unknown) => Promise<void>;
 };
 
 export class DatabaseError extends MainProcessError {
@@ -21,8 +19,6 @@ export class DatabaseError extends MainProcessError {
         super(message);
         this.name = 'DatabaseError';
     };
-
-    declare public static catch: (err: unknown) => Promise<void>;
 };
 
 export class MainProcessEventError extends MainProcessError {
@@ -30,8 +26,6 @@ export class MainProcessEventError extends MainProcessError {
         super(message);
         this.name = 'MainProcessEventError';
     };
-
-    declare public static catch: (err: unknown) => Promise<void>;
 };
 
 export class ModuleCreationError extends MainProcessError {
@@ -39,6 +33,18 @@ export class ModuleCreationError extends MainProcessError {
         super(message);
         this.name = 'ModuleCreationError';
     };
+};
 
-    declare public static catch: (err: unknown) => Promise<void>;
+export class AliasPatchError extends MainProcessError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'AliasPatchError';
+    };
+};
+
+export class WorldPatchError extends MainProcessError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'WorldPatchError';
+    };
 };

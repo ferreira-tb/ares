@@ -40,13 +40,11 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const maxDistance = ref<number>(20);
     const ignoreOlderThan = ref<number>(10);
     const plunderedResourcesRatio = ref<number>(1);
+    const plunderGroupID = ref<number | null>(null);
 
     const blindAttackPattern = ref<BlindAttackPattern>('smaller');
     const useCPattern = ref<UseCPattern>('normal');
-
-    // Variáveis
-    const plunderGroupID = ref<number>(0);
-
+    
     function raw(): PlunderConfigType {
         return {
             active: active.value,

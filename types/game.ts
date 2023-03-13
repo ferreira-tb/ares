@@ -65,6 +65,12 @@ export type Coords = {
     y: number;
 };
 
+export type VillageGroup = {
+    readonly id: number;
+    readonly name: string;
+    readonly type: 'dynamic' | 'static';
+};
+
 export interface TribalWarsGameDataType {
     readonly ares: {
         /** Local. */
@@ -79,8 +85,7 @@ export interface TribalWarsGameDataType {
         readonly screenMode: string | null;
         /** Indica se está no modo de pré-jogo. */
         readonly pregame: boolean | null;
-        /** Grupo de aldeias atual. */
-        readonly groupId: number | null;
+        
     };
 
     readonly features: {
@@ -90,6 +95,11 @@ export interface TribalWarsGameDataType {
         readonly accountManager: boolean | null;
         /** Assistente de saque. */
         readonly farmAssistant: boolean | null;
+    };
+
+    readonly groups: {
+        /** ID do grupo de aldeias atual. */
+        readonly groupId: number | null;
     };
 
     readonly player: {
