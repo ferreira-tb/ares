@@ -1,11 +1,11 @@
 import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
 import { isInstanceOf } from '@tb-dev/ts-guard';
-import { aresURL, favicon, moduleHtml, repoURL, issuesURL } from '$electron/utils/constants.js';
-import { getMainWindow } from '$electron/utils/helpers.js';
-import { setBasicDevMenu } from '$electron/menu/dev.js';
-import { isAllowedURL } from '$electron/utils/guards.js';
-import { ModuleCreationError } from '$electron/error.js';
-import type { ModuleNames, ModuleRoutes, ModuleConstructorOptions, WebsiteModuleNames } from '$types/modules.js';
+import { aresURL, favicon, moduleHtml, repoURL, issuesURL } from '$electron/utils/constants';
+import { getMainWindow } from '$electron/utils/helpers';
+import { setBasicDevMenu } from '$electron/menu/dev';
+import { isAllowedURL } from '$electron/utils/guards';
+import { ModuleCreationError } from '$electron/error';
+import type { ModuleNames, ModuleRoutes, ModuleConstructorOptions, WebsiteModuleNames } from '$types/modules';
 
 const activeModules = new Map<ModuleNames, BrowserWindow>();
 const activeWebsiteModules = new Map<WebsiteModuleNames, BrowserWindow>();

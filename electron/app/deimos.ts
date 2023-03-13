@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import { assertString } from '@tb-dev/ts-guard';
-import { deimosJs } from '$electron/utils/constants.js';
-import { MainProcessError } from '$electron/error.js';
+import { deimosJs } from '$electron/utils/constants';
+import { MainProcessError } from '$electron/error';
 
 /** Retorna o conteúdo do arquivo `deimos.js`. */
 export async function readDeimosFile() {
