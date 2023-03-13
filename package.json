@@ -33,7 +33,8 @@
         "script": "npm-run-all script:*",
         "script:css": "node scripts/css.mjs",
         "script:html": "node scripts/html.mjs",
-        "start": "npm run clear && npm run build && npm run main",
+        "make": "npm run clear && npm run build && rollup -c",
+        "start": "npm run make && electron .",
         "forge:start": "electron-forge start",
         "forge:package": "electron-forge package",
         "forge:make": "electron-forge make"
