@@ -59,7 +59,7 @@ export type MechanusFeaturesStoreType = {
 type GameDataGroups = TribalWarsGameDataType['groups'];
 export interface GroupsStore extends GameDataGroups {
     /** Todos os grupos de aldeias referentes ao alias atual. */
-    readonly all: VillageGroup[];
+    readonly all: Set<VillageGroup>;
 };
 export type PiniaGroupsStoreType = {
     [K in keyof GroupsStore]: Ref<GroupsStore[K]>;

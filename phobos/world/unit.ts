@@ -74,7 +74,7 @@ class WorldUnit implements WorldUnitType {
     };
 };
 
-export async function fetchWorldUnit(port: MessagePort) {
+export function fetchWorldUnit(port: MessagePort) {
     try {
         const worldUnit = new WorldUnit();
         port.postMessage(worldUnit);

@@ -15,7 +15,8 @@ export interface PhobosOptions extends BrowserViewConstructorOptions {
 
 export type PhobosNames =
     | 'fetch-world-config'
-    | 'fetch-world-unit';
+    | 'fetch-world-unit'
+    | 'get-village-groups';
 
 export type PhobosChannel = PhobosNames;
 

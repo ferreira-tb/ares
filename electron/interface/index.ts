@@ -49,7 +49,8 @@ const aliasArgs = [
     PlunderHistory,
     usePlunderConfigStore,
     useLastPlunderHistoryStore,
-    useTotalPlunderHistoryStore
+    useTotalPlunderHistoryStore,
+    useGroupsStore
 ] as const;
 
 ////// WATCHERS

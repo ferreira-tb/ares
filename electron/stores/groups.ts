@@ -5,7 +5,7 @@ import type { VillageGroup } from '$types/game';
 
 export function defineGroupsStore(mechanus: Mechanus) {
     return mechanus.define('groups', {
-        all: ref<VillageGroup[]>([]),
+        all: ref<Set<VillageGroup>>(new Set()),
         groupId: ref<number | null>(null, integerOrNullRef)
     } satisfies MechanusGroupsStoreType);
 };

@@ -1,5 +1,5 @@
-import { PhobosError } from '$phobos/error.js';
-import type { WorldConfigType } from '$types/world.js';
+import { PhobosError } from '$phobos/error';
+import type { WorldConfigType } from '$types/world';
 
 class WorldConfig implements WorldConfigType {
     readonly speed: number;
@@ -34,7 +34,7 @@ class WorldConfig implements WorldConfigType {
     };
 };
 
-export async function fetchWorldConfig(port: MessagePort) {
+export function fetchWorldConfig(port: MessagePort) {
     try {
         const worldConfig = new WorldConfig();
         port.postMessage(worldConfig);

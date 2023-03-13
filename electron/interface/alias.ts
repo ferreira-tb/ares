@@ -1,11 +1,18 @@
-import { isObject } from '@tb-dev/ts-guard';
-import { getPanelWindow } from '$electron/utils/helpers';
+import { URL } from 'url';
+import { MessageChannelMain } from 'electron';
+import { isObject, assertInstanceOf } from '@tb-dev/ts-guard';
+import { storeToRefs } from 'mechanus';
+import { getPanelWindow, getMainWindow } from '$electron/utils/helpers';
 import { isUserAlias } from '$electron/utils/guards';
-import { MainProcessError } from '$electron/error';
+import { AliasPatchError } from '$electron/error';
+import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import type { PlunderAttackDetails, PlunderHistoryType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
 import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$tables/plunder';
 import type { definePlunderConfigStore, setPlunderHistoryStores } from '$stores/plunder';
+import type { defineGroupsStore } from '$stores/groups';
+import type { VillageGroup } from '$types/game';
+import type { PhobosPortMessage } from '$types/phobos';
 
 /**
  * Define o estado das stores de acordo com o alias atual.
@@ -20,9 +27,10 @@ export function patchAliasRelatedStores(
     PlunderHistory: typeof PlunderHistoryTable,
     usePlunderConfigStore: ReturnType<typeof definePlunderConfigStore>,
     useLastPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useLastPlunderHistoryStore'],
-    useTotalPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useTotalPlunderHistoryStore']
+    useTotalPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useTotalPlunderHistoryStore'],
+    useGroupsStore: ReturnType<typeof defineGroupsStore>
 ) {
-    const args = [
+    const plunderArgs = [
         PlunderConfig,
         PlunderHistory,
         usePlunderConfigStore,
@@ -34,10 +42,11 @@ export function patchAliasRelatedStores(
         try {
             if (!isUserAlias(alias)) return;
             await Promise.all([
-                patchAllPlunderStoresState(alias, ...args)
+                patchAllPlunderStoresState(alias, ...plunderArgs),
+                patchGroupsStoreState(useGroupsStore)
             ]);
         } catch (err) {
-            MainProcessError.catch(err);
+            AliasPatchError.catch(err);
         };
     };
 };
@@ -95,5 +104,45 @@ async function patchAllPlunderStoresState(
         if (isObject(plunderConfig) && plunderConfig.active === true) {
             panelWindow.webContents.send('patch-panel-plunder-history', plunderHistory);
         };
+    };
+};
+
+async function patchGroupsStoreState(useGroupsStore: ReturnType<typeof defineGroupsStore>) {
+    try {
+        const mainWindow = getMainWindow();
+        const groupsStore = useGroupsStore();
+        const { all } = storeToRefs(groupsStore);
+
+        const groups = await new Promise<Set<VillageGroup>>(async (resolve, reject) => {
+            // Cria o Phobos na tela de grupos manuais.
+            // Lá é possível obter tanto os grupos manuais quanto os dinâmicos.
+            const url = new URL(mainWindow.webContents.getURL());
+            url.search = 'screen=overview_villages&&mode=groups&type=static';
+            const phobos = await createPhobos('get-village-groups', url, { override: true });
+            
+            const { port1, port2 } = new MessageChannelMain();
+            phobos.webContents.postMessage('port', null, [port2]);
+            port1.postMessage({ channel: 'get-village-groups' } satisfies PhobosPortMessage);
+
+            port1.on('message', (e) => {
+                try {
+                    assertInstanceOf<Set<VillageGroup>>(e.data, Set);
+                    resolve(e.data);
+                } catch (err) {
+                    reject(err);
+                } finally {
+                    port1.close();
+                    destroyPhobos(phobos);
+                };
+            });
+
+            port1.start();
+        });
+
+        all.value.clear();
+        groups.forEach((group) => all.value.add(group));
+
+    } catch (err) {
+        AliasPatchError.catch(err);
     };
 };
