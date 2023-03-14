@@ -1,13 +1,13 @@
 import '@tb-dev/prototype';
 import { app, BrowserWindow } from 'electron';
-import { setAppMenu } from '$electron/menu/menu.js';
-import { sequelize } from '$database/database.js';
-import { UserConfig } from '$interface/index.js';
-import { setEvents } from '$electron/events/index.js';
-import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants.js';
-import { MainProcessError } from '$electron/error.js';
-import { isAllowedURL } from '$electron/utils/guards.js';
-import { insertCSS, getWindowOpenHandler } from '$electron/utils/helpers.js';
+import { setAppMenu } from '$electron/menu/menu';
+import { sequelize } from '$database/database';
+import { UserConfig } from '$interface/index';
+import { setEvents } from '$electron/events/index';
+import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants';
+import { MainProcessError } from '$electron/error';
+import { isAllowedURL } from '$electron/utils/guards';
+import { insertCSS, getWindowOpenHandler } from '$electron/utils/helpers';
 
 process.env.ARES_MODE = 'dev';
 
