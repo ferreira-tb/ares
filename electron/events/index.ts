@@ -11,7 +11,7 @@ import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/a
 import type { UserAlias } from '$types/electron';
 
 import {
-    getMainWindow,
+    getMainViewWebContents,
     getPanelWindow,
     getPlayerNameFromAlias,
     insertCSS,
@@ -19,7 +19,7 @@ import {
 } from '$electron/utils/helpers';
 
 export function setEvents() {
-    const mainWindow = getMainWindow();
+    const mainViewWebContents = getMainViewWebContents();
     const panelWindow = getPanelWindow();
 
     const cacheStore = useCacheStore();
@@ -33,7 +33,7 @@ export function setEvents() {
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
     ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
-    ipcMain.handle('main-window-url', () => mainWindow.webContents.getURL());
+    ipcMain.handle('main-view-url', () => mainViewWebContents.getURL());
 
     // Website.
     ipcMain.on('open-ares-website', () => openAresWebsite());
@@ -54,17 +54,17 @@ export function setEvents() {
     ipcMain.handle('get-village-groups', () => groupsStore.all);
 
     // Informa ao painel que o navegador terminou de carregar.
-    mainWindow.webContents.on('did-finish-load', () => {
+    mainViewWebContents.on('did-finish-load', () => {
         panelWindow.webContents.send('browser-did-finish-load');
     });
 
     // Impede que o usuário navegue para fora da página do jogo.
-    mainWindow.webContents.on('will-navigate', (e, url) => {
+    mainViewWebContents.on('will-navigate', (e, url) => {
         panelWindow.webContents.send('browser-will-navigate');
         if (!isAllowedURL(url)) e.preventDefault();
     });
 
-    mainWindow.webContents.on('did-navigate', () => insertCSS(mainWindow));
+    mainViewWebContents.on('did-navigate', () => insertCSS(mainViewWebContents));
 
     // Outros eventos.
     setBrowserEvents();

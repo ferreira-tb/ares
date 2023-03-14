@@ -1,17 +1,17 @@
 import { ipcMain } from 'electron';
 import { isObject } from '@tb-dev/ts-guard';
-import { isUserAlias } from '$electron/utils/guards.js';
-import { getMainWindow } from '$electron/utils/helpers.js';
-import { useCacheStore, DemolitionTemplate, CustomPlunderTemplate } from '$interface/index.js';
-import type { UserAlias } from '$types/electron.js';
-import type { CustomPlunderTemplateType, DemolitionTemplateType } from '$types/plunder.js';
+import { isUserAlias } from '$electron/utils/guards';
+import { getMainViewWebContents } from '$electron/utils/helpers';
+import { useCacheStore, DemolitionTemplate, CustomPlunderTemplate } from '$interface/index';
+import type { UserAlias } from '$types/electron';
+import type { CustomPlunderTemplateType, DemolitionTemplateType } from '$types/plunder';
 
 import {
     showErrorLog,
     showDemolitionConfig,
     showAppConfig,
     showCustomPlunderTemplate
-} from '$electron/app/modules.js';
+} from '$electron/app/modules';
 
 export function setModuleEvents() {
     const cacheStore = useCacheStore();
@@ -67,8 +67,8 @@ export function setModuleEvents() {
         
         // Se o template foi salvo com sucesso, notifica o browser.
         if (status === true) {
-            const mainWindow = getMainWindow();
-            mainWindow.webContents.send('custom-plunder-template-saved', template);
+            const mainViewWebContents = getMainViewWebContents();
+            mainViewWebContents.send('custom-plunder-template-saved', template);
         };
 
         return status;
@@ -79,8 +79,8 @@ export function setModuleEvents() {
 
         // Se o template foi excluído com sucesso, notifica o browser.
         if (status === true) {
-            const mainWindow = getMainWindow();
-            mainWindow.webContents.send('custom-plunder-template-destroyed', template);
+            const mainViewWebContents = getMainViewWebContents();
+            mainViewWebContents.send('custom-plunder-template-destroyed', template);
         };
 
         return status;

@@ -10,19 +10,19 @@ try {
 
     const distDir = path.resolve(__dirname, '../dist');
 
-    console.log('Editando o arquivo index.html do painel.');
+    console.log('Editando o arquivo panel.html');
     
-    const indexFile = path.join(distDir, 'index.html');
-    let indexContent = await fs.readFile(indexFile, { encoding: 'utf-8' });
-    indexContent = indexContent.replace(/\"\/assets\//g, '\"assets\/');
-    await fs.writeFile(indexFile, indexContent, { encoding: 'utf-8' });
+    const panelHtml = path.join(distDir, 'panel.html');
+    let panelContent = await fs.readFile(panelHtml, { encoding: 'utf-8' });
+    panelContent = panelContent.replace(/\"\/assets\//g, '\"assets\/');
+    await fs.writeFile(panelHtml, panelContent, { encoding: 'utf-8' });
 
-    console.log('Editando o arquivo index.html dos módulos.');
+    console.log('Editando o arquivo modules.html');
 
-    const moduleFile = path.join(distDir, 'modules.html');
-    let moduleContent = await fs.readFile(moduleFile, { encoding: 'utf-8' });
-    moduleContent = moduleContent.replace(/\"\/assets\//g, '\"assets\/');
-    await fs.writeFile(moduleFile, moduleContent, { encoding: 'utf-8' });
+    const modulesHtml = path.join(distDir, 'modules.html');
+    let modulesContent = await fs.readFile(modulesHtml, { encoding: 'utf-8' });
+    modulesContent = modulesContent.replace(/\"\/assets\//g, '\"assets\/');
+    await fs.writeFile(modulesHtml, modulesContent, { encoding: 'utf-8' });
 
     console.log(`Fim dos trabalhos. Tempo total: ${Date.now() - startTime}ms.`);
 

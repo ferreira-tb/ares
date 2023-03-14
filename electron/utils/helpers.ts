@@ -1,9 +1,10 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, webContents } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
 import { assertWorld } from '$electron/utils/guards';
 import { MainProcessError } from '$electron/error';
 import { browserCss, favicon } from '$electron/utils/constants';
 import type { MechanusStore } from 'mechanus';
+import type { WebContents } from 'electron';
 import type { UserAlias, WindowOpenHandler } from '$types/electron';
 import type { AllUnits, World } from '$types/game';
 import type { UnitDetails, WorldUnitType } from '$types/world';
@@ -19,6 +20,12 @@ export const getMainWindow = () => {
     const mainWindow = BrowserWindow.fromId(id);
     assertInstanceOf(mainWindow, BrowserWindow, 'Não foi possível obter a janela do browser.');
     return mainWindow;
+};
+
+export const getMainViewWebContents = () => {
+    const id = Number.parseIntStrict(process.env.MAIN_VIEW_WEB_CONTENTS_ID ?? '');
+    const mainViewWebContents = webContents.fromId(id);
+    return mainViewWebContents;
 };
 
 export const getPanelWindow = () => {
@@ -70,13 +77,14 @@ export function getWindowOpenHandler(child: boolean = true): WindowOpenHandler {
 };
 
 /**
- * Insere CSS na janela.
- * @param win Instância do BrowserWindow.
+ * Insere CSS no WebContents.
+ * @param contents WebContents da janela ou do BrowserView.
  * @param css CSS a ser inserido. Se omitido, será usado o CSS padrão do browser.
  */
-export async function insertCSS(win: BrowserWindow, css: string = browserCss) {
+export async function insertCSS(contents?: WebContents, css: string = browserCss) {
     try {
-        await win.webContents.insertCSS(css);
+        contents ??= getMainViewWebContents();
+        await contents.insertCSS(css);
     } catch (err) {
         MainProcessError.catch(err);
     };

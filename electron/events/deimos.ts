@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { readDeimosFile } from '$electron/app/deimos.js';
-import { getMainWindow, getPanelWindow } from '$electron/utils/helpers.js';
+import { getMainViewWebContents, getPanelWindow } from '$electron/utils/helpers.js';
 import { ProxyStoreError } from '$electron/error.js';
 import type { PlunderInfoType } from '$types/plunder.js';
 import type { UnitAmount, TribalWarsGameDataType } from '$types/game.js';
@@ -31,8 +31,8 @@ export function setDeimosEvents() {
 
     // Indica que o script `deimos.js` foi completamente carregado no browser.
     ipcMain.on('script-tag-is-ready', () => {
-        const mainWindow = getMainWindow();
-        mainWindow.webContents.send('get-game-data');
+        const mainViewWebContents = getMainViewWebContents();
+        mainViewWebContents.send('get-game-data');
     });
 
     // Retorna o conteúdo do arquivo `deimos.js`.

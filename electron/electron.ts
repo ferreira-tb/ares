@@ -1,10 +1,10 @@
 import '@tb-dev/prototype';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, BrowserView } from 'electron';
 import { setAppMenu } from '$electron/menu/menu';
 import { sequelize } from '$database/database';
 import { UserConfig } from '$interface/index';
 import { setEvents } from '$electron/events/index';
-import { gameURL, favicon, indexHtml, browserJs } from '$electron/utils/constants';
+import { gameURL, favicon, panelHtml, mainHtml, browserJs } from '$electron/utils/constants';
 import { MainProcessError } from '$electron/error';
 import { isAllowedURL } from '$electron/utils/guards';
 import { insertCSS, getWindowOpenHandler } from '$electron/utils/helpers';
@@ -20,11 +20,22 @@ function createWindow() {
         icon: favicon,
         webPreferences: {
             spellcheck: false,
-            preload: browserJs,
+            nodeIntegration: true,
+            contextIsolation: false,
             devTools: process.env.ARES_MODE === 'dev'
         }
     });
-    
+
+    const mainView = new BrowserView({
+        webPreferences: {
+            spellcheck: false,
+            preload: browserJs,
+            nodeIntegration: false,
+            contextIsolation: true,
+            devTools: process.env.ARES_MODE === 'dev'
+        }
+    });
+
     const panelWindow = new BrowserWindow({
         parent: mainWindow,
         width: 350,
@@ -43,6 +54,7 @@ function createWindow() {
     });
 
     process.env.MAIN_WINDOW_ID = mainWindow.id.toString(10);
+    process.env.MAIN_VIEW_WEB_CONTENTS_ID = mainView.webContents.id.toString(10);
     process.env.PANEL_WINDOW_ID = panelWindow.id.toString(10);
 
     setEvents();
@@ -51,12 +63,12 @@ function createWindow() {
     mainWindow.maximize();
 
     const windowOpenHandler = getWindowOpenHandler(true);
-    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    mainView.webContents.setWindowOpenHandler(({ url }) => {
         if (!isAllowedURL(url)) return { action: 'deny' };
         return windowOpenHandler;
     });
 
-    mainWindow.webContents.on('did-create-window', (newWindow) => {
+    mainView.webContents.on('did-create-window', (newWindow) => {
         newWindow.setMenu(null);
         newWindow.maximize();
 
@@ -65,12 +77,17 @@ function createWindow() {
         });
 
         newWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-        newWindow.webContents.on('did-navigate', () => insertCSS(newWindow));
+        newWindow.webContents.on('did-navigate', () => insertCSS(newWindow.webContents));
         newWindow.once('ready-to-show', () => newWindow.show());
     });
     
-    mainWindow.loadURL(gameURL);
-    panelWindow.loadFile(indexHtml);
+    mainWindow.loadFile(mainHtml);
+    panelWindow.loadFile(panelHtml);
+
+    mainView.setAutoResize({ width: true, height: true, horizontal: true, vertical: true });
+    mainView.setBounds(mainWindow.getBounds());
+    mainWindow.addBrowserView(mainView);
+    mainView.webContents.loadURL(gameURL);
 
     mainWindow.once('ready-to-show', () => mainWindow.show());
     panelWindow.once('ready-to-show', async () => {

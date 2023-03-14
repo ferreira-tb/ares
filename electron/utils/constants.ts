@@ -15,11 +15,13 @@ export const worldUnitURL = (world: World) => `https://${world}.tribalwars.com.b
 
 // Arquivos
 export const favicon = resolve(__dirname, '../public/favicon.ico');
-export const indexHtml = join(__dirname, 'index.html');
 export const browserJs = join(__dirname, 'browser.js');
 export const deimosJs = join(__dirname, 'deimos.js');
 export const phobosJs = join(__dirname, 'phobos.js');
+
 export const moduleHtml = join(__dirname, 'modules.html');
+export const panelHtml = join(__dirname, 'panel.html');
+export const mainHtml = join(__dirname, 'main.html');
 
 // CSS
 export const browserCss = fs.readFileSync(join(__dirname, 'browser.css'), { encoding: 'utf8' });

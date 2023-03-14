@@ -2,7 +2,7 @@ import { URL } from 'url';
 import { MessageChannelMain } from 'electron';
 import { isObject, assertInstanceOf } from '@tb-dev/ts-guard';
 import { storeToRefs } from 'mechanus';
-import { getPanelWindow, getMainWindow } from '$electron/utils/helpers';
+import { getPanelWindow, getMainViewWebContents } from '$electron/utils/helpers';
 import { isUserAlias } from '$electron/utils/guards';
 import { AliasPatchError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
@@ -109,7 +109,7 @@ async function patchAllPlunderStoresState(
 
 async function patchGroupsStoreState(useGroupsStore: ReturnType<typeof defineGroupsStore>) {
     try {
-        const mainWindow = getMainWindow();
+        const mainViewWebContents = getMainViewWebContents();
         const panelWindow = getPanelWindow();
         const groupsStore = useGroupsStore();
         const { all } = storeToRefs(groupsStore);
@@ -117,7 +117,7 @@ async function patchGroupsStoreState(useGroupsStore: ReturnType<typeof defineGro
         const groups = await new Promise<Set<VillageGroup>>(async (resolve, reject) => {
             // Cria o Phobos na tela de grupos manuais.
             // Lá é possível obter tanto os grupos manuais quanto os dinâmicos.
-            const url = new URL(mainWindow.webContents.getURL());
+            const url = new URL(mainViewWebContents.getURL());
             url.search = 'screen=overview_villages&&mode=groups&type=static';
             const phobos = await createPhobos('get-village-groups', url, { override: true });
             

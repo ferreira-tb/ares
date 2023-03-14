@@ -2,7 +2,7 @@
     "vsicons.associations.files": [
         {
             "icon": "vite",
-            "extensions": ["modules.config.ts", "browser.config.ts"],
+            "extensions": ["modules.config.ts", "browser.config.ts", "main.config.ts", "panel.config.ts"],
             "filename": true,
             "format": "FileFormat.svg"
         }
