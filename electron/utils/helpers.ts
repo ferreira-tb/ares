@@ -94,11 +94,19 @@ export function generateUserAlias(world: World, playerName: string): UserAlias {
     return `${world}__USERID__${playerName}`;
 };
 
+/**
+ * Obtém o nome do jogador a partir do alias, decodificando-o.
+ * @param alias Alias do jogador.
+ */
 export function getPlayerNameFromAlias(alias: UserAlias): string {
     const encodedPlayerName = alias.replace(/^[a-z]+\d+__USERID__/, '');
     return decodeURIComponent(encodedPlayerName);
 };
 
+/**
+ * Obtém informações sobre as unidades do mundo a partir do mapa contendo as stores de cada unidade.
+ * @param worldUnitsMap Mapa contendo as stores de cada unidade.
+ */
 export function extractWorldUnitsFromMap(worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>): WorldUnitType {
     type UnitsMapEntries = [AllUnits, () => MechanusStore<UnitDetails>];
     return Object.entries(worldUnitsMap).reduce((acc, [key, useStore]: UnitsMapEntries) => {
