@@ -19,5 +19,6 @@
     ],
     "conventionalCommits.scopes": [
         "browser"
-    ]
+    ],
+    "conventionalCommits.promptScopes": false
 }
