@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { shell } from 'electron';
 import { NButton, NButtonGroup } from 'naive-ui';
-import { ipcInvoke, ipcSend } from '$global/ipc.js';
-import { discordURL } from '$global/utils/constants.js';
+import { ipcInvoke, ipcSend } from '$global/ipc';
+import { discordURL } from '$global/utils/constants';
 
 const appName = await ipcInvoke('app-name');
 const appVersion = await ipcInvoke('app-version');

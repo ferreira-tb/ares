@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { PlunderConfigType, PlunderAttackDetails, BlindAttackPattern, UseCPattern } from '$types/plunder.js';
-import type { PiniaPlunderStoreType, PiniaPlunderConfigStoreType, PiniaPlunderHistoryStoreType } from '$types/stores.js';
+import type { PlunderConfigType, PlunderAttackDetails, BlindAttackPattern, UseCPattern } from '$types/plunder';
+import type { PiniaPlunderStoreType, PiniaPlunderConfigStoreType, PiniaPlunderHistoryStoreType } from '$types/stores';
 
 export const usePlunderStore = defineStore('plunder', () => {
     /** Indica se as aldeias sob ataque estão ocultas. */

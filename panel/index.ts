@@ -3,9 +3,9 @@ import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { router } from '$panel/router/router.js';
-import { setPanelEvents } from '$panel/events/index.js';
-import { PanelError } from '$panel/error.js';
+import { router } from '$panel/router/router';
+import { setPanelEvents } from '$panel/events/index';
+import { PanelError } from '$panel/error';
 import Panel from '$panel/Panel.vue';
 
 const panel = createApp(Panel);

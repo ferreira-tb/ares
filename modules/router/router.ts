@@ -1,11 +1,11 @@
 import { createRouter, createMemoryHistory } from 'vue-router';
-import { getRouteNames, getChildrenRoutes } from '$vue/utils/helpers.js';
-import { errorRoutes } from '$modules/router/error.js';
-import { configRoutes } from '$modules/router/config.js';
+import { getRouteNames, getChildrenRoutes } from '$vue/utils/helpers';
+import { errorRoutes } from '$modules/router/error';
+import { configRoutes } from '$modules/router/config';
 import Default from '$vue/views/Default.vue';
 import Demolition from '$modules/views/Demolition.vue';
 import CustomTemplate from '$modules/views/CustomTemplate.vue';
-import type { ModuleRouteRecordRaw, ModuleRoutes, ConfigModuleRoutes } from '$types/modules.js';
+import type { ModuleRouteRecordRaw, ModuleRoutes, ConfigModuleRoutes } from '$types/modules';
 
 // Os componentes devem ser passados diretamente.
 // Importá-los gera problemas ao compilar.

@@ -1,7 +1,7 @@
 import Config from '$modules/views/Config.vue';
 import GeneralConfig from '$modules/components/config/GeneralConfig.vue';
 import PlunderConfig from '$modules/components/config/PlunderConfig.vue';
-import type { ModuleRouteRecordRawStrict, ConfigModuleRoutes } from '$types/modules.js';
+import type { ModuleRouteRecordRawStrict, ConfigModuleRoutes } from '$types/modules';
 
 export const configRoutes: ModuleRouteRecordRawStrict<'app-config' | ConfigModuleRoutes> = {
     path: '/app-config',

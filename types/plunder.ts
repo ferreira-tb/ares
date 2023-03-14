@@ -1,5 +1,5 @@
-import type { FarmUnitsAmount, UnitsToDestroyWall } from '$types/game.js';
-import type { UserAlias } from '$types/electron.js';
+import type { FarmUnitsAmount, UnitsToDestroyWall } from '$types/game';
+import type { UserAlias } from '$types/electron';
 
 export interface PlunderInfoType {
     /** Indica se as aldeias sob ataque estão ocultas. */

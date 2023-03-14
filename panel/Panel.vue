@@ -4,8 +4,8 @@ import { RouterView } from 'vue-router';
 import { useIpcRenderer } from '@vueuse/electron';
 import { arrayIncludes } from '@tb-dev/ts-guard';
 import { NConfigProvider, darkTheme, NSpin } from 'naive-ui';
-import { routeNames, router } from '$panel/router/router.js';
-import { useAresStore } from '$vue/stores/ares.js';
+import { routeNames, router } from '$panel/router/router';
+import { useAresStore } from '$vue/stores/ares';
 
 const aresStore = useAresStore();
 

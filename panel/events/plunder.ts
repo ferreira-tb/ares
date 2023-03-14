@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import { assertKeyOf, assertInteger } from '@tb-dev/ts-guard';
-import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$vue/stores/plunder.js';
-import { PanelPlunderError } from '$panel/error.js';
+import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$vue/stores/plunder';
+import { PanelPlunderError } from '$panel/error';
 
 import type {
     PlunderConfigType,

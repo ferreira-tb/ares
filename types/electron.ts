@@ -1,7 +1,7 @@
 import type { WebContents } from 'electron';
 import type { MechanusComputedRef, MechanusRef } from 'mechanus';
-import type { World } from '$types/game.js';
-import type { DemolitionTemplateType } from '$types/plunder.js';
+import type { World } from '$types/game';
+import type { DemolitionTemplateType } from '$types/plunder';
 
 export type WindowOpenHandler = ReturnType<Parameters<WebContents['setWindowOpenHandler']>[0]>;
 
@@ -22,4 +22,4 @@ export type MechanusCacheStoreType = {
     userAlias: MechanusComputedRef<UserAlias | null>;
 
     demolitionTroops: MechanusRef<DemolitionTemplateType | null>;
-}
+};

@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { UnitAmount } from '$types/game.js';
-import type { PiniaUnitsStoreType } from '$types/stores.js';
+import type { UnitAmount } from '$types/game';
+import type { PiniaUnitsStoreType } from '$types/stores';
 
 /** Unidades na aldeia atual. */
 export const useUnitsStore = defineStore('unit', () => {

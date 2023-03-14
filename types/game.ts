@@ -1,4 +1,4 @@
-import type { IntRange, IntRangeToStrings } from '$types/utils.js';
+import type { IntRange, IntRangeToStrings } from '$types/utils';
 
 //////// MUNDO
 export type WorldLocale = 'br';

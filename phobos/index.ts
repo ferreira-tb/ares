@@ -1,5 +1,5 @@
 import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
-import { setPhobosEvents } from '$phobos/events.js';
+import { setPhobosEvents } from '$phobos/events';
 
 setPhobosEvents();

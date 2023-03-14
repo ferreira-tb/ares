@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { DOMAssertionError } from '@tb-dev/ts-guard-dom';
-import { AresError } from '$global/error.js';
+import { AresError } from '$global/error';
 
 export function setDevEvents() {
     ipcRenderer.on('emit-mock-error', () => {

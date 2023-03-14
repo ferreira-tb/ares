@@ -3,10 +3,10 @@ import { reactive, watchEffect } from 'vue';
 import { useIpcRenderer } from '@vueuse/electron';
 import { NCard } from 'naive-ui';
 import { assertInteger, assertArray } from '@tb-dev/ts-guard';
-import { ipcInvoke, ipcSend } from '$global/ipc.js';
-import { getLocaleDateString } from '$global/utils/helpers.js';
-import { ModuleError } from '$modules/error.js';
-import type { DOMErrorLogType } from '$types/error.js';
+import { ipcInvoke, ipcSend } from '$global/ipc';
+import { getLocaleDateString } from '$global/utils/helpers';
+import { ModuleError } from '$modules/error';
+import type { DOMErrorLogType } from '$types/error';
 import SucessResult from '$vue/components/result/SuccessResult.vue';
 
 const raw = await ipcInvoke('get-dom-error-log');

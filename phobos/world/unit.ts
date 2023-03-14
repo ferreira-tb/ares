@@ -1,5 +1,5 @@
-import { PhobosError } from '$phobos/error.js';
-import type { WorldUnitType, UnitDetails } from '$types/world.js';
+import { PhobosError } from '$phobos/error';
+import type { WorldUnitType, UnitDetails } from '$types/world';
 
 class EachUnit implements UnitDetails {
     readonly buildTime: number;
