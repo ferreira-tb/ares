@@ -11,6 +11,7 @@ import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/a
 import type { UserAlias } from '$types/electron';
 
 import {
+    getMainWindow,
     getMainViewWebContents,
     getPanelWindow,
     getPlayerNameFromAlias,
@@ -19,12 +20,22 @@ import {
 } from '$electron/utils/helpers';
 
 export function setEvents() {
+    const mainWindow = getMainWindow();
     const mainViewWebContents = getMainViewWebContents();
     const panelWindow = getPanelWindow();
 
     const cacheStore = useCacheStore();
     const worldConfigStore = useWorldConfigStore();
     const groupsStore = useGroupsStore();
+
+    // Janela.
+    ipcMain.on('minimize-main-window', () => mainWindow.minimize());
+    ipcMain.on('maximize-main-window', () => mainWindow.maximize());
+    ipcMain.on('restore-main-window', () => mainWindow.restore());
+    ipcMain.on('close-main-window', () => mainWindow.close());
+
+    ipcMain.handle('is-main-window-minimized', () => mainWindow.isMinimized());
+    ipcMain.handle('is-main-window-maximized', () => mainWindow.isMaximized());
 
     // Geral.
     ipcMain.handle('app-name', () => app.getName());

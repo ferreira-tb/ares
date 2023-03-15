@@ -15,6 +15,10 @@ import type {
     PlunderConfigType
 } from '$types/plunder';
 
+// Janela
+export async function ipcInvoke(channel: 'is-main-window-minimized'): Promise<boolean>;
+export async function ipcInvoke(channel: 'is-main-window-maximized'): Promise<boolean>;
+
 // Geral
 export async function ipcInvoke(channel: 'app-name'): Promise<string>;
 export async function ipcInvoke(channel: 'app-version'): Promise<string>;
@@ -61,6 +65,12 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
 };
 
 /////////////////////////////////////////
+
+// Janela
+export function ipcSend(channel: 'minimize-main-window'): void;
+export function ipcSend(channel: 'maximize-main-window'): void;
+export function ipcSend(channel: 'restore-main-window'): void;
+export function ipcSend(channel: 'close-main-window'): void;
 
 // Geral
 export function ipcSend(channel: 'reload-browser-window'): void;

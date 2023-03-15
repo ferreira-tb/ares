@@ -7,6 +7,18 @@ span[class^="mdl2-"] {
     font-family: 'SegMDL2';
 }
 
+.mdl2-chrome-minimize::before {
+    content: '\E921';
+}
+
+.mdl2-chrome-maximize::before {
+    content: '\E922';
+}
+
+.mdl2-chrome-restore::before {
+    content: '\E923';
+}
+
 .mdl2-chrome-close::before {
     content: '\E8BB';
 }

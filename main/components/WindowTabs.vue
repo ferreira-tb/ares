@@ -12,7 +12,13 @@ import LightIcon from '$icons/units/LightIcon.vue';
         </div>
 
         <!-- Botões para controle da janela -->
-        <WindowButtons />
+        <KeepAlive>
+            <Suspense>
+                <template #default>
+                    <WindowButtons />
+                </template>
+            </Suspense>
+        </KeepAlive>
     </div>
 </template>
 
@@ -22,8 +28,10 @@ import LightIcon from '$icons/units/LightIcon.vue';
     top: 0;
     left: 0;
     right: 0;
-    height: 40px;
 
+    width: 100%;
+    height: 40px;
+    
     display: flex;
     align-items: center;
     user-select: none;
@@ -32,8 +40,10 @@ import LightIcon from '$icons/units/LightIcon.vue';
 .main-window-tab-area {
     display: flex;
     align-items: center;
-    height: 100%;
     justify-self: start;
+
+    width: 100%;
+    height: 100%;
 
     & > div:not(.main-browser-view-tab) {
         height: 100%;

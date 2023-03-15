@@ -10,12 +10,13 @@ import WindowMenu from '$main/components/WindowMenu.vue';
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .main-window-interface {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
+
     height: 80px;
     user-select: none;
 }
