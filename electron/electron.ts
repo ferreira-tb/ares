@@ -18,6 +18,8 @@ function createWindow() {
         show: false,
         title: 'Ares',
         icon: favicon,
+        frame: false,
+        titleBarStyle: 'hidden',
         webPreferences: {
             spellcheck: false,
             nodeIntegration: true,
@@ -68,6 +70,7 @@ function createWindow() {
         return windowOpenHandler;
     });
 
+    // TO DO: transformar essas janelas em BrowserViews.
     mainView.webContents.on('did-create-window', (newWindow) => {
         newWindow.setMenu(null);
         newWindow.maximize();
@@ -84,8 +87,9 @@ function createWindow() {
     mainWindow.loadFile(mainHtml);
     panelWindow.loadFile(panelHtml);
 
+    const { width, height } = mainWindow.getContentBounds();
     mainView.setAutoResize({ width: true, height: true, horizontal: true, vertical: true });
-    mainView.setBounds(mainWindow.getBounds());
+    mainView.setBounds({ x: 0, y: 80, width, height: height - 80 });
     mainWindow.addBrowserView(mainView);
     mainView.webContents.loadURL(gameURL);
 

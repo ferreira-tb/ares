@@ -15,10 +15,6 @@
     },
     "license": "MIT",
     "main": "dist/ares.js",
-    "keywords": [
-        "tribal-wars",
-        "electron"
-    ],
     "scripts": {
         "type-check": "vue-tsc --noEmit",
         "clear": "node scripts/clear.mjs",
@@ -31,7 +27,9 @@
         "script": "npm-run-all script:*",
         "script:css": "node scripts/css.mjs",
         "script:html": "node scripts/html.mjs",
+        "script:fonts": "node scripts/fonts.mjs",
         "start": "npm run build && electron .",
+        "start:main": "npm run build:main && npm run script:html && npm run script:fonts && electron .",
         "start:rollup": "npm run build:rollup && electron .",
         "forge:start": "electron-forge start",
         "forge:package": "electron-forge package",

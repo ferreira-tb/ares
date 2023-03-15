@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'SegMDL2';
+    src: url('/fonts/SegMDL2.ttf');
+}
+
+span[class^="mdl2-"] {
+    font-family: 'SegMDL2';
+}
+
+.mdl2-chrome-close::before {
+    content: '\E8BB';
+}
