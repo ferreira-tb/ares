@@ -5,38 +5,29 @@ import { setErrorEvents } from '$electron/events/error';
 import { setPanelEvents } from '$electron/events/panel';
 import { setDeimosEvents } from '$electron/events/deimos';
 import { setModuleEvents } from '$electron/events/modules';
+import { setMainWindowEvents } from '$electron/events/window';
 import { useCacheStore, useWorldConfigStore, worldUnitsMap, useGroupsStore } from '$interface/index';
 import { isUserAlias, isAllowedURL } from '$electron/utils/guards';
 import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
 
 import {
-    getMainWindow,
     getMainViewWebContents,
     getPanelWindow,
-    maximizeOrRestoreWindow,
     getPlayerNameFromAlias,
     insertCSS,
     extractWorldUnitsFromMap
 } from '$electron/utils/helpers';
 
 export function setEvents() {
-    const mainWindow = getMainWindow();
+    
     const mainViewWebContents = getMainViewWebContents();
     const panelWindow = getPanelWindow();
 
     const cacheStore = useCacheStore();
     const worldConfigStore = useWorldConfigStore();
     const groupsStore = useGroupsStore();
-
-    // Janela.
-    ipcMain.on('minimize-main-window', () => mainWindow.minimize());
-    ipcMain.on('close-main-window', () => mainWindow.close());
-    ipcMain.handle('maximize-or-restore-main-window', () => maximizeOrRestoreWindow(mainWindow));
-
-    ipcMain.handle('is-main-window-minimized', () => mainWindow.isMinimized());
-    ipcMain.handle('is-main-window-maximized', () => mainWindow.isMaximized());
-
+    
     // Geral.
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
@@ -78,6 +69,7 @@ export function setEvents() {
     mainViewWebContents.on('did-navigate', () => insertCSS(mainViewWebContents));
 
     // Outros eventos.
+    setMainWindowEvents();
     setBrowserEvents();
     setPanelEvents();
     setPlunderEvents();
