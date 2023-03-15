@@ -6,16 +6,22 @@ import { setPanelEvents } from '$electron/events/panel';
 import { setDeimosEvents } from '$electron/events/deimos';
 import { setModuleEvents } from '$electron/events/modules';
 import { setMainWindowEvents } from '$electron/events/window';
-import { useCacheStore, useWorldConfigStore, worldUnitsMap, useGroupsStore } from '$interface/index';
+import { setCurrentViewEvents } from '$electron/events/view';
 import { isUserAlias, isAllowedURL } from '$electron/utils/guards';
 import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
 
 import {
+    useCacheStore,
+    useWorldConfigStore,
+    worldUnitsMap,
+    useGroupsStore
+} from '$interface/index';
+
+import {
     getMainViewWebContents,
     getPanelWindow,
     getPlayerNameFromAlias,
-    insertCSS,
     extractWorldUnitsFromMap
 } from '$electron/utils/helpers';
 
@@ -66,8 +72,6 @@ export function setEvents() {
         if (!isAllowedURL(url)) e.preventDefault();
     });
 
-    mainViewWebContents.on('did-navigate', () => insertCSS(mainViewWebContents));
-
     // Outros eventos.
     setMainWindowEvents();
     setBrowserEvents();
@@ -76,4 +80,5 @@ export function setEvents() {
     setErrorEvents();
     setDeimosEvents();
     setModuleEvents();
+    setCurrentViewEvents();
 };

@@ -1,4 +1,5 @@
 import { ipcMain } from 'electron';
+
 import { getMainWindow, maximizeOrRestoreWindow } from '$electron/utils/helpers';
 
 export function setMainWindowEvents() {
@@ -10,6 +11,4 @@ export function setMainWindowEvents() {
 
     ipcMain.handle('is-main-window-minimized', () => mainWindow.isMinimized());
     ipcMain.handle('is-main-window-maximized', () => mainWindow.isMaximized());
-
-    // Menu da janela principal.
 };

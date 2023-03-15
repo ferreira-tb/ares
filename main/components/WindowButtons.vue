@@ -26,15 +26,10 @@ async function maximizeOrRestore() {
 </template>
 
 <style scoped lang="scss">
-@mixin display-flex-center {
-    display: flex;
-    align-items: center;
-    align-content: center;
-    height: 100%;
-}
+@use '$main/assets/main.scss';
 
 .main-window-button-area {
-    @include display-flex-center;
+    @include main.display-flex-center;
     -webkit-app-region: no-drag;
     justify-content: space-between;
     justify-self: end;
@@ -42,7 +37,7 @@ async function maximizeOrRestore() {
 }
 
 .main-window-button-area > div {
-    @include display-flex-center;
+    @include main.display-flex-center;
     padding-left: 1em;
     padding-right: 1em;
 }

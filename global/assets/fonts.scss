@@ -22,3 +22,19 @@ span[class^="mdl2-"] {
 .mdl2-chrome-close::before {
     content: '\E8BB';
 }
+
+.mdl2-home::before {
+    content: '\E80F';
+}
+
+.mdl2-go-forward::before {
+    content: '\E72A';
+}
+
+.mdl2-go-back::before {
+    content: '\E72B';
+}
+
+.mdl2-refresh::before {
+    content: '\E72C';
+}

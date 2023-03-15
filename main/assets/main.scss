@@ -6,3 +6,10 @@
 @use '$styles/fonts.scss';
 @forward '$styles/scrollbar.scss';
 @forward '$styles/utils.scss';
+
+@mixin display-flex-center {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    height: 100%;
+}

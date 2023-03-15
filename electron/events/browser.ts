@@ -4,6 +4,6 @@ import { getMainViewWebContents } from '$electron/utils/helpers.js';
 export function setBrowserEvents() {
     const mainViewWebContents = getMainViewWebContents();
 
-    ipcMain.on('reload-browser-window', () => mainViewWebContents.reload());
-    ipcMain.on('force-reload-browser-window', () => mainViewWebContents.reloadIgnoringCache());
+    ipcMain.on('reload-main-view', () => mainViewWebContents.reload());
+    ipcMain.on('force-reload-main-view', () => mainViewWebContents.reloadIgnoringCache());
 };

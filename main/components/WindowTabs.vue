@@ -12,13 +12,9 @@ import LightIcon from '$icons/units/LightIcon.vue';
         </div>
 
         <!-- Botões para controle da janela -->
-        <KeepAlive>
-            <Suspense>
-                <template #default>
-                    <WindowButtons />
-                </template>
-            </Suspense>
-        </KeepAlive>
+        <Suspense>
+            <WindowButtons />
+        </Suspense>
     </div>
 </template>
 
@@ -54,10 +50,11 @@ import LightIcon from '$icons/units/LightIcon.vue';
         display: flex;
         align-items: center;
         align-content: center;
+        justify-content: center;
 
         width: 100px;
         height: 100%;
-        padding-left: 0.5em;
+        border-radius: 10%;
 
         color: var(--color-text);
         background-color: var(--color-background-mute);
