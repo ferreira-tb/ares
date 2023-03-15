@@ -15,6 +15,7 @@ function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 1200,
         height: 1000,
+        minHeight: 100,
         show: false,
         title: `Ares ${app.getVersion()}`,
         icon: favicon,
@@ -68,7 +69,7 @@ function createWindow() {
 
     setEvents();
     setAppMenu();
-    
+
     mainWindow.maximize();
 
     const windowOpenHandler = getWindowOpenHandler(true);
@@ -90,13 +91,28 @@ function createWindow() {
         newWindow.webContents.on('did-navigate', () => insertCSS(newWindow.webContents));
         newWindow.once('ready-to-show', () => newWindow.show());
     });
-    
+
     mainWindow.loadFile(mainHtml);
     panelWindow.loadFile(panelHtml);
 
     const { width, height } = mainWindow.getContentBounds();
-    mainView.setAutoResize({ width: true, height: true, horizontal: true, vertical: true });
     mainView.setBounds({ x: 0, y: 80, width, height: height - 80 });
+
+    let timeout: NodeJS.Immediate;
+    mainWindow.on('resize', (e: Electron.Event) => {
+        e.preventDefault();
+        timeout = setImmediate(() => {
+            if (timeout) clearImmediate(timeout);
+            const { width: newWidth, height: newHeight } = mainWindow.getContentBounds();
+            mainView.setBounds({
+                x: 0,
+                y: 80,
+                width: newWidth,
+                height: newHeight - 80
+            });
+        });
+    });
+
     mainWindow.addBrowserView(mainView);
     mainView.webContents.loadURL(gameURL);
 
