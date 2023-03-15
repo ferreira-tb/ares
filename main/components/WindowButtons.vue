@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { ipcSend, ipcInvoke } from '$global/ipc';
 
-const maximized = ref(true);
+const maximized = ref<boolean>(true);
 maximized.value = await ipcInvoke('is-main-window-maximized');
 
 const minimize = () => ipcSend('minimize-main-window');

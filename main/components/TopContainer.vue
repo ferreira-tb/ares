@@ -19,5 +19,6 @@ import WindowMenu from '$main/components/WindowMenu.vue';
 
     height: 80px;
     user-select: none;
+    -webkit-app-region: drag;
 }
 </style>
