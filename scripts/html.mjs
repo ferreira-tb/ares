@@ -8,24 +8,26 @@ const __dirname = path.dirname(__filename);
 try {
     const startTime = Date.now();
 
+    console.log('Editando arquivos html...');
     const distDir = path.resolve(__dirname, '../dist');
 
-    console.log('Editando o arquivo index.html do painel.');
-    
-    const indexFile = path.join(distDir, 'index.html');
-    let indexContent = await fs.readFile(indexFile, { encoding: 'utf-8' });
-    indexContent = indexContent.replace(/\"\/assets\//g, '\"assets\/');
-    await fs.writeFile(indexFile, indexContent, { encoding: 'utf-8' });
+    const panelHtml = path.join(distDir, 'panel.html');
+    await fixHtmlFile(panelHtml);
 
-    console.log('Editando o arquivo index.html dos módulos.');
+    const modulesHtml = path.join(distDir, 'modules.html');
+    await fixHtmlFile(modulesHtml);
 
-    const moduleFile = path.join(distDir, 'modules.html');
-    let moduleContent = await fs.readFile(moduleFile, { encoding: 'utf-8' });
-    moduleContent = moduleContent.replace(/\"\/assets\//g, '\"assets\/');
-    await fs.writeFile(moduleFile, moduleContent, { encoding: 'utf-8' });
+    const mainHtml = path.join(distDir, 'main.html');
+    await fixHtmlFile(mainHtml);
 
     console.log(`Fim dos trabalhos. Tempo total: ${Date.now() - startTime}ms.`);
 
 } catch (err) {
     if (err instanceof Error) console.error(err);
+};
+
+async function fixHtmlFile(htmlFile) {
+    let fileContent = await fs.readFile(htmlFile, { encoding: 'utf-8' });
+    fileContent = fileContent.replace(/\"\/assets\//g, '\"assets\/');
+    await fs.writeFile(htmlFile, fileContent, { encoding: 'utf-8' });
 };

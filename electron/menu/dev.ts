@@ -1,7 +1,7 @@
 import { BrowserWindow, Menu, MenuItem, type MenuItemConstructorOptions } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
-import { getMainWindow } from '$electron/utils/helpers.js';
-import { MainProcessError } from '$electron/error.js';
+import { getMainViewWebContents } from '$electron/utils/helpers';
+import { MainProcessError } from '$electron/error';
 
 const devOptions: MenuItemConstructorOptions[] = [
     { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', role: 'forceReload' },
@@ -27,11 +27,11 @@ export function setBrowserDevMenu(menu: Menu) {
     if (process.env.ARES_MODE !== 'dev') return;
     assertInstanceOf(menu, Menu, 'O item não é um menu.');
 
-    const mainWindow = getMainWindow();
+    const mainViewWebContents = getMainViewWebContents();
 
     const errorMenu: MenuItemConstructorOptions[] = [
-        { label: 'Emitir erro', click: () => mainWindow.webContents.send('emit-mock-error') },
-        { label: 'Emitir erro de DOM', click: () => mainWindow.webContents.send('emit-mock-dom-error') },
+        { label: 'Emitir erro', click: () => mainViewWebContents.send('emit-mock-error') },
+        { label: 'Emitir erro de DOM', click: () => mainViewWebContents.send('emit-mock-dom-error') },
         { label: 'Emitir erro no núcleo', click: () => emitMockMainProcessError() }
     ];
 

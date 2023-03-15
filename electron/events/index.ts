@@ -5,27 +5,35 @@ import { setErrorEvents } from '$electron/events/error';
 import { setPanelEvents } from '$electron/events/panel';
 import { setDeimosEvents } from '$electron/events/deimos';
 import { setModuleEvents } from '$electron/events/modules';
-import { useCacheStore, useWorldConfigStore, worldUnitsMap, useGroupsStore } from '$interface/index';
+import { setMainWindowEvents } from '$electron/events/window';
+import { setCurrentViewEvents } from '$electron/events/view';
 import { isUserAlias, isAllowedURL } from '$electron/utils/guards';
 import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
 
 import {
-    getMainWindow,
+    useCacheStore,
+    useWorldConfigStore,
+    worldUnitsMap,
+    useGroupsStore
+} from '$interface/index';
+
+import {
+    getMainViewWebContents,
     getPanelWindow,
     getPlayerNameFromAlias,
-    insertCSS,
     extractWorldUnitsFromMap
 } from '$electron/utils/helpers';
 
 export function setEvents() {
-    const mainWindow = getMainWindow();
+    
+    const mainViewWebContents = getMainViewWebContents();
     const panelWindow = getPanelWindow();
 
     const cacheStore = useCacheStore();
     const worldConfigStore = useWorldConfigStore();
     const groupsStore = useGroupsStore();
-
+    
     // Geral.
     ipcMain.handle('app-name', () => app.getName());
     ipcMain.handle('app-version', () => app.getVersion());
@@ -33,7 +41,7 @@ export function setEvents() {
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
     ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
-    ipcMain.handle('main-window-url', () => mainWindow.webContents.getURL());
+    ipcMain.handle('main-view-url', () => mainViewWebContents.getURL());
 
     // Website.
     ipcMain.on('open-ares-website', () => openAresWebsite());
@@ -54,23 +62,23 @@ export function setEvents() {
     ipcMain.handle('get-village-groups', () => groupsStore.all);
 
     // Informa ao painel que o navegador terminou de carregar.
-    mainWindow.webContents.on('did-finish-load', () => {
+    mainViewWebContents.on('did-finish-load', () => {
         panelWindow.webContents.send('browser-did-finish-load');
     });
 
     // Impede que o usuário navegue para fora da página do jogo.
-    mainWindow.webContents.on('will-navigate', (e, url) => {
+    mainViewWebContents.on('will-navigate', (e, url) => {
         panelWindow.webContents.send('browser-will-navigate');
         if (!isAllowedURL(url)) e.preventDefault();
     });
 
-    mainWindow.webContents.on('did-navigate', () => insertCSS(mainWindow));
-
     // Outros eventos.
+    setMainWindowEvents();
     setBrowserEvents();
     setPanelEvents();
     setPlunderEvents();
     setErrorEvents();
     setDeimosEvents();
     setModuleEvents();
+    setCurrentViewEvents();
 };

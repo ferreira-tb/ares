@@ -12,7 +12,8 @@
         "modules/**/*.vue",
         "global/**/*",
         "dev/**/*",
-        "vue/**/*"
+        "vue/**/*",
+        "main/**/*"
     ],
     "compilerOptions": {
         "baseUrl": ".",
@@ -46,6 +47,9 @@
             ],
             "$icons/*": [
                 "./vue/components/icons/*"
+            ],
+            "$main/*": [
+                "./main/*"
             ]
         },
         "lib": [

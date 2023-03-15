@@ -1,7 +1,7 @@
 import { Menu, shell } from 'electron';
 import { showErrorLog, showAppConfig, openAresWebsite, openRepoWebsite, openIssuesWebsite } from '$electron/app/modules.js';
 import { gameURL, discordURL } from '$electron/utils/constants.js';
-import { togglePanelWindow, getMainWindow, getPanelWindow, restartAres } from '$electron/utils/helpers.js';
+import { togglePanelWindow, getMainViewWebContents, getMainWindow, getPanelWindow, restartAres } from '$electron/utils/helpers.js';
 import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev.js';
 import type { MenuItemConstructorOptions } from 'electron';
 
@@ -13,6 +13,7 @@ import type { MenuItemConstructorOptions } from 'electron';
 
 export function setAppMenu() {
     const mainWindow = getMainWindow();
+    const mainViewWebContents = getMainViewWebContents();
     const panelWindow = getPanelWindow();
 
     const localeMenu: MenuItemConstructorOptions[] = [
@@ -21,7 +22,7 @@ export function setAppMenu() {
     ];
 
     const optionsMenu: MenuItemConstructorOptions[] = [
-        { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
+        { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => mainViewWebContents.loadURL(gameURL) },
         { label: 'Atualizar', accelerator: 'F5', role: 'reload' },
         { type: 'separator' },
         { label: 'Região', submenu: localeMenu },
@@ -50,10 +51,10 @@ export function setAppMenu() {
     ] satisfies MenuItemConstructorOptions[]);
 
     const panelMenu = Menu.buildFromTemplate([
-        { label: 'Início', visible: false, accelerator: 'CmdOrCtrl+Home', click: () => mainWindow.webContents.loadURL(gameURL) },
+        { label: 'Início', visible: false, accelerator: 'CmdOrCtrl+Home', click: () => mainViewWebContents.loadURL(gameURL) },
         { label: 'Painel', visible: false, accelerator: 'F2', click: () => togglePanelWindow() },
         { label: 'Configurações', visible: false, accelerator: 'F3', click: () => showAppConfig('general-config') },
-        { label: 'Atualizar', visible: false, accelerator: 'F5', click: () => mainWindow.webContents.reload() },
+        { label: 'Atualizar', visible: false, accelerator: 'F5', click: () => mainViewWebContents.reload() },
     ] satisfies MenuItemConstructorOptions[]);
 
     // Adiciona o menu de desenvolvedor às janelas.

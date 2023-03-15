@@ -26,7 +26,7 @@ watchEffect(() => {
 
 function setPlunderTimeout() {
     return new Promise<void>((resolve) => {
-        const timeout = setTimeout(() => ipcSend('reload-browser-window'), plunderTimeout.value);
+        const timeout = setTimeout(() => ipcSend('reload-main-view'), plunderTimeout.value);
         const cleanup = useEventListener(eventTarget, 'cancelreload', cancel);
 
         function cancel() {

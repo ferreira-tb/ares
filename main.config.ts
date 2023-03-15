@@ -16,7 +16,8 @@ export default defineConfig({
             '$phobos': fileURLToPath(new URL('./phobos', import.meta.url)),
             '$modules': fileURLToPath(new URL('./modules', import.meta.url)),
             '$panel': fileURLToPath(new URL('./panel', import.meta.url)),
-            '$icons': fileURLToPath(new URL('./vue/components/icons', import.meta.url))
+            '$icons': fileURLToPath(new URL('./vue/components/icons', import.meta.url)),
+            '$main': fileURLToPath(new URL('./main', import.meta.url))
         }
     },
     build: {
@@ -26,6 +27,7 @@ export default defineConfig({
         chunkSizeWarningLimit: 2000,
         rollupOptions: {
             external: ['electron'],
+            input: 'main.html',
             output: {
                 format: 'cjs',
                 generatedCode: 'es2015',

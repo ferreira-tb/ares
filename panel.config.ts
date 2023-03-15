@@ -27,7 +27,7 @@ export default defineConfig({
         chunkSizeWarningLimit: 2000,
         rollupOptions: {
             external: ['electron'],
-            input: 'modules.html',
+            input: 'panel.html',
             output: {
                 format: 'cjs',
                 generatedCode: 'es2015',

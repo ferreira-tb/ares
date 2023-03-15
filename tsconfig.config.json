@@ -1,9 +1,10 @@
 {
     "extends": "@vue/tsconfig/tsconfig.node.json",
     "include": [
-        "vite.config.*",
         "browser.config.*",
         "modules.config.*",
+        "main.config.*",
+        "panel.config.ts",
         "vitest.config.*",
         "cypress.config.*",
         "playwright.config.*"

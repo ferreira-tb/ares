@@ -1,0 +1,40 @@
+@font-face {
+    font-family: 'SegMDL2';
+    src: url('/fonts/SegMDL2.ttf');
+}
+
+span[class^="mdl2-"] {
+    font-family: 'SegMDL2';
+}
+
+.mdl2-chrome-minimize::before {
+    content: '\E921';
+}
+
+.mdl2-chrome-maximize::before {
+    content: '\E922';
+}
+
+.mdl2-chrome-restore::before {
+    content: '\E923';
+}
+
+.mdl2-chrome-close::before {
+    content: '\E8BB';
+}
+
+.mdl2-home::before {
+    content: '\E80F';
+}
+
+.mdl2-go-forward::before {
+    content: '\E72A';
+}
+
+.mdl2-go-back::before {
+    content: '\E72B';
+}
+
+.mdl2-refresh::before {
+    content: '\E72C';
+}

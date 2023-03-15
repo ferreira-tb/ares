@@ -1,9 +1,10 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, webContents } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
 import { assertWorld } from '$electron/utils/guards';
 import { MainProcessError } from '$electron/error';
 import { browserCss, favicon } from '$electron/utils/constants';
 import type { MechanusStore } from 'mechanus';
+import type { WebContents } from 'electron';
 import type { UserAlias, WindowOpenHandler } from '$types/electron';
 import type { AllUnits, World } from '$types/game';
 import type { UnitDetails, WorldUnitType } from '$types/world';
@@ -19,6 +20,12 @@ export const getMainWindow = () => {
     const mainWindow = BrowserWindow.fromId(id);
     assertInstanceOf(mainWindow, BrowserWindow, 'Não foi possível obter a janela do browser.');
     return mainWindow;
+};
+
+export const getMainViewWebContents = () => {
+    const id = Number.parseIntStrict(process.env.MAIN_VIEW_WEB_CONTENTS_ID ?? '');
+    const mainViewWebContents = webContents.fromId(id);
+    return mainViewWebContents;
 };
 
 export const getPanelWindow = () => {
@@ -70,16 +77,27 @@ export function getWindowOpenHandler(child: boolean = true): WindowOpenHandler {
 };
 
 /**
- * Insere CSS na janela.
- * @param win Instância do BrowserWindow.
+ * Insere CSS no WebContents.
+ * @param contents WebContents da janela ou do BrowserView.
  * @param css CSS a ser inserido. Se omitido, será usado o CSS padrão do browser.
  */
-export async function insertCSS(win: BrowserWindow, css: string = browserCss) {
+export async function insertCSS(contents?: WebContents, css: string = browserCss) {
     try {
-        await win.webContents.insertCSS(css);
+        contents ??= getMainViewWebContents();
+        await contents.insertCSS(css);
     } catch (err) {
         MainProcessError.catch(err);
     };
+};
+
+export function maximizeOrRestoreWindow(window: BrowserWindow) {
+    if (window.isMaximized()) {
+        window.restore();
+    } else {
+        window.maximize();
+    };
+
+    return window.isMaximized();
 };
 
 /**
@@ -94,11 +112,19 @@ export function generateUserAlias(world: World, playerName: string): UserAlias {
     return `${world}__USERID__${playerName}`;
 };
 
+/**
+ * Obtém o nome do jogador a partir do alias, decodificando-o.
+ * @param alias Alias do jogador.
+ */
 export function getPlayerNameFromAlias(alias: UserAlias): string {
     const encodedPlayerName = alias.replace(/^[a-z]+\d+__USERID__/, '');
     return decodeURIComponent(encodedPlayerName);
 };
 
+/**
+ * Obtém informações sobre as unidades do mundo a partir do mapa contendo as stores de cada unidade.
+ * @param worldUnitsMap Mapa contendo as stores de cada unidade.
+ */
 export function extractWorldUnitsFromMap(worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>): WorldUnitType {
     type UnitsMapEntries = [AllUnits, () => MechanusStore<UnitDetails>];
     return Object.entries(worldUnitsMap).reduce((acc, [key, useStore]: UnitsMapEntries) => {

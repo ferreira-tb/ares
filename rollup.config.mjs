@@ -5,7 +5,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 export default [
     {
-        input: 'electron/main.ts',
+        input: 'electron/electron.ts',
         output: {
             file: 'dist/ares.js',
             format: 'cjs',
