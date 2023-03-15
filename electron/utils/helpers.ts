@@ -90,6 +90,16 @@ export async function insertCSS(contents?: WebContents, css: string = browserCss
     };
 };
 
+export function maximizeOrRestoreWindow(window: BrowserWindow) {
+    if (window.isMaximized()) {
+        window.restore();
+    } else {
+        window.maximize();
+    };
+
+    return window.isMaximized();
+};
+
 /**
 * Retorna o alias do usuário, no padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`.
 

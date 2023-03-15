@@ -9,13 +9,8 @@ const minimize = () => ipcSend('minimize-main-window');
 const close = () => ipcSend('close-main-window');
 
 async function maximizeOrRestore() {
-    if (maximized.value === true) {
-        ipcSend('restore-main-window');
-    } else {
-        ipcSend('maximize-main-window');
-    };
-    
-    maximized.value = await ipcInvoke('is-main-window-maximized');
+    const status = await ipcInvoke('maximize-or-restore-main-window');
+    maximized.value = status;
 };
 </script>
 

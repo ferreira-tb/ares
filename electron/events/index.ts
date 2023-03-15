@@ -14,6 +14,7 @@ import {
     getMainWindow,
     getMainViewWebContents,
     getPanelWindow,
+    maximizeOrRestoreWindow,
     getPlayerNameFromAlias,
     insertCSS,
     extractWorldUnitsFromMap
@@ -30,9 +31,8 @@ export function setEvents() {
 
     // Janela.
     ipcMain.on('minimize-main-window', () => mainWindow.minimize());
-    ipcMain.on('maximize-main-window', () => mainWindow.maximize());
-    ipcMain.on('restore-main-window', () => mainWindow.restore());
     ipcMain.on('close-main-window', () => mainWindow.close());
+    ipcMain.handle('maximize-or-restore-main-window', () => maximizeOrRestoreWindow(mainWindow));
 
     ipcMain.handle('is-main-window-minimized', () => mainWindow.isMinimized());
     ipcMain.handle('is-main-window-maximized', () => mainWindow.isMaximized());
