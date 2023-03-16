@@ -43,10 +43,12 @@ function destroyBrowserView(viewId: WebContents['id']) {
     <div class="main-window-tabs-container">
         <div class="main-window-tab-area">
             <div class="main-browser-view-tab" @click="activeView = mainViewId">
-                <LightIcon /> <span class="main-browser-view-title">Ares</span>
+                <LightIcon />
+                <span class="main-browser-view-title" :class="{ 'bold-green': activeView === mainViewId }">Ares</span>
             </div>
             <div class="other-browser-view-tabs">
                 <NTabs
+                    closable
                     type="card"
                     trigger="click"
                     v-model:value="activeView"
@@ -55,7 +57,6 @@ function destroyBrowserView(viewId: WebContents['id']) {
                 >
                     <NTab
                         v-for="[viewId, title] in allTabs"
-                        closable
                         :name="viewId"
                         :key="viewId"
                         :tab="title"
@@ -108,6 +109,7 @@ function destroyBrowserView(viewId: WebContents['id']) {
         width: 100px;
         border-radius: 10%;
         margin-right: 0.3em;
+        cursor: pointer;
 
         color: var(--color-text);
         background-color: var(--color-background-mute);
