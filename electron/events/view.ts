@@ -197,6 +197,7 @@ async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = get
         
         const contents = browserView.webContents;
         await contents.loadURL(url.href);
+        await insertViewCSS(contents);
         setWindowOpenHandler(contents);
 
         // Envia o ID e o título da BrowserView para a janela principal.

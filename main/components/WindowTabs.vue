@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import { NTabs, NTab } from 'naive-ui';
 import { useIpcRenderer } from '@vueuse/electron';
-import { ipcInvoke } from '$global/ipc';
+import { assertInteger } from '@tb-dev/ts-guard';
+import { ipcInvoke, ipcSend } from '$global/ipc';
 import WindowButtons from '$main/components/WindowButtons.vue';
 import LightIcon from '$icons/units/LightIcon.vue';
 import type { WebContents } from 'electron';
 import type { CSSProperties } from 'vue';
 
+const allTabs = reactive<Map<WebContents['id'], string>>(new Map());
 const mainViewId = await ipcInvoke('main-view-web-contents-id');
 const activeView = ref<WebContents['id']>(mainViewId);
-const allTabs = reactive<Map<WebContents['id'], string>>(new Map());
+watch(activeView, (viewId) => ipcSend('update-current-view', viewId));
 
 const tabStyle: CSSProperties = {
     maxWidth: '200px',
@@ -30,23 +32,30 @@ ipcRenderer.on('browser-view-title-updated', (_e, viewId: number, viewTitle: str
     if (viewId === mainViewId) return;
     allTabs.set(viewId, viewTitle);
 });
+
+function destroyBrowserView(viewId: WebContents['id']) {
+    assertInteger(viewId);
+    ipcSend('destroy-browser-view', viewId);
+};
 </script>
 
 <template>
     <div class="main-window-tabs-container">
         <div class="main-window-tab-area">
-            <div class="main-browser-view-tab">
+            <div class="main-browser-view-tab" @click="activeView = mainViewId">
                 <LightIcon /> <span class="main-browser-view-title">Ares</span>
             </div>
             <div class="other-browser-view-tabs">
                 <NTabs
                     type="card"
+                    trigger="click"
                     v-model:value="activeView"
+                    @close="destroyBrowserView"
                     :tab-style="tabStyle"
-                    closable
                 >
                     <NTab
                         v-for="[viewId, title] in allTabs"
+                        closable
                         :name="viewId"
                         :key="viewId"
                         :tab="title"
@@ -84,6 +93,7 @@ ipcRenderer.on('browser-view-title-updated', (_e, viewId: number, viewTitle: str
 
     width: 100%;
     height: 100%;
+    -webkit-app-region: no-drag;
 
     & > div {
         height: 100%;

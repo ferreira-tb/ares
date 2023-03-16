@@ -89,6 +89,8 @@ export function ipcSend(channel: 'force-reload-main-view'): void;
 export function ipcSend(channel: 'current-view-go-home'): void;
 export function ipcSend(channel: 'current-view-go-back'): void;
 export function ipcSend(channel: 'current-view-go-forward'): void;
+export function ipcSend(channel: 'update-current-view', viewId: number): void;
+export function ipcSend(channel: 'destroy-browser-view', viewId: number): void;
 
 // Configurações
 export function ipcSend(channel: 'open-plunder-config-window'): void;
