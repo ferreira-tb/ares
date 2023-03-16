@@ -4,6 +4,7 @@ import { useIpcRenderer } from '@vueuse/electron';
 import { NIcon } from 'naive-ui';
 import { ArrowBackSharp, ArrowForwardSharp, HomeSharp, ReloadSharp } from '@vicons/ionicons5';
 import { ipcSend, ipcInvoke } from '$global/ipc';
+
 import type { BackForwardStatus } from '$types/view';
 
 const canGoBack = ref<boolean>(await ipcInvoke('current-view-can-go-back'));
