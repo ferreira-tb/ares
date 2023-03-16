@@ -1,8 +1,9 @@
 import '@tb-dev/prototype';
 import { app, BrowserWindow, BrowserView } from 'electron';
+import { storeToRefs } from 'mechanus';
 import { setAppMenu } from '$electron/menu/menu';
 import { sequelize } from '$database/database';
-import { UserConfig } from '$interface/index';
+import { UserConfig, useBrowserViewStore } from '$interface/index';
 import { setEvents } from '$electron/events/index';
 import { gameURL, favicon, panelHtml, mainHtml, browserJs } from '$electron/utils/constants';
 import { setBrowserViewAutoResize } from '$electron/utils/view';
@@ -68,20 +69,23 @@ function createWindow() {
     process.env.MAIN_VIEW_WEB_CONTENTS_ID = mainView.webContents.id.toString(10);
     process.env.PANEL_WINDOW_ID = panelWindow.id.toString(10);
 
-    setEvents();
-    setAppMenu();
-
-    mainWindow.maximize();
+    mainView.webContents.loadURL(gameURL);
     mainWindow.loadFile(mainHtml);
     panelWindow.loadFile(panelHtml);
 
-    const { width, height } = mainWindow.getContentBounds();
-    mainView.setBounds({ x: 0, y: 80, width, height: height - 80 });
-    setBrowserViewAutoResize(mainView);
-
+    mainWindow.maximize();
     mainWindow.addBrowserView(mainView);
     mainWindow.setTopBrowserView(mainView);
-    mainView.webContents.loadURL(gameURL);
+
+    const { width, height } = mainWindow.getContentBounds();
+    mainView.setBounds({ x: 0, y: 80, width, height: height - 80 });
+
+    const browserViewStore = useBrowserViewStore();
+    const { currentAutoResize } = storeToRefs(browserViewStore);
+    currentAutoResize.value = setBrowserViewAutoResize(mainView);
+
+    setEvents();
+    setAppMenu();
 
     mainWindow.once('ready-to-show', () => mainWindow.show());
     panelWindow.once('ready-to-show', async () => {

@@ -6,6 +6,7 @@ export function defineBrowserViewStore(mechanus: Mechanus) {
     return mechanus.define('browser-view', {
         allWebContents: ref<Set<WebContents>>(new Set()),
         registeredWebContents: ref<WeakSet<WebContents>>(new WeakSet()),
-        currentWebContents: ref<WebContents | null>(null)
+        currentWebContents: ref<WebContents | null>(null),
+        currentAutoResize: ref<(() => void) | null>(null)
     } satisfies MechanusBrowserViewStoreType);
 };

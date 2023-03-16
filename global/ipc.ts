@@ -32,6 +32,7 @@ export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 export async function ipcInvoke(channel: 'main-view-url'): Promise<string>;
 export async function ipcInvoke(channel: 'main-view-web-contents-id'): Promise<number>;
 export async function ipcInvoke(channel: 'current-view-url'): Promise<string>;
+export async function ipcInvoke(channel: 'current-view-web-contents-id'): Promise<number>;
 export async function ipcInvoke(channel: 'current-view-can-go-back'): Promise<boolean>;
 export async function ipcInvoke(channel: 'current-view-can-go-forward'): Promise<boolean>;
 

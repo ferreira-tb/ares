@@ -1,25 +1,36 @@
 import { URL } from 'url';
 import { ipcMain, BrowserView } from 'electron';
-import { computed, storeToRefs } from 'mechanus';
+import { computed, storeToRefs, watch } from 'mechanus';
 import { useBrowserViewStore } from '$interface/index';
 import { gameURL } from '$electron/utils/constants';
 import { isAllowedURL } from '$electron/utils/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
 import type { WebContents, BrowserWindow } from 'electron';
-import type { MechanusComputedRef } from 'mechanus';
+import type { MechanusRef } from 'mechanus';
 
 import {
     insertViewCSS,
-    // setBrowserViewBounds,
-    // setBrowserViewAutoResize,
+    setBrowserViewBounds,
+    setBrowserViewAutoResize,
     getBackForwardStatus,
     getMainViewWebContents
 } from '$electron/utils/view';
 
 export function setBrowserViewEvents() {
+    const mainWindow = getMainWindow();
     const browserViewStore = useBrowserViewStore();
-    const { allWebContents, currentWebContents } = storeToRefs(browserViewStore);
+    const {
+        allWebContents,
+        currentWebContents,
+        currentAutoResize
+    } = storeToRefs(browserViewStore);
+
+    // Computa o WebContents atualmente ativo (em primeiro plano).
+    const currentView = computed<BrowserView>([currentWebContents], () => {
+        const contents = currentWebContents.value ?? getMainViewWebContents();
+        return findBrowserViewByWebContentsId(contents.id, mainWindow);
+    });
 
     // Adiciona o WebContents da BrowserView principal à lista de WebContents.
     const mainViewWebContents = getMainViewWebContents();
@@ -32,41 +43,56 @@ export function setBrowserViewEvents() {
     ipcMain.handle('main-view-web-contents-id', () => mainViewWebContents.id);
     ipcMain.handle('main-view-url', () => mainViewWebContents.getURL());
 
-    // Computa o WebContents atualmente ativo (em primeiro plano).
-    const currentView = computed<WebContents>([currentWebContents], () => {
-        if (currentWebContents.value) return currentWebContents.value;
-        return getMainViewWebContents();
+    // View atual.
+    ipcMain.on('update-current-view', (_e, webContentsId: number) => {
+        try {
+            const view = findBrowserViewByWebContentsId(webContentsId, mainWindow);
+            currentWebContents.value = view.webContents;
+        } catch (err) {
+            BrowserViewError.catch(err);
+        };
     });
 
     // Os eventos abaixo estão relacionados à BrowserView atual.
-    // No entanto, não precisam ser definidos separadamente, pois são obtidos dinamicamente.
-    ipcMain.handle('current-view-url', () => currentView.value.getURL());
-    ipcMain.on('current-view-go-home', () => currentView.value.loadURL(gameURL));
-    ipcMain.handle('current-view-can-go-back', () => currentView.value.canGoBack());
-    ipcMain.handle('current-view-can-go-forward', () => currentView.value.canGoForward());
+    // No entanto, não precisam ser definidos separadamente, pois são obtidos dinamicamente dentro da callback.
+    ipcMain.handle('current-view-url', () => currentView.value.webContents.getURL());
+    ipcMain.handle('current-view-web-contents-id', () => currentView.value.webContents.id);
+    ipcMain.on('current-view-go-home', () => currentView.value.webContents.loadURL(gameURL));
+    ipcMain.handle('current-view-can-go-back', () => currentView.value.webContents.canGoBack());
+    ipcMain.handle('current-view-can-go-forward', () => currentView.value.webContents.canGoForward());
 
     ipcMain.on('current-view-go-back', () => {
-        if (currentView.value.canGoBack()) {
-            currentView.value.goBack();
+        if (currentView.value.webContents.canGoBack()) {
+            currentView.value.webContents.goBack();
         };
     });
 
     ipcMain.on('current-view-go-forward', () => {
-        if (currentView.value.canGoForward()) {
-            currentView.value.goForward();
+        if (currentView.value.webContents.canGoForward()) {
+            currentView.value.webContents.goForward();
         };
     });
 
     // Define os eventos compartilhados entre todas as BrowserViews.
     setViewSharedEvents();
+
     // Define os eventos específicos da BrowserView atual.
-    setCurrentViewEvents(currentView);
+    setCurrentViewEvents(currentView.value.webContents, mainWindow);
+
+    watch(currentView, (newView, oldView) => {
+        // Remove os eventos da BrowserView anterior e define os eventos da nova BrowserView.
+        removePreviousViewEvents(oldView.webContents);
+        setCurrentViewEvents(newView.webContents, mainWindow);
+
+        // Atualiza as dimensões de ambas as BrowserViews.
+        setViewAsTopBrowserView(newView, currentAutoResize, mainWindow);
+        hideBrowserView(oldView, currentAutoResize);
+    });
 };
 
 /**
  * Define os eventos compartilhados entre todas as BrowserViews.
  * Esses eventos devem ser removidos quando a BrowserView for destruída.
- * @param webContents WebContents da BrowserView.
  */
 function setViewSharedEvents() {
     const mainWindow = getMainWindow();
@@ -98,35 +124,51 @@ function setViewSharedEvents() {
 /**
  * Define os eventos específicos da BrowserView atual.
  * Esses eventos devem ser removidos quando a BrowserView for destruída.
- * @param currentView WebContents da BrowserView atual.
+ * 
+ * Se um novo evento for adicionado, é preciso adicionar a remoção dele na função `removePreviousViewEvents`.
+ * @param view WebContents da BrowserView atual.
  */
-function setCurrentViewEvents(currentView: MechanusComputedRef<WebContents>) {
-    const mainWindow = getMainWindow();
-
-    currentView.value.on('did-start-loading', () => {
+function setCurrentViewEvents(view: WebContents, mainWindow: BrowserWindow = getMainWindow()) {
+    view.on('did-start-loading', () => {
         mainWindow.webContents.send('current-view-did-start-loading');
     });
 
-    currentView.value.on('did-stop-loading', () => {
+    view.on('did-stop-loading', () => {
         mainWindow.webContents.send('current-view-did-stop-loading');
     });
 
-    currentView.value.on('did-navigate', () => {
-        insertViewCSS(currentView.value);
-        updateCurrentViewBackForwardStatus(currentView);
+    view.on('did-navigate', () => {
+        insertViewCSS(view);
+        updateCurrentViewBackForwardStatus(view);
     });
 
-    currentView.value.on('did-navigate-in-page', () => {
-        updateCurrentViewBackForwardStatus(currentView);
+    view.on('did-navigate-in-page', () => {
+        updateCurrentViewBackForwardStatus(view);
     });
 
-    currentView.value.on('did-frame-navigate', () => {
-        updateCurrentViewBackForwardStatus(currentView);
+    view.on('did-frame-navigate', () => {
+        updateCurrentViewBackForwardStatus(view);
     });
 
-    currentView.value.on('did-redirect-navigation', () => {
-        updateCurrentViewBackForwardStatus(currentView);
+    view.on('did-redirect-navigation', () => {
+        updateCurrentViewBackForwardStatus(view);
     });
+};
+
+/**
+ * Remove todos os eventos da BrowserView atual.
+ * Essa função deve ser chamada quando a BrowserView atual for alterada.
+ * 
+ * Esses eventos são definidos na função `setCurrentViewEvents`.
+ * @param view WebContents da BrowserView atual.
+ */
+function removePreviousViewEvents(view: WebContents) {
+    view.removeAllListeners('did-start-loading');
+    view.removeAllListeners('did-stop-loading');
+    view.removeAllListeners('did-navigate');
+    view.removeAllListeners('did-navigate-in-page');
+    view.removeAllListeners('did-frame-navigate');
+    view.removeAllListeners('did-redirect-navigation');
 };
 
 /**
@@ -135,7 +177,7 @@ function setCurrentViewEvents(currentView: MechanusComputedRef<WebContents>) {
  * @param rawUrl URL da nova BrowserView.
  * @returns BrowserView criada ou `null` se algo impedir a criação.
  */
-async function createBrowserView(rawUrl: string): Promise<BrowserView | null> {
+async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = getMainWindow()) {
     try {
         const browserView = new BrowserView({
             webPreferences: {
@@ -146,11 +188,10 @@ async function createBrowserView(rawUrl: string): Promise<BrowserView | null> {
             }
         });
 
-        // Cria uma instância de URL para verificar se a URL é válida.
+        // Cria uma instância de URL para verificar se a URL passada à função é válida.
         const url = new URL(rawUrl);
         if (!isAllowedURL(url.href)) return null;
 
-        const mainWindow = getMainWindow();
         mainWindow.addBrowserView(browserView);
         setViewSharedEvents();
         
@@ -204,15 +245,61 @@ function handleDestroyedBrowserView(contents: WebContents) {
     };
 };
 
-function updateCurrentViewBackForwardStatus(view: MechanusComputedRef<WebContents>) {
-    const mainWindow = getMainWindow();
-    const backForwardStatus = getBackForwardStatus(view.value);
+/**
+ * Envia à janela principal informações sobre a capacidade de voltar e avançar da BrowserView atual.
+ * @param view WebContents da BrowserView atual.
+ * @param mainWindow Janela principal.
+ */
+function updateCurrentViewBackForwardStatus(view: WebContents, mainWindow: BrowserWindow = getMainWindow()) {
+    const backForwardStatus = getBackForwardStatus(view);
     mainWindow.webContents.send('current-view-back-forward-status', backForwardStatus);
 };
 
+/**
+ * Determina o comportamento da aplicação quando uma nova janela for aberta a partir do WebContents.
+ * 
+ * Uma nova BrowserView será criada se a URL for permitida.
+ * @param contents WebContents da BrowserView.
+ */
 function setWindowOpenHandler(contents: WebContents) {
     contents.setWindowOpenHandler(({ url }) => {
         queueMicrotask(() => createBrowserView(url));
         return { action: 'deny' };
     });
+};
+
+function findBrowserViewByWebContentsId(webContentsId: number, mainWindow: BrowserWindow = getMainWindow()) {
+    const browserViews = mainWindow.getBrowserViews();
+    const browserView = browserViews.find((view) => view.webContents.id === webContentsId);
+    if (browserView) return browserView;
+    throw new BrowserViewError(`BrowserView não encontrada para o WebContents ${webContentsId}.`);
+};
+
+/**
+ * Define a BrowserView como ativa e define os eventos de redimensionamento automático.
+ * @param view BrowserView a ser definida como ativa.
+ * @param currentAutoResize Referência para a função de remoção do evento de redimensionamento automático.
+ * @param mainWindow Janela principal.
+ */
+function setViewAsTopBrowserView(
+    view: BrowserView,
+    currentAutoResize: MechanusRef<(() => void) | null>,
+    mainWindow: BrowserWindow = getMainWindow()
+) {
+    mainWindow.setTopBrowserView(view);
+    setBrowserViewBounds(view);
+    currentAutoResize.value = setBrowserViewAutoResize(view);
+};
+
+/**
+ * Oculta a BrowserView e remove o evento de redimensionamento automático.
+ * @param view BrowserView a ser ocultada.
+ * @param currentAutoResize Referência para a função de remoção do evento de redimensionamento automático.
+ */
+function hideBrowserView(view: BrowserView, currentAutoResize: MechanusRef<(() => void) | null>) {
+    view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+    if (typeof currentAutoResize.value === 'function') {
+        currentAutoResize.value();
+        currentAutoResize.value = null;
+    };
 };

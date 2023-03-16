@@ -8,6 +8,8 @@ export interface BrowserViewStore {
     readonly registeredWebContents: WeakSet<WebContents>;
     /** O WebContents atualmente ativo (em primeiro plano). */
     readonly currentWebContents: WebContents | null;
+    /** Função para remover o evento de redimensionamento do WebContents ativo. */
+    readonly currentAutoResize: (() => void) | null;
 };
 
 export type MechanusBrowserViewStoreType = {

@@ -21,7 +21,7 @@ export function setBrowserViewBounds(view: BrowserView, mainWindow: BrowserWindo
  * @param view BrowserView a ser redimensionado.
  * @returns Função para remover o evento de redimensionamento.
  */
-export function setBrowserViewAutoResize(view: BrowserView, mainWindow: BrowserWindow = getMainWindow()) {
+export function setBrowserViewAutoResize(view: BrowserView, mainWindow: BrowserWindow = getMainWindow()): () => void {
     let timeout: NodeJS.Immediate;
     function resize(e: Electron.Event) {
         e.preventDefault();
