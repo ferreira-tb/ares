@@ -27,9 +27,10 @@ export async function ipcInvoke(channel: 'user-alias'): Promise<UserAlias | null
 export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
-export async function ipcInvoke(channel: 'main-view-url'): Promise<string>;
 
 // Browser View
+export async function ipcInvoke(channel: 'main-view-url'): Promise<string>;
+export async function ipcInvoke(channel: 'main-view-web-contents-id'): Promise<number>;
 export async function ipcInvoke(channel: 'current-view-url'): Promise<string>;
 export async function ipcInvoke(channel: 'current-view-can-go-back'): Promise<boolean>;
 export async function ipcInvoke(channel: 'current-view-can-go-forward'): Promise<boolean>;
@@ -80,10 +81,10 @@ export function ipcSend(channel: 'close-main-window'): void;
 export function ipcSend(channel: 'open-ares-website'): void;
 export function ipcSend(channel: 'open-repo-website'): void;
 export function ipcSend(channel: 'open-issues-website'): void;
-export function ipcSend(channel: 'reload-main-view'): void;
-export function ipcSend(channel: 'force-reload-main-view'): void;
 
 // Browser View
+export function ipcSend(channel: 'reload-main-view'): void;
+export function ipcSend(channel: 'force-reload-main-view'): void;
 export function ipcSend(channel: 'current-view-go-home'): void;
 export function ipcSend(channel: 'current-view-go-back'): void;
 export function ipcSend(channel: 'current-view-go-forward'): void;

@@ -1,11 +1,9 @@
-import { app, BrowserWindow, webContents } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
 import { assertWorld } from '$electron/utils/guards';
 import { MainProcessError } from '$electron/error';
-import { browserCss, favicon } from '$electron/utils/constants';
 import type { MechanusStore } from 'mechanus';
-import type { WebContents } from 'electron';
-import type { UserAlias, WindowOpenHandler } from '$types/electron';
+import type { UserAlias } from '$types/electron';
 import type { AllUnits, World } from '$types/game';
 import type { UnitDetails, WorldUnitType } from '$types/world';
 import type { createWorldUnitStoresMap } from '$stores/world';
@@ -22,12 +20,6 @@ export const getMainWindow = () => {
     return mainWindow;
 };
 
-export const getMainViewWebContents = () => {
-    const id = Number.parseIntStrict(process.env.MAIN_VIEW_WEB_CONTENTS_ID ?? '');
-    const mainViewWebContents = webContents.fromId(id);
-    return mainViewWebContents;
-};
-
 export const getPanelWindow = () => {
     const id = Number.parseIntStrict(process.env.PANEL_WINDOW_ID ?? '');
     const panelWindow = BrowserWindow.fromId(id);
@@ -35,6 +27,7 @@ export const getPanelWindow = () => {
     return panelWindow;
 };
 
+/** Exibe ou oculta a janela do painel. */
 export function togglePanelWindow() {
     const mainWindow = getMainWindow();
     const panelWindow = getPanelWindow();
@@ -51,45 +44,11 @@ export function togglePanelWindow() {
     };
 };
 
-export function getWindowOpenHandler(child: boolean = true): WindowOpenHandler {
-    const windowOpenHandler: Required<WindowOpenHandler> = {
-        action: 'allow',
-        outlivesOpener: false,
-        overrideBrowserWindowOptions: {
-            show: false,
-            width: 1200,
-            height: 1000,
-            icon: favicon,
-            webPreferences: {
-                spellcheck: false,
-                nodeIntegration: false,
-                contextIsolation: true,
-                devTools: process.env.ARES_MODE === 'dev'
-            }
-        }
-    };
-
-    if (child) {
-        windowOpenHandler.overrideBrowserWindowOptions.parent = getMainWindow();
-    };
-
-    return windowOpenHandler;
-};
-
 /**
- * Insere CSS no WebContents.
- * @param contents WebContents da janela ou do BrowserView.
- * @param css CSS a ser inserido. Se omitido, será usado o CSS padrão do browser.
+ * Maximiza ou restaura a janela, dependendo do estado atual.
+ * @param window Janela a ser maximizada ou restaurada.
+ * @returns Booleano indicando se a janela está maximizada.
  */
-export async function insertCSS(contents?: WebContents, css: string = browserCss) {
-    try {
-        contents ??= getMainViewWebContents();
-        await contents.insertCSS(css);
-    } catch (err) {
-        MainProcessError.catch(err);
-    };
-};
-
 export function maximizeOrRestoreWindow(window: BrowserWindow) {
     if (window.isMaximized()) {
         window.restore();

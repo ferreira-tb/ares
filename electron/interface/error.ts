@@ -2,11 +2,11 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { app, dialog, BrowserWindow } from 'electron';
 import { isInstanceOf, isString, toNull } from '@tb-dev/ts-guard';
-import { sequelize } from '$database/database.js';
-import { getActiveModule } from '$electron/app/modules.js';
+import { sequelize } from '$database/database';
+import { getActiveModule } from '$electron/app/modules';
 import type { useAresStore } from '$interface/index';
-import type { MainProcessErrorLog as MainProcessErrorLogTable } from '$interface/index.js';
-import type { MainProcessErrorLogType } from '$types/error.js';
+import type { MainProcessErrorLog as MainProcessErrorLogTable } from '$interface/index';
+import type { MainProcessErrorLogType } from '$types/error';
 
 export function catchError(
     aresStore: ReturnType<typeof useAresStore>,

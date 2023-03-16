@@ -6,6 +6,7 @@ import { setDeimosEvents } from '$electron/events/deimos';
 import { setModuleEvents } from '$electron/events/modules';
 import { setMainWindowEvents } from '$electron/events/window';
 import { setBrowserViewEvents } from '$electron/events/view';
+import { setGroupsEvents } from '$electron/events/groups';
 import { isUserAlias } from '$electron/utils/guards';
 import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
@@ -13,22 +14,17 @@ import type { UserAlias } from '$types/electron';
 import {
     useCacheStore,
     useWorldConfigStore,
-    worldUnitsMap,
-    useGroupsStore
+    worldUnitsMap
 } from '$interface/index';
 
 import {
-    getMainViewWebContents,
     getPlayerNameFromAlias,
     extractWorldUnitsFromMap
 } from '$electron/utils/helpers';
 
 export function setEvents() {
-    const mainViewWebContents = getMainViewWebContents();
-
     const cacheStore = useCacheStore();
     const worldConfigStore = useWorldConfigStore();
-    const groupsStore = useGroupsStore();
     
     // Geral.
     ipcMain.handle('app-name', () => app.getName());
@@ -37,7 +33,6 @@ export function setEvents() {
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
     ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
-    ipcMain.handle('main-view-url', () => mainViewWebContents.getURL());
 
     // Website.
     ipcMain.on('open-ares-website', () => openAresWebsite());
@@ -55,8 +50,6 @@ export function setEvents() {
         return getPlayerNameFromAlias(alias);
     });
 
-    ipcMain.handle('get-village-groups', () => groupsStore.all);
-
     // Outros eventos.
     setMainWindowEvents();
     setBrowserViewEvents();
@@ -65,4 +58,5 @@ export function setEvents() {
     setErrorEvents();
     setDeimosEvents();
     setModuleEvents();
+    setGroupsEvents();
 };
