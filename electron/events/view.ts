@@ -74,7 +74,7 @@ export function setBrowserViewEvents() {
     });
 
     // Define os eventos compartilhados entre todas as BrowserViews.
-    setViewSharedEvents();
+    setViewSharedEvents(mainWindow, mainViewWebContents);
 
     // Define os eventos específicos da BrowserView atual.
     setCurrentViewEvents(currentView.value.webContents, mainWindow);
@@ -94,30 +94,32 @@ export function setBrowserViewEvents() {
  * Define os eventos compartilhados entre todas as BrowserViews.
  * Esses eventos devem ser removidos quando a BrowserView for destruída.
  */
-function setViewSharedEvents() {
-    const mainWindow = getMainWindow();
-    const mainViewWebContents = getMainViewWebContents();
+function setViewSharedEvents(
+    mainWindow: BrowserWindow = getMainWindow(),
+    mainViewWebContents: WebContents = getMainViewWebContents()
+) {
     const browserViewStore = useBrowserViewStore();
     const { allWebContents, registeredWebContents } = storeToRefs(browserViewStore);
 
-    for (const webContents of allWebContents.value) {
+    for (const contents of allWebContents.value) {
         // Verifica se os eventos já foram definidos.
-        if (registeredWebContents.value.has(webContents)) continue;
+        if (registeredWebContents.value.has(contents)) continue;
 
         // Impede que o usuário navegue para fora da página do jogo.
-        webContents.on('will-navigate', (e, url) => {
+        contents.on('will-navigate', (e, url) => {
             if (!isAllowedURL(url)) e.preventDefault();
         });
 
-        webContents.on('page-title-updated', (_e, title) => {
-            if (webContents === mainViewWebContents) return;
-            mainWindow.webContents.send('browser-view-title-updated', webContents.id, title);
+        contents.on('page-title-updated', (_e) => {
+            if (contents === mainViewWebContents) return;
+            const title = contents.getTitle();
+            mainWindow.webContents.send('browser-view-title-updated', contents.id, title);
         });
 
-        webContents.once('destroyed', () => handleDestroyedBrowserView(webContents));
+        contents.once('destroyed', () => handleDestroyedBrowserView(contents));
 
         // Adiciona o WebContents à lista de WebContents com eventos já registrados.
-        registeredWebContents.value.add(webContents);
+        registeredWebContents.value.add(contents);
     };
 };
 
@@ -193,7 +195,11 @@ async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = get
         if (!isAllowedURL(url.href)) return null;
 
         mainWindow.addBrowserView(browserView);
-        setViewSharedEvents();
+
+        const browserViewStore = useBrowserViewStore();
+        const { allWebContents } = storeToRefs(browserViewStore);
+        allWebContents.value.add(browserView.webContents);
+        queueMicrotask(() => setViewSharedEvents(mainWindow));
         
         const contents = browserView.webContents;
         await contents.loadURL(url.href);
