@@ -73,6 +73,8 @@ function destroyBrowserView(viewId: WebContents['id']) {
 </template>
 
 <style scoped lang="scss">
+@use '$main/assets/main.scss';
+
 .main-window-tabs-container {
     position: absolute;
     top: 0;
@@ -96,14 +98,8 @@ function destroyBrowserView(viewId: WebContents['id']) {
     height: 100%;
     -webkit-app-region: no-drag;
 
-    & > div {
-        height: 100%;
-    }
-
     .main-browser-view-tab {
-        display: flex;
-        align-items: center;
-        align-content: center;
+        @include main.display-flex-center;
         justify-content: center;
 
         width: 100px;
