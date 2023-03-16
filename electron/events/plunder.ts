@@ -1,12 +1,12 @@
 import { ipcMain, BrowserWindow, type WebContents } from 'electron';
 import { assertObject, assertInteger, isKeyOf, isObject, isInteger } from '@tb-dev/ts-guard';
-import { getPanelWindow, extractWorldUnitsFromMap } from '$electron/utils/helpers.js';
-import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards.js';
-import { sequelize } from '$database/database.js';
-import { MainProcessEventError } from '$electron/error.js';
-import type { PlunderAttackDetails, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder.js';
-import type { UnitAmount, World } from '$types/game.js';
-import type { WorldUnitType } from '$types/world.js';
+import { getPanelWindow, extractWorldUnitsFromMap } from '$electron/utils/helpers';
+import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards';
+import { sequelize } from '$database/database';
+import { MainProcessEventError } from '$electron/error';
+import type { PlunderAttackDetails, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder';
+import type { UnitAmount, World } from '$types/game';
+import type { WorldUnitType } from '$types/world';
 
 import {
     PlunderHistory,
@@ -17,7 +17,7 @@ import {
     useCacheStore,
     WorldUnit,
     worldUnitsMap
-} from '$interface/index.js';
+} from '$interface/index';
 
 export function setPlunderEvents() {
     const panelWindow = getPanelWindow();
