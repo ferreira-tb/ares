@@ -1,12 +1,11 @@
 import { app, ipcMain } from 'electron';
 import { setPlunderEvents } from '$electron/events/plunder';
-import { setBrowserEvents } from '$electron/events/browser';
 import { setErrorEvents } from '$electron/events/error';
 import { setPanelEvents } from '$electron/events/panel';
 import { setDeimosEvents } from '$electron/events/deimos';
 import { setModuleEvents } from '$electron/events/modules';
 import { setMainWindowEvents } from '$electron/events/window';
-import { setCurrentViewEvents } from '$electron/events/view';
+import { setBrowserViewEvents } from '$electron/events/view';
 import { isUserAlias } from '$electron/utils/guards';
 import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
@@ -60,11 +59,10 @@ export function setEvents() {
 
     // Outros eventos.
     setMainWindowEvents();
-    setBrowserEvents();
+    setBrowserViewEvents();
     setPanelEvents();
     setPlunderEvents();
     setErrorEvents();
     setDeimosEvents();
     setModuleEvents();
-    setCurrentViewEvents();
 };

@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron';
+import { storeToRefs } from 'mechanus';
 import { isObject } from '@tb-dev/ts-guard';
 import { isUserAlias } from '$electron/utils/guards';
-import { getMainViewWebContents } from '$electron/utils/helpers';
-import { useCacheStore, DemolitionTemplate, CustomPlunderTemplate } from '$interface/index';
+import { useCacheStore, useBrowserViewStore, DemolitionTemplate, CustomPlunderTemplate } from '$interface/index';
 import type { UserAlias } from '$types/electron';
 import type { CustomPlunderTemplateType, DemolitionTemplateType } from '$types/plunder';
 
@@ -15,6 +15,8 @@ import {
 
 export function setModuleEvents() {
     const cacheStore = useCacheStore();
+    const browserViewStore = useBrowserViewStore();
+    const { allWebContents } = storeToRefs(browserViewStore);
 
     //////// INICIALIZAÇÃO
     ipcMain.on('open-error-log-window', () => showErrorLog());
@@ -62,25 +64,29 @@ export function setModuleEvents() {
         return customPlunderTemplates;
     });
 
-    ipcMain.handle('save-custom-plunder-template', async (_e, template: CustomPlunderTemplateType): Promise<boolean> => {
+    ipcMain.handle('save-custom-plunder-template', async (e, template: CustomPlunderTemplateType): Promise<boolean> => {
         const status = await CustomPlunderTemplate.saveCustomPlunderTemplate(template);
         
         // Se o template foi salvo com sucesso, notifica o browser.
         if (status === true) {
-            const mainViewWebContents = getMainViewWebContents();
-            mainViewWebContents.send('custom-plunder-template-saved', template);
+            for (const contents of allWebContents.value) {
+                if (contents === e.sender) continue;
+                contents.send('custom-plunder-template-saved', template);
+            };
         };
 
         return status;
     });
 
-    ipcMain.handle('destroy-custom-plunder-template', async (_e, template: CustomPlunderTemplateType): Promise<boolean> => {
+    ipcMain.handle('destroy-custom-plunder-template', async (e, template: CustomPlunderTemplateType): Promise<boolean> => {
         const status = await CustomPlunderTemplate.destroyCustomPlunderTemplate(template);
 
         // Se o template foi excluído com sucesso, notifica o browser.
         if (status === true) {
-            const mainViewWebContents = getMainViewWebContents();
-            mainViewWebContents.send('custom-plunder-template-destroyed', template);
+            for (const contents of allWebContents.value) {
+                if (contents === e.sender) continue;
+                contents.send('custom-plunder-template-destroyed', template);
+            };
         };
 
         return status;

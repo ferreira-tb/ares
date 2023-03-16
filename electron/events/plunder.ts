@@ -1,9 +1,10 @@
-import { ipcMain, BrowserWindow, type WebContents } from 'electron';
+import { ipcMain, BrowserWindow } from 'electron';
 import { assertObject, assertInteger, isKeyOf, isObject, isInteger } from '@tb-dev/ts-guard';
-import { getPanelWindow, extractWorldUnitsFromMap } from '$electron/utils/helpers';
+import { storeToRefs } from 'mechanus';
 import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards';
 import { sequelize } from '$database/database';
 import { MainProcessEventError } from '$electron/error';
+import { getPanelWindow, extractWorldUnitsFromMap } from '$electron/utils/helpers';
 import type { PlunderAttackDetails, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder';
 import type { UnitAmount, World } from '$types/game';
 import type { WorldUnitType } from '$types/world';
@@ -15,16 +16,21 @@ import {
     useLastPlunderHistoryStore,
     useTotalPlunderHistoryStore,
     useCacheStore,
+    useBrowserViewStore,
     WorldUnit,
     worldUnitsMap
 } from '$interface/index';
 
 export function setPlunderEvents() {
     const panelWindow = getPanelWindow();
+
     const cacheStore = useCacheStore();
     const plunderConfigStore = usePlunderConfigStore();
     const lastPlunderHistoryStore = useLastPlunderHistoryStore();
     const totalPlunderHistoryStore = useTotalPlunderHistoryStore();
+
+    const browserViewStore = useBrowserViewStore();
+    const { allWebContents } = storeToRefs(browserViewStore);
 
     // Verifica se o Plunder está ativo.
     ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
@@ -47,8 +53,15 @@ export function setPlunderEvents() {
             Reflect.set(plunderConfigStore, key, value);
 
             // Comunica a mudança aos processos diferentes daquele que enviou os dados.
+            for (const contents of allWebContents.value) {
+                if (contents !== e.sender) {
+                    contents.send('plunder-config-updated', key, value);
+                };
+            };
+
             for (const browserWindow of BrowserWindow.getAllWindows()) {
-                if (browserWindow.webContents !== (e.sender satisfies WebContents)) {
+                const content = browserWindow.webContents;
+                if (content !== e.sender && !allWebContents.value.has(content)) {
                     browserWindow.webContents.send('plunder-config-updated', key, value);
                 };
             };
@@ -65,7 +78,7 @@ export function setPlunderEvents() {
         };
     });
 
-    // Emitido pelo browser após cada ataque realizado pelo Plunder.
+    // Emitido pela view após cada ataque realizado pelo Plunder.
     ipcMain.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
         try {
             assertObject(details, 'Erro ao atualizar os detalhes do ataque: o objeto é inválido.');
@@ -75,7 +88,7 @@ export function setPlunderEvents() {
         };
     });
 
-    // Emitido pelo browser quando o Plunder é desativado.
+    // Emitido pela view quando o Plunder é desativado.
     ipcMain.on('save-plunder-attack-details', async (_e, details: PlunderAttackDetails) => {
         try {
             assertObject(details, 'Erro ao salvar os detalhes do ataque: o objeto é inválido.');
