@@ -3,6 +3,7 @@ import { computed, storeToRefs } from 'mechanus';
 import { useBrowserViewStore } from '$interface/index';
 import { insertCSS, getMainWindow, getMainViewWebContents } from '$electron/utils/helpers';
 import { gameURL } from '$electron/utils/constants';
+import { isAllowedURL } from '$electron/utils/guards';
 import type { WebContents } from 'electron';
 import type { BackForwardStatus } from '$types/view';
 
@@ -19,6 +20,19 @@ export function setCurrentViewEvents() {
     const backForwardStatus = (): BackForwardStatus => ({
         canGoBack: currentView.value.canGoBack(),
         canGoForward: currentView.value.canGoForward()
+    });
+
+    // Impede que o usuário navegue para fora da página do jogo.
+    currentView.value.on('will-navigate', (e, url) => {
+        if (!isAllowedURL(url)) e.preventDefault();
+    });
+
+    currentView.value.on('did-start-loading', () => {
+        mainWindow.webContents.send('current-view-did-start-loading');
+    });
+
+    currentView.value.on('did-stop-loading', () => {
+        mainWindow.webContents.send('current-view-did-stop-loading');
     });
 
     currentView.value.on('did-navigate', () => {

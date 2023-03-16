@@ -7,7 +7,7 @@ import { setDeimosEvents } from '$electron/events/deimos';
 import { setModuleEvents } from '$electron/events/modules';
 import { setMainWindowEvents } from '$electron/events/window';
 import { setCurrentViewEvents } from '$electron/events/view';
-import { isUserAlias, isAllowedURL } from '$electron/utils/guards';
+import { isUserAlias } from '$electron/utils/guards';
 import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
 
@@ -20,15 +20,12 @@ import {
 
 import {
     getMainViewWebContents,
-    getPanelWindow,
     getPlayerNameFromAlias,
     extractWorldUnitsFromMap
 } from '$electron/utils/helpers';
 
 export function setEvents() {
-    
     const mainViewWebContents = getMainViewWebContents();
-    const panelWindow = getPanelWindow();
 
     const cacheStore = useCacheStore();
     const worldConfigStore = useWorldConfigStore();
@@ -60,17 +57,6 @@ export function setEvents() {
     });
 
     ipcMain.handle('get-village-groups', () => groupsStore.all);
-
-    // Informa ao painel que o navegador terminou de carregar.
-    mainViewWebContents.on('did-finish-load', () => {
-        panelWindow.webContents.send('browser-did-finish-load');
-    });
-
-    // Impede que o usuário navegue para fora da página do jogo.
-    mainViewWebContents.on('will-navigate', (e, url) => {
-        panelWindow.webContents.send('browser-will-navigate');
-        if (!isAllowedURL(url)) e.preventDefault();
-    });
 
     // Outros eventos.
     setMainWindowEvents();
