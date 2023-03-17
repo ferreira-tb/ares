@@ -18,46 +18,25 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "$types/*": [
-                "./types/*"
-            ],
-            "$browser/*": [
-                "./browser/*"
-            ],
-            "$lib/*": [
-                "./browser/lib/*"
-            ],
-            "$global/*": [
-                "./global/*"
-            ],
-            "$styles/*": [
-                "./global/assets/*"
-            ],
-            "$vue/*": [
-                "./vue/*"
-            ],
-            "$modules/*": [
-                "./modules/*"
-            ],
-            "$panel/*": [
-                "./panel/*"
-            ],
-            "$deimos/*": [
-                "./deimos/*"
-            ],
-            "$icons/*": [
-                "./vue/components/icons/*"
-            ],
-            "$main/*": [
-                "./main/*"
-            ]
+            "$types/*": ["./types/*"],
+            "$browser/*": ["./browser/*"],
+            "$lib/*": ["./browser/lib/*"],
+            "$global/*": ["./global/*"],
+            "$styles/*": ["./global/assets/*"],
+            "$vue/*": ["./vue/*"],
+            "$modules/*": ["./modules/*"],
+            "$panel/*": ["./panel/*"],
+            "$deimos/*": ["./deimos/*"],
+            "$icons/*": ["./vue/components/icons/*"],
+            "$main/*": ["./main/*"]
         },
-        "lib": [
-            "esnext",
-            "dom"
-        ],
+
         "target": "esnext",
-        // Modo estrito
+        "lib": ["esnext", "dom"],
+        "esModuleInterop": true,
+        "removeComments": true,
+        
+        // Restrições
         "alwaysStrict": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
@@ -65,26 +44,23 @@
         "strictBindCallApply": true,
         "strictPropertyInitialization": true,
         "useUnknownInCatchVariables": true,
-        // Código não utilizado
         "noUnusedParameters": true,
         "noUnusedLocals": true,
         "allowUnusedLabels": false,
         "allowUnreachableCode": false,
-        // Código implícito
         "noImplicitOverride": true,
         "noImplicitReturns": true,
-        // Outros
         "exactOptionalPropertyTypes": true,
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
-        "removeComments": true,
+
         "types": [
             "node",
             "@tb-dev/prototype/dist/index",
             "@tb-dev/prototype-dom/dist/index"
-        ],
-        "esModuleInterop": true
+        ]
     },
+
     "references": [
         {
             "path": "./tsconfig.config.json"
