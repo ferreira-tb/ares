@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue';
+import { h, computed, ref, reactive, watch } from 'vue';
+import { useElementSize } from '@vueuse/core';
 import { NTabs, NTab } from 'naive-ui';
 import { useIpcRenderer } from '@vueuse/electron';
 import { assertInteger } from '@tb-dev/ts-guard';
@@ -8,6 +9,10 @@ import WindowButtons from '$main/components/WindowButtons.vue';
 import LightIcon from '$icons/units/LightIcon.vue';
 import type { WebContents } from 'electron';
 import type { CSSProperties } from 'vue';
+
+const tabsContainer = ref<HTMLElement | null>(null);
+const { width } = useElementSize(tabsContainer);
+const tabsWidth = computed(() => `${width.value - 150}px`);
 
 const allTabs = reactive<Map<WebContents['id'], string>>(new Map());
 const mainViewId = await ipcInvoke('main-view-web-contents-id');
@@ -37,32 +42,37 @@ function destroyBrowserView(viewId: WebContents['id']) {
     assertInteger(viewId);
     ipcSend('destroy-browser-view', viewId);
 };
+
+function renderMainTab() {
+    return h('div', [h(LightIcon), h('span', 'Ares')]);
+};
 </script>
 
 <template>
-    <div class="main-window-tabs-container">
+    <div class="main-window-tabs-container" ref="tabsContainer">
         <div class="main-window-tab-area">
-            <div class="main-browser-view-tab" @click="activeView = mainViewId">
-                <LightIcon />
-                <span class="main-browser-view-title" :class="{ 'bold-green': activeView === mainViewId }">Ares</span>
-            </div>
-            <div class="other-browser-view-tabs">
-                <NTabs
-                    closable
-                    type="card"
-                    trigger="click"
-                    v-model:value="activeView"
-                    @close="destroyBrowserView"
-                    :tab-style="tabStyle"
-                >
-                    <NTab
-                        v-for="[viewId, title] in allTabs"
-                        :name="viewId"
-                        :key="viewId"
-                        :tab="title"
-                    />
-                </NTabs>
-            </div>
+            <NTabs
+                closable
+                type="card"
+                trigger="click"
+                v-model:value="activeView"
+                @close="destroyBrowserView"
+                :tab-style="tabStyle"
+            >
+                <NTab
+                    :name="mainViewId"
+                    :key="mainViewId"
+                    :closable="false"
+                    :tab="renderMainTab"
+                />
+
+                <NTab
+                    v-for="[viewId, title] in allTabs"
+                    :name="viewId"
+                    :key="viewId"
+                    :tab="title"
+                />
+            </NTabs>
         </div>
 
         <!-- Botões para controle da janela -->
@@ -82,7 +92,7 @@ function destroyBrowserView(viewId: WebContents['id']) {
     right: 0;
 
     width: 100%;
-    height: 40px;
+    height: main.$tab-height;
     
     display: flex;
     align-items: center;
@@ -90,29 +100,8 @@ function destroyBrowserView(viewId: WebContents['id']) {
 }
 
 .main-window-tab-area {
-    display: flex;
-    align-items: center;
-    justify-self: start;
-
-    width: 100%;
-    height: 100%;
+    width: v-bind("tabsWidth");
+    height: main.$tab-height;
     -webkit-app-region: no-drag;
-
-    .main-browser-view-tab {
-        @include main.display-flex-center;
-        justify-content: center;
-
-        width: 100px;
-        border-radius: 10%;
-        margin-right: 0.3em;
-        cursor: pointer;
-
-        color: var(--color-text);
-        background-color: var(--color-background-mute);
-
-        & > .main-browser-view-title {
-            margin-left: 0.2em;
-        }
-    }
 }
 </style>

@@ -33,7 +33,7 @@ async function maximizeOrRestore() {
     -webkit-app-region: no-drag;
     justify-content: space-between;
     justify-self: end;
-    width: max-content;
+    width: 150px;
 }
 
 .main-window-button-area > div {
