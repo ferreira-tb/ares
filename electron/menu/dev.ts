@@ -1,6 +1,6 @@
 import { BrowserWindow, Menu, MenuItem, type MenuItemConstructorOptions } from 'electron';
 import { assertInstanceOf } from '@tb-dev/ts-guard';
-import { getMainViewWebContents } from '$electron/utils/helpers';
+import { getMainViewWebContents } from '$electron/utils/view';
 import { MainProcessError } from '$electron/error';
 
 const devOptions: MenuItemConstructorOptions[] = [

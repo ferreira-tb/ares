@@ -48,3 +48,10 @@ export class WorldPatchError extends MainProcessError {
         this.name = 'WorldPatchError';
     };
 };
+
+export class BrowserViewError extends MainProcessError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'BrowserViewError';
+    };
+};

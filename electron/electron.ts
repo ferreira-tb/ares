@@ -1,13 +1,13 @@
 import '@tb-dev/prototype';
 import { app, BrowserWindow, BrowserView } from 'electron';
+import { storeToRefs } from 'mechanus';
 import { setAppMenu } from '$electron/menu/menu';
 import { sequelize } from '$database/database';
-import { UserConfig } from '$interface/index';
+import { UserConfig, useBrowserViewStore } from '$interface/index';
 import { setEvents } from '$electron/events/index';
 import { gameURL, favicon, panelHtml, mainHtml, browserJs } from '$electron/utils/constants';
+import { setBrowserViewAutoResize } from '$electron/utils/view';
 import { MainProcessError } from '$electron/error';
-import { isAllowedURL } from '$electron/utils/guards';
-import { insertCSS, getWindowOpenHandler } from '$electron/utils/helpers';
 
 process.env.ARES_MODE = 'dev';
 
@@ -26,8 +26,8 @@ function createWindow() {
         maximizable: true,
         fullscreenable: false,
         closable: true,
-        darkTheme: true,
         titleBarStyle: 'hidden',
+        darkTheme: true,
         webPreferences: {
             spellcheck: false,
             nodeIntegration: true,
@@ -36,6 +36,7 @@ function createWindow() {
         }
     });
 
+    /** A BrowserView principal jamais deve ser destruída. */
     const mainView = new BrowserView({
         webPreferences: {
             spellcheck: false,
@@ -55,6 +56,7 @@ function createWindow() {
         fullscreenable: false,
         frame: false,
         titleBarStyle: 'hidden',
+        darkTheme: true,
         webPreferences: {
             spellcheck: false,
             nodeIntegration: true,
@@ -67,54 +69,23 @@ function createWindow() {
     process.env.MAIN_VIEW_WEB_CONTENTS_ID = mainView.webContents.id.toString(10);
     process.env.PANEL_WINDOW_ID = panelWindow.id.toString(10);
 
-    setEvents();
-    setAppMenu();
-
-    mainWindow.maximize();
-
-    const windowOpenHandler = getWindowOpenHandler(true);
-    mainView.webContents.setWindowOpenHandler(({ url }) => {
-        if (!isAllowedURL(url)) return { action: 'deny' };
-        return windowOpenHandler;
-    });
-
-    // TO DO: transformar essas janelas em BrowserViews.
-    mainView.webContents.on('did-create-window', (newWindow) => {
-        newWindow.setMenu(null);
-        newWindow.maximize();
-
-        newWindow.webContents.on('will-navigate', (e, url) => {
-            if (!isAllowedURL(url)) e.preventDefault();
-        });
-
-        newWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-        newWindow.webContents.on('did-navigate', () => insertCSS(newWindow.webContents));
-        newWindow.once('ready-to-show', () => newWindow.show());
-    });
-
+    mainView.webContents.loadURL(gameURL);
     mainWindow.loadFile(mainHtml);
     panelWindow.loadFile(panelHtml);
+
+    mainWindow.maximize();
+    mainWindow.addBrowserView(mainView);
+    mainWindow.setTopBrowserView(mainView);
 
     const { width, height } = mainWindow.getContentBounds();
     mainView.setBounds({ x: 0, y: 80, width, height: height - 80 });
 
-    let timeout: NodeJS.Immediate;
-    mainWindow.on('resize', (e: Electron.Event) => {
-        e.preventDefault();
-        timeout = setImmediate(() => {
-            if (timeout) clearImmediate(timeout);
-            const { width: newWidth, height: newHeight } = mainWindow.getContentBounds();
-            mainView.setBounds({
-                x: 0,
-                y: 80,
-                width: newWidth,
-                height: newHeight - 80
-            });
-        });
-    });
+    const browserViewStore = useBrowserViewStore();
+    const { currentAutoResize } = storeToRefs(browserViewStore);
+    currentAutoResize.value = setBrowserViewAutoResize(mainView);
 
-    mainWindow.addBrowserView(mainView);
-    mainView.webContents.loadURL(gameURL);
+    setEvents();
+    setAppMenu();
 
     mainWindow.once('ready-to-show', () => mainWindow.show());
     panelWindow.once('ready-to-show', async () => {

@@ -1,8 +1,9 @@
 import { Menu, shell } from 'electron';
-import { showErrorLog, showAppConfig, openAresWebsite, openRepoWebsite, openIssuesWebsite } from '$electron/app/modules.js';
-import { gameURL, discordURL } from '$electron/utils/constants.js';
-import { togglePanelWindow, getMainViewWebContents, getMainWindow, getPanelWindow, restartAres } from '$electron/utils/helpers.js';
-import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev.js';
+import { showErrorLog, showAppConfig, openAresWebsite, openRepoWebsite, openIssuesWebsite } from '$electron/app/modules';
+import { gameURL, discordURL } from '$electron/utils/constants';
+import { togglePanelWindow, getMainWindow, getPanelWindow, restartAres } from '$electron/utils/helpers';
+import { getMainViewWebContents } from '$electron/utils/view';
+import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev';
 import type { MenuItemConstructorOptions } from 'electron';
 
 // F1 - DevTools (apenas no modo de desenvolvimento).

@@ -1,9 +1,9 @@
 import { ipcMain } from 'electron';
-import { readDeimosFile } from '$electron/app/deimos.js';
-import { getMainViewWebContents, getPanelWindow } from '$electron/utils/helpers.js';
-import { ProxyStoreError } from '$electron/error.js';
-import type { PlunderInfoType } from '$types/plunder.js';
-import type { UnitAmount, TribalWarsGameDataType } from '$types/game.js';
+import { readDeimosFile } from '$electron/app/deimos';
+import { getPanelWindow } from '$electron/utils/helpers';
+import { ProxyStoreError } from '$electron/error';
+import type { PlunderInfoType } from '$types/plunder';
+import type { UnitAmount, TribalWarsGameDataType } from '$types/game';
 
 import {
     useAresStore,
@@ -14,7 +14,7 @@ import {
     useCurrentVillageStore,
     useCacheStore,
     useGroupsStore
-} from '$interface/index.js';
+} from '$interface/index';
 
 export function setDeimosEvents() {
     const aresStore = useAresStore();
@@ -29,11 +29,8 @@ export function setDeimosEvents() {
     /** Conteúdo do arquivo `deimos.js`. */
     let deimos: string | null = null;
 
-    // Indica que o script `deimos.js` foi completamente carregado no browser.
-    ipcMain.on('script-tag-is-ready', () => {
-        const mainViewWebContents = getMainViewWebContents();
-        mainViewWebContents.send('get-game-data');
-    });
+    // Indica que o script `deimos.js` foi completamente carregado na view.
+    ipcMain.on('script-tag-is-ready', (e) => e.sender.send('get-game-data'));
 
     // Retorna o conteúdo do arquivo `deimos.js`.
     ipcMain.handle('get-deimos-file', async () => {

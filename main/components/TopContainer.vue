@@ -5,10 +5,8 @@ import WindowMenu from '$main/components/WindowMenu.vue';
 
 <template>
     <div class="main-window-interface">
-        <WindowTabs />
-        <Suspense>
-            <WindowMenu />
-        </Suspense>
+        <Suspense><WindowTabs /></Suspense>
+        <Suspense><WindowMenu /></Suspense>
     </div>
 </template>
 

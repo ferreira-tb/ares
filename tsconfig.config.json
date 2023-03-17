@@ -4,15 +4,9 @@
         "browser.config.*",
         "modules.config.*",
         "main.config.*",
-        "panel.config.ts",
-        "vitest.config.*",
-        "cypress.config.*",
-        "playwright.config.*"
+        "panel.config.ts"
     ],
     "compilerOptions": {
-        "composite": true,
-        "types": [
-            "node"
-        ]
+        "composite": true
     }
 }

@@ -23,11 +23,3 @@ export type MechanusCacheStoreType = {
 
     demolitionTroops: MechanusRef<DemolitionTemplateType | null>;
 };
-
-export interface BrowserViewStore {
-    currentWebContents: WebContents;
-};
-
-export type MechanusBrowserViewStoreType = {
-    currentWebContents: MechanusRef<WebContents | null>;
-};

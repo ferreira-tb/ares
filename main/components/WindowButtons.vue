@@ -29,11 +29,13 @@ async function maximizeOrRestore() {
 @use '$main/assets/main.scss';
 
 .main-window-button-area {
-    @include main.display-flex-center;
-    -webkit-app-region: no-drag;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    justify-self: end;
-    width: max-content;
+    
+    width: 150px;
+    height: 100%;
+    -webkit-app-region: no-drag;
 }
 
 .main-window-button-area > div {

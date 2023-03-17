@@ -22,9 +22,16 @@ onMounted(async () => {
 
 <template>
     <nav class="module-nav-bar">
-        <NTabs ref="tabs" animated defaultValue="general-config" v-model:value="tabName" justifyContent="start" tab-style="margin-right: 2em;">
-            <NTab name="general-config" tab="Geral">Geral</NTab>
-            <NTab name="plunder-config" tab="Saque">Saque</NTab>
+        <NTabs
+            ref="tabs"
+            defaultValue="general-config"
+            v-model:value="tabName"
+            justifyContent="start"
+            tab-style="margin-right: 2em;"
+            animated
+        >
+            <NTab name="general-config" tab="Geral" />
+            <NTab name="plunder-config" tab="Saque" />
         </NTabs>
     </nav>
 

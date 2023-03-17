@@ -1,7 +1,6 @@
 {
     "recommendations": [
         "vscode-icons-team.vscode-icons",
-        "vue.volar",
         "vivaxy.vscode-conventional-commits",
         "mhutchie.git-graph"
     ]
