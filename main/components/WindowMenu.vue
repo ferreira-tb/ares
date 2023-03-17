@@ -18,26 +18,21 @@ ipcRenderer.on('current-view-back-forward-status', (_e, status: BackForwardStatu
     canGoBack.value = status.canGoBack;
     canGoForward.value = status.canGoForward;
 });
-
-const goBack = () => ipcSend('current-view-go-back');
-const goForward = () => ipcSend('current-view-go-forward');
-const goHome = () => ipcSend('current-view-go-home');
-const reload = () => ipcSend('reload-main-view');
 </script>
 
 <template>
     <div class="main-window-menu">
         <div class="menu-icon-area">
-            <div class="menu-icon" @click="goBack">
+            <div class="menu-icon" @click="ipcSend('current-view-go-back')">
                 <NIcon :size="22" :depth="goBackDepth" :component="ArrowBackSharp" />
             </div>
-            <div class="menu-icon" @click="goForward">
+            <div class="menu-icon" @click="ipcSend('current-view-go-forward')">
                 <NIcon :size="22" :depth="goForwardDepth" :component="ArrowForwardSharp" />
             </div>
-            <div class="menu-icon" @click="reload">
+            <div class="menu-icon" @click="ipcSend('reload-current-view')">
                 <NIcon :size="22" :depth="3" :component="ReloadSharp" />
             </div>
-            <div class="menu-icon" @click="goHome">
+            <div class="menu-icon" @click="ipcSend('current-view-go-home')">
                 <NIcon :size="22" :depth="3" :component="HomeSharp" />
             </div>
         </div>
