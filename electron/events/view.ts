@@ -38,10 +38,10 @@ export function setBrowserViewEvents() {
     setWindowOpenHandler(mainViewWebContents);
 
     // View principal.
-    ipcMain.on('reload-main-view', () => mainViewWebContents.reload());
-    ipcMain.on('force-reload-main-view', () => mainViewWebContents.reloadIgnoringCache());
     ipcMain.handle('main-view-web-contents-id', () => mainViewWebContents.id);
     ipcMain.handle('main-view-url', () => mainViewWebContents.getURL());
+    ipcMain.on('reload-main-view', () => mainViewWebContents.reload());
+    ipcMain.on('force-reload-main-view', () => mainViewWebContents.reloadIgnoringCache());
 
     // View atual.
     ipcMain.on('update-current-view', (_e, webContentsId: number) => {
@@ -57,9 +57,12 @@ export function setBrowserViewEvents() {
     // No entanto, não precisam ser definidos separadamente, pois são obtidos dinamicamente dentro da callback.
     ipcMain.handle('current-view-url', () => currentView.value.webContents.getURL());
     ipcMain.handle('current-view-web-contents-id', () => currentView.value.webContents.id);
-    ipcMain.on('current-view-go-home', () => currentView.value.webContents.loadURL(gameURL));
     ipcMain.handle('current-view-can-go-back', () => currentView.value.webContents.canGoBack());
     ipcMain.handle('current-view-can-go-forward', () => currentView.value.webContents.canGoForward());
+
+    ipcMain.on('reload-current-view', () => currentView.value.webContents.reload());
+    ipcMain.on('force-reload-current-view', () => currentView.value.webContents.reloadIgnoringCache());
+    ipcMain.on('current-view-go-home', () => currentView.value.webContents.loadURL(gameURL));
 
     ipcMain.on('current-view-go-back', () => {
         if (currentView.value.webContents.canGoBack()) {
