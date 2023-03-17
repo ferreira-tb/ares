@@ -1,6 +1,6 @@
 import { webContents } from 'electron';
 import { getMainWindow } from '$electron/utils/helpers';
-import { browserCss } from '$electron/utils/constants';
+import { browserCss, gameURL } from '$electron/utils/constants';
 import { BrowserViewError } from '$electron/error';
 import type { WebContents, BrowserView, BrowserWindow } from 'electron';
 import type { BackForwardStatus } from '$types/view';
@@ -45,6 +45,18 @@ export function getBackForwardStatus(contents: WebContents): BackForwardStatus {
         canGoBack: contents.canGoBack(),
         canGoForward: contents.canGoForward()
     };
+};
+
+export function contentsGoBack(contents: WebContents) {
+    if (contents.canGoBack()) contents.goBack();
+};
+
+export function contentsGoForward(contents: WebContents) {
+    if (contents.canGoForward()) contents.goForward();
+};
+
+export function contentsGoHome(contents: WebContents) {
+    contents.loadURL(gameURL);
 };
 
 /**

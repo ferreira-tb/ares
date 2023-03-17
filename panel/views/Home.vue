@@ -16,7 +16,7 @@ const appVersion = await ipcInvoke('app-version');
         </div>
         <NButtonGroup>
             <NButton round @click="ipcSend('open-ares-website')">Site</NButton>
-            <NButton round @click="ipcSend('open-repo-website')">Repositório</NButton>
+            <NButton round @click="ipcSend('open-github-repo')">Repositório</NButton>
             <NButton round @click="shell.openExternal(discordURL)">Discord</NButton>
         </NButtonGroup>
         <div class="footer-area">

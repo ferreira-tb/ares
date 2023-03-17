@@ -7,9 +7,11 @@ import { setModuleEvents } from '$electron/events/modules';
 import { setMainWindowEvents } from '$electron/events/window';
 import { setBrowserViewEvents } from '$electron/events/view';
 import { setGroupsEvents } from '$electron/events/groups';
+import { setMenuEvents } from '$electron/events/menu';
 import { isUserAlias } from '$electron/utils/guards';
-import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
+import { openAresWebsite, openIssuesWebsite, openRepoWebsite, showAppSettings } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
+import type { ConfigModuleRoutes } from '$types/modules';
 
 import {
     useCacheStore,
@@ -34,10 +36,13 @@ export function setEvents() {
     ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
 
+    // Configurações.
+    ipcMain.on('open-settings-window', (_e, route: ConfigModuleRoutes) => showAppSettings(route));
+
     // Website.
     ipcMain.on('open-ares-website', () => openAresWebsite());
-    ipcMain.on('open-repo-website', () => openRepoWebsite());
-    ipcMain.on('open-issues-website', () => openIssuesWebsite());
+    ipcMain.on('open-github-repo', () => openRepoWebsite());
+    ipcMain.on('open-github-issues', () => openIssuesWebsite());
 
     // Jogo.
     ipcMain.handle('current-world', () => cacheStore.world);
@@ -54,6 +59,7 @@ export function setEvents() {
     setMainWindowEvents();
     setBrowserViewEvents();
     setPanelEvents();
+    setMenuEvents();
     setPlunderEvents();
     setErrorEvents();
     setDeimosEvents();

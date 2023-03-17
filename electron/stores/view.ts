@@ -1,5 +1,5 @@
 import { ref, type Mechanus } from 'mechanus';
-import { MechanusBrowserViewStoreType } from '$types/view';
+import { MechanusBrowserViewStoreType } from '$types/stores';
 import type { WebContents } from 'electron';
 
 export function defineBrowserViewStore(mechanus: Mechanus) {

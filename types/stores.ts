@@ -1,11 +1,25 @@
 import type { ComputedRef, Ref } from 'vue';
+import type { WebContents } from 'electron';
 import type { MechanusComputedRef, MechanusRef, MechanusStore } from 'mechanus';
-import type { AllUnits, TribalWarsGameDataType } from '$types/game';
-import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails } from '$types/plunder';
-import type { UnitAmount, VillageGroup } from '$types/game';
 import type { RemoveMethods } from '$types/utils';
 import type { WorldConfigType } from '$types/world';
 import type { UnitDetails } from '$types/world';
+import type { UserAlias } from '$types/electron';
+
+import type {
+    AllUnits,
+    TribalWarsGameDataType,
+    UnitAmount,
+    VillageGroup,
+    World
+} from '$types/game';
+
+import type {
+    PlunderInfoType,
+    PlunderConfigType,
+    PlunderAttackDetails,
+    DemolitionTemplateType
+} from '$types/plunder';
 
 ////// ARES
 export type AresStore = TribalWarsGameDataType['ares'];
@@ -135,4 +149,38 @@ export type MechanusWorldConfigStoreType = {
 export type WorldUnitStoresMap = ReadonlyMap<AllUnits, () => MechanusStore<UnitDetails>>;
 export type MechanusWorldUnitStoreType = {
     [K in keyof UnitDetails]: MechanusRef<UnitDetails[K]>;
+};
+
+////// CACHE
+export interface CacheStore {
+    world: World | null;
+    player: string | null;
+    userAlias: UserAlias | null;
+
+    /** Modelos usados no assistente de saque para demolição de muralhas. */
+    demolitionTroops: DemolitionTemplateType | null;
+};
+
+export type MechanusCacheStoreType = {
+    world: MechanusRef<World | null>;
+    player: MechanusRef<string | null>;
+    userAlias: MechanusComputedRef<UserAlias | null>;
+
+    demolitionTroops: MechanusRef<DemolitionTemplateType | null>;
+};
+
+////// BROWSER VIEW
+export interface BrowserViewStore {
+    /** Todos os WebContents de BrowserViews associados à janela principal. */
+    readonly allWebContents: Set<WebContents>;
+    /** Todos os WebContents de BrowserViews com eventos já registrados. */
+    readonly registeredWebContents: WeakSet<WebContents>;
+    /** O WebContents atualmente ativo (em primeiro plano). */
+    readonly currentWebContents: WebContents | null;
+    /** Função para remover o evento de redimensionamento do WebContents ativo. */
+    readonly currentAutoResize: (() => void) | null;
+};
+
+export type MechanusBrowserViewStoreType = {
+    [K in keyof BrowserViewStore]: MechanusRef<BrowserViewStore[K]>;
 };

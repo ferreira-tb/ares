@@ -85,7 +85,11 @@ function createWindow() {
     currentAutoResize.value = setBrowserViewAutoResize(mainView);
 
     setEvents();
-    setAppMenu();
+    setAppMenu(browserViewStore);
+
+    // https://github.com/ferreira-tb/ares/issues/77
+    mainWindow.on('system-context-menu', (e) => e.preventDefault());
+    panelWindow.on('system-context-menu', (e) => e.preventDefault());
 
     mainWindow.once('ready-to-show', () => mainWindow.show());
     panelWindow.once('ready-to-show', async () => {

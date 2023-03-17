@@ -2,7 +2,6 @@ import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
 import { isInstanceOf } from '@tb-dev/ts-guard';
 import { aresURL, favicon, moduleHtml, repoURL, issuesURL } from '$electron/utils/constants';
 import { getMainWindow } from '$electron/utils/helpers';
-import { setBasicDevMenu } from '$electron/menu/dev';
 import { isAllowedURL } from '$electron/utils/guards';
 import { ModuleCreationError } from '$electron/error';
 import type { ModuleNames, ModuleRoutes, ModuleConstructorOptions, WebsiteModuleNames } from '$types/modules';
@@ -12,7 +11,11 @@ const activeWebsiteModules = new Map<WebsiteModuleNames, BrowserWindow>();
 export const getActiveModule = (name: ModuleNames) => activeModules.get(name);
 export const getActiveWebsiteModule = (name: WebsiteModuleNames) => activeWebsiteModules.get(name);
 
-function createModule(name: ModuleNames, defaultRoute: ModuleRoutes, options: ModuleConstructorOptions = {}) {
+function createModule(
+    name: ModuleNames,
+    defaultRoute: ModuleRoutes,
+    options: ModuleConstructorOptions = {}
+) {
     return function(route?: ModuleRoutes) {
         try {
             const mainWindow = getMainWindow();
@@ -54,10 +57,10 @@ function createModule(name: ModuleNames, defaultRoute: ModuleRoutes, options: Mo
             };
 
             const moduleWindow = new BrowserWindow(windowOptions);
-
-            setBasicDevMenu(moduleWindow, true);
+            moduleWindow.setMenu(null);
             moduleWindow.loadFile(moduleHtml);
             moduleWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+            moduleWindow.on('system-context-menu', (e) => e.preventDefault());
 
             moduleWindow.once('ready-to-show', () =>  {
                 activeModules.set(name, moduleWindow);
@@ -74,7 +77,7 @@ function createModule(name: ModuleNames, defaultRoute: ModuleRoutes, options: Mo
     };
 };
 
-export const showAppConfig = createModule('app-config', 'app-config', {
+export const showAppSettings = createModule('app-config', 'app-config', {
     width: 500,
     height: 600,
     title: 'Configurações'
@@ -136,6 +139,7 @@ function createWebsiteModule(name: WebsiteModuleNames, url: string) {
             websiteWindow.setMenu(null);
             websiteWindow.loadURL(url);
             websiteWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+            websiteWindow.on('system-context-menu', (e) => e.preventDefault());
 
             websiteWindow.once('ready-to-show', () =>  {
                 activeWebsiteModules.set(name, websiteWindow);

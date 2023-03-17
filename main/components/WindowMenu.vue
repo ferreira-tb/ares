@@ -1,11 +1,23 @@
 <script setup lang="ts">
+import { shell } from 'electron';
 import { computed, ref } from 'vue';
-import { useIpcRenderer } from '@vueuse/electron';
+import { useIpcRendererOn } from '@vueuse/electron';
 import { NIcon } from 'naive-ui';
-import { ArrowBackSharp, ArrowForwardSharp, HomeSharp, ReloadSharp } from '@vicons/ionicons5';
+import { DiscordSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$global/ipc';
-
+import { discordURL } from '$global/utils/constants';
 import type { BackForwardStatus } from '$types/view';
+
+import {
+    ArrowBackSharp,
+    ArrowForwardSharp,
+    HomeSharp,
+    ReloadSharp,
+    SettingsSharp,
+    EarthSharp,
+    BugSharp,
+    LogoGithub
+} from '@vicons/ionicons5';
 
 const canGoBack = ref<boolean>(await ipcInvoke('current-view-can-go-back'));
 const canGoForward = ref<boolean>(await ipcInvoke('current-view-can-go-forward'));
@@ -13,8 +25,7 @@ const canGoForward = ref<boolean>(await ipcInvoke('current-view-can-go-forward')
 const goBackDepth = computed(() => canGoBack.value ? 3 : 5);
 const goForwardDepth = computed(() => canGoForward.value ? 3 : 5);
 
-const ipcRenderer = useIpcRenderer();
-ipcRenderer.on('current-view-back-forward-status', (_e, status: BackForwardStatus) => {
+useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardStatus) => {
     canGoBack.value = status.canGoBack;
     canGoForward.value = status.canGoForward;
 });
@@ -35,6 +46,21 @@ ipcRenderer.on('current-view-back-forward-status', (_e, status: BackForwardStatu
             <div class="menu-icon" @click="ipcSend('current-view-go-home')">
                 <NIcon :size="22" :depth="3" :component="HomeSharp" />
             </div>
+            <div class="menu-icon" @click="ipcSend('open-settings-window', 'general-config')">
+                <NIcon :size="22" :depth="3" :component="SettingsSharp" />
+            </div>
+            <div class="menu-icon" @click="ipcSend('open-region-select-menu')">
+                <NIcon :size="22" :depth="3" :component="EarthSharp" />
+            </div>
+            <div class="menu-icon" @click="ipcSend('open-bug-report-menu')">
+                <NIcon :size="22" :depth="3" :component="BugSharp" />
+            </div>
+            <div class="menu-icon" @click="shell.openExternal(discordURL)">
+                <NIcon :size="22" :depth="3" :component="DiscordSharp" />
+            </div>
+            <div class="menu-icon" @click="ipcSend('open-github-repo')">
+                <NIcon :size="22" :depth="3" :component="LogoGithub" />
+            </div>
         </div>
     </div>
 </template>
@@ -48,11 +74,11 @@ ipcRenderer.on('current-view-back-forward-status', (_e, status: BackForwardStatu
     left: 0;
     right: 0;
 
-    width: 100%;
-    height: 40px;
-
     display: flex;
     align-items: center;
+
+    width: 100%;
+    height: 40px;
     user-select: none;
     -webkit-app-region: no-drag;
 }

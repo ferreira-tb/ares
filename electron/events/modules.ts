@@ -3,15 +3,9 @@ import { storeToRefs } from 'mechanus';
 import { isObject } from '@tb-dev/ts-guard';
 import { isUserAlias } from '$electron/utils/guards';
 import { useCacheStore, useBrowserViewStore, DemolitionTemplate, CustomPlunderTemplate } from '$interface/index';
+import { showErrorLog, showDemolitionConfig, showCustomPlunderTemplate } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
 import type { CustomPlunderTemplateType, DemolitionTemplateType } from '$types/plunder';
-
-import {
-    showErrorLog,
-    showDemolitionConfig,
-    showAppConfig,
-    showCustomPlunderTemplate
-} from '$electron/app/modules';
 
 export function setModuleEvents() {
     const cacheStore = useCacheStore();
@@ -21,7 +15,6 @@ export function setModuleEvents() {
     //////// INICIALIZAÇÃO
     ipcMain.on('open-error-log-window', () => showErrorLog());
     ipcMain.on('open-demolition-troops-config-window', () => showDemolitionConfig());
-    ipcMain.on('open-plunder-config-window', () => showAppConfig('plunder-config'));
     ipcMain.on('open-custom-plunder-template-window', () => showCustomPlunderTemplate());
 
     //////// OUTROS
