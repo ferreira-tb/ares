@@ -24,6 +24,11 @@ ipcRenderer.on('browser-view-created', (_e, webContentsId: number, viewTitle: st
 });
 
 ipcRenderer.on('browser-view-destroyed', (_e, webContentsId: number) => {
+    // Se a aba que foi fechada era a ativa, a aba principal tomará seu lugar.
+    if (webContentsId === activeView.value) {
+        activeView.value = mainViewWebContentsId;
+    };
+
     allTabs.delete(webContentsId);
 });
 
