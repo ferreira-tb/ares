@@ -2,10 +2,16 @@
 import { computed, ref } from 'vue';
 import { useIpcRenderer } from '@vueuse/electron';
 import { NIcon } from 'naive-ui';
-import { ArrowBackSharp, ArrowForwardSharp, HomeSharp, ReloadSharp } from '@vicons/ionicons5';
 import { ipcSend, ipcInvoke } from '$global/ipc';
-
 import type { BackForwardStatus } from '$types/view';
+
+import {
+    ArrowBackSharp,
+    ArrowForwardSharp,
+    HomeSharp,
+    ReloadSharp,
+    SettingsSharp
+} from '@vicons/ionicons5';
 
 const canGoBack = ref<boolean>(await ipcInvoke('current-view-can-go-back'));
 const canGoForward = ref<boolean>(await ipcInvoke('current-view-can-go-forward'));
@@ -34,6 +40,9 @@ ipcRenderer.on('current-view-back-forward-status', (_e, status: BackForwardStatu
             </div>
             <div class="menu-icon" @click="ipcSend('current-view-go-home')">
                 <NIcon :size="22" :depth="3" :component="HomeSharp" />
+            </div>
+            <div class="menu-icon" @click="ipcSend('open-settings-window', 'general-config')">
+                <NIcon :size="22" :depth="3" :component="SettingsSharp" />
             </div>
         </div>
     </div>

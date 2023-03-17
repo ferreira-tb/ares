@@ -4,6 +4,7 @@ import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$t
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType, MainProcessErrorLogType } from '$types/error';
 import type { WorldConfigType, WorldUnitType } from '$types/world';
 import type { UserAlias } from '$types/electron';
+import type { ConfigModuleRoutes } from '$types/modules';
 
 import type {
     PlunderAttackDetails,
@@ -28,6 +29,11 @@ export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 
+// Configurações
+export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
+export async function ipcInvoke(channel: 'save-demolition-troops-config', template: DemolitionTemplateType): Promise<boolean>;
+export async function ipcInvoke(channel: 'destroy-demolition-troops-config', alias: UserAlias): Promise<boolean>;
+
 // Browser View
 export async function ipcInvoke(channel: 'main-view-url'): Promise<string>;
 export async function ipcInvoke(channel: 'main-view-web-contents-id'): Promise<number>;
@@ -35,11 +41,6 @@ export async function ipcInvoke(channel: 'current-view-url'): Promise<string>;
 export async function ipcInvoke(channel: 'current-view-web-contents-id'): Promise<number>;
 export async function ipcInvoke(channel: 'current-view-can-go-back'): Promise<boolean>;
 export async function ipcInvoke(channel: 'current-view-can-go-forward'): Promise<boolean>;
-
-// Configurações
-export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
-export async function ipcInvoke(channel: 'save-demolition-troops-config', template: DemolitionTemplateType): Promise<boolean>;
-export async function ipcInvoke(channel: 'destroy-demolition-troops-config', alias: UserAlias): Promise<boolean>;
 
 // Jogo
 export async function ipcInvoke(channel: 'current-world'): Promise<World | null>;
@@ -83,6 +84,10 @@ export function ipcSend(channel: 'open-ares-website'): void;
 export function ipcSend(channel: 'open-repo-website'): void;
 export function ipcSend(channel: 'open-issues-website'): void;
 
+// Configurações
+export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
+export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
+
 // Browser View
 export function ipcSend(channel: 'reload-main-view'): void;
 export function ipcSend(channel: 'force-reload-main-view'): void;
@@ -93,10 +98,6 @@ export function ipcSend(channel: 'current-view-go-back'): void;
 export function ipcSend(channel: 'current-view-go-forward'): void;
 export function ipcSend(channel: 'update-current-view', webContentsId: number): void;
 export function ipcSend(channel: 'destroy-browser-view', webContentsId: number): void;
-
-// Configurações
-export function ipcSend(channel: 'open-plunder-config-window'): void;
-export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
 
 // Erros
 export function ipcSend(channel: 'open-error-log-window'): void;

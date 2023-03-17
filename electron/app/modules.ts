@@ -74,7 +74,7 @@ function createModule(name: ModuleNames, defaultRoute: ModuleRoutes, options: Mo
     };
 };
 
-export const showAppConfig = createModule('app-config', 'app-config', {
+export const showAppSettings = createModule('app-config', 'app-config', {
     width: 500,
     height: 600,
     title: 'Configurações'
