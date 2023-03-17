@@ -184,3 +184,13 @@ export interface BrowserViewStore {
 export type MechanusBrowserViewStoreType = {
     [K in keyof BrowserViewStore]: MechanusRef<BrowserViewStore[K]>;
 };
+
+////// PAINEL
+export interface PanelStore {
+    /** Indica se o painel está visível. */
+    readonly isVisible: boolean;
+};
+
+export type PiniaPanelStoreType = {
+    [K in keyof PanelStore]: Ref<PanelStore[K]>;
+};
