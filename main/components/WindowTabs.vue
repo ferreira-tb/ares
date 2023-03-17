@@ -8,7 +8,6 @@ import { ipcInvoke, ipcSend } from '$global/ipc';
 import WindowButtons from '$main/components/WindowButtons.vue';
 import LightIcon from '$icons/units/LightIcon.vue';
 import type { WebContents } from 'electron';
-import type { CSSProperties } from 'vue';
 
 const tabsContainer = ref<HTMLElement | null>(null);
 const { width } = useElementSize(tabsContainer);
@@ -18,11 +17,6 @@ const allTabs = reactive<Map<WebContents['id'], string>>(new Map());
 const mainViewId = await ipcInvoke('main-view-web-contents-id');
 const activeView = ref<WebContents['id']>(mainViewId);
 watch(activeView, (viewId) => ipcSend('update-current-view', viewId));
-
-const tabStyle: CSSProperties = {
-    maxWidth: '200px',
-    overflow: 'hidden'
-};
 
 const ipcRenderer = useIpcRenderer();
 ipcRenderer.on('browser-view-created', (_e, viewId: number, viewTitle: string) => {
@@ -57,7 +51,7 @@ function renderMainTab() {
                 trigger="click"
                 v-model:value="activeView"
                 @close="destroyBrowserView"
-                :tab-style="tabStyle"
+                tab-style="-webkit-app-region: no-drag;"
             >
                 <NTab
                     :name="mainViewId"
@@ -102,6 +96,5 @@ function renderMainTab() {
 .main-window-tab-area {
     width: v-bind("tabsWidth");
     height: main.$tab-height;
-    -webkit-app-region: no-drag;
 }
 </style>
