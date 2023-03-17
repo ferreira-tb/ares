@@ -91,7 +91,7 @@ export function setBrowserViewEvents() {
 
         // Atualiza as dimensões de ambas as BrowserViews.
         setViewAsTopBrowserView(newView, currentAutoResize, mainWindow);
-        hideBrowserView(oldView, currentAutoResize);
+        hideBrowserView(oldView, currentAutoResize, mainWindow);
     });
 };
 
@@ -184,6 +184,7 @@ function removePreviousViewEvents(view: WebContents) {
  */
 async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = getMainWindow()) {
     try {
+        mainWindow.webContents.send('browser-view-will-be-created');
         const browserView = new BrowserView({
             webPreferences: {
                 spellcheck: false,
@@ -215,6 +216,7 @@ async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = get
         return browserView;
 
     } catch (err) {
+        mainWindow.webContents.send('browser-view-did-fail-to-create');
         BrowserViewError.catch(err);
         return null;
     };
@@ -234,6 +236,8 @@ function destroyBrowserView(
         const contents = view.webContents;
         if (contents === mainViewWebContents) return;
 
+        mainWindow.webContents.send('browser-view-will-be-destroyed');
+
         queueMicrotask(() => {
             contents.removeAllListeners();
             registeredWebContents.value.delete(contents);
@@ -245,6 +249,7 @@ function destroyBrowserView(
         mainWindow.webContents.send('browser-view-destroyed', contents.id);
 
     } catch (err) {
+        mainWindow.webContents.send('browser-view-did-fail-to-destroy');
         BrowserViewError.catch(err);
     };
 };
@@ -290,20 +295,30 @@ function setViewAsTopBrowserView(
     currentAutoResize: MechanusRef<(() => void) | null>,
     mainWindow: BrowserWindow = getMainWindow()
 ) {
+    mainWindow.webContents.send('browser-view-will-be-set-as-top', view.webContents.id);
     mainWindow.setTopBrowserView(view);
     setBrowserViewBounds(view);
     currentAutoResize.value = setBrowserViewAutoResize(view);
+    mainWindow.webContents.send('browser-view-was-set-as-top', view.webContents.id);
 };
 
 /**
  * Oculta a BrowserView e remove o evento de redimensionamento automático.
  * @param view BrowserView a ser ocultada.
  * @param currentAutoResize Referência para a função de remoção do evento de redimensionamento automático.
+ * @param mainWindow Janela principal.
  */
-function hideBrowserView(view: BrowserView, currentAutoResize: MechanusRef<(() => void) | null>) {
+function hideBrowserView(
+    view: BrowserView,
+    currentAutoResize: MechanusRef<(() => void) | null>,
+    mainWindow: BrowserWindow = getMainWindow()
+) {
+    mainWindow.webContents.send('browser-view-will-be-hidden', view.webContents.id);
     view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
     if (typeof currentAutoResize.value === 'function') {
         currentAutoResize.value();
         currentAutoResize.value = null;
     };
+
+    mainWindow.webContents.send('browser-view-was-hidden', view.webContents.id);
 };
