@@ -14,27 +14,27 @@ const { width } = useElementSize(tabsContainer);
 const tabsWidth = computed(() => `${width.value - 150}px`);
 
 const allTabs = reactive<Map<WebContents['id'], string>>(new Map());
-const mainViewId = await ipcInvoke('main-view-web-contents-id');
-const activeView = ref<WebContents['id']>(mainViewId);
-watch(activeView, (viewId) => ipcSend('update-current-view', viewId));
+const mainViewWebContentsId = await ipcInvoke('main-view-web-contents-id');
+const activeView = ref<WebContents['id']>(mainViewWebContentsId);
+watch(activeView, (webContentsId) => ipcSend('update-current-view', webContentsId));
 
 const ipcRenderer = useIpcRenderer();
-ipcRenderer.on('browser-view-created', (_e, viewId: number, viewTitle: string) => {
-    allTabs.set(viewId, viewTitle);
+ipcRenderer.on('browser-view-created', (_e, webContentsId: number, viewTitle: string) => {
+    allTabs.set(webContentsId, viewTitle);
 });
 
-ipcRenderer.on('browser-view-destroyed', (_e, viewId: number) => {
-    allTabs.delete(viewId);
+ipcRenderer.on('browser-view-destroyed', (_e, webContentsId: number) => {
+    allTabs.delete(webContentsId);
 });
 
-ipcRenderer.on('browser-view-title-updated', (_e, viewId: number, viewTitle: string) => {
-    if (viewId === mainViewId) return;
-    allTabs.set(viewId, viewTitle);
+ipcRenderer.on('browser-view-title-updated', (_e, webContentsId: number, viewTitle: string) => {
+    if (webContentsId === mainViewWebContentsId) return;
+    allTabs.set(webContentsId, viewTitle);
 });
 
-function destroyBrowserView(viewId: WebContents['id']) {
-    assertInteger(viewId);
-    ipcSend('destroy-browser-view', viewId);
+function destroyBrowserView(webContentsId: WebContents['id']) {
+    assertInteger(webContentsId);
+    ipcSend('destroy-browser-view', webContentsId);
 };
 
 function renderMainTab() {
@@ -54,8 +54,8 @@ function renderMainTab() {
                 tab-style="-webkit-app-region: no-drag;"
             >
                 <NTab
-                    :name="mainViewId"
-                    :key="mainViewId"
+                    :name="mainViewWebContentsId"
+                    :key="mainViewWebContentsId"
                     :closable="false"
                     :tab="renderMainTab"
                 />

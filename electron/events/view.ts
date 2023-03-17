@@ -73,6 +73,16 @@ export function setBrowserViewEvents() {
         };
     });
 
+    // BrowserViews específicas.
+    ipcMain.on('destroy-browser-view', (_e, webContentsId: number) => {
+        try {
+            const view = findBrowserViewByWebContentsId(webContentsId, mainWindow);
+            destroyBrowserView(view, mainWindow, mainViewWebContents);
+        } catch (err) {
+            BrowserViewError.catch(err);
+        };
+    });
+
     // Define os eventos compartilhados entre todas as BrowserViews.
     setViewSharedEvents(mainWindow, mainViewWebContents);
 
@@ -115,8 +125,6 @@ function setViewSharedEvents(
             const title = contents.getTitle();
             mainWindow.webContents.send('browser-view-title-updated', contents.id, title);
         });
-
-        contents.once('destroyed', () => handleDestroyedBrowserView(contents));
 
         // Adiciona o WebContents à lista de WebContents com eventos já registrados.
         registeredWebContents.value.add(contents);
@@ -217,33 +225,27 @@ async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = get
     };
 };
 
-function handleDestroyedBrowserView(contents: WebContents) {
-    let mainWindow: BrowserWindow;
-    let mainViewWebContents: WebContents;
-
-    // Se a janela principal ou a BrowserView principal não existirem,
-    // conclui-se que a aplicação está sendo encerrada.
-    try {
-        mainWindow = getMainWindow();
-        mainViewWebContents = getMainViewWebContents();
-    } catch {
-        return;
-    };
-
+function destroyBrowserView(
+    view: BrowserView,
+    mainWindow: BrowserWindow = getMainWindow(),
+    mainViewWebContents: WebContents = getMainViewWebContents()
+) {
     try {
         const browserViewStore = useBrowserViewStore();
         const { allWebContents, registeredWebContents } = storeToRefs(browserViewStore);
 
         // Verifica se o WebContents é o da BrowserView principal.
         // Se for, os eventos não devem ser removidos.
+        const contents = view.webContents;
         if (contents === mainViewWebContents) return;
 
-        // Remove os eventos compartilhados entre todas as BrowserViews.
-        contents.removeAllListeners();
-        // Remove o WebContents da lista de WebContents com eventos já registrados.
-        registeredWebContents.value.delete(contents);
-        // Remove o WebContents da lista de WebContents.
-        allWebContents.value.delete(contents);
+        queueMicrotask(() => {
+            contents.removeAllListeners();
+            registeredWebContents.value.delete(contents);
+            allWebContents.value.delete(contents);
+            mainWindow.removeBrowserView(view);
+        });
+        
         // Notifica a janela principal que a BrowserView foi destruída.
         mainWindow.webContents.send('browser-view-destroyed', contents.id);
 
