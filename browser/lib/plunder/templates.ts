@@ -165,6 +165,9 @@ async function filterTemplates(info: PlunderVillageInfo, config: ConfigReturnTyp
 
     const resources = info.res.total;
     for (const template of allTemplates.values()) {
+        // Ignora os modelos cuja capacidade de carga é zero.
+        if (template.carry === 0) continue;
+
         // Ignora o modelo 'C' e os modelos que não têm tropas disponíveis.
         if (template.type === 'c') continue;
         if (template.ok.value !== true) continue;
