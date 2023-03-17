@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { useIpcRenderer } from '@vueuse/electron';
+import { useIpcRendererOn } from '@vueuse/electron';
 import { isObject, assertKeyOf, toNull, isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
 import { NDivider, NGrid, NGridItem, NSelect, NButton, NButtonGroup, useDialog, useMessage } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$global/ipc';
@@ -56,8 +56,7 @@ watch(blindAttackPattern, (v) => updateConfig('blindAttackPattern', v));
 watch(useCPattern, (v) => updateConfig('useCPattern', v));
 
 // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
-const ipcRenderer = useIpcRenderer();
-ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
+useIpcRendererOn('plunder-config-updated', (_e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
     try {
         if (!isObject(config.value)) return;
         assertKeyOf<PlunderConfigType>(key, config.value, `${key} não é uma configuração válida para o Plunder.`);

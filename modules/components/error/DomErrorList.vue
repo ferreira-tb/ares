@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, watchEffect } from 'vue';
-import { useIpcRenderer } from '@vueuse/electron';
+import { useIpcRendererOn } from '@vueuse/electron';
 import { NCard } from 'naive-ui';
 import { assertInteger, assertArray } from '@tb-dev/ts-guard';
 import { ipcInvoke, ipcSend } from '$global/ipc';
@@ -14,8 +14,7 @@ assertArray(raw, 'Houve um erro durante a conexão com o banco de dados.');
 const errors = reactive(raw);
 watchEffect(() => errors.sort((a, b) => b.time - a.time));
 
-const ipcRenderer = useIpcRenderer();
-ipcRenderer.on('dom-error-log-updated', (_e, newError: DOMErrorLogType) => errors.push(newError));
+useIpcRendererOn('dom-error-log-updated', (_e, newError: DOMErrorLogType) => errors.push(newError));
 
 function deleteError(id: number) {
     assertInteger(id, 'O ID do erro deve ser um número inteiro.');

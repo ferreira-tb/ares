@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { useIpcRenderer } from '@vueuse/electron';
 import { useLoadingBar } from 'naive-ui';
+import { useIpcRendererOn } from '@vueuse/electron';
 
 const loadingBar = useLoadingBar();
-const ipcRenderer = useIpcRenderer();
 
-ipcRenderer.on('current-view-did-start-loading', () => {
+useIpcRendererOn('current-view-did-start-loading', () => {
     loadingBar.start();
 });
 
-ipcRenderer.on('current-view-did-stop-loading', () => {
+useIpcRendererOn('current-view-did-stop-loading', () => {
     loadingBar.finish();
 });
 </script>

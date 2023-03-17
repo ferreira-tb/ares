@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useIpcRenderer } from '@vueuse/electron';
+import { useIpcRendererOn } from '@vueuse/electron';
 import { NIcon } from 'naive-ui';
 import { ipcSend, ipcInvoke } from '$global/ipc';
 import type { BackForwardStatus } from '$types/view';
@@ -19,8 +19,7 @@ const canGoForward = ref<boolean>(await ipcInvoke('current-view-can-go-forward')
 const goBackDepth = computed(() => canGoBack.value ? 3 : 5);
 const goForwardDepth = computed(() => canGoForward.value ? 3 : 5);
 
-const ipcRenderer = useIpcRenderer();
-ipcRenderer.on('current-view-back-forward-status', (_e, status: BackForwardStatus) => {
+useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardStatus) => {
     canGoBack.value = status.canGoBack;
     canGoForward.value = status.canGoForward;
 });
