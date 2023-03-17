@@ -5,9 +5,9 @@ import { usePlunderConfigStore } from '$vue/stores/plunder.js';
 import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
 
 export class PlunderAttackWithLoot extends PlunderAttack {
-    override wood: number;
-    override stone: number;
-    override iron: number;
+    wood: number;
+    stone: number;
+    iron: number;
 
     constructor(info: PlunderVillageInfo, carry: number) {
         super();

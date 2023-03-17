@@ -10,20 +10,21 @@ import type { PlunderAttackDetails } from '$types/plunder.js';
 
 export const eventTarget = new EventTarget();
 
-export class PlunderAttack implements Omit<PlunderAttackDetails, 'total'> {
+export abstract class PlunderAttack implements Omit<PlunderAttackDetails, 'total'> {
     // Já incluso o ataque enviado.
     readonly attackAmount: number = 1;
-    wood: number = 0;
-    stone: number = 0;
-    iron: number = 0;
     destroyedWalls: number = 0;
+
+    abstract wood: number;
+    abstract stone: number;
+    abstract iron: number;
 };
 
 export function prepareAttack(plunderAttack: PlunderAttack, button: HTMLAnchorElement) {
     const config = usePlunderConfigStore();
     return new Promise<void>((resolve, reject) => {
         // O jogo possui um limite de cinco ações por segundo.
-        const delay = config.ignoreDelay === true ? 0 : generateRandomDelay(config.attackDelay);
+        const delay = config.ignoreDelay ? 0 : generateRandomDelay(config.attackDelay);
         const attackTimeout = setTimeout(attack, delay);
         const cleanup = useEventListener(eventTarget, 'stop', stop, { once: true });
 
