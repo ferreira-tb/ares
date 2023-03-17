@@ -60,6 +60,7 @@ function createModule(
             moduleWindow.setMenu(null);
             moduleWindow.loadFile(moduleHtml);
             moduleWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+            moduleWindow.on('system-context-menu', (e) => e.preventDefault());
 
             moduleWindow.once('ready-to-show', () =>  {
                 activeModules.set(name, moduleWindow);
@@ -138,6 +139,7 @@ function createWebsiteModule(name: WebsiteModuleNames, url: string) {
             websiteWindow.setMenu(null);
             websiteWindow.loadURL(url);
             websiteWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+            websiteWindow.on('system-context-menu', (e) => e.preventDefault());
 
             websiteWindow.once('ready-to-show', () =>  {
                 activeWebsiteModules.set(name, websiteWindow);
