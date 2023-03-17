@@ -7,6 +7,7 @@ import { setModuleEvents } from '$electron/events/modules';
 import { setMainWindowEvents } from '$electron/events/window';
 import { setBrowserViewEvents } from '$electron/events/view';
 import { setGroupsEvents } from '$electron/events/groups';
+import { setMenuEvents } from '$electron/events/menu';
 import { isUserAlias } from '$electron/utils/guards';
 import { openAresWebsite, openIssuesWebsite, openRepoWebsite, showAppSettings } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
@@ -40,8 +41,8 @@ export function setEvents() {
 
     // Website.
     ipcMain.on('open-ares-website', () => openAresWebsite());
-    ipcMain.on('open-repo-website', () => openRepoWebsite());
-    ipcMain.on('open-issues-website', () => openIssuesWebsite());
+    ipcMain.on('open-github-repo', () => openRepoWebsite());
+    ipcMain.on('open-github-issues', () => openIssuesWebsite());
 
     // Jogo.
     ipcMain.handle('current-world', () => cacheStore.world);
@@ -58,6 +59,7 @@ export function setEvents() {
     setMainWindowEvents();
     setBrowserViewEvents();
     setPanelEvents();
+    setMenuEvents();
     setPlunderEvents();
     setErrorEvents();
     setDeimosEvents();

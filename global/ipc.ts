@@ -81,12 +81,16 @@ export function ipcSend(channel: 'close-main-window'): void;
 
 // Geral
 export function ipcSend(channel: 'open-ares-website'): void;
-export function ipcSend(channel: 'open-repo-website'): void;
-export function ipcSend(channel: 'open-issues-website'): void;
+export function ipcSend(channel: 'open-github-repo'): void;
+export function ipcSend(channel: 'open-github-issues'): void;
 
 // Configurações
 export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
 export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
+
+// Menu
+export function ipcSend(channel: 'open-region-select-menu'): void;
+export function ipcSend(channel: 'open-bug-report-menu'): void;
 
 // Browser View
 export function ipcSend(channel: 'reload-main-view'): void;

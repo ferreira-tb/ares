@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
                 <slot name="footer">
                     <template v-if="props.showDefaultFooter">
                         <NButtonGroup>
-                            <NButton round @click="ipcSend('open-issues-website')">Issues</NButton>
+                            <NButton round @click="ipcSend('open-github-issues')">Issues</NButton>
                             <NButton round @click="ipcSend('open-error-log-window')">Registro de Erros</NButton>
                             <NButton round @click="shell.openExternal(discordURL)">Discord</NButton>
                         </NButtonGroup>
