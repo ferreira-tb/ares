@@ -2,16 +2,16 @@
 import { watchEffect } from 'vue';
 import { isObject } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
-import { usePlunderConfigStore } from '$vue/stores/plunder.js';
-import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates.js';
-import { queryVillagesInfo, villagesInfo } from '$lib/plunder/villages.js';
-import { queryAvailableUnits } from '$lib/plunder/units.js';
-import { PlunderAttackWithLoot } from '$lib/plunder/resources.js';
-import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } from '$lib/plunder/attack.js';
-import { destroyWall } from '$lib/plunder/wall.js';
-import { openPlace } from '$lib/plunder/place.js';
-import { PlunderError } from '$browser/error.js';
-import { ipcSend, ipcInvoke } from '$global/ipc.js';
+import { usePlunderConfigStore } from '$vue/stores/plunder';
+import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
+import { queryVillagesInfo, villagesInfo } from '$lib/plunder/villages';
+import { queryAvailableUnits } from '$lib/plunder/units';
+import { PlunderAttackWithLoot } from '$lib/plunder/resources';
+import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } from '$lib/plunder/attack';
+import { destroyWall } from '$lib/plunder/wall';
+import { openPlace } from '$lib/plunder/place';
+import { PlunderError } from '$browser/error';
+import { ipcSend, ipcInvoke } from '$global/ipc';
 import Reload from '$browser/components/plunder/Reload.vue';
 
 const config = usePlunderConfigStore();
