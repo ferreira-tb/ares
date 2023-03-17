@@ -33,7 +33,8 @@
         "start:rollup": "npm run build:rollup && electron .",
         "forge:start": "electron-forge start",
         "forge:package": "electron-forge package",
-        "forge:make": "electron-forge make"
+        "forge:make": "electron-forge make",
+        "forge:publish": "npm run build && electron-forge make"
     },
     "dependencies": {
         "@tb-dev/prototype": "^2.0.2",
