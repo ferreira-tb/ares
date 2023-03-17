@@ -1,60 +1,51 @@
-import { BrowserWindow, Menu, MenuItem, type MenuItemConstructorOptions } from 'electron';
-import { assertInstanceOf } from '@tb-dev/ts-guard';
+import { BrowserWindow, Menu, MenuItem } from 'electron';
+import { computed, storeToRefs } from 'mechanus';
+import { useBrowserViewStore } from '$interface/index';
+import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
-import { MainProcessError } from '$electron/error';
+import type { MenuItemConstructorOptions, WebContents } from 'electron';
 
-const devOptions: MenuItemConstructorOptions[] = [
-    { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', role: 'forceReload' },
-    { label: 'Inspecionar', accelerator: 'F1', role: 'toggleDevTools' }
-];
+function getDevOptions(): MenuItemConstructorOptions[] {
+    const { webContents: mainContents } = getMainWindow();
+    const { webContents: panelContents } = getPanelWindow();
 
-/**
- * Adiciona um menu básico à janela, com opções para inspeção e atualização da página.
- * Se `setNull` for `true`, a janela ficará sem menu caso o Ares não esteja em modo de desenvolvedor.
- */
-export function setBasicDevMenu(browserWindow: BrowserWindow, setNull: boolean = true) {
-    assertInstanceOf(browserWindow, BrowserWindow, 'O item não é uma janela.');
+    const browserViewStore = useBrowserViewStore();
+    const { currentWebContents: currentWebContentsMaybeNull } = storeToRefs(browserViewStore);
+
+    const contents = computed<WebContents>([currentWebContentsMaybeNull], () => {
+        return currentWebContentsMaybeNull.value ?? getMainViewWebContents();
+    });
+
+    const options: MenuItemConstructorOptions[] = [
+        { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => contents.value.reloadIgnoringCache() },
+        { label: 'Inspecionar', accelerator: 'F10', click: () => contents.value.openDevTools({ mode: 'detach'}) },
+        { label: 'Inspecionar janela principal', accelerator: 'F11', click: () => mainContents.openDevTools({ mode: 'detach'}) },
+        { label: 'Inspecionar painel', accelerator: 'F12', click: () => panelContents.openDevTools({ mode: 'detach'}) },
+    ];
+
+    options.forEach((option) => option.visible = false);
+    return options;
+};
+
+/** Adiciona o menu de desenvolvedor à janela. */
+export function setDevMenu(browserWindow: BrowserWindow) {
     if (process.env.ARES_MODE !== 'dev') {
-        if (setNull === true) browserWindow.setMenu(null);
+        browserWindow.setMenu(null);
         return;
     };
 
-    const menu = Menu.buildFromTemplate(devOptions);
+    const options = getDevOptions();
+    const menu = Menu.buildFromTemplate(options);
     browserWindow.setMenu(menu);
 };
 
-export function setBrowserDevMenu(menu: Menu) {
+/** Adiciona o menu de desenvolvedor a menus já existentes. */
+export function appendDevMenu(...args: Menu[]) {
     if (process.env.ARES_MODE !== 'dev') return;
-    assertInstanceOf(menu, Menu, 'O item não é um menu.');
-
-    const mainViewWebContents = getMainViewWebContents();
-
-    const errorMenu: MenuItemConstructorOptions[] = [
-        { label: 'Emitir erro', click: () => mainViewWebContents.send('emit-mock-error') },
-        { label: 'Emitir erro de DOM', click: () => mainViewWebContents.send('emit-mock-dom-error') },
-        { label: 'Emitir erro no núcleo', click: () => emitMockMainProcessError() }
-    ];
-
-    const devMenu: MenuItemConstructorOptions[] = [
-        ...devOptions,
-        { type: 'separator' },
-        { label: 'Erros', submenu: errorMenu }
-    ];
-
-    const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu: devMenu });
-    menu.append(menuItem);
-};
-
-export function setPanelDevMenu(menu: Menu) {
-    if (process.env.ARES_MODE !== 'dev') return;
-    assertInstanceOf(menu, Menu, 'O item não é um menu.');
-
-    const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu: devOptions });
-    menu.append(menuItem);
-};
-
-/** Emite um erro falso no processo principal para fins de teste. */
-function emitMockMainProcessError() {
-    const error = new MainProcessError('Isso é um teste.');
-    MainProcessError.catch(error);
+    
+    const options = getDevOptions();
+    for (const menu of args) {
+        const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu: options });
+        menu.append(menuItem);
+    };
 };

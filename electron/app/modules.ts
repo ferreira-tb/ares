@@ -2,7 +2,7 @@ import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
 import { isInstanceOf } from '@tb-dev/ts-guard';
 import { aresURL, favicon, moduleHtml, repoURL, issuesURL } from '$electron/utils/constants';
 import { getMainWindow } from '$electron/utils/helpers';
-import { setBasicDevMenu } from '$electron/menu/dev';
+import { setDevMenu } from '$electron/menu/dev';
 import { isAllowedURL } from '$electron/utils/guards';
 import { ModuleCreationError } from '$electron/error';
 import type { ModuleNames, ModuleRoutes, ModuleConstructorOptions, WebsiteModuleNames } from '$types/modules';
@@ -55,7 +55,7 @@ function createModule(name: ModuleNames, defaultRoute: ModuleRoutes, options: Mo
 
             const moduleWindow = new BrowserWindow(windowOptions);
 
-            setBasicDevMenu(moduleWindow, true);
+            setDevMenu(moduleWindow);
             moduleWindow.loadFile(moduleHtml);
             moduleWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 

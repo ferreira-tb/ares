@@ -3,14 +3,9 @@ import { computed, storeToRefs } from 'mechanus';
 import { useBrowserViewStore } from '$interface/index';
 import { showAppSettings } from '$electron/app/modules';
 import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers';
-import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev';
+import { appendDevMenu } from '$electron/menu/dev';
 import { getMainViewWebContents, contentsGoBack, contentsGoForward, contentsGoHome } from '$electron/utils/view';
 import type { MenuItemConstructorOptions, WebContents } from 'electron';
-
-// F1 - DevTools (apenas dev).
-// F2 - Exibe ou oculta o painel.
-// F3 - Configurações.
-// F5 - Atualiza a página.
 
 export function setAppMenu() {
     const mainWindow = getMainWindow();
@@ -41,8 +36,7 @@ export function setAppMenu() {
     const panelMenu = Menu.buildFromTemplate([...sharedOptions]);
 
     // Adiciona o menu de desenvolvedor às janelas.
-    setBrowserDevMenu(mainMenu);
-    setPanelDevMenu(panelMenu);
+    appendDevMenu(mainMenu, panelMenu);
 
     mainWindow.setMenu(mainMenu);
     panelWindow.setMenu(panelMenu);

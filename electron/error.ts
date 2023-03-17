@@ -5,6 +5,12 @@ export class MainProcessError extends Error {
     };
 
     declare public static catch: (err: unknown) => Promise<void>;
+
+    /** Emite um erro falso no processo principal para fins de teste. */
+    public static mock() {
+        const error = new this('Isso é um teste.');
+        this.catch(error);
+    };
 };
 
 export class ProxyStoreError extends MainProcessError {
