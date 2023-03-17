@@ -2,7 +2,6 @@ import { URL } from 'url';
 import { ipcMain, BrowserView } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { useBrowserViewStore } from '$interface/index';
-import { gameURL } from '$electron/utils/constants';
 import { isAllowedURL } from '$electron/utils/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
@@ -14,7 +13,10 @@ import {
     setBrowserViewBounds,
     setBrowserViewAutoResize,
     getBackForwardStatus,
-    getMainViewWebContents
+    getMainViewWebContents,
+    contentsGoBack,
+    contentsGoForward,
+    contentsGoHome
 } from '$electron/utils/view';
 
 export function setBrowserViewEvents() {
@@ -62,19 +64,9 @@ export function setBrowserViewEvents() {
 
     ipcMain.on('reload-current-view', () => currentView.value.webContents.reload());
     ipcMain.on('force-reload-current-view', () => currentView.value.webContents.reloadIgnoringCache());
-    ipcMain.on('current-view-go-home', () => currentView.value.webContents.loadURL(gameURL));
-
-    ipcMain.on('current-view-go-back', () => {
-        if (currentView.value.webContents.canGoBack()) {
-            currentView.value.webContents.goBack();
-        };
-    });
-
-    ipcMain.on('current-view-go-forward', () => {
-        if (currentView.value.webContents.canGoForward()) {
-            currentView.value.webContents.goForward();
-        };
-    });
+    ipcMain.on('current-view-go-home', () => contentsGoHome(currentView.value.webContents));
+    ipcMain.on('current-view-go-back', () => contentsGoBack(currentView.value.webContents));
+    ipcMain.on('current-view-go-forward', () => contentsGoForward(currentView.value.webContents));
 
     // BrowserViews específicas.
     ipcMain.on('destroy-browser-view', (_e, webContentsId: number) => {
