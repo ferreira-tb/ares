@@ -95,6 +95,7 @@ function createWindow() {
     panelWindow.once('ready-to-show', async () => {
         await UserConfig.setPanelBounds();
         panelWindow.show();
+        panelWindow.webContents.send('panel-visibility-did-change', panelWindow.isVisible());
     });
 };
 

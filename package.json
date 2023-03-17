@@ -1,7 +1,7 @@
 {
     "name": "ares",
     "productName": "Ares",
-    "version": "1.0.0-alpha.21",
+    "version": "1.0.0-alpha.22",
     "description": "Ferramenta para Tribal Wars",
     "author": {
         "name": "Andrew Ferreira",
@@ -30,6 +30,7 @@
         "script:fonts": "node scripts/fonts.mjs",
         "start": "npm run build && electron .",
         "start:main": "npm run build:main && npm run script:html && npm run script:fonts && electron .",
+        "start:panel": "npm run build:panel && npm run script:html && electron .",
         "start:rollup": "npm run build:rollup && electron .",
         "forge:start": "electron-forge start",
         "forge:package": "electron-forge package",
