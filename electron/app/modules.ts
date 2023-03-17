@@ -2,7 +2,6 @@ import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
 import { isInstanceOf } from '@tb-dev/ts-guard';
 import { aresURL, favicon, moduleHtml, repoURL, issuesURL } from '$electron/utils/constants';
 import { getMainWindow } from '$electron/utils/helpers';
-import { setDevMenu } from '$electron/menu/dev';
 import { isAllowedURL } from '$electron/utils/guards';
 import { ModuleCreationError } from '$electron/error';
 import type { ModuleNames, ModuleRoutes, ModuleConstructorOptions, WebsiteModuleNames } from '$types/modules';
@@ -12,7 +11,11 @@ const activeWebsiteModules = new Map<WebsiteModuleNames, BrowserWindow>();
 export const getActiveModule = (name: ModuleNames) => activeModules.get(name);
 export const getActiveWebsiteModule = (name: WebsiteModuleNames) => activeWebsiteModules.get(name);
 
-function createModule(name: ModuleNames, defaultRoute: ModuleRoutes, options: ModuleConstructorOptions = {}) {
+function createModule(
+    name: ModuleNames,
+    defaultRoute: ModuleRoutes,
+    options: ModuleConstructorOptions = {}
+) {
     return function(route?: ModuleRoutes) {
         try {
             const mainWindow = getMainWindow();
@@ -54,8 +57,7 @@ function createModule(name: ModuleNames, defaultRoute: ModuleRoutes, options: Mo
             };
 
             const moduleWindow = new BrowserWindow(windowOptions);
-
-            setDevMenu(moduleWindow);
+            moduleWindow.setMenu(null);
             moduleWindow.loadFile(moduleHtml);
             moduleWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 

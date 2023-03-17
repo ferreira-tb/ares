@@ -1,17 +1,15 @@
 import { Menu } from 'electron';
 import { computed, storeToRefs } from 'mechanus';
-import { useBrowserViewStore } from '$interface/index';
 import { showAppSettings } from '$electron/app/modules';
 import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { appendDevMenu } from '$electron/menu/dev';
 import { getMainViewWebContents, contentsGoBack, contentsGoForward, contentsGoHome } from '$electron/utils/view';
 import type { MenuItemConstructorOptions, WebContents } from 'electron';
+import type { useBrowserViewStore } from '$interface/index';
 
-export function setAppMenu() {
+export function setAppMenu(browserViewStore: ReturnType<typeof useBrowserViewStore>) {
     const mainWindow = getMainWindow();
     const panelWindow = getPanelWindow();
-
-    const browserViewStore = useBrowserViewStore();
     const { currentWebContents: currentWebContentsMaybeNull } = storeToRefs(browserViewStore);
 
     const currentWebContents = computed<WebContents>([currentWebContentsMaybeNull], () => {
@@ -36,7 +34,7 @@ export function setAppMenu() {
     const panelMenu = Menu.buildFromTemplate([...sharedOptions]);
 
     // Adiciona o menu de desenvolvedor às janelas.
-    appendDevMenu(mainMenu, panelMenu);
+    appendDevMenu(browserViewStore, mainMenu, panelMenu);
 
     mainWindow.setMenu(mainMenu);
     panelWindow.setMenu(panelMenu);

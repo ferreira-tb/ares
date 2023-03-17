@@ -85,7 +85,7 @@ function createWindow() {
     currentAutoResize.value = setBrowserViewAutoResize(mainView);
 
     setEvents();
-    setAppMenu();
+    setAppMenu(browserViewStore);
 
     mainWindow.once('ready-to-show', () => mainWindow.show());
     panelWindow.once('ready-to-show', async () => {
