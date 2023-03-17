@@ -4,7 +4,7 @@ import { useBrowserViewStore } from '$interface/index';
 import { showAppSettings } from '$electron/app/modules';
 import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { setBrowserDevMenu, setPanelDevMenu } from '$electron/menu/dev';
-import { getMainViewWebContents } from '$electron/utils/view';
+import { getMainViewWebContents, contentsGoBack, contentsGoForward, contentsGoHome } from '$electron/utils/view';
 import type { MenuItemConstructorOptions, WebContents } from 'electron';
 
 // F1 - DevTools (apenas dev).
@@ -24,10 +24,14 @@ export function setAppMenu() {
     });
 
     const sharedOptions: MenuItemConstructorOptions[] = [
-        { label: 'Início', accelerator: 'CmdOrCtrl+Home' },
+        { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => contentsGoHome(currentWebContents.value) },
+        { label: 'Atualizar', accelerator: 'F5', click: () => currentWebContents.value.reload() },
+        { label: 'Voltar', accelerator: 'CmdOrCtrl+Left', click: () => contentsGoBack(currentWebContents.value) },
+        { label: 'Avançar', accelerator: 'CmdOrCtrl+Right', click: () => contentsGoForward(currentWebContents.value) },
+
         { label: 'Exibir ou ocultar painel', accelerator: 'F2', click: () => togglePanelWindow() },
         { label: 'Configurações', accelerator: 'F3', click: () => showAppSettings('general-config') },
-        { label: 'Atualizar', accelerator: 'F5', click: () => currentWebContents.value.reload() },
+        
         { label: 'Sair', accelerator: 'Esc', role: 'quit' }
     ];
 
