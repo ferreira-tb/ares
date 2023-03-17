@@ -2,7 +2,8 @@ import { computed, ref, type Mechanus } from 'mechanus';
 import { isString } from '@tb-dev/ts-guard';
 import { generateUserAlias } from '$electron/utils/helpers';
 import { worldRef, stringRef, objectOrNullRef } from '$electron/utils/mechanus';
-import type { MechanusCacheStoreType, UserAlias } from '$types/electron';
+import type { UserAlias } from '$types/electron';
+import type { MechanusCacheStoreType } from '$types/stores';
 import type { World } from '$types/game';
 import type { DemolitionTemplateType } from '$types/plunder';
 
