@@ -8,9 +8,7 @@ import { pushRoute } from '$panel/utils/helpers';
 
 const aresStore = useAresStore();
 const plunderConfigStore = usePlunderConfigStore();
-
 const { captcha, screen: screenName } = storeToRefs(aresStore);
-captcha.value = true;
 
 watchEffect(() => {
     if (captcha.value === true) {
