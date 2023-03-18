@@ -13,12 +13,17 @@ export const useAresStore = defineStore('ares', () => {
     const screenMode = ref<string | null>(null);
     const pregame = ref<boolean | null>(null);
 
+    const captcha = ref<boolean>(false);
+
     return {
         locale,
         world,
         majorVersion,
+        
         screen,
         screenMode,
         pregame,
+
+        captcha
     } satisfies PiniaAresStoreType;
 });
