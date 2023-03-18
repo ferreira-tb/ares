@@ -14,10 +14,9 @@ export function openPlace(placeButton: PlunderVillageInfo['button']['place']) {
                 });
             });
 
-            if (found) {
-                observer.stop();
-                resolve();
-            };
+            if (!found) return;
+            observer.stop();
+            resolve();
         }, { subtree: true, childList: true });
 
         assertInstanceOf(placeButton, HTMLElement, 'O botão da praça de reunião não existe.');

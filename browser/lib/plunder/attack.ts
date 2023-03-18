@@ -127,10 +127,9 @@ function submitAndWaitConfirmationPopup(commandForm: Element) {
                 });
             });
 
-            if (found) {
-                observer.stop();
-                resolve();
-            };
+            if (!found) return;
+            observer.stop();
+            resolve();
         }, { subtree: true, childList: true });
 
         const selector = '#target_attack[class*="attack" i][type="submit"]';
