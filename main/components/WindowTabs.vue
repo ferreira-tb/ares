@@ -18,6 +18,8 @@ const mainViewWebContentsId = await ipcInvoke('main-view-web-contents-id');
 const activeView = ref<WebContents['id']>(mainViewWebContentsId);
 watch(activeView, (webContentsId) => ipcSend('update-current-view', webContentsId));
 
+useIpcRendererOn('focus-main-view', () => activeView.value = mainViewWebContentsId);
+
 useIpcRendererOn('browser-view-created', (_e, webContentsId: number, viewTitle: string) => {
     allTabs.set(webContentsId, viewTitle);
 });

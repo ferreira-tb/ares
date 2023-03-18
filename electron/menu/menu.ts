@@ -22,6 +22,7 @@ export function setAppMenu(browserViewStore: ReturnType<typeof useBrowserViewSto
         { label: 'Voltar', accelerator: 'CmdOrCtrl+Left', click: () => contentsGoBack(currentWebContents.value) },
         { label: 'Avançar', accelerator: 'CmdOrCtrl+Right', click: () => contentsGoForward(currentWebContents.value) },
 
+        { label: 'Focar view principal', accelerator: 'F1', click: () => mainWindow.webContents.send('focus-main-view') },
         { label: 'Exibir ou ocultar painel', accelerator: 'F2', click: () => togglePanelWindow() },
         { label: 'Configurações', accelerator: 'F3', click: () => showAppSettings('general-config') },
         
