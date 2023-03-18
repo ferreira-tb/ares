@@ -7,8 +7,7 @@ export function openPlace(placeButton: PlunderVillageInfo['button']['place']) {
     return new Promise<void>((resolve, reject) => {
         const observer = useMutationObserver(document.body, (mutations) => {
             const found = mutations.some((mutation) => {
-                const { addedNodes } = mutation;
-                return Array.from(addedNodes).some((node) => {
+                return Array.from(mutation.addedNodes).some((node) => {
                     if (!isInstanceOf(node, HTMLElement)) return false;
                     const id = node.getAttribute('id');
                     return id === 'command-data-form';
