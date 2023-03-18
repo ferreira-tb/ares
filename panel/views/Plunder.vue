@@ -1,44 +1,30 @@
 <script setup lang="ts">
 import { computed, watch, watchEffect } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
-import { usePlunderConfigStore, usePlunderHistoryStore } from '$vue/stores/plunder';
+import { usePlunderConfigStore } from '$vue/stores/plunder';
 import { useFeaturesStore } from '$vue/stores/features';
 import { useGroupsStore } from '$vue/stores/groups';
 import { ipcSend } from '$global/ipc';
+import { togglePlunder } from '$panel/utils/helpers';
 import Resources from '$panel/components/Resources.vue';
 import SwitchPopover from '$vue/components/popover/SwitchPopover.vue';
 
 const config = usePlunderConfigStore();
-const history = usePlunderHistoryStore();
 const features = useFeaturesStore();
 const groups = useGroupsStore();
 
 const plunderButtonText = computed(() => config.active === false ? 'Saquear' : 'Parar');
 
 // Não deve ser possível ativar o ataque em grupo se não houver grupos dinâmicos.
-const dynamicGroupsAmount = computed(() => {
-    let amount = 0;
-    groups.all.forEach((group) => {
-        if (group.type === 'dynamic') amount++;
-    });
-
-    return amount;
+const dynamicGroupsAmount = computed<number>(() => {
+    const allGroups = Array.from(groups.all);
+    return allGroups.reduce((amount, group) => {
+        if (group.type === 'dynamic') amount += 1;
+        return amount;
+    }, 0);
 });
 
-watch(() => config.active, (value) => {
-    ipcSend('update-plunder-config', 'active', value);
-    if (value !== false) return;
-
-    // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
-    // Se não houve saque, não é necessário realizar essa operação.
-    const currentHistoryState = history.raw();
-    if (Object.values(currentHistoryState).every((value) => value > 0)) {
-        ipcSend('save-plunder-attack-details', currentHistoryState);
-    };
-
-    history.reset();
-});
-
+watch(() => config.active, togglePlunder);
 watch(() => config.ignoreWall, (v) => ipcSend('update-plunder-config', 'ignoreWall', v));
 watch(() => config.destroyWall, (v) => ipcSend('update-plunder-config', 'destroyWall', v));
 watch(() => config.groupAttack, (v) => ipcSend('update-plunder-config', 'groupAttack', v));
