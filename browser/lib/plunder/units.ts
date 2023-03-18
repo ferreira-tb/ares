@@ -1,10 +1,10 @@
 import { nextTick } from 'vue';
 import { assert, isObject } from '@tb-dev/ts-guard';
-import { Deimos } from '$deimos/shared/ipc.js';
-import { useUnitsStore } from '$vue/stores/units.js';
-import { allUnits } from '$global/utils/constants.js';
-import { ipcSend } from '$global/ipc.js';
-import type { AllUnits } from '$types/game.js';
+import { Deimos } from '$deimos/shared/ipc';
+import { useUnitsStore } from '$vue/stores/units';
+import { allUnits } from '$global/utils/constants';
+import { ipcSend } from '$global/ipc';
+import type { AllUnits } from '$types/game';
 
 /** Atualiza a quantidade de unidades disponíveis no assistente de saque. */
 export async function queryAvailableUnits() {

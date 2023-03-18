@@ -22,7 +22,11 @@ import type {
 } from '$types/plunder';
 
 ////// ARES
-export type AresStore = TribalWarsGameDataType['ares'];
+type AresType = TribalWarsGameDataType['ares'];
+export interface AresStore extends AresType {
+    /** Indica se há um captcha ativo. */
+    readonly captcha: boolean;
+};
 export type PiniaAresStoreType = {
     [K in keyof AresStore]: Ref<AresStore[K]>;
 };
@@ -153,20 +157,20 @@ export type MechanusWorldUnitStoreType = {
 
 ////// CACHE
 export interface CacheStore {
-    world: World | null;
-    player: string | null;
-    userAlias: UserAlias | null;
+    readonly world: World | null;
+    readonly player: string | null;
+    readonly userAlias: UserAlias | null;
 
     /** Modelos usados no assistente de saque para demolição de muralhas. */
-    demolitionTroops: DemolitionTemplateType | null;
+    readonly demolitionTroops: DemolitionTemplateType | null;
 };
 
 export type MechanusCacheStoreType = {
-    world: MechanusRef<World | null>;
-    player: MechanusRef<string | null>;
-    userAlias: MechanusComputedRef<UserAlias | null>;
+    readonly world: MechanusRef<World | null>;
+    readonly player: MechanusRef<string | null>;
+    readonly userAlias: MechanusComputedRef<UserAlias | null>;
 
-    demolitionTroops: MechanusRef<DemolitionTemplateType | null>;
+    readonly demolitionTroops: MechanusRef<DemolitionTemplateType | null>;
 };
 
 ////// BROWSER VIEW

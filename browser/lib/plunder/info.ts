@@ -1,8 +1,8 @@
 import { assertObject } from '@tb-dev/ts-guard';
-import { Deimos } from '$deimos/shared/ipc.js';
-import { PlunderError } from '$browser/error.js';
-import { usePlunderStore } from '$vue/stores/plunder.js';
-import { ipcSend } from '$global/ipc.js';
+import { Deimos } from '$deimos/shared/ipc';
+import { PlunderError } from '$browser/error';
+import { usePlunderStore } from '$vue/stores/plunder';
+import { ipcSend } from '$global/ipc';
 
 export async function getPlunderInfo() {
     try {

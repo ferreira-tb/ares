@@ -8,6 +8,7 @@ import { setMainWindowEvents } from '$electron/events/window';
 import { setBrowserViewEvents } from '$electron/events/view';
 import { setGroupsEvents } from '$electron/events/groups';
 import { setMenuEvents } from '$electron/events/menu';
+import { setBrowserEvents } from '$electron/events/browser';
 import { isUserAlias } from '$electron/utils/guards';
 import { openAresWebsite, openIssuesWebsite, openRepoWebsite, showAppSettings } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
@@ -57,6 +58,7 @@ export function setEvents() {
 
     // Outros eventos.
     setMainWindowEvents();
+    setBrowserEvents();
     setBrowserViewEvents();
     setPanelEvents();
     setMenuEvents();

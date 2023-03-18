@@ -1,5 +1,5 @@
 import { ref, type Mechanus } from 'mechanus';
-import { stringOrNullRef, worldOrNullRef, booleanOrNullRef } from '$electron/utils/mechanus';
+import { stringOrNullRef, worldOrNullRef, booleanOrNullRef, booleanRef } from '$electron/utils/mechanus';
 import type { World } from '$types/game';
 import type { MechanusAresStoreType } from '$types/stores';
 
@@ -11,6 +11,8 @@ export function defineAresStore(mechanus: Mechanus) {
 
         screen: ref<string | null>(null, stringOrNullRef),
         screenMode: ref<string | null>(null, stringOrNullRef),
-        pregame: ref<boolean | null>(null, booleanOrNullRef)
+        pregame: ref<boolean | null>(null, booleanOrNullRef),
+
+        captcha: ref<boolean>(false, booleanRef)
     } satisfies MechanusAresStoreType);
 };

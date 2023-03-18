@@ -2,15 +2,15 @@ import { computed, nextTick } from 'vue';
 import { ipcRenderer } from 'electron';
 import { assert, isKeyOf, assertInteger, toIntegerStrict, isInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
-import { usePlunderConfigStore } from '$vue/stores/plunder.js';
-import { useUnitsStore } from '$vue/stores/units.js';
-import { assertFarmUnit } from '$global/utils/guards.js';
-import { PlunderError } from '$browser/error.js';
-import { ipcInvoke } from '$global/ipc.js';
-import type { FarmUnits, FarmUnitsAmount, UnitAmount } from '$types/game.js';
-import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
-import type { CustomPlunderTemplateType } from '$types/plunder.js';
-import type { UserAlias } from '$types/electron.js';
+import { usePlunderConfigStore } from '$vue/stores/plunder';
+import { useUnitsStore } from '$vue/stores/units';
+import { assertFarmUnit } from '$global/utils/guards';
+import { PlunderError } from '$browser/error';
+import { ipcInvoke } from '$global/ipc';
+import type { FarmUnits, FarmUnitsAmount, UnitAmount } from '$types/game';
+import type { PlunderVillageInfo } from '$lib/plunder/villages';
+import type { CustomPlunderTemplateType } from '$types/plunder';
+import type { UserAlias } from '$types/electron';
 
 type ConfigReturnType = ReturnType<typeof usePlunderConfigStore>;
 

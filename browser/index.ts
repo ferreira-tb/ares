@@ -3,9 +3,9 @@ import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { router } from '$browser/router/router.js';
-import { setBrowserEvents } from '$browser/events/index.js';
-import { BrowserError } from '$browser/error.js';
+import { router } from '$browser/router/router';
+import { setBrowserEvents } from '$browser/events/index';
+import { BrowserError } from '$browser/error';
 import Browser from '$browser/Browser.vue';
 
 const app = createApp(Browser);
@@ -17,6 +17,7 @@ app.use(router);
 
 // Error handler.
 app.config.errorHandler = BrowserError.catch;
+router.onError(BrowserError.catch);
 
 // Eventos.
 setBrowserEvents(pinia);

@@ -1,12 +1,12 @@
 import { useEventListener, useMutationObserver } from '@vueuse/core';
 import { assertInteger, isInstanceOf, assertString, assert } from '@tb-dev/ts-guard';
-import { usePlunderConfigStore } from '$vue/stores/plunder.js';
-import { generateRandomDelay, wait } from '$global/utils/helpers.js';
-import { unitsRegex } from '$global/utils/constants.js';
-import { ipcSend, ipcInvoke } from '$global/ipc.js';
-import { PlunderError } from '$browser/error.js';
-import type { PlaceUnitsAmount } from '$types/game.js';
-import type { PlunderAttackDetails } from '$types/plunder.js';
+import { usePlunderConfigStore } from '$vue/stores/plunder';
+import { generateRandomDelay, wait } from '$global/utils/helpers';
+import { unitsRegex } from '$global/utils/constants';
+import { ipcSend, ipcInvoke } from '$global/ipc';
+import { PlunderError } from '$browser/error';
+import type { PlaceUnitsAmount } from '$types/game';
+import type { PlunderAttackDetails } from '$types/plunder';
 
 export const eventTarget = new EventTarget();
 
@@ -120,18 +120,16 @@ function submitAndWaitConfirmationPopup(commandForm: Element) {
     return new Promise<void>(async (resolve, reject) => {
         const observer = useMutationObserver(document.body, (mutations) => {
             const found = mutations.some((mutation) => {
-                const { addedNodes } = mutation;
-                return Array.from(addedNodes).some((node) => {
+                return Array.from(mutation.addedNodes).some((node) => {
                     if (!isInstanceOf(node, HTMLElement)) return false;
                     const id = node.getAttribute('id');
                     return id === 'command-data-form';
                 });
             });
 
-            if (found) {
-                observer.stop();
-                resolve();
-            };
+            if (!found) return;
+            observer.stop();
+            resolve();
         }, { subtree: true, childList: true });
 
         const selector = '#target_attack[class*="attack" i][type="submit"]';
