@@ -17,6 +17,7 @@ app.use(router);
 
 // Error handler.
 app.config.errorHandler = ModuleError.catch;
+router.onError(ModuleError.catch);
 
 // Eventos
 setModuleEvents();
