@@ -16,6 +16,11 @@ export const worldRegex = /^br([sp](?![sp]))*\d+$/;
 export const aliasRegex = /^br([sp](?![sp]))*\d+__USERID__/;
 export const unitsRegex = /(spear|sword|axe|archer|spy|light|heavy|ram|catapult|knight|snob|militia)/;
 
+export const gameURLRegex = /\.?tribalwars\.com\.br/;
+export const aresURLRegex = /\.?tb\.dev\.br\/ares/;
+export const authorURLRegex = /\.?github\.com\/ferreira\-tb/;
+export const repoURLRegex = /\.?github\.com\/ferreira\-tb\/ares/;
+
 // Mapas.
 export const unitsToDestroyWall = {
     '0': {

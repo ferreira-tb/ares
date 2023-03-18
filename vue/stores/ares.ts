@@ -14,6 +14,7 @@ export const useAresStore = defineStore('ares', () => {
     const pregame = ref<boolean | null>(null);
 
     const captcha = ref<boolean>(false);
+    const responseTime = ref<number>(0);
 
     return {
         locale,
@@ -24,6 +25,7 @@ export const useAresStore = defineStore('ares', () => {
         screenMode,
         pregame,
 
-        captcha
+        captcha,
+        responseTime
     } satisfies PiniaAresStoreType;
 });

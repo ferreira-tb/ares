@@ -28,6 +28,7 @@ export async function ipcInvoke(channel: 'user-alias'): Promise<UserAlias | null
 export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
+export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
 
 // Painel
 export async function ipcInvoke(channel: 'is-panel-visible'): Promise<boolean>;
@@ -87,6 +88,7 @@ export function ipcSend(channel: 'open-ares-website'): void;
 export function ipcSend(channel: 'open-github-repo'): void;
 export function ipcSend(channel: 'open-github-issues'): void;
 export function ipcSend(channel: 'update-captcha-status', status: boolean): void;
+export function ipcSend(channel: 'update-response-time', time: number): void;
 
 // Configurações
 export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
