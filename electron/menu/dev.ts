@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, MenuItem } from 'electron';
+import { BrowserWindow, Menu, MenuItem, webContents } from 'electron';
 import { computed, storeToRefs } from 'mechanus';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
@@ -16,6 +16,7 @@ function getDevOptions(browserViewStore: ReturnType<typeof useBrowserViewStore>)
 
     const options: MenuItemConstructorOptions[] = [
         { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => contents.value.reloadIgnoringCache() },
+        { label: 'Conjurar magia', accelerator: 'F9', click: () => castDevMagic() },
         { label: 'Inspecionar', accelerator: 'F10', click: () => contents.value.openDevTools({ mode: 'detach'}) },
         { label: 'Inspecionar janela principal', accelerator: 'F11', click: () => mainContents.openDevTools({ mode: 'detach'}) },
         { label: 'Inspecionar painel', accelerator: 'F12', click: () => panelContents.openDevTools({ mode: 'detach'}) },
@@ -47,5 +48,13 @@ export function appendDevMenu(browserViewStore: ReturnType<typeof useBrowserView
     for (const menu of args) {
         const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu: options });
         menu.append(menuItem);
+    };
+};
+
+/** Usado para situações de teste durante o desenvolvimento. */
+function castDevMagic() {
+    const allWebContents = webContents.getAllWebContents();
+    for (const contents of allWebContents) {
+        contents.send('its-dev-magic');
     };
 };
