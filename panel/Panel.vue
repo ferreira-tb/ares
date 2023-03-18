@@ -15,6 +15,8 @@ const panelStore = usePanelStore();
 
 const { captcha, screen: screenName } = storeToRefs(aresStore);
 const { isVisible } = storeToRefs(panelStore);
+
+// https://github.com/ferreira-tb/ares/issues/50
 const wrapper = computedEager(() => isVisible.value ? Transition : 'div', { flush: 'sync' });
 
 useIpcRendererOn('captcha-status-did-update', (_e, status: boolean) => {
