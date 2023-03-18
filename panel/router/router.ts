@@ -1,6 +1,7 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
 import { getRouteNames } from '$vue/utils/helpers';
 import Home from '$panel/views/Home.vue';
+import Captcha from '$panel/views/Captcha.vue';
 import Plunder from '$panel/views/Plunder.vue';
 
 // Os componentes devem ser passados diretamente.
@@ -11,6 +12,11 @@ const routes: RouteRecordRaw[] = [
         path: '/',
         name: 'home',
         component: Home
+    },
+    {
+        path: '/captcha',
+        name: 'captcha',
+        component: Captcha
     },
     {
         path: '/am_farm',

@@ -27,8 +27,8 @@ const dynamicGroupsAmount = computed(() => {
 
 watch(() => config.active, (value) => {
     ipcSend('update-plunder-config', 'active', value);
-
     if (value !== false) return;
+
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
     // Se não houve saque, não é necessário realizar essa operação.
     const currentHistoryState = history.raw();

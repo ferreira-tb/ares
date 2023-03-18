@@ -86,6 +86,7 @@ export function ipcSend(channel: 'close-main-window'): void;
 export function ipcSend(channel: 'open-ares-website'): void;
 export function ipcSend(channel: 'open-github-repo'): void;
 export function ipcSend(channel: 'open-github-issues'): void;
+export function ipcSend(channel: 'update-captcha-status', status: boolean): void;
 
 // Configurações
 export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
