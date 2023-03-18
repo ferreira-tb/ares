@@ -190,7 +190,7 @@ async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = get
                 spellcheck: false,
                 nodeIntegration: false,
                 contextIsolation: true,
-                devTools: process.env.ARES_MODE === 'dev',
+                devTools: process.env.ARES_MODE === 'dev'
             }
         });
 
