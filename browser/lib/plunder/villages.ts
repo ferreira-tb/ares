@@ -1,14 +1,14 @@
 import { useMutationObserver, useEventListener } from '@vueuse/core';
 import { assertInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
-import { calcDistance } from '$global/utils/helpers.js';
-import { assertCoordsFromTextContent, parseGameDate } from '$global/utils/parser.js';
-import { PlunderError } from '$browser/error.js';
-import { resources as resourceList } from '$global/utils/constants.js';
-import { useCurrentVillageStore } from '$vue/stores/village.js';
-import { assertWallLevel } from '$global/utils/guards.js';
-import type { Coords, WallLevel } from '$types/game.js';
-import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder.js';
+import { calcDistance } from '$global/utils/helpers';
+import { assertCoordsFromTextContent, parseGameDate } from '$global/utils/parser';
+import { PlunderError } from '$browser/error';
+import { resources as resourceList } from '$global/utils/constants';
+import { useCurrentVillageStore } from '$vue/stores/village';
+import { assertWallLevel } from '$global/utils/guards';
+import type { Coords, WallLevel } from '$types/game';
+import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder';
 
 export class PlunderVillageInfo {
     /** Data do último ataque contra a aldeia (em milisegundos). */

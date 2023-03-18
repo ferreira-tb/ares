@@ -1,8 +1,8 @@
 import { assertInteger } from '@tb-dev/ts-guard';
-import { resources } from '$global/utils/constants.js';
-import { PlunderAttack } from '$lib/plunder/attack.js';
-import { usePlunderConfigStore } from '$vue/stores/plunder.js';
-import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
+import { resources } from '$global/utils/constants';
+import { PlunderAttack } from '$lib/plunder/attack';
+import { usePlunderConfigStore } from '$vue/stores/plunder';
+import type { PlunderVillageInfo } from '$lib/plunder/villages';
 
 export class PlunderAttackWithLoot extends PlunderAttack {
     wood: number;

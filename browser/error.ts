@@ -1,4 +1,4 @@
-import { AresError } from '$global/error.js';
+import { AresError } from '$global/error';
 
 export class BrowserError extends AresError {
     constructor(message: string) {

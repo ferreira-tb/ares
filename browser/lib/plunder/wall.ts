@@ -1,12 +1,12 @@
 import { assertObject, assertInteger } from '@tb-dev/ts-guard';
-import { useUnitsStore } from '$vue/stores/units.js';
-import { ipcInvoke, ipcSend } from '$global/ipc.js';
-import { openPlace } from '$lib/plunder/place.js';
-import { sendAttackFromPlace } from '$lib/plunder/attack.js';
-import { PlunderError } from '$browser/error.js';
-import { PlunderAttackWithLoot } from '$lib/plunder/resources.js';
-import type { DemolitionTroops, StringWallLevel } from '$types/game.js';
-import type { PlunderVillageInfo } from '$lib/plunder/villages.js';
+import { useUnitsStore } from '$vue/stores/units';
+import { ipcInvoke, ipcSend } from '$global/ipc';
+import { openPlace } from '$lib/plunder/place';
+import { sendAttackFromPlace } from '$lib/plunder/attack';
+import { PlunderError } from '$browser/error';
+import { PlunderAttackWithLoot } from '$lib/plunder/resources';
+import type { DemolitionTroops, StringWallLevel } from '$types/game';
+import type { PlunderVillageInfo } from '$lib/plunder/villages';
 
 export async function destroyWall(info: PlunderVillageInfo): Promise<boolean> {
     try {
