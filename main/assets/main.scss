@@ -12,6 +12,5 @@ $tab-height: 40px;
 @mixin display-flex-center {
     display: flex;
     align-items: center;
-    align-content: center;
     height: 100%;
 }

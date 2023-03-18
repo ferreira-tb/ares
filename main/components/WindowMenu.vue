@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { shell } from 'electron';
 import { computed, ref } from 'vue';
+import { useElementSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
-import { NIcon } from 'naive-ui';
+import { NIcon, NTag } from 'naive-ui';
 import { DiscordSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$global/ipc';
 import { discordURL } from '$global/utils/constants';
@@ -19,11 +20,28 @@ import {
     LogoGithub
 } from '@vicons/ionicons5';
 
+const mainWindowMenu = ref<HTMLElement | null>(null);
+const { width } = useElementSize(mainWindowMenu);
+const menuWidth = computed(() => `${width.value - 80}px`);
+
+const responseTime = ref<number>(0);
+responseTime.value = await ipcInvoke('get-response-time');
+
+const responseTimeTagType = computed(() => {
+    if (responseTime.value <= 200) return 'success';
+    if (responseTime.value <= 1000) return 'warning';
+    return 'error';
+});
+
 const canGoBack = ref<boolean>(await ipcInvoke('current-view-can-go-back'));
 const canGoForward = ref<boolean>(await ipcInvoke('current-view-can-go-forward'));
 
 const goBackDepth = computed(() => canGoBack.value ? 3 : 5);
 const goForwardDepth = computed(() => canGoForward.value ? 3 : 5);
+
+useIpcRendererOn('response-time-did-update', (_e, time: number) => {
+    responseTime.value = time;
+});
 
 useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardStatus) => {
     canGoBack.value = status.canGoBack;
@@ -32,7 +50,7 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
 </script>
 
 <template>
-    <div class="main-window-menu">
+    <div class="main-window-menu" ref="mainWindowMenu">
         <div class="menu-icon-area">
             <div class="menu-icon" @click="ipcSend('current-view-go-back')">
                 <NIcon :size="22" :depth="goBackDepth" :component="ArrowBackSharp" />
@@ -62,6 +80,16 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
                 <NIcon :size="22" :depth="3" :component="LogoGithub" />
             </div>
         </div>
+
+        <div class="response-time-tag">
+            <Transition name="tb-fade" mode="out-in">
+                <div v-if="responseTime > 0" class="tag-wrapper" :key="responseTimeTagType">
+                    <NTag round :type="responseTimeTagType" size="small">
+                        {{ `${responseTime}ms` }}
+                    </NTag>
+                </div>
+            </Transition>
+        </div>
     </div>
 </template>
 
@@ -85,7 +113,7 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
 
 .menu-icon-area {
     @include main.display-flex-center;
-    width: 100%;
+    width: v-bind("menuWidth");
     height: 100%;
 
     & > .menu-icon {
@@ -97,6 +125,21 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
     & > .menu-icon:hover {
         background-color: var(--color-background-soft);
         border-radius: 40%;
+    }
+}
+
+.response-time-tag {
+    width: 80px;
+    height: 100%;
+
+    .tag-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        
+        width: inherit;
+        height: inherit;
+        padding-right: 0.5rem;
     }
 }
 </style>

@@ -9,7 +9,7 @@ export function calcDistance(originX: number, originY: number, destX: number, de
 /** Retorna o tempo de resposta do servidor. */
 export function getResponseTime() {
     const navigationTiming = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-    return navigationTiming.responseEnd - navigationTiming.fetchStart;
+    return Math.ceil(navigationTiming.responseEnd - navigationTiming.fetchStart);
 };
 
 /**

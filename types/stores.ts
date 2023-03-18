@@ -26,6 +26,8 @@ type AresType = TribalWarsGameDataType['ares'];
 export interface AresStore extends AresType {
     /** Indica se há um captcha ativo. */
     readonly captcha: boolean;
+    /** Tempo de resposta do servidor do jogo. */
+    readonly responseTime: number;
 };
 export type PiniaAresStoreType = {
     [K in keyof AresStore]: Ref<AresStore[K]>;
