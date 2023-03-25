@@ -1,8 +1,9 @@
-import { DeimosError } from '$deimos/shared/error.js';
 import { assertString, isString } from '@tb-dev/ts-guard';
-import type { TribalWarsGameData } from '$deimos/models/data.js';
-import type { PlunderInfo } from '$deimos/models/plunder.js';
-import type { Units } from '$deimos/models/units.js';
+import { DeimosError } from '$deimos/shared/error';
+import type { TribalWarsGameData } from '$deimos/models/data';
+import type { PlunderInfo } from '$deimos/models/plunder';
+import type { Units } from '$deimos/models/units';
+import type { TribalWarsTiming } from '$deimos/models/timing';
 
 // Arquivos no diretório "shared" não podem importar de outras partes do Deimos.
 // Isso é para evitar que a importações dos protótipos feitas no index vazem para o resto do código.
@@ -32,6 +33,8 @@ export class Deimos {
         window.postMessage(deimos, '*');
     };
 
+    public static invoke(channel: 'get-timing'): Promise<TribalWarsTiming | null>;
+    public static invoke(channel: 'get-response-time'): Promise<number | null>;
     public static invoke(channel: 'get-game-data'): Promise<TribalWarsGameData | null>;
     public static invoke(channel: 'get-current-village-units'): Promise<Units | null>;
     public static invoke(channel: 'get-plunder-info'): Promise<PlunderInfo | null>;
@@ -57,6 +60,8 @@ export class Deimos {
         });
     };
 
+    public static handle(channel: 'get-timing', listener: () => TribalWarsTiming | null): void;
+    public static handle(channel: 'get-response-time', listener: () => number | null): void;
     public static handle(channel: 'get-game-data', listener: () => TribalWarsGameData | null): void;
     public static handle(channel: 'get-current-village-units', listener: () => Units | null): void;
     public static handle(channel: 'get-plunder-info', listener: () => PlunderInfo | null): void;

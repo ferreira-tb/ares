@@ -88,7 +88,7 @@ export function ipcSend(channel: 'open-ares-website'): void;
 export function ipcSend(channel: 'open-github-repo'): void;
 export function ipcSend(channel: 'open-github-issues'): void;
 export function ipcSend(channel: 'update-captcha-status', status: boolean): void;
-export function ipcSend(channel: 'update-response-time', time: number): void;
+export function ipcSend(channel: 'update-response-time', time: number | null): void;
 
 // Configurações
 export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
@@ -124,7 +124,7 @@ export function ipcSend(channel: 'plunder-attack-sent', plunderAttack: PlunderAt
 export function ipcSend(channel: 'save-plunder-attack-details', details: PlunderAttackDetails): void;
 
 // Deimos
-export function ipcSend(channel: 'script-tag-is-ready'): void;
+export function ipcSend(channel: 'deimos-tag-is-ready'): void;
 export function ipcSend(channel: 'update-game-data', gameData: TribalWarsGameDataType): void;
 export function ipcSend(channel: 'update-current-village-units', units: UnitAmount): void;
 export function ipcSend(channel: 'update-plunder-info', plunderInfo: PlunderInfoType): void;

@@ -1,5 +1,5 @@
 import { assertString, toCustom, isString } from '@tb-dev/ts-guard';
-import type { UnitAmount, UnitsAmountAsStrings } from '$types/game.js';
+import type { UnitAmount, UnitsAmountAsStrings } from '$types/game';
 
 export class Units implements UnitAmount {
     public readonly spear: number;

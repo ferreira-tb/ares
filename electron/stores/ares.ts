@@ -7,7 +7,7 @@ import {
     worldOrNullRef,
     booleanOrNullRef,
     booleanRef,
-    integerRef
+    integerOrNullRef
 } from '$electron/utils/mechanus';
 
 export function defineAresStore(mechanus: Mechanus) {
@@ -21,6 +21,6 @@ export function defineAresStore(mechanus: Mechanus) {
         pregame: ref<boolean | null>(null, booleanOrNullRef),
 
         captcha: ref<boolean>(false, booleanRef),
-        responseTime: ref<number>(0, integerRef)
+        responseTime: ref<number | null>(null, integerOrNullRef)
     } satisfies MechanusAresStoreType);
 };

@@ -14,7 +14,7 @@ export const useAresStore = defineStore('ares', () => {
     const pregame = ref<boolean | null>(null);
 
     const captcha = ref<boolean>(false);
-    const responseTime = ref<number>(0);
+    const responseTime = ref<number | null>(null);
 
     return {
         locale,

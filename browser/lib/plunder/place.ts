@@ -1,6 +1,6 @@
 import { useMutationObserver } from '@vueuse/core';
 import { isInstanceOf, assertInstanceOf } from '@tb-dev/ts-guard';
-import { wait } from '$global/utils/helpers';
+import { wait } from '$browser/utils/helpers';
 import type { PlunderVillageInfo } from '$lib/plunder/villages';
 
 export function openPlace(placeButton: PlunderVillageInfo['button']['place']) {
