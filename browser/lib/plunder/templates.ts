@@ -152,6 +152,8 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * Se a opção `blindAttack` estiver ativada, todos os modelos com tropas disponíveis são retornados.
  * @param info - Informações sobre a aldeia-alvo.
  * @param config - Configurações do assistente de saque.
+ * @see https://github.com/ferreira-tb/ares/issues/68
+ * @see https://github.com/ferreira-tb/ares/issues/69
  */
 async function filterTemplates(info: PlunderVillageInfo, config: ConfigReturnType): Promise<PlunderTemplate[]> {
     // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.
@@ -165,11 +167,12 @@ async function filterTemplates(info: PlunderVillageInfo, config: ConfigReturnTyp
 
     const resources = info.res.total;
     for (const template of allTemplates.values()) {
-        // @see https://github.com/ferreira-tb/ares/issues/68
         if (
             template.carry === 0 ||
+            template.ok.value !== true ||
             template.type === 'c' ||
-            template.ok.value !== true
+            (template.type === 'a' && info.button.a === null) ||
+            (template.type === 'b' && info.button.b === null)
         ) {
             continue;
         };
