@@ -17,7 +17,7 @@ import type {
     UseCPattern,
     CustomPlunderTemplateType,
     DemolitionTemplateType
-} from '$types/plunder.js';
+} from '$types/plunder';
 
 export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCreationAttributes<PlunderConfig>> implements PlunderConfigType {
     declare readonly id: UserAlias;
