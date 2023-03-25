@@ -1,11 +1,11 @@
 import { DataTypes, Model } from 'sequelize';
 import { isObject } from '@tb-dev/ts-guard';
-import { sequelize } from '$database/database.js';
-import { DatabaseError } from '$electron/error.js';
-import { getPanelWindow } from '$electron/utils/helpers.js';
+import { sequelize } from '$database/database';
+import { DatabaseError } from '$electron/error';
+import { getPanelWindow } from '$electron/utils/helpers';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { Rectangle } from 'electron';
-import type { UserConfigName, UserConfigJSON } from '$types/database.js';
+import type { UserConfigName, UserConfigJSON } from '$types/database';
 
 export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreationAttributes<UserConfig>> {
     declare readonly name: UserConfigName;

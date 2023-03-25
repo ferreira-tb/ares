@@ -1,7 +1,7 @@
 import { isNotNull } from '@tb-dev/ts-guard';
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '$database/database.js';
-import { DatabaseError } from '$electron/error.js';
+import { sequelize } from '$database/database';
+import { DatabaseError } from '$electron/error';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {

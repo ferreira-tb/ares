@@ -1,8 +1,8 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '$electron/database/database.js';
+import { sequelize } from '$electron/database/database';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import type { ErrorLogType, DOMErrorLogType, MainProcessErrorLogType } from '$types/error.js';
-import type { World } from '$types/game.js';
+import type { ErrorLogType, DOMErrorLogType, MainProcessErrorLogType } from '$types/error';
+import type { World } from '$types/game';
 
 export class ErrorLog extends Model<InferAttributes<ErrorLog>, InferCreationAttributes<ErrorLog>> implements ErrorLogType {
     declare readonly id: CreationOptional<number>;

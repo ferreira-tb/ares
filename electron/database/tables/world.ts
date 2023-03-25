@@ -1,8 +1,8 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '$electron/database/database.js';
+import { sequelize } from '$electron/database/database';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world.js';
-import type { World } from '$types/game.js';
+import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world';
+import type { World } from '$types/game';
 
 export class WorldConfig extends Model<InferAttributes<WorldConfig>, InferCreationAttributes<WorldConfig>> implements WorldConfigType {
     declare readonly id: World;
