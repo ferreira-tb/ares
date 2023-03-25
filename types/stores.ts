@@ -27,7 +27,7 @@ export interface AresStore extends AresType {
     /** Indica se há um captcha ativo. */
     readonly captcha: boolean;
     /** Tempo de resposta do servidor do jogo. */
-    readonly responseTime: number;
+    readonly responseTime: number | null;
 };
 export type PiniaAresStoreType = {
     [K in keyof AresStore]: Ref<AresStore[K]>;
@@ -189,6 +189,16 @@ export interface BrowserViewStore {
 
 export type MechanusBrowserViewStoreType = {
     [K in keyof BrowserViewStore]: MechanusRef<BrowserViewStore[K]>;
+};
+
+////// BROWSER
+export interface BrowserStore {
+    /** Indica se o Deimos está pronto para receber comandos. */
+    readonly isDeimosReady: boolean;
+};
+
+export type PiniaBrowserStoreType = {
+    [K in keyof BrowserStore]: Ref<BrowserStore[K]>;
 };
 
 ////// PAINEL

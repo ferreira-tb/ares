@@ -30,7 +30,7 @@ export function setDeimosEvents() {
     let deimos: string | null = null;
 
     // Indica que o script `deimos.js` foi completamente carregado na view.
-    ipcMain.on('script-tag-is-ready', (e) => e.sender.send('get-game-data'));
+    ipcMain.on('deimos-tag-is-ready', (e) => e.sender.send('get-game-data'));
 
     // Retorna o conteúdo do arquivo `deimos.js`.
     ipcMain.handle('get-deimos-file', async () => {

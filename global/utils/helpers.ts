@@ -1,27 +1,9 @@
-import { assertString, isPositiveInteger, isInteger } from '@tb-dev/ts-guard';
-import type { UserAlias } from '$types/electron.js';
+import { assertString, isInteger } from '@tb-dev/ts-guard';
+import type { UserAlias } from '$types/electron';
 
 /** Calcula distância em campos entre duas coordenadas. */
 export function calcDistance(originX: number, originY: number, destX: number, destY: number) {
     return Math.sqrt(((destX - originX) ** 2) + ((destY - originY) ** 2));
-};
-
-/** Retorna o tempo de resposta do servidor. */
-export function getResponseTime() {
-    const navigationTiming = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-    return Math.ceil(navigationTiming.responseEnd - navigationTiming.fetchStart);
-};
-
-/**
- * Cria um breve atraso tendo como base o tempo de resposta do servidor.
- * @param extra Tempo adicional (em milisegundos).
- */
-export function wait(extra?: number) {
-    let time = getResponseTime();
-    if (time <= 0) time = 500;
-    if (isPositiveInteger(extra)) time += extra;
-    
-    return new Promise<void>((resolve) => setTimeout(resolve, time));
 };
 
 /** Gera um número inteiro entre dois outros. */

@@ -24,12 +24,15 @@ const mainWindowMenu = ref<HTMLElement | null>(null);
 const { width } = useElementSize(mainWindowMenu);
 const menuWidth = computed(() => `${width.value - 80}px`);
 
-const responseTime = ref<number>(0);
+const responseTime = ref<number | null>(null);
 responseTime.value = await ipcInvoke('get-response-time');
 
 const responseTimeTagType = computed(() => {
-    if (responseTime.value <= 200) return 'success';
-    if (responseTime.value <= 1000) return 'warning';
+    if (responseTime.value) {
+        if (responseTime.value <= 250) return 'success';
+        if (responseTime.value <= 1000) return 'warning';
+    };
+
     return 'error';
 });
 
@@ -83,7 +86,7 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
 
         <div class="response-time-tag">
             <Transition name="tb-fade" mode="out-in">
-                <div v-if="responseTime > 0" class="tag-wrapper" :key="responseTimeTagType">
+                <div v-if="responseTime" class="tag-wrapper" :key="responseTimeTagType">
                     <NTag round :type="responseTimeTagType" size="small">
                         {{ `${responseTime}ms` }}
                     </NTag>

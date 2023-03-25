@@ -147,3 +147,18 @@ export type PremiumExchangeGraphResourceData = {
     readonly details: ReadonlyArray<{ res_type: Resources }>;
     readonly label: ResourcesPTBR;
 };
+
+export interface RawTiming {
+    readonly added_server_time: number;
+    readonly initial_server_time: number;
+    readonly is_ready: boolean;
+    readonly offset_from_server: number;
+    readonly offset_to_server: number;
+    readonly paused: boolean;
+    readonly tick_interval: number;
+
+    getCurrentServerTime(): number;
+    getElapsedTimeSinceData(): number;
+    getElapsedTimeSinceLoad(): number;
+    getReturnTimeFromServer(): number;
+};

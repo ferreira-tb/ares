@@ -138,3 +138,13 @@ export interface TribalWarsGameDataType {
         readonly maxStorage: number | null;
     };
 };
+
+export interface TribalWarsTimingType {
+    readonly addedServerTime: number;
+    readonly initialServerTime: number;
+    readonly isReady: boolean;
+    readonly offsetFromServer: number;
+    readonly offsetToServer: number;
+    readonly paused: boolean;
+    readonly tickInterval: number;
+};
