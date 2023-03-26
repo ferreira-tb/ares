@@ -3,7 +3,7 @@ import { watchEffect } from 'vue';
 import { assertElement } from '@tb-dev/ts-guard-dom';
 import { usePlunderConfigStore } from '$vue/stores/plunder';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
-import { queryVillagesInfo, targets } from '$lib/plunder/villages';
+import { queryTargetsInfo, targets } from '$lib/plunder/villages';
 import { queryAvailableUnits } from '$lib/plunder/units';
 import { PlunderAttackWithLoot } from '$lib/plunder/resources';
 import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } from '$lib/plunder/attack';
@@ -22,7 +22,7 @@ const plunderList = document.queryAndAssert('#plunder_list:has(tr[id^="village"]
 
 // Reune informações necessárias para o funcionamento do Plunder.
 await queryTemplateData();
-queryVillagesInfo();
+queryTargetsInfo();
 
 watchEffect(() => {
     // Interrompe qualquer ataque em andamento.

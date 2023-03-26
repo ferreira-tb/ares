@@ -54,7 +54,7 @@ const eventTarget = new EventTarget();
 /** Mapa com as informações sobre cada aldeia da tabela. */
 export const targets: Map<string, PlunderTargetInfo> = new Map();
 
-export function queryVillagesInfo() {
+export function queryTargetsInfo() {
     // Desconecta qualquer observer que esteja ativo.
     eventTarget.dispatchEvent(new Event('stop'));
 
@@ -89,7 +89,7 @@ export function queryVillagesInfo() {
     // Dispara a função novamente caso surjam alterações na tabela.
     const plunderList = document.queryAndAssert<HTMLTableElement>('#plunder_list');
     const options = { subtree: true, childList: true };
-    const observer = useMutationObserver(plunderList, () => queryVillagesInfo(), options);
+    const observer = useMutationObserver(plunderList, () => queryTargetsInfo(), options);
 
     // Caso a função seja chamada novamente, desconecta o observer ativo.
     useEventListener(eventTarget, 'stop', () => observer.stop(), { once: true });
