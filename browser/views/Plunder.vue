@@ -12,6 +12,7 @@ import { destroyWall } from '$lib/plunder/wall';
 import { openPlace } from '$lib/plunder/place';
 import { PlunderError } from '$browser/error';
 import { ipcSend, ipcInvoke } from '$global/ipc';
+import { generateRandomDelay } from '$global/utils/helpers';
 import Reload from '$browser/components/plunder/Reload.vue';
 
 const config = usePlunderConfigStore();
@@ -113,6 +114,10 @@ async function handleAttack(): Promise<void> {
             return handleAttack().catch(PlunderError.catch);
         };
     };
+
+    // Caso, em toda tabela, não haja aldeia adequada para envio do ataque, verifica se há mais páginas.
+    // Em caso positivo, navega para a próxima após um breve delay.
+    setTimeout(() => console.log(config.pageDelay), generateRandomDelay(config.pageDelay, 200));
 };
 </script>
 

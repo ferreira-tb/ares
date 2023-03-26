@@ -70,6 +70,8 @@ export type PlunderConfigType = {
     plunderedResourcesRatio: number;
     /** ID do grupo que será utilizado para atacar. */
     plunderGroupID: number | null;
+    /** Delay médio entre cada troca de página. */
+    pageDelay: number;
 
     /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
     blindAttackPattern: BlindAttackPattern;

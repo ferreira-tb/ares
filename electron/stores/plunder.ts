@@ -74,6 +74,14 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         return refOptions;
     };
 
+    const pageDelayValidator = (): MechanusRefOptions<number> => {
+        const refOptions = { ...positiveIntegerRef };
+        refOptions.validator = (value: unknown): value is number => {
+            return isPositiveInteger(value) && value >= 1000 && value <= 10000;
+        };
+        return refOptions;
+    };
+
     const active = ref<boolean>(false, booleanRef);
 
     const ignoreWall = ref<boolean>(false, booleanRef);
@@ -93,6 +101,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const ignoreOlderThan = ref<number>(10, positiveIntegerRef);
     const plunderedResourcesRatio = ref<number>(1, ratioValidator());
     const plunderGroupID = ref<number | null>(null, positiveIntegerOrNullRef);
+    const pageDelay = ref<number>(2000, pageDelayValidator());
 
     const blindAttackPattern = ref<BlindAttackPattern>('smaller', arrayIncludesRef(blindAttackPatterns));
     const useCPattern = ref<UseCPattern>('normal', arrayIncludesRef(useCPatterns));
@@ -116,6 +125,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         ignoreOlderThan,
         plunderedResourcesRatio,
         plunderGroupID,
+        pageDelay,
 
         blindAttackPattern,
         useCPattern,
