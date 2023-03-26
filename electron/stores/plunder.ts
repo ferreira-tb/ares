@@ -30,8 +30,8 @@ export function definePlunderStore(mechanus: Mechanus) {
 };
 
 // Patterns.
-export const blindAttackPatterns: BlindAttackPattern[] = ['smaller', 'bigger'];
-export const useCPatterns: UseCPattern[] = ['normal', 'only'];
+const blindAttackPatterns: BlindAttackPattern[] = ['smaller', 'bigger'];
+const useCPatterns: UseCPattern[] = ['normal', 'only'];
 
 export function definePlunderConfigStore(mechanus: Mechanus) {
     const attackDelayValidator = (): MechanusRefOptions<number> => {
