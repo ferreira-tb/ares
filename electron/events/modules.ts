@@ -1,15 +1,24 @@
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
-import { isObject } from '@tb-dev/ts-guard';
 import { isUserAlias } from '$electron/utils/guards';
-import { useCacheStore, useBrowserViewStore, DemolitionTemplate, CustomPlunderTemplate } from '$interface/index';
 import { showErrorLog, showDemolitionConfig, showCustomPlunderTemplate } from '$electron/app/modules';
 import type { UserAlias } from '$types/electron';
 import type { CustomPlunderTemplateType, DemolitionTemplateType } from '$types/plunder';
 
+import {
+    useCacheStore,
+    usePlunderCacheStore,
+    useBrowserViewStore,
+    DemolitionTemplate,
+    CustomPlunderTemplate
+} from '$interface/index';
+
 export function setModuleEvents() {
     const cacheStore = useCacheStore();
+    const plunderCacheStore = usePlunderCacheStore();
     const browserViewStore = useBrowserViewStore();
+
+    const { demolitionTroops } = storeToRefs(plunderCacheStore);
     const { allWebContents } = storeToRefs(browserViewStore);
 
     //////// INICIALIZAÇÃO
@@ -23,19 +32,18 @@ export function setModuleEvents() {
         alias ??= cacheStore.userAlias;
         if (!isUserAlias(alias)) return null;
 
-        let demolitionTroops: DemolitionTemplateType | null = cacheStore.demolitionTroops;
-        if (!isObject(demolitionTroops) || demolitionTroops.alias !== alias) {
-            demolitionTroops = await DemolitionTemplate.getDemolitionTroopsConfig(alias);
-            if (alias === cacheStore.userAlias) cacheStore.demolitionTroops = demolitionTroops;
+        let troops = demolitionTroops.value;
+        if (!troops || troops.alias !== alias) {
+            troops = await DemolitionTemplate.getDemolitionTroopsConfig(alias);
+            if (alias === cacheStore.userAlias) demolitionTroops.value = troops;
         };
-        
-        return demolitionTroops;
+        return troops;
     });
 
     ipcMain.handle('save-demolition-troops-config', async (_e, template: DemolitionTemplateType): Promise<boolean> => {
         const status = await DemolitionTemplate.saveDemolitionTroopsConfig(template);
         if (status === true && template.alias === cacheStore.userAlias) {
-            cacheStore.demolitionTroops = template;
+            demolitionTroops.value = template;
         };
         return status;
     });
@@ -43,7 +51,7 @@ export function setModuleEvents() {
     ipcMain.handle('destroy-demolition-troops-config', async (_e, alias: UserAlias): Promise<boolean> => {
         const status = await DemolitionTemplate.destroyDemolitionTroopsConfig(alias);
         if (status === true && alias === cacheStore.userAlias) {
-            cacheStore.demolitionTroops = null;
+            demolitionTroops.value = null;
         };
         return status;
     });

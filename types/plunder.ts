@@ -98,6 +98,29 @@ export type PlunderHistoryType = {
     total: PlunderAttackDetails;
 };
 
+export type PlunderPage = {
+    /** Número da página. */
+    readonly page: number;
+    /** URL da página. */
+    readonly url: string;
+    /** Indica se o Plunder já enviou comandos a partir dessa página. */
+    readonly done: boolean;
+};
+
+export type PlunderCurrentVillage = {
+    /** ID da aldeia. */
+    readonly id: number;
+    /** Lista de páginas. */
+    readonly pages: PlunderPage[];
+};
+
+export type PlunderCacheType = {
+    /** Aldeia atual. */
+    readonly currentVillage: PlunderCurrentVillage | null;
+    /** Modelos usados no assistente de saque para demolição de muralhas. */
+    readonly demolitionTroops: DemolitionTemplateType | null;
+};
+
 export type PlunderAttackDetails = {
     wood: number;
     stone: number;

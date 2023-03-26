@@ -1,7 +1,6 @@
 import { ref } from 'mechanus';
 import { isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
 import type { WallLevel } from '$types/game';
-import type { BlindAttackPattern, UseCPattern } from '$types/plunder';
 import type { Mechanus, MechanusRefOptions } from 'mechanus';
 
 import {
@@ -11,13 +10,22 @@ import {
     positiveNumberRef,
     arrayIncludesRef,
     wallLevelRef,
-    positiveIntegerOrNullRef
+    positiveIntegerOrNullRef,
+    objectOrNullRef
 } from '$electron/utils/mechanus';
+
+import type {
+    BlindAttackPattern,
+    UseCPattern,
+    PlunderCurrentVillage,
+    DemolitionTemplateType
+} from '$types/plunder';
 
 import type {
     MechanusPlunderStoreType,
     MechanusPlunderConfigStoreType,
-    MechanusPlunderHistoryStoreType
+    MechanusPlunderHistoryStoreType,
+    MechanusPlunderCacheStoreType
 } from '$types/stores';
 
 export function definePlunderStore(mechanus: Mechanus) {
@@ -137,4 +145,11 @@ export function setPlunderHistoryStores(mechanus: Mechanus) {
         useLastPlunderHistoryStore,
         useTotalPlunderHistoryStore
     };
+};
+
+export function definePlunderCacheStore(mechanus: Mechanus) {
+    return mechanus.define('plunderCache', {
+        currentVillage: ref<PlunderCurrentVillage | null>(null, objectOrNullRef<PlunderCurrentVillage>()),
+        demolitionTroops: ref<DemolitionTemplateType | null>(null, objectOrNullRef<DemolitionTemplateType>())
+    } satisfies MechanusPlunderCacheStoreType);
 };
