@@ -4,7 +4,7 @@ import { isObject } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
 import { usePlunderConfigStore } from '$vue/stores/plunder';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
-import { queryVillagesInfo, villagesInfo } from '$lib/plunder/villages';
+import { queryVillagesInfo, targets } from '$lib/plunder/villages';
 import { queryAvailableUnits } from '$lib/plunder/units';
 import { PlunderAttackWithLoot } from '$lib/plunder/resources';
 import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } from '$lib/plunder/attack';
@@ -43,19 +43,19 @@ async function handleAttack(): Promise<void> {
         const style = village.getAttribute('style') ?? '';
         if (/display:\s*none/.test(style)) {
             village.remove();
-            villagesInfo.delete(id);
+            targets.delete(id);
             continue;
         };
 
         // Ignora caso a aldeia já esteja sob ataque.
         const attackIcon = village.querySelector('img[src*="attack.png" i]');
         if (attackIcon !== null) {
-            villagesInfo.delete(id);
+            targets.delete(id);
             continue;
         };
 
         /** Informações sobre a aldeia. */
-        const info = villagesInfo.getStrict(id);
+        const info = targets.getStrict(id);
 
         // Ignora caso a aldeia esteja longe demais.
         if (info.distance > config.maxDistance) continue;
@@ -91,7 +91,7 @@ async function handleAttack(): Promise<void> {
 
             return prepareAttack(plunderAttack, attackButton)
                 .then(() => best.reset())
-                .then(() => villagesInfo.delete(id))
+                .then(() => targets.delete(id))
                 .then(() => village.remove())
                 .then(() => handleAttack())
                 .catch(PlunderError.catch);
@@ -104,7 +104,7 @@ async function handleAttack(): Promise<void> {
             };
 
             ipcSend('plunder-attack-sent', plunderAttack);
-            villagesInfo.delete(id);
+            targets.delete(id);
             village.remove();
             
             return handleAttack().catch(PlunderError.catch);

@@ -6,9 +6,9 @@ import { sendAttackFromPlace } from '$lib/plunder/attack';
 import { PlunderError } from '$browser/error';
 import { PlunderAttackWithLoot } from '$lib/plunder/resources';
 import type { DemolitionTroops, StringWallLevel } from '$types/game';
-import type { PlunderVillageInfo } from '$lib/plunder/villages';
+import type { PlunderTargetInfo } from '$lib/plunder/villages';
 
-export async function destroyWall(info: PlunderVillageInfo): Promise<boolean> {
+export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
     try {
         // Não faz nada se a muralha não existir.
         if (info.wallLevel === 0) return true;

@@ -8,7 +8,7 @@ import { assertFarmUnit } from '$global/utils/guards';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke } from '$global/ipc';
 import type { FarmUnits, FarmUnitsAmount, UnitAmount } from '$types/game';
-import type { PlunderVillageInfo } from '$lib/plunder/villages';
+import type { PlunderTargetInfo } from '$lib/plunder/villages';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
 
@@ -155,7 +155,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * @see https://github.com/ferreira-tb/ares/issues/68
  * @see https://github.com/ferreira-tb/ares/issues/69
  */
-async function filterTemplates(info: PlunderVillageInfo, config: ConfigReturnType): Promise<PlunderTemplate[]> {
+async function filterTemplates(info: PlunderTargetInfo, config: ConfigReturnType): Promise<PlunderTemplate[]> {
     // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.
     // Os modelos com capacidade de carga maior que a quantidade de recursos são colocados no grupo `bigger`.
     // Os demais são colocados no grupo `smaller`.
@@ -197,7 +197,7 @@ async function filterTemplates(info: PlunderVillageInfo, config: ConfigReturnTyp
     return [...smaller, ...bigger];
 };
 
-export async function pickBestTemplate(info: PlunderVillageInfo): Promise<PlunderTemplate | null> {
+export async function pickBestTemplate(info: PlunderTargetInfo): Promise<PlunderTemplate | null> {
     const config = usePlunderConfigStore();
 
     if (config.useC === true) {
@@ -223,7 +223,7 @@ export async function pickBestTemplate(info: PlunderVillageInfo): Promise<Plunde
     return templates.reduce((prev, curr) => prev.carry > curr.carry ? prev : curr);
 };
 
-async function getTemplateC(info: PlunderVillageInfo): Promise<PlunderTemplate | null> {
+async function getTemplateC(info: PlunderTargetInfo): Promise<PlunderTemplate | null> {
     try {
         assertElement(info.button.c, 'Não foi possível encontrar o botão de ataque do modelo C.');
         const json = info.button.c.getAttributeStrict('data-units-forecast');
