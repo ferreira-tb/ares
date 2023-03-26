@@ -1,4 +1,3 @@
-import { isNotNull } from '@tb-dev/ts-guard';
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$database/database';
 import { DatabaseError } from '$electron/error';
@@ -14,7 +13,7 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
             await sequelize.transaction(async (transaction) => {
                 const name = encodeURIComponent(playerName);
                 const user = await User.findOne({ where: { name }, transaction });
-                if (isNotNull(user)) return;
+                if (user) return;
                 await User.create({ name }, { transaction });
             });
             

@@ -5,6 +5,7 @@ import { ErrorLog, DOMErrorLog, MainProcessErrorLog } from '$tables/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$tables/plunder';
 import { User } from '$tables/user';
 import { WorldConfig, WorldUnit } from '$tables/world';
+import { VillageGroups } from '$tables/groups';
 
 import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores } from '$stores/plunder';
 import { defineAresStore } from '$stores/ares';
@@ -52,6 +53,8 @@ const aliasArgs = [
     usePlunderConfigStore,
     useLastPlunderHistoryStore,
     useTotalPlunderHistoryStore,
+
+    VillageGroups,
     useGroupsStore
 ] as const;
 
@@ -78,5 +81,6 @@ export {
     DemolitionTemplate,
     User,
     WorldConfig,
-    WorldUnit
+    WorldUnit,
+    VillageGroups
 };
