@@ -66,7 +66,7 @@ async function handleAttack(): Promise<void> {
         // Essa opção deve estar sempre antes de `ignoreWall`.
         // Isso para que a aldeia seja ignorada caso a muralha não seja destruída e, claro, `ignoreWall` esteja ativado.
         if (
-            config.destroyWall === true &&
+            config.destroyWall &&
             info.wallLevel >= config.wallLevelToDestroy &&
             info.distance <= config.destroyWallMaxDistance
         ) {
@@ -97,8 +97,8 @@ async function handleAttack(): Promise<void> {
 
         } else {
             await openPlace(info.button.place);
-            const status = await sendAttackFromPlace(best.units);
-            if (status === false) {
+            const sent = await sendAttackFromPlace(best.units);
+            if (!sent) {
                 throw new PlunderError(`O ataque usando o modelo ${best.type.toUpperCase()} falhou.`);
             };
 
