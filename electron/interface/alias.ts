@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import { MessageChannelMain } from 'electron';
-import { isObject, assertInstanceOf } from '@tb-dev/ts-guard';
+import { assertInstanceOf } from '@tb-dev/ts-guard';
 import { storeToRefs } from 'mechanus';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
@@ -71,7 +71,7 @@ async function patchAllPlunderStoresState(
 
     // Configurações do assistente de saque.
     const plunderConfig = (await PlunderConfig.findByPk(alias))?.toJSON();
-    if (isObject(plunderConfig)) {
+    if (plunderConfig) {
         for (const [key, value] of Object.entries(plunderConfig)) {
             if (key in plunderConfigStore) {
                 Reflect.set(plunderConfigStore, key, value);
@@ -84,9 +84,9 @@ async function patchAllPlunderStoresState(
 
     // Histórico do assistente de saque.
     const plunderHistory = (await PlunderHistory.findByPk(alias))?.toJSON();
-    if (isObject(plunderHistory)) {
+    if (plunderHistory) {
         for (const [key, value] of Object.entries(plunderHistory) as [keyof PlunderHistoryType, PlunderAttackDetails][]) {
-            if (!isObject(value)) continue;
+            if (!value) continue;
 
             if (key === 'last') {
                 for (const [innerKey, innerValue] of Object.entries(value)) {
@@ -106,7 +106,7 @@ async function patchAllPlunderStoresState(
 
         // Se o Plunder estiver ativo para o alias atual, atualiza o painel com o histórico de recursos.
         // Isso permite que ele continue de onde parou.
-        if (isObject(plunderConfig) && plunderConfig.active === true) {
+        if (plunderConfig && plunderConfig.active === true) {
             panelWindow.webContents.send('patch-panel-plunder-history', plunderHistory);
         };
     };

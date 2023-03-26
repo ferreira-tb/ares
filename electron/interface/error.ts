@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { app, dialog, BrowserWindow } from 'electron';
-import { isInstanceOf, isString, toNull } from '@tb-dev/ts-guard';
+import { isString, toNull } from '@tb-dev/ts-guard';
 import { sequelize } from '$database/database';
 import { getActiveModule } from '$electron/app/modules';
 import type { useAresStore } from '$interface/index';
@@ -14,7 +14,7 @@ export function catchError(
 ) {
     return async function (err: unknown) {
         try {
-            if (isInstanceOf(err, Error)) {
+            if (err instanceof Error) {
                 const errorLog: Omit<MainProcessErrorLogType, 'id' | 'pending'> = {
                     name: err.name,
                     message: err.message,
@@ -30,14 +30,14 @@ export function catchError(
                 await sequelize.transaction(async (transaction) => {
                     const newRow = await MainProcessErrorLog.create(errorLog, { transaction });
                     const errorModule = getActiveModule('error-log');
-                    if (isInstanceOf(errorModule, BrowserWindow)) {
+                    if (errorModule instanceof BrowserWindow) {
                         errorModule.webContents.send('main-process-error-log-updated', newRow.toJSON());
                     };
                 });
             };
 
         } catch (anotherErr) {
-            if (isInstanceOf(anotherErr, Error)) {
+            if (anotherErr instanceof Error) {
                 try {
                     // Gera um arquivo de log com a data e a pilha de erros.
                     const date = new Date().toLocaleString('pt-br');

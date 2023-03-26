@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import { MessageChannelMain } from 'electron';
-import { isObject, isKeyOf, assertObject } from '@tb-dev/ts-guard';
+import { isKeyOf, assertObject } from '@tb-dev/ts-guard';
 import { WorldPatchError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { worldConfigURL, worldUnitURL } from '$electron/utils/constants';
@@ -49,7 +49,7 @@ async function patchWorldConfigStoreState(
         const worldConfigStore = useWorldConfigStore();
 
         let worldConfig = (await WorldConfig.findByPk(world))?.toJSON();
-        if (!isObject(worldConfig)) {
+        if (!worldConfig) {
             // Se não houver configurações para o mundo atual, cria um novo registro.
             const state = await new Promise<WorldConfigType>(async (resolve, reject) => {
                 const url = new URL(worldConfigURL(world));
@@ -100,7 +100,7 @@ async function patchWorldUnitStoresState(
 ) {
     try {
         let worldUnit = (await WorldUnit.findByPk(world))?.toJSON();
-        if (!isObject(worldUnit)) {
+        if (!worldUnit) {
             // Se não houver informações sobre as unidades do mundo atual, cria um novo registro.
             const state = await new Promise<WorldUnitType>(async (resolve, reject) => {
                 const url = new URL(worldUnitURL(world));
@@ -133,7 +133,7 @@ async function patchWorldUnitStoresState(
 
         for (const [key, value] of Object.entries(worldUnit) as [keyof WorldUnitType, UnitDetails | null][]) {
             // Em mundos sem arqueiros, as propriedades `archer` e `marcher` são `null`.
-            if (!isObject(value)) continue;
+            if (!value) continue;
             // A propriedade `id` existe no banco de dados, mas não na store.
             if (!worldUnitsMap.has(key)) continue;
     
