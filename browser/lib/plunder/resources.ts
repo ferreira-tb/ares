@@ -2,7 +2,7 @@ import { assertInteger } from '@tb-dev/ts-guard';
 import { resources } from '$global/utils/constants';
 import { PlunderAttack } from '$lib/plunder/attack';
 import { usePlunderConfigStore } from '$vue/stores/plunder';
-import type { PlunderTargetInfo } from '$lib/plunder/villages';
+import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 export class PlunderAttackWithLoot extends PlunderAttack {
     wood: number;

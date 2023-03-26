@@ -8,7 +8,7 @@ import { assertFarmUnit } from '$global/utils/guards';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke } from '$global/ipc';
 import type { FarmUnits, FarmUnitsAmount, UnitAmount } from '$types/game';
-import type { PlunderTargetInfo } from '$lib/plunder/villages';
+import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
 
@@ -168,11 +168,11 @@ async function filterTemplates(info: PlunderTargetInfo, config: ConfigReturnType
     const resources = info.res.total;
     for (const template of allTemplates.values()) {
         if (
+            !template.ok.value ||
             template.carry === 0 ||
-            template.ok.value !== true ||
             template.type === 'c' ||
-            (template.type === 'a' && info.button.a === null) ||
-            (template.type === 'b' && info.button.b === null)
+            (template.type === 'a' && !info.button.a) ||
+            (template.type === 'b' && !info.button.b)
         ) {
             continue;
         };
@@ -185,7 +185,7 @@ async function filterTemplates(info: PlunderTargetInfo, config: ConfigReturnType
     };
 
     // Retorna sem filtrar se a opção `blindAttack` estiver ativada.
-    if (config.blindAttack === true && info.spyInfo === false) {
+    if (config.blindAttack && !info.spyInfo) {
         return [...smaller, ...bigger];
     };
 
@@ -200,18 +200,18 @@ async function filterTemplates(info: PlunderTargetInfo, config: ConfigReturnType
 export async function pickBestTemplate(info: PlunderTargetInfo): Promise<PlunderTemplate | null> {
     const config = usePlunderConfigStore();
 
-    if (config.useC === true) {
+    if (config.useC) {
         const templateC = await getTemplateC(info);
-        if (templateC !== null) return templateC;
-        if (templateC === null && config.useCPattern === 'only') return null;
+        if (templateC) return templateC;
+        if (!templateC && config.useCPattern === 'only') return null;
     };
 
     const templates = await filterTemplates(info, config);
     if (templates.length === 0) return null;
 
     if (
-        info.spyInfo === false &&
-        config.blindAttack === true &&
+        !info.spyInfo &&
+        config.blindAttack &&
         config.blindAttackPattern === 'smaller'
     ) {
         // Se a opção `blindAttack` estiver ativada e o padrão de seleção for `smaller`,
@@ -247,7 +247,7 @@ async function getTemplateC(info: PlunderTargetInfo): Promise<PlunderTemplate | 
         templateC.carry = carry;
 
         await nextTick();
-        return templateC.ok.value === true ? templateC : null;
+        return templateC.ok.value ? templateC : null;
 
     } catch (err) {
         if (err instanceof DOMAssertionError) throw err;

@@ -168,7 +168,7 @@ function queryResourcesField(row: Element, info: PlunderTargetInfo): Element | n
  * @returns O nível da muralha.
  */
 function queryWallLevel(resourcesField: Element | null, info: PlunderTargetInfo) {
-    if (resourcesField === null) return;
+    if (!resourcesField) return;
 
     const wallLevelField = resourcesField.nextElementSibling;
     assertElement(wallLevelField, 'O campo com o nível da muralha não foi encontrado');

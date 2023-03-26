@@ -6,7 +6,7 @@ import { sendAttackFromPlace } from '$lib/plunder/attack';
 import { PlunderError } from '$browser/error';
 import { PlunderAttackWithLoot } from '$lib/plunder/resources';
 import type { DemolitionTroops, StringWallLevel } from '$types/game';
-import type { PlunderTargetInfo } from '$lib/plunder/villages';
+import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
     try {
@@ -26,10 +26,10 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
         };
 
         await openPlace(info.button.place);
-        const status = await sendAttackFromPlace(neededUnits);
+        const sent = await sendAttackFromPlace(neededUnits);
 
         // Se o ataque foi enviado com sucesso, atualiza o histórico.
-        if (status === true) {
+        if (sent) {
             const carry = await ipcInvoke('calc-carry-capacity', neededUnits);
             assertInteger(carry, 'Não foi possível calcular a capacidade de carga.');
             const attack = new PlunderAttackWithLoot(info, carry);
@@ -37,7 +37,7 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
             ipcSend('plunder-attack-sent', attack);
         };
 
-        return status;
+        return sent;
 
     } catch (err) {
         PlunderError.catch(err);
