@@ -1,5 +1,5 @@
 import { ipcMain, BrowserWindow } from 'electron';
-import { assertObject, assertInteger, isKeyOf, isObject, isInteger } from '@tb-dev/ts-guard';
+import { assertObject, assertInteger, isKeyOf, isInteger } from '@tb-dev/ts-guard';
 import { storeToRefs } from 'mechanus';
 import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards';
 import { sequelize } from '$database/database';
@@ -117,9 +117,7 @@ export function setPlunderEvents() {
 
     ipcMain.handle('get-last-plunder-attack-details', async (): Promise<PlunderAttackDetails | null> => {
         try {
-            const history = await PlunderHistory.getHistoryAsJSON(cacheStore);
-            if (!isObject(history)) return null;
-            return history.last;
+            return (await PlunderHistory.getHistoryAsJSON(cacheStore))?.last ?? null;
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
@@ -128,9 +126,7 @@ export function setPlunderEvents() {
 
     ipcMain.handle('get-total-plunder-attack-details', async (): Promise<PlunderAttackDetails | null> => {
         try {
-            const history = await PlunderHistory.getHistoryAsJSON(cacheStore);
-            if (!isObject(history)) return null;
-            return history.total;
+            return (await PlunderHistory.getHistoryAsJSON(cacheStore))?.total ?? null;
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
@@ -147,7 +143,7 @@ export function setPlunderEvents() {
                 worldUnits = extractWorldUnitsFromMap(worldUnitsMap);
             } else {
                 const worldUnitsRow = await WorldUnit.findByPk(world);
-                if (!isObject(worldUnitsRow)) return null;
+                if (!worldUnitsRow) return null;
                 worldUnits = worldUnitsRow.toJSON();
             };
             
