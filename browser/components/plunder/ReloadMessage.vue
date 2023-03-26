@@ -19,7 +19,7 @@ const autoReloadMessage = computed(() => {
     if (nextAutoReload.value === null) return null;
     const date = nextAutoReload.value.toLocaleDateString('pt-br', { year: 'numeric', month: '2-digit', day: '2-digit' });
     const time = nextAutoReload.value.toLocaleTimeString('pt-br', { hour: '2-digit', minute: '2-digit' });
-    return `A página será recarregada automaticamente em ${date} às ${time}`;
+    return `A página será atualizada automaticamente em ${date} às ${time}`;
 });
 </script>
 
