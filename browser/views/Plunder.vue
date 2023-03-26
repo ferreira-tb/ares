@@ -5,6 +5,7 @@ import { usePlunderConfigStore } from '$vue/stores/plunder';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
 import { queryTargetsInfo, targets } from '$browser/lib/plunder/targets';
 import { queryAvailableUnits } from '$lib/plunder/units';
+import { queryCurrentVillageInfo } from '$lib/plunder/village';
 import { PlunderAttackWithLoot } from '$lib/plunder/resources';
 import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } from '$lib/plunder/attack';
 import { destroyWall } from '$lib/plunder/wall';
@@ -23,6 +24,9 @@ const plunderList = document.queryAndAssert('#plunder_list:has(tr[id^="village"]
 // Reune informações necessárias para o funcionamento do Plunder.
 await queryTemplateData();
 queryTargetsInfo();
+
+// Não é necessário bloquear a execução, visto que não são informações críticas para os primeiros ataques.
+queueMicrotask(() => queryCurrentVillageInfo());
 
 watchEffect(() => {
     // Interrompe qualquer ataque em andamento.

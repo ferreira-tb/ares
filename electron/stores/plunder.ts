@@ -17,7 +17,7 @@ import {
 import type {
     BlindAttackPattern,
     UseCPattern,
-    PlunderCurrentVillage,
+    PlunderCurrentVillageType,
     DemolitionTemplateType
 } from '$types/plunder';
 
@@ -149,7 +149,7 @@ export function setPlunderHistoryStores(mechanus: Mechanus) {
 
 export function definePlunderCacheStore(mechanus: Mechanus) {
     return mechanus.define('plunderCache', {
-        currentVillage: ref<PlunderCurrentVillage | null>(null, objectOrNullRef<PlunderCurrentVillage>()),
+        currentVillage: ref<PlunderCurrentVillageType | null>(null, objectOrNullRef<PlunderCurrentVillageType>()),
         demolitionTroops: ref<DemolitionTemplateType | null>(null, objectOrNullRef<DemolitionTemplateType>())
     } satisfies MechanusPlunderCacheStoreType);
 };

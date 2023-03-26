@@ -5,7 +5,6 @@ import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards';
 import { sequelize } from '$database/database';
 import { MainProcessEventError } from '$electron/error';
 import { getPanelWindow, extractWorldUnitsFromMap } from '$electron/utils/helpers';
-import type { PlunderAttackDetails, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder';
 import type { UnitAmount, World } from '$types/game';
 import type { WorldUnitType } from '$types/world';
 
@@ -16,20 +15,30 @@ import {
     useLastPlunderHistoryStore,
     useTotalPlunderHistoryStore,
     useCacheStore,
+    usePlunderCacheStore,
     useBrowserViewStore,
     WorldUnit,
     worldUnitsMap
 } from '$interface/index';
 
+import type {
+    PlunderAttackDetails,
+    PlunderConfigKeys,
+    PlunderConfigValues,
+    PlunderCurrentVillageType
+} from '$types/plunder';
+
 export function setPlunderEvents() {
     const panelWindow = getPanelWindow();
 
     const cacheStore = useCacheStore();
+    const plunderCacheStore = usePlunderCacheStore();
     const plunderConfigStore = usePlunderConfigStore();
     const lastPlunderHistoryStore = useLastPlunderHistoryStore();
     const totalPlunderHistoryStore = useTotalPlunderHistoryStore();
-
     const browserViewStore = useBrowserViewStore();
+
+    const { currentVillage } = storeToRefs(plunderCacheStore);
     const { allWebContents } = storeToRefs(browserViewStore);
 
     // Verifica se o Plunder está ativo.
@@ -76,6 +85,11 @@ export function setPlunderEvents() {
         } catch (err) {
             MainProcessEventError.catch(err);
         };
+    });
+
+    ipcMain.on('update-plunder-current-village-info', (_e, villageInfo: PlunderCurrentVillageType) => {
+        if (currentVillage.value && currentVillage.value.id === villageInfo.id) return;
+        currentVillage.value = villageInfo;
     });
 
     // Emitido pela view após cada ataque realizado pelo Plunder.

@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { assert, isObject } from '@tb-dev/ts-guard';
+import { assert } from '@tb-dev/ts-guard';
 import { Deimos } from '$deimos/shared/ipc';
 import { useUnitsStore } from '$vue/stores/units';
 import { allUnits } from '$global/utils/constants';
@@ -12,10 +12,10 @@ export async function queryAvailableUnits() {
     const units = await Deimos.invoke('get-current-village-units');
 
     // Se não foi possível obter as unidades a partir do Deimos, tenta obter do DOM.
-    if (!isObject(units)) {
-        queryUnitsRow(unitStore);
-    } else {
+    if (units) {
         unitStore.$patch(units);
+    } else {
+        queryUnitsRow(unitStore);
     };
 
     ipcSend('update-current-village-units', unitStore.raw());
