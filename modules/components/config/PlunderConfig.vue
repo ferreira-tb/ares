@@ -133,7 +133,7 @@ const useCOptions = [
 const plunderGroupOptions = computed(() => {
     const groupsArray = Array.from(groups.value).filter((group) => group.type === 'dynamic');
     const options = groupsArray.map((group) => ({
-        label: group.name,
+        label: decodeURIComponent(group.name),
         value: group.id
     }));
 
