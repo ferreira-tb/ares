@@ -130,7 +130,7 @@ async function patchWorldUnitStoresState(
                 return (await WorldUnit.create({ id: world, ...state }, { transaction })).toJSON();
             });
         };
-    
+
         for (const [key, value] of Object.entries(worldUnit) as [keyof WorldUnitType, UnitDetails | null][]) {
             // Em mundos sem arqueiros, as propriedades `archer` e `marcher` são `null`.
             if (!isObject(value)) continue;

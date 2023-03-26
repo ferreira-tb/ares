@@ -1,13 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
 import { isObject, assertInteger } from '@tb-dev/ts-guard';
-import { sequelize } from '$database/database.js';
+import { sequelize } from '$database/database';
 import { isUserAlias, assertUserAlias, assertWallLevel } from '$electron/utils/guards';
-import { DatabaseError } from '$electron/error.js';
-import { unitsToDestroyWall } from '$electron/utils/constants.js';
+import { DatabaseError } from '$electron/error';
+import { unitsToDestroyWall } from '$electron/utils/constants';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import type { UserAlias } from '$types/electron.js';
+import type { UserAlias } from '$types/electron';
 import type { useCacheStore } from '$interface/index';
-import type { WallLevel, UnitsToDestroyWall } from '$types/game.js';
+import type { WallLevel, UnitsToDestroyWall } from '$types/game';
 
 import type {
     PlunderConfigType,
@@ -17,7 +17,7 @@ import type {
     UseCPattern,
     CustomPlunderTemplateType,
     DemolitionTemplateType
-} from '$types/plunder.js';
+} from '$types/plunder';
 
 export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCreationAttributes<PlunderConfig>> implements PlunderConfigType {
     declare readonly id: UserAlias;

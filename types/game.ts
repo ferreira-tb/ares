@@ -67,8 +67,14 @@ export type Coords = {
 
 export type VillageGroup = {
     readonly id: number;
+    /** Nome do grupo após codificado pela função `encodeURIComponent`. */
     readonly name: string;
     readonly type: 'dynamic' | 'static';
+};
+
+export type VillageGroupsType = {
+    /** Todos os grupos de aldeias referentes a um determinado alias. */
+    readonly allGroups: VillageGroup[];
 };
 
 export interface TribalWarsGameDataType {

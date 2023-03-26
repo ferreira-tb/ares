@@ -14,7 +14,7 @@ export function getVillageGroups(port: MessagePort) {
 
             return {
                 id: groupId,
-                name: groupName,
+                name: encodeURIComponent(groupName),
                 type: groupType
             };
         });
