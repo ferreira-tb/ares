@@ -28,11 +28,11 @@ watchEffect(() => {
     // Interrompe qualquer ataque em andamento.
     attackEventTarget.dispatchEvent(new Event('stop'));
     // Começa a atacar se o Plunder estiver ativado.
-    if (config.active === true) handleAttack();
+    if (config.active) handleAttack();
 });
 
 async function handleAttack(): Promise<void> {
-    if (config.active === false) return;
+    if (!config.active) return;
     await queryAvailableUnits();
 
     // Seleciona todas as aldeias da tabela e itera sobre elas.
@@ -48,7 +48,7 @@ async function handleAttack(): Promise<void> {
 
         // Ignora caso a aldeia já esteja sob ataque.
         const attackIcon = village.querySelector('img[src*="attack.png" i]');
-        if (attackIcon !== null) {
+        if (attackIcon) {
             targets.delete(id);
             continue;
         };
@@ -71,15 +71,15 @@ async function handleAttack(): Promise<void> {
             info.distance <= config.destroyWallMaxDistance
         ) {
             const destroyed = await destroyWall(info);
-            if (destroyed === true) continue;
+            if (destroyed) continue;
         };
 
         // Ignora caso a aldeia tenha muralha e a muralha possua nível superior ao permitido.
-        if (config.ignoreWall === true && info.wallLevel >= config.wallLevelToIgnore) continue;
+        if (config.ignoreWall && info.wallLevel >= config.wallLevelToIgnore) continue;
 
         // Seleciona o modelo mais adequado para o ataque.
         const best = await pickBestTemplate(info);
-        if (best === null) continue;
+        if (!best) continue;
 
         // Informações que serão enviadas ao painel.
         const plunderAttack = new PlunderAttackWithLoot(info, best.carry);
