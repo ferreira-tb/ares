@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue';
-import { isObject } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
 import { usePlunderConfigStore } from '$vue/stores/plunder';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
@@ -16,7 +15,7 @@ import Reload from '$browser/components/plunder/Reload.vue';
 
 const config = usePlunderConfigStore();
 const previousConfig = await ipcInvoke('get-plunder-config');
-if (isObject(previousConfig)) config.$patch(previousConfig);
+if (previousConfig) config.$patch(previousConfig);
 
 /** Tabela do assistente de saque. */
 const plunderList = document.queryAndAssert('#plunder_list:has(tr[id^="village"]) tbody');
