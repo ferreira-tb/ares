@@ -1,8 +1,8 @@
 import { isString, isInteger } from '@tb-dev/ts-guard';
-import { MainProcessError } from '$electron/error.js';
-import { worldRegex, aliasRegex, allowedOriginRegexList } from '$electron/utils/constants.js';
-import type { UserAlias } from '$types/electron.js';
-import type { World, WallLevel } from '$types/game.js';
+import { MainProcessError } from '$electron/error';
+import { worldRegex, aliasRegex, allowedOriginRegexList } from '$electron/utils/constants';
+import type { UserAlias } from '$types/electron';
+import type { World, WallLevel } from '$types/game';
 
 export function isUserAlias(alias: unknown): alias is UserAlias {
     if (!isString(alias)) return false;

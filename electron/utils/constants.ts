@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { join, resolve } from 'path';
-import type { World } from '$types/game.js';
+import type { World } from '$types/game';
 
 // URL
 export const aresURL = 'https://tb.dev.br/ares';
