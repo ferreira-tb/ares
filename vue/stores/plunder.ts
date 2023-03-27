@@ -4,12 +4,9 @@ import type { PlunderConfigType, PlunderAttackDetails, BlindAttackPattern, UseCP
 import type { PiniaPlunderStoreType, PiniaPlunderConfigStoreType, PiniaPlunderHistoryStoreType } from '$types/stores';
 
 export const usePlunderStore = defineStore('plunder', () => {
-    /** Indica se as aldeias sob ataque estão ocultas. */
     const hideAttacked = ref<boolean>(true);
-    /** Página atual. */
     const page = ref<number>(0);
-    /** Quantidade de aldeias por página. */
-    const pageSize = ref<number>(15);
+    const pageSize = ref<number | null>(null);
     const plunderExhausted = ref<boolean>(false);
 
     return {
@@ -41,6 +38,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const ignoreOlderThan = ref<number>(10);
     const plunderedResourcesRatio = ref<number>(1);
     const plunderGroupID = ref<number | null>(null);
+    const pageDelay = ref<number>(2000);
 
     const blindAttackPattern = ref<BlindAttackPattern>('smaller');
     const useCPattern = ref<UseCPattern>('normal');
@@ -64,6 +62,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
             maxDistance: maxDistance.value,
             ignoreOlderThan: ignoreOlderThan.value,
             plunderedResourcesRatio: plunderedResourcesRatio.value,
+            pageDelay: pageDelay.value,
 
             blindAttackPattern: blindAttackPattern.value,
             useCPattern: useCPattern.value,
@@ -90,6 +89,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         maxDistance,
         ignoreOlderThan,
         plunderedResourcesRatio,
+        pageDelay,
 
         blindAttackPattern,
         useCPattern,

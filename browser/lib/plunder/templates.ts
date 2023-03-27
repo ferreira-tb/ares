@@ -1,4 +1,4 @@
-import { computed, nextTick } from 'vue';
+import { computed, nextTick, reactive, ref, toRaw } from 'vue';
 import { ipcRenderer } from 'electron';
 import { assert, isKeyOf, assertInteger, toIntegerStrict, isInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
@@ -8,7 +8,7 @@ import { assertFarmUnit } from '$global/utils/guards';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke } from '$global/ipc';
 import type { FarmUnits, FarmUnitsAmount, UnitAmount } from '$types/game';
-import type { PlunderVillageInfo } from '$lib/plunder/villages';
+import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
 
@@ -24,6 +24,10 @@ class TemplateUnits implements FarmUnitsAmount {
     knight = 0;
     archer = 0;
     marcher = 0;
+
+    constructor() {
+        return reactive(this);
+    };
 };
 
 export class PlunderTemplate {
@@ -41,9 +45,14 @@ export class PlunderTemplate {
     };
 
     /** Capacidade de carga. */
-    carry = 0;
-    /** Indica se há tropas o suficiente para o modelo ser usado. */
+    readonly carry = ref(0);
+    
+    /**
+     * Indica se há tropas o suficiente para o modelo ser usado.
+     * @see https://github.com/ferreira-tb/ares/issues/68
+     */
     readonly ok = computed(() => {
+        if (this.carry.value === 0) return false;
         const unitStore = useUnitsStore();
         for (const [key, value] of Object.entries(this.units) as [FarmUnits, number][]) {
             if (unitStore[key] < value) return false;
@@ -79,6 +88,11 @@ ipcRenderer.on('custom-plunder-template-destroyed', (_e, template: CustomPlunder
     };
 });
 
+/** Retorna uma versão somente leitura do mapa de modelos de saque. */
+export function getAllTemplates() {
+    return allTemplates as ReadonlyMap<string, Readonly<PlunderTemplate>>;
+};
+
 /** Obtêm informações sobre os modelos de saque. */
 export async function queryTemplateData() {
     // Cria os modelos de saque base e os adiciona ao mapa.
@@ -97,7 +111,7 @@ export async function queryTemplateData() {
     parseUnitAmount('a', aFields);
 
     const aCarryField = aRow.queryAndAssert('td:not(:has(input[data-tb-template-a])):not(:has(input[type*="hidden"]))');
-    templateA.carry = aCarryField.parseIntStrict();
+    templateA.carry.value = aCarryField.parseIntStrict();
 
     // Campos do modelo B.
     const bRow = table.queryAndAssert('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
@@ -106,7 +120,7 @@ export async function queryTemplateData() {
     parseUnitAmount('b', bFields);
 
     const bCarryField = bRow.queryAndAssert('td:not(:has(input[data-tb-template-b])):not(:has(input[type*="hidden"]))');
-    templateB.carry = bCarryField.parseIntStrict();
+    templateB.carry.value = bCarryField.parseIntStrict();
 
     // Cria um modelo vazio para o tipo 'C'.
     const templateC = new PlunderTemplate('c');
@@ -152,10 +166,9 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * Se a opção `blindAttack` estiver ativada, todos os modelos com tropas disponíveis são retornados.
  * @param info - Informações sobre a aldeia-alvo.
  * @param config - Configurações do assistente de saque.
- * @see https://github.com/ferreira-tb/ares/issues/68
  * @see https://github.com/ferreira-tb/ares/issues/69
  */
-async function filterTemplates(info: PlunderVillageInfo, config: ConfigReturnType): Promise<PlunderTemplate[]> {
+async function filterTemplates(info: PlunderTargetInfo, config: ConfigReturnType): Promise<PlunderTemplate[]> {
     // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.
     // Os modelos com capacidade de carga maior que a quantidade de recursos são colocados no grupo `bigger`.
     // Os demais são colocados no grupo `smaller`.
@@ -168,16 +181,15 @@ async function filterTemplates(info: PlunderVillageInfo, config: ConfigReturnTyp
     const resources = info.res.total;
     for (const template of allTemplates.values()) {
         if (
-            template.carry === 0 ||
             template.ok.value !== true ||
             template.type === 'c' ||
-            (template.type === 'a' && info.button.a === null) ||
-            (template.type === 'b' && info.button.b === null)
+            (template.type === 'a' && !info.button.a) ||
+            (template.type === 'b' && !info.button.b)
         ) {
             continue;
         };
 
-        if (template.carry > resources) {
+        if (template.carry.value > resources) {
             bigger.push(template);
         } else {
             smaller.push(template);
@@ -185,7 +197,7 @@ async function filterTemplates(info: PlunderVillageInfo, config: ConfigReturnTyp
     };
 
     // Retorna sem filtrar se a opção `blindAttack` estiver ativada.
-    if (config.blindAttack === true && info.spyInfo === false) {
+    if (config.blindAttack && !info.spyInfo) {
         return [...smaller, ...bigger];
     };
 
@@ -193,25 +205,25 @@ async function filterTemplates(info: PlunderVillageInfo, config: ConfigReturnTyp
     // Isso impede que sejam enviadas tropas em excesso para a aldeia-alvo.
     // Quanto menor for a razão, maior a quantidade de tropas sendo enviada desnecessariamente.
     // Não é necessário filtrar os modelos com capacidade de carga menor que a quantidade de recursos, pois eles sempre são válidos.
-    bigger = bigger.filter((template) => resources / template.carry >= config.resourceRatio);
+    bigger = bigger.filter((template) => resources / template.carry.value >= config.resourceRatio);
     return [...smaller, ...bigger];
 };
 
-export async function pickBestTemplate(info: PlunderVillageInfo): Promise<PlunderTemplate | null> {
+export async function pickBestTemplate(info: PlunderTargetInfo): Promise<PlunderTemplate | null> {
     const config = usePlunderConfigStore();
 
-    if (config.useC === true) {
+    if (config.useC) {
         const templateC = await getTemplateC(info);
-        if (templateC !== null) return templateC;
-        if (templateC === null && config.useCPattern === 'only') return null;
+        if (templateC) return templateC;
+        if (!templateC && config.useCPattern === 'only') return null;
     };
 
     const templates = await filterTemplates(info, config);
     if (templates.length === 0) return null;
 
     if (
-        info.spyInfo === false &&
-        config.blindAttack === true &&
+        !info.spyInfo &&
+        config.blindAttack &&
         config.blindAttackPattern === 'smaller'
     ) {
         // Se a opção `blindAttack` estiver ativada e o padrão de seleção for `smaller`,
@@ -223,7 +235,7 @@ export async function pickBestTemplate(info: PlunderVillageInfo): Promise<Plunde
     return templates.reduce((prev, curr) => prev.carry > curr.carry ? prev : curr);
 };
 
-async function getTemplateC(info: PlunderVillageInfo): Promise<PlunderTemplate | null> {
+async function getTemplateC(info: PlunderTargetInfo): Promise<PlunderTemplate | null> {
     try {
         assertElement(info.button.c, 'Não foi possível encontrar o botão de ataque do modelo C.');
         const json = info.button.c.getAttributeStrict('data-units-forecast');
@@ -244,10 +256,10 @@ async function getTemplateC(info: PlunderVillageInfo): Promise<PlunderTemplate |
         // Atualiza a capacidade de carga do modelo C.
         const carry = await ipcInvoke('calc-carry-capacity', templateC.units);
         assertInteger(carry, 'A capacidade de carga do modelo C não é um número inteiro.');
-        templateC.carry = carry;
+        templateC.carry.value = carry;
 
         await nextTick();
-        return templateC.ok.value === true ? templateC : null;
+        return templateC.ok.value ? templateC : null;
 
     } catch (err) {
         if (err instanceof DOMAssertionError) throw err;
@@ -265,9 +277,9 @@ async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType): 
         plunderTemplate.units[unit] = amount;
     };
 
-    const carry = await ipcInvoke('calc-carry-capacity', plunderTemplate.units);
+    const carry = await ipcInvoke('calc-carry-capacity', toRaw(plunderTemplate.units));
     assertInteger(carry, `A capacidade de carga do modelo ${template.type} não é um número inteiro.`);
-    plunderTemplate.carry = carry;
+    plunderTemplate.carry.value = carry;
 
     return plunderTemplate;
 };

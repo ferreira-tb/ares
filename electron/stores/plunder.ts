@@ -1,7 +1,6 @@
 import { ref } from 'mechanus';
 import { isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
 import type { WallLevel } from '$types/game';
-import type { BlindAttackPattern, UseCPattern } from '$types/plunder';
 import type { Mechanus, MechanusRefOptions } from 'mechanus';
 
 import {
@@ -11,27 +10,37 @@ import {
     positiveNumberRef,
     arrayIncludesRef,
     wallLevelRef,
-    positiveIntegerOrNullRef
+    positiveIntegerOrNullRef,
+    objectOrNullRef,
+    integerOrNullRef
 } from '$electron/utils/mechanus';
+
+import type {
+    BlindAttackPattern,
+    UseCPattern,
+    PlunderCurrentVillageType,
+    DemolitionTemplateType
+} from '$types/plunder';
 
 import type {
     MechanusPlunderStoreType,
     MechanusPlunderConfigStoreType,
-    MechanusPlunderHistoryStoreType
+    MechanusPlunderHistoryStoreType,
+    MechanusPlunderCacheStoreType
 } from '$types/stores';
 
 export function definePlunderStore(mechanus: Mechanus) {
     return mechanus.define('plunder', {
         hideAttacked: ref<boolean>(true, booleanRef),
         page: ref<number>(0, integerRef),
-        pageSize: ref<number>(15, integerRef),
+        pageSize: ref<number | null>(null, integerOrNullRef),
         plunderExhausted: ref<boolean>(false, booleanRef)
     } satisfies MechanusPlunderStoreType);
 };
 
 // Patterns.
-export const blindAttackPatterns: BlindAttackPattern[] = ['smaller', 'bigger'];
-export const useCPatterns: UseCPattern[] = ['normal', 'only'];
+const blindAttackPatterns: BlindAttackPattern[] = ['smaller', 'bigger'];
+const useCPatterns: UseCPattern[] = ['normal', 'only'];
 
 export function definePlunderConfigStore(mechanus: Mechanus) {
     const attackDelayValidator = (): MechanusRefOptions<number> => {
@@ -66,6 +75,14 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         return refOptions;
     };
 
+    const pageDelayValidator = (): MechanusRefOptions<number> => {
+        const refOptions = { ...positiveIntegerRef };
+        refOptions.validator = (value: unknown): value is number => {
+            return isPositiveInteger(value) && value >= 1000 && value <= 10000;
+        };
+        return refOptions;
+    };
+
     const active = ref<boolean>(false, booleanRef);
 
     const ignoreWall = ref<boolean>(false, booleanRef);
@@ -85,6 +102,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const ignoreOlderThan = ref<number>(10, positiveIntegerRef);
     const plunderedResourcesRatio = ref<number>(1, ratioValidator());
     const plunderGroupID = ref<number | null>(null, positiveIntegerOrNullRef);
+    const pageDelay = ref<number>(2000, pageDelayValidator());
 
     const blindAttackPattern = ref<BlindAttackPattern>('smaller', arrayIncludesRef(blindAttackPatterns));
     const useCPattern = ref<UseCPattern>('normal', arrayIncludesRef(useCPatterns));
@@ -108,6 +126,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         ignoreOlderThan,
         plunderedResourcesRatio,
         plunderGroupID,
+        pageDelay,
 
         blindAttackPattern,
         useCPattern,
@@ -137,4 +156,11 @@ export function setPlunderHistoryStores(mechanus: Mechanus) {
         useLastPlunderHistoryStore,
         useTotalPlunderHistoryStore
     };
+};
+
+export function definePlunderCacheStore(mechanus: Mechanus) {
+    return mechanus.define('plunderCache', {
+        currentVillage: ref<PlunderCurrentVillageType | null>(null, objectOrNullRef<PlunderCurrentVillageType>()),
+        demolitionTroops: ref<DemolitionTemplateType | null>(null, objectOrNullRef<DemolitionTemplateType>())
+    } satisfies MechanusPlunderCacheStoreType);
 };

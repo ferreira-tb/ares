@@ -4,6 +4,7 @@ import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '$browser/router/router';
+import { setNavigationGuards } from '$browser/router/guards';
 import { setBrowserEvents } from '$browser/events/index';
 import { BrowserError } from '$browser/error';
 import Browser from '$browser/Browser.vue';
@@ -21,6 +22,7 @@ router.onError(BrowserError.catch);
 
 // Eventos.
 setBrowserEvents(pinia);
+setNavigationGuards(router);
 
 window.addEventListener('DOMContentLoaded', () => {
     router.push('/');

@@ -1,4 +1,4 @@
-import { assertString, isInteger } from '@tb-dev/ts-guard';
+import { isInteger } from '@tb-dev/ts-guard';
 import type { UserAlias } from '$types/electron';
 
 /** Calcula distância em campos entre duas coordenadas. */
@@ -19,16 +19,6 @@ export function generateIntegerBetween(min: number, max: number) {
 export function generateRandomDelay(base: number, range?: number) {
     if (!isInteger(range)) range = 50;
     return generateIntegerBetween(base - range, base + range);
-};
-
-export async function* fetchDocuments(urls: string[]) {
-    const parser = new DOMParser();
-    for (const url of urls) {
-        assertString(url, 'A URL é inválida');
-        const response = await fetch(url);
-        const text = await response.text();
-        yield parser.parseFromString(text, 'text/html').documentElement;
-    };
 };
 
 /**

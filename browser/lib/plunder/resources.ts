@@ -2,14 +2,14 @@ import { assertInteger } from '@tb-dev/ts-guard';
 import { resources } from '$global/utils/constants';
 import { PlunderAttack } from '$lib/plunder/attack';
 import { usePlunderConfigStore } from '$vue/stores/plunder';
-import type { PlunderVillageInfo } from '$lib/plunder/villages';
+import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 export class PlunderAttackWithLoot extends PlunderAttack {
     wood: number;
     stone: number;
     iron: number;
 
-    constructor(info: PlunderVillageInfo, carry: number) {
+    constructor(info: PlunderTargetInfo, carry: number) {
         super();
 
         this.wood = info.res.wood;

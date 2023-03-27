@@ -13,7 +13,8 @@ import type {
     PlunderConfigValues,
     CustomPlunderTemplateType,
     DemolitionTemplateType,
-    PlunderConfigType
+    PlunderConfigType,
+    PlunderCurrentVillageType
 } from '$types/plunder';
 
 // Janela
@@ -68,6 +69,8 @@ export async function ipcInvoke(channel: 'get-total-plunder-attack-details'): Pr
 export async function ipcInvoke(channel: 'get-custom-plunder-templates', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
 export async function ipcInvoke(channel: 'save-custom-plunder-template', template: CustomPlunderTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'destroy-custom-plunder-template', template: CustomPlunderTemplateType): Promise<boolean>;
+export async function ipcInvoke(channel: 'navigate-to-next-plunder-page'): Promise<boolean>;
+export async function ipcInvoke(channel: 'get-plunder-cache-village-info'): Promise<PlunderCurrentVillageType | null>;
 
 // Deimos
 export async function ipcInvoke(channel: 'get-deimos-file'): Promise<string | null>;
@@ -122,6 +125,8 @@ export function ipcSend(channel: 'open-custom-plunder-template-window'): void;
 export function ipcSend(channel: 'update-plunder-config', key: PlunderConfigKeys, value: PlunderConfigValues): void;
 export function ipcSend(channel: 'plunder-attack-sent', plunderAttack: PlunderAttack): void;
 export function ipcSend(channel: 'save-plunder-attack-details', details: PlunderAttackDetails): void;
+export function ipcSend(channel: 'update-plunder-cache-village-info', villageInfo: PlunderCurrentVillageType | null): void;
+export function ipcSend(channel: 'navigate-to-first-plunder-page'): void;
 
 // Deimos
 export function ipcSend(channel: 'deimos-tag-is-ready'): void;

@@ -1,11 +1,12 @@
+import { URL } from 'url';
 import { ipcMain, BrowserWindow } from 'electron';
-import { assertObject, assertInteger, isKeyOf, isObject, isInteger } from '@tb-dev/ts-guard';
 import { storeToRefs } from 'mechanus';
+import { assertInteger, isKeyOf, isInteger } from '@tb-dev/ts-guard';
 import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards';
 import { sequelize } from '$database/database';
 import { MainProcessEventError } from '$electron/error';
 import { getPanelWindow, extractWorldUnitsFromMap } from '$electron/utils/helpers';
-import type { PlunderAttackDetails, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder';
+import { plunderSearchParams } from '$electron/utils/constants';
 import type { UnitAmount, World } from '$types/game';
 import type { WorldUnitType } from '$types/world';
 
@@ -16,20 +17,33 @@ import {
     useLastPlunderHistoryStore,
     useTotalPlunderHistoryStore,
     useCacheStore,
+    usePlunderStore,
+    usePlunderCacheStore,
     useBrowserViewStore,
     WorldUnit,
     worldUnitsMap
 } from '$interface/index';
 
+import type {
+    PlunderAttackDetails,
+    PlunderConfigKeys,
+    PlunderConfigValues,
+    PlunderCurrentVillageType
+} from '$types/plunder';
+
 export function setPlunderEvents() {
     const panelWindow = getPanelWindow();
 
     const cacheStore = useCacheStore();
+    const plunderStore = usePlunderStore();
+    const plunderCacheStore = usePlunderCacheStore();
     const plunderConfigStore = usePlunderConfigStore();
     const lastPlunderHistoryStore = useLastPlunderHistoryStore();
     const totalPlunderHistoryStore = useTotalPlunderHistoryStore();
-
     const browserViewStore = useBrowserViewStore();
+
+    const { page: currentPage } = storeToRefs(plunderStore);
+    const { currentVillage } = storeToRefs(plunderCacheStore);
     const { allWebContents } = storeToRefs(browserViewStore);
 
     // Verifica se o Plunder está ativo.
@@ -78,21 +92,31 @@ export function setPlunderEvents() {
         };
     });
 
+    // Armazena informações relevantes sobre a aldeia atual no cache do Plunder.
+    // Entre elas estão detalhes sobre as páginas do assistente de saque.
+    ipcMain.on('update-plunder-cache-village-info', (_e, villageInfo: PlunderCurrentVillageType | null) => {
+        if (
+            villageInfo &&
+            currentVillage.value &&
+            currentVillage.value.id === villageInfo.id
+        ) {
+            return;
+        };
+
+        currentVillage.value = villageInfo;
+    });
+
+    // Retorna as informações sobre a aldeia atual armazenadas no cache do Plunder.
+    ipcMain.handle('get-plunder-cache-village-info', () => currentVillage.value);
+
     // Emitido pela view após cada ataque realizado pelo Plunder.
     ipcMain.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
-        try {
-            assertObject(details, 'Erro ao atualizar os detalhes do ataque: o objeto é inválido.');
-            panelWindow.webContents.send('plunder-attack-sent', details);
-        } catch (err) {
-            MainProcessEventError.catch(err);
-        };
+        panelWindow.webContents.send('plunder-attack-sent', details);
     });
 
     // Emitido pela view quando o Plunder é desativado.
     ipcMain.on('save-plunder-attack-details', async (_e, details: PlunderAttackDetails) => {
         try {
-            assertObject(details, 'Erro ao salvar os detalhes do ataque: o objeto é inválido.');
-
             for (const [key, value] of Object.entries(details) as [keyof PlunderAttackDetails, number][]) {
                 assertInteger(value, 'Erro ao salvar os detalhes do ataque: valor inválido.');
                 lastPlunderHistoryStore[key] = value;
@@ -117,9 +141,7 @@ export function setPlunderEvents() {
 
     ipcMain.handle('get-last-plunder-attack-details', async (): Promise<PlunderAttackDetails | null> => {
         try {
-            const history = await PlunderHistory.getHistoryAsJSON(cacheStore);
-            if (!isObject(history)) return null;
-            return history.last;
+            return (await PlunderHistory.getHistoryAsJSON(cacheStore))?.last ?? null;
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
@@ -128,15 +150,14 @@ export function setPlunderEvents() {
 
     ipcMain.handle('get-total-plunder-attack-details', async (): Promise<PlunderAttackDetails | null> => {
         try {
-            const history = await PlunderHistory.getHistoryAsJSON(cacheStore);
-            if (!isObject(history)) return null;
-            return history.total;
+            return (await PlunderHistory.getHistoryAsJSON(cacheStore))?.total ?? null;
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
         };
     });
 
+    // Calcula a capacidade de carga de um determinado conjunto de unidades.
     ipcMain.handle('calc-carry-capacity', async (_e, units: Partial<UnitAmount>, world?: World | null) => {
         try {
             world ??= cacheStore.world;
@@ -147,7 +168,7 @@ export function setPlunderEvents() {
                 worldUnits = extractWorldUnitsFromMap(worldUnitsMap);
             } else {
                 const worldUnitsRow = await WorldUnit.findByPk(world);
-                if (!isObject(worldUnitsRow)) return null;
+                if (!worldUnitsRow) return null;
                 worldUnits = worldUnitsRow.toJSON();
             };
             
@@ -161,6 +182,40 @@ export function setPlunderEvents() {
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
+        };
+    });
+
+    // Navega para a próxima página do assistente de saque, se possível for.
+    ipcMain.handle('navigate-to-next-plunder-page', async (e) => {
+        try {
+            if (!currentVillage.value) return false;
+
+            const pages = currentVillage.value.pages.filter(({ done }) => !done);
+            let nextPage = pages.find(({ page }) => page > currentPage.value);
+            if (!nextPage) nextPage = pages.find(({ page }) => page !== currentPage.value);
+            if (!nextPage) return false;
+            
+            const url = new URL(e.sender.getURL());
+            url.searchParams.set('Farm_page', nextPage.page.toString(10));
+            queueMicrotask(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch));
+            
+            nextPage.done = true;
+            return true;
+
+        } catch (err) {
+            MainProcessEventError.catch(err);
+            return false;
+        };
+    });
+
+    // Navega para a primeira página do assistente de saque.
+    ipcMain.on('navigate-to-first-plunder-page', async (e) => {
+        try {
+            const url = new URL(e.sender.getURL());
+            url.search = plunderSearchParams;
+            await e.sender.loadURL(url.href);
+        } catch (err) {
+            MainProcessEventError.catch(err);
         };
     });
 };

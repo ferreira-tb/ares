@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { join, resolve } from 'path';
-import type { World } from '$types/game.js';
+import type { World } from '$types/game';
 
 // URL
 export const aresURL = 'https://tb.dev.br/ares';
@@ -12,6 +12,8 @@ export const discordURL = 'https://discord.gg/tNQbrqbmdK';
 
 export const worldConfigURL = (world: World) => `https://${world}.tribalwars.com.br/interface.php?func=get_config`;
 export const worldUnitURL = (world: World) => `https://${world}.tribalwars.com.br/interface.php?func=get_unit_info`;
+
+export const plunderSearchParams = 'screen=am_farm&order=distance&dir=asc&Farm_page=0';
 
 // Arquivos
 export const favicon = resolve(__dirname, '../public/favicon.ico');

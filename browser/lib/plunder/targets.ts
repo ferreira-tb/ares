@@ -10,7 +10,8 @@ import { assertWallLevel } from '$global/utils/guards';
 import type { Coords, WallLevel } from '$types/game';
 import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder';
 
-export class PlunderVillageInfo {
+/** Informações sobre a aldeia-alvo. */
+export class PlunderTargetInfo {
     /** Data do último ataque contra a aldeia (em milisegundos). */
     lastAttack: number = 0;
     /** Minutos desde o último ataque. */
@@ -51,9 +52,14 @@ export class PlunderVillageInfo {
 const eventTarget = new EventTarget();
 
 /** Mapa com as informações sobre cada aldeia da tabela. */
-export const villagesInfo: Map<string, PlunderVillageInfo> = new Map();
+export const targets: Map<string, PlunderTargetInfo> = new Map();
 
-export function queryVillagesInfo() {
+/** Retorna uma versão somente leitura do mapa com as informações sobre as aldeias-alvo. */
+export function getPlunderTargets() {
+    return targets as ReadonlyMap<string, Readonly<PlunderTargetInfo>>;
+};
+
+export function queryTargetsInfo() {
     // Desconecta qualquer observer que esteja ativo.
     eventTarget.dispatchEvent(new Event('stop'));
 
@@ -66,7 +72,7 @@ export function queryVillagesInfo() {
         row.setAttribute('data-tb-village', villageId);
 
         // Objeto onde serão armazenadas as informações sobre a aldeia.
-        const info = new PlunderVillageInfo();
+        const info = new PlunderTargetInfo();
 
         // Campo de relatório. É usado para calcular a distância até a aldeia-alvo.
         queryReport(row, info);
@@ -82,19 +88,19 @@ export function queryVillagesInfo() {
         queryPlaceButton(row, info);
 
         // Armazena os dados obtidos.
-        villagesInfo.set(villageId, info);
+        targets.set(villageId, info);
     };
 
     // Dispara a função novamente caso surjam alterações na tabela.
     const plunderList = document.queryAndAssert<HTMLTableElement>('#plunder_list');
     const options = { subtree: true, childList: true };
-    const observer = useMutationObserver(plunderList, () => queryVillagesInfo(), options);
+    const observer = useMutationObserver(plunderList, () => queryTargetsInfo(), options);
 
     // Caso a função seja chamada novamente, desconecta o observer ativo.
     useEventListener(eventTarget, 'stop', () => observer.stop(), { once: true });
 };
 
-function queryReport(row: Element, info: PlunderVillageInfo) {
+function queryReport(row: Element, info: PlunderTargetInfo) {
     const { x, y } = useCurrentVillageStore();
     const report = row.queryAndAssert('td a[href*="screen=report"]');
     const coords = assertCoordsFromTextContent(report.textContent);
@@ -107,7 +113,7 @@ function queryReport(row: Element, info: PlunderVillageInfo) {
     info.coords.y = coords[1];
 };
 
-function queryLastAttack(row: Element, info: PlunderVillageInfo) {
+function queryLastAttack(row: Element, info: PlunderTargetInfo) {
     const selector = 'td:not(:has(a)):not(:has(img)):not(:has(span.icon))';
     const fields = row.queryAsArray(selector);
     if (fields.length === 0) throw new DOMAssertionError(selector);
@@ -127,13 +133,13 @@ function queryLastAttack(row: Element, info: PlunderVillageInfo) {
 
 /**
  * Verifica se existem informações sobre os recursos disponíveis na aldeia-alvo.
- * Em caso positivo, armazena essas informações na instância pertinente do objeto `PlunderVillageInfo`.
+ * Em caso positivo, armazena essas informações na instância pertinente do objeto `PlunderTargetInfo`.
  * @param row Linha da tabela de aldeias.
- * @param info Objeto `PlunderVillageInfo`.
+ * @param info Objeto `PlunderTargetInfo`.
  * @returns O elemento onde estão as informações sobre os recursos, caso elas estejam disponíveis.
  * Do contrário, retorna `null`.
  */
-function queryResourcesField(row: Element, info: PlunderVillageInfo): Element | null {
+function queryResourcesField(row: Element, info: PlunderTargetInfo): Element | null {
     // A não existência desse campo poder indicar que não há informações obtidas por exploradores.
     const resourcesField = row.querySelector('td:has(span > span.icon.wood)');
     if (!resourcesField) {
@@ -163,11 +169,11 @@ function queryResourcesField(row: Element, info: PlunderVillageInfo): Element | 
 /**
  * É preciso usar o campo dos recursos como referência para encontrar o nível da muralha.
  * @param resourcesField O elemento onde estão as informações sobre os recursos.
- * @param info Objeto `PlunderVillageInfo`.
+ * @param info Objeto `PlunderTargetInfo`.
  * @returns O nível da muralha.
  */
-function queryWallLevel(resourcesField: Element | null, info: PlunderVillageInfo) {
-    if (resourcesField === null) return;
+function queryWallLevel(resourcesField: Element | null, info: PlunderTargetInfo) {
+    if (!resourcesField) return;
 
     const wallLevelField = resourcesField.nextElementSibling;
     assertElement(wallLevelField, 'O campo com o nível da muralha não foi encontrado');
@@ -182,9 +188,9 @@ function queryWallLevel(resourcesField: Element | null, info: PlunderVillageInfo
  * Não pode haver emissão de erro caso os botões não forem encontrados.
  * Isso porquê eles naturalmente não estarão presentes caso não haja modelo registrado.
  * @param row Linha da tabela de aldeias.
- * @param info Objeto `PlunderVillageInfo`.
+ * @param info Objeto `PlunderTargetInfo`.
  */
-function queryTemplateButtons(row: Element, info: PlunderVillageInfo) {
+function queryTemplateButtons(row: Element, info: PlunderTargetInfo) {
     info.button.a = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_a" i]:not([class*="disabled" i])');      
     info.button.b = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_b" i]:not([class*="disabled" i])');
     info.button.c = row.querySelector<HTMLAnchorElement>('td a[class*="farm_icon_c" i][onclick*="farm" i]');
@@ -199,8 +205,8 @@ function queryTemplateButtons(row: Element, info: PlunderVillageInfo) {
 /**
  * Encontra o botão da praça de reunião.
  * @param row Linha da tabela de aldeias.
- * @param info Objeto `PlunderVillageInfo`.
+ * @param info Objeto `PlunderTargetInfo`.
  */
-function queryPlaceButton(row: Element, info: PlunderVillageInfo) {
+function queryPlaceButton(row: Element, info: PlunderTargetInfo) {
     info.button.place = row.queryAndAssert<HTMLAnchorElement>('td a[href*="screen=place" i][onclick]:has(img)');
 };

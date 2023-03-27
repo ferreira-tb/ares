@@ -41,10 +41,7 @@ export function setDeimosEvents() {
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
     ipcMain.on('update-game-data', (_e, gameData: TribalWarsGameDataType) => {
         try {
-            type GameDataKeys = keyof TribalWarsGameDataType;
-            type GameDataValues = TribalWarsGameDataType[GameDataKeys];
-            
-            for (const [key, value] of Object.entries(gameData) as [GameDataKeys, GameDataValues][]) {
+            for (const [key, value] of Object.entries(gameData)) {
                 switch (key) {
                     case 'ares':
                         for (const [aresKey, aresValue] of Object.entries(value)) {

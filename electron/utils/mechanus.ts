@@ -1,7 +1,7 @@
-import { isWorld, isWorldOrNull, isWallLevel } from '$electron/utils/guards.js';
-import { ProxyStoreError } from '$electron/error.js';
+import { isWorld, isWorldOrNull, isWallLevel } from '$electron/utils/guards';
+import { ProxyStoreError } from '$electron/error';
 import type { MechanusRefOptions } from 'mechanus';
-import type { World, WallLevel } from '$types/game.js';
+import type { World, WallLevel } from '$types/game';
 
 import {
     arrayIncludes,

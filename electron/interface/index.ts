@@ -7,7 +7,7 @@ import { User } from '$tables/user';
 import { WorldConfig, WorldUnit } from '$tables/world';
 import { VillageGroups } from '$tables/groups';
 
-import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores } from '$stores/plunder';
+import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores, definePlunderCacheStore } from '$stores/plunder';
 import { defineAresStore } from '$stores/ares';
 import { defineCacheStore } from '$stores/cache';
 import { defineUnitsStore } from '$stores/units';
@@ -30,6 +30,7 @@ export const useAresStore = defineAresStore(mechanus);
 export const usePlunderStore = definePlunderStore(mechanus);
 export const usePlunderConfigStore = definePlunderConfigStore(mechanus);
 export const { useLastPlunderHistoryStore, useTotalPlunderHistoryStore } = setPlunderHistoryStores(mechanus);
+export const usePlunderCacheStore = definePlunderCacheStore(mechanus);
 export const useFeaturesStore = defineFeaturesStore(mechanus);
 export const useUnitsStore = defineUnitsStore(mechanus);
 export const usePlayerStore = definePlayerStore(mechanus);

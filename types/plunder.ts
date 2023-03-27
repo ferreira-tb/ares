@@ -1,13 +1,18 @@
 import type { FarmUnitsAmount, UnitsToDestroyWall } from '$types/game';
 import type { UserAlias } from '$types/electron';
 
-export interface PlunderInfoType {
+export type PlunderInfoType = {
     /** Indica se as aldeias sob ataque estão ocultas. */
     readonly hideAttacked: boolean;
     /** Página atual. */
     readonly page: number;
-    /** Quantidade de aldeias por página. */
-    readonly pageSize: number;
+    /**
+     * Quantidade de aldeias por página.
+     * 
+     * O valor dessa propriedade é `NaN` quando a tabela do assistente de saque está vazia.
+     * Nesse caso, em vez de manter como `NaN`, usa-se `null`.
+     */
+    readonly pageSize: number | null;
     readonly plunderExhausted: boolean;
 };
 
@@ -70,6 +75,8 @@ export type PlunderConfigType = {
     plunderedResourcesRatio: number;
     /** ID do grupo que será utilizado para atacar. */
     plunderGroupID: number | null;
+    /** Delay médio entre cada troca de página. */
+    pageDelay: number;
 
     /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
     blindAttackPattern: BlindAttackPattern;
@@ -96,6 +103,29 @@ export type PlunderPanelConfigValues = PlunderPanelConfig[PlunderPanelConfigKeys
 export type PlunderHistoryType = {
     last: PlunderAttackDetails;
     total: PlunderAttackDetails;
+};
+
+export type PlunderPageType = {
+    /** Número da página. */
+    readonly page: number;
+    /** Indica se o Plunder já enviou comandos a partir dessa página. */
+    done: boolean;
+};
+
+export type PlunderCurrentVillageType = {
+    /** ID da aldeia. */
+    readonly id: number;
+    /** URL base das páginas. */
+    readonly pageUrl: string;
+    /** Lista de páginas. */
+    readonly pages: PlunderPageType[];
+};
+
+export type PlunderCacheType = {
+    /** Aldeia atual. */
+    readonly currentVillage: PlunderCurrentVillageType | null;
+    /** Modelos usados no assistente de saque para demolição de muralhas. */
+    readonly demolitionTroops: DemolitionTemplateType | null;
 };
 
 export type PlunderAttackDetails = {

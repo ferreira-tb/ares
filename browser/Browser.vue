@@ -8,7 +8,6 @@ import { Deimos } from '$deimos/shared/ipc';
 import { routeNames, router } from '$browser/router/router';
 import { useAresStore } from '$vue/stores/ares';
 import { useBrowserStore } from '$browser/stores/browser';
-import { getPlunderInfo } from '$lib/plunder/info';
 import { ipcSend } from '$global/ipc';
 import { gameURLRegex } from '$global/utils/constants';
 import DeimosTag from '$browser/components/DeimosTag.vue';
@@ -28,8 +27,6 @@ watchEffect(() => {
     } else {
         router.push('/');
     };
-
-    if (screen === 'am_farm') getPlunderInfo();
 });
 
 whenever(isDeimosReady, async () => {

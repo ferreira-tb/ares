@@ -36,6 +36,7 @@ const maxDistance = ref<number>(config.value?.maxDistance ?? 20);
 const ignoreOlderThan = ref<number>(config.value?.ignoreOlderThan ?? 10);
 const plunderedResourcesRatio = ref<number>(config.value?.plunderedResourcesRatio ?? 1);
 const plunderGroupID = ref<number | null>(config.value?.plunderGroupID ?? null);
+const pageDelay = ref<number>(config.value?.pageDelay ?? 2000);
 
 const blindAttackPattern = ref<BlindAttackPattern>(config.value?.blindAttackPattern ?? 'smaller');
 const useCPattern = ref<UseCPattern>(config.value?.useCPattern ?? 'normal');
@@ -51,6 +52,7 @@ watch(maxDistance, (v) => updateConfig('maxDistance', v));
 watch(ignoreOlderThan, (v) => updateConfig('ignoreOlderThan', v));
 watch(plunderedResourcesRatio, (v) => updateConfig('plunderedResourcesRatio', v));
 watch(plunderGroupID, (v) => updateConfig('plunderGroupID', v));
+watch(pageDelay, (v) => updateConfig('pageDelay', v));
 
 watch(blindAttackPattern, (v) => updateConfig('blindAttackPattern', v));
 watch(useCPattern, (v) => updateConfig('useCPattern', v));
@@ -171,7 +173,7 @@ const plunderGroupOptions = computed(() => {
 
             <NGridItem>
                 <LabelPopover>
-                    <template #trigger>Delay médio entre os ataques</template>
+                    <template #trigger>Delay entre ataques</template>
                     <span>
                         O jogo possui um limite de cinco ações por segundo, então o Ares dá uma atrasadinha em cada ataque.
                     </span>
@@ -323,6 +325,20 @@ const plunderGroupOptions = computed(() => {
             <NGridItem>
                 <NumberImput v-model:value="plunderedResourcesRatio" :min="0.2" :max="1" :step="0.05"
                     :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1" />
+            </NGridItem>
+
+            <NGridItem>
+                <LabelPopover>
+                    <template #trigger>Delay entre troca de páginas</template>
+                    <span>
+                        Quando o Ares não encontra aldeias para atacar, ele tenta trocar de página.
+                        Esse delay determina quantos milisegundos o Ares deve esperar antes dessa tentativa.
+                    </span>
+                </LabelPopover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput v-model:value="pageDelay" :min="1000" :max="10000" :step="100"
+                    :validator="(v) => isPositiveInteger(v) && v >= 1000 && v <= 10000" />
             </NGridItem>
         </NGrid>
     </section>

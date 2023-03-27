@@ -18,7 +18,7 @@ import type {
     PlunderInfoType,
     PlunderConfigType,
     PlunderAttackDetails,
-    DemolitionTemplateType
+    PlunderCacheType
 } from '$types/plunder';
 
 ////// ARES
@@ -129,6 +129,12 @@ export type MechanusPlunderHistoryStoreType = {
     [K in keyof RemoveMethods<PlunderHistoryStore>]: MechanusRef<RemoveMethods<PlunderHistoryStore>[K]>;
 };
 
+////// PLUNDER CACHE
+export type PlunderCacheStore = PlunderCacheType;
+export type MechanusPlunderCacheStoreType = {
+    [K in keyof PlunderCacheStore]: MechanusRef<PlunderCacheStore[K]>;
+};
+
 ////// UNITS
 export interface UnitsStore extends UnitAmount {
     raw(): UnitAmount;
@@ -162,17 +168,13 @@ export interface CacheStore {
     readonly world: World | null;
     readonly player: string | null;
     readonly userAlias: UserAlias | null;
-
-    /** Modelos usados no assistente de saque para demolição de muralhas. */
-    readonly demolitionTroops: DemolitionTemplateType | null;
 };
 
 export type MechanusCacheStoreType = {
-    readonly world: MechanusRef<World | null>;
-    readonly player: MechanusRef<string | null>;
-    readonly userAlias: MechanusComputedRef<UserAlias | null>;
-
-    readonly demolitionTroops: MechanusRef<DemolitionTemplateType | null>;
+    [K in keyof CacheStore]:
+        K extends 'userAlias' ?
+        MechanusComputedRef<CacheStore[K]> :
+        MechanusRef<CacheStore[K]>;
 };
 
 ////// BROWSER VIEW
