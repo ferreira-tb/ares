@@ -4,6 +4,7 @@ import { usePlunderStore } from '$vue/stores/plunder';
 import { ipcSend, ipcInvoke } from '$global/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
 import { PlunderError } from '$browser/error';
+import { plunderSearchParams } from '$global/utils/constants';
 import type { PlunderCurrentVillageType, PlunderPageType } from '$types/plunder';
 
 class PlunderCurrentVillageInfo implements PlunderCurrentVillageType {
@@ -17,7 +18,7 @@ class PlunderCurrentVillageInfo implements PlunderCurrentVillageType {
         this.id = currentVillageStore.id;
 
         const url = new URL(location.href);
-        url.search = 'screen=am_farm&order=distance&dir=asc&Farm_page=0';
+        url.search = plunderSearchParams;
         this.pageUrl = url.href;
     };
 };
