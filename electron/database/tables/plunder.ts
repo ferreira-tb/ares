@@ -41,11 +41,11 @@ export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCr
     declare readonly maxDistance: number;
     declare readonly ignoreOlderThan: number;
     declare readonly plunderedResourcesRatio: number;
+    declare readonly plunderGroupID: number | null;
+    declare readonly pageDelay: number;
 
     declare readonly blindAttackPattern: BlindAttackPattern;
     declare readonly useCPattern: UseCPattern;
-
-    declare readonly plunderGroupID: number | null;
 };
 
 PlunderConfig.init({
@@ -153,6 +153,15 @@ PlunderConfig.init({
         allowNull: false,
         defaultValue: 1
     },
+    plunderGroupID: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    pageDelay: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 2000
+    },
 
     blindAttackPattern: {
         type: DataTypes.STRING,
@@ -163,11 +172,6 @@ PlunderConfig.init({
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'normal' satisfies UseCPattern
-    },
-
-    plunderGroupID: {
-        type: DataTypes.INTEGER,
-        allowNull: true
     }
 }, { sequelize, tableName: 'plunder_config', timestamps: true });
 
