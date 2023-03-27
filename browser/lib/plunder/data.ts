@@ -1,7 +1,7 @@
 import { Deimos } from '$deimos/shared/ipc';
 import { PlunderError } from '$browser/error';
-import { usePlunderStore } from '$vue/stores/plunder';
-import { ipcSend } from '$global/ipc';
+import { usePlunderStore, usePlunderConfigStore } from '$vue/stores/plunder';
+import { ipcSend, ipcInvoke } from '$global/ipc';
 
 export async function getPlunderInfo() {
     try {
@@ -15,4 +15,10 @@ export async function getPlunderInfo() {
     } catch (err) {
         PlunderError.catch(err);
     };
+};
+
+export async function updatePlunderConfig() {
+    const plunderConfigStore = usePlunderConfigStore();
+    const previousConfig = await ipcInvoke('get-plunder-config');
+    if (previousConfig) plunderConfigStore.$patch(previousConfig);
 };

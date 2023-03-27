@@ -6,6 +6,7 @@ import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards';
 import { sequelize } from '$database/database';
 import { MainProcessEventError } from '$electron/error';
 import { getPanelWindow, extractWorldUnitsFromMap } from '$electron/utils/helpers';
+import { plunderSearchParams } from '$electron/utils/constants';
 import type { UnitAmount, World } from '$types/game';
 import type { WorldUnitType } from '$types/world';
 
@@ -93,7 +94,7 @@ export function setPlunderEvents() {
 
     // Armazena informações relevantes sobre a aldeia atual no cache do Plunder.
     // Entre elas estão detalhes sobre as páginas do assistente de saque.
-    ipcMain.on('update-plunder-current-village-info', (_e, villageInfo: PlunderCurrentVillageType | null) => {
+    ipcMain.on('update-plunder-cache-village-info', (_e, villageInfo: PlunderCurrentVillageType | null) => {
         if (
             villageInfo &&
             currentVillage.value &&
@@ -104,6 +105,9 @@ export function setPlunderEvents() {
 
         currentVillage.value = villageInfo;
     });
+
+    // Retorna as informações sobre a aldeia atual armazenadas no cache do Plunder.
+    ipcMain.handle('get-plunder-cache-village-info', () => currentVillage.value);
 
     // Emitido pela view após cada ataque realizado pelo Plunder.
     ipcMain.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
@@ -193,7 +197,7 @@ export function setPlunderEvents() {
             
             const url = new URL(e.sender.getURL());
             url.searchParams.set('Farm_page', nextPage.page.toString(10));
-            queueMicrotask(() => e.sender.loadURL(url.href));
+            queueMicrotask(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch));
             
             nextPage.done = true;
             return true;
@@ -201,6 +205,17 @@ export function setPlunderEvents() {
         } catch (err) {
             MainProcessEventError.catch(err);
             return false;
+        };
+    });
+
+    // Navega para a primeira página do assistente de saque.
+    ipcMain.on('navigate-to-first-plunder-page', async (e) => {
+        try {
+            const url = new URL(e.sender.getURL());
+            url.search = plunderSearchParams;
+            await e.sender.loadURL(url.href);
+        } catch (err) {
+            MainProcessEventError.catch(err);
         };
     });
 };

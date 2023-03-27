@@ -11,13 +11,11 @@ import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } 
 import { destroyWall } from '$lib/plunder/wall';
 import { openPlace } from '$lib/plunder/place';
 import { PlunderError } from '$browser/error';
-import { ipcSend, ipcInvoke } from '$global/ipc';
+import { ipcSend } from '$global/ipc';
 import { generateRandomDelay } from '$global/utils/helpers';
 import Reload from '$browser/components/plunder/Reload.vue';
 
 const config = usePlunderConfigStore();
-const previousConfig = await ipcInvoke('get-plunder-config');
-if (previousConfig) config.$patch(previousConfig);
 
 /** Tabela do assistente de saque. */
 const plunderList = document.querySelector('#plunder_list:has(tr[id^="village"]) tbody');

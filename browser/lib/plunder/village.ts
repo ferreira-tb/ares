@@ -39,9 +39,9 @@ export function queryCurrentVillageInfo() {
     const hasPages = queryPlunderPages(villageInfo);
 
     if (hasPages) {
-        ipcSend('update-plunder-current-village-info', villageInfo);
+        ipcSend('update-plunder-cache-village-info', villageInfo);
     } else {
-        ipcSend('update-plunder-current-village-info', null);
+        ipcSend('update-plunder-cache-village-info', null);
     };
 };
 
