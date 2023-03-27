@@ -7,7 +7,7 @@ import { ipcInvoke, ipcSend } from '$global/ipc';
 import { getLocaleDateString } from '$global/utils/helpers';
 import { ModuleError } from '$modules/error';
 import type { ErrorLogType } from '$types/error';
-import SucessResult from '$vue/components/result/SuccessResult.vue';
+import SucessResult from '$global/components/result/SuccessResult.vue';
 
 const raw = await ipcInvoke('get-error-log');
 assertArray(raw, 'Houve um erro durante a conexão com o banco de dados.');

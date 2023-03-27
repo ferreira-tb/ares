@@ -6,7 +6,7 @@ import { whenever } from '@vueuse/core';
 import { arrayIncludes } from '@tb-dev/ts-guard';
 import { Deimos } from '$deimos/shared/ipc';
 import { routeNames, router } from '$browser/router/router';
-import { useAresStore } from '$vue/stores/ares';
+import { useAresStore } from '$global/stores/ares';
 import { useBrowserStore } from '$browser/stores/browser';
 import { ipcSend } from '$global/ipc';
 import { gameURLRegex } from '$global/utils/constants';

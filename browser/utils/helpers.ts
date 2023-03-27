@@ -1,4 +1,4 @@
-import { useAresStore } from '$vue/stores/ares';
+import { useAresStore } from '$global/stores/ares';
 
 /**
  * Cria um breve atraso tendo como base o tempo de resposta do servidor.

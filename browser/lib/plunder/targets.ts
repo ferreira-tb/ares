@@ -5,7 +5,7 @@ import { calcDistance } from '$global/utils/helpers';
 import { assertCoordsFromTextContent, parseGameDate } from '$global/utils/parser';
 import { PlunderError } from '$browser/error';
 import { resources as resourceList } from '$global/utils/constants';
-import { useCurrentVillageStore } from '$vue/stores/village';
+import { useCurrentVillageStore } from '$global/stores/village';
 import { assertWallLevel } from '$global/utils/guards';
 import type { Coords, WallLevel } from '$types/game';
 import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder';

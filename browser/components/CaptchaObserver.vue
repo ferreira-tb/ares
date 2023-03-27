@@ -3,7 +3,7 @@ import { ref, watchSyncEffect, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useMutationObserver } from '@vueuse/core';
 import { isInstanceOf } from '@tb-dev/ts-guard';
-import { useAresStore } from '$vue/stores/ares';
+import { useAresStore } from '$global/stores/ares';
 import { ipcSend } from '$global/ipc';
 import type { UseMutationObserverOptions } from '@vueuse/core';
 

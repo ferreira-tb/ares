@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue';
 import { assertElement } from '@tb-dev/ts-guard-dom';
-import { usePlunderConfigStore } from '$vue/stores/plunder';
+import { usePlunderConfigStore } from '$global/stores/plunder';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
 import { queryTargetsInfo, targets } from '$browser/lib/plunder/targets';
 import { queryAvailableUnits } from '$lib/plunder/units';

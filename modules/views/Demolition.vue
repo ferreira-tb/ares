@@ -5,8 +5,8 @@ import { isObject, assertObject, assertKeyOf, toIntegerStrict, isInteger, assert
 import { ipcInvoke } from '$global/ipc.js';
 import { assertUserAlias } from '$global/utils/guards.js';
 import { ModuleConfigError } from '$modules/error.js';
-import ErrorResult from '$vue/components/result/ErrorResult.vue';
-import NumberCell from '$vue/components/table/NumberCell.vue';
+import ErrorResult from '$global/components/result/ErrorResult.vue';
+import NumberCell from '$global/components/table/NumberCell.vue';
 import SpearIcon from '$icons/units/SpearIcon.vue';
 import SwordIcon from '$icons/units/SwordIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';

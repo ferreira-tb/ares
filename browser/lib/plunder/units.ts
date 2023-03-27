@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { assert } from '@tb-dev/ts-guard';
 import { Deimos } from '$deimos/shared/ipc';
-import { useUnitsStore } from '$vue/stores/units';
+import { useUnitsStore } from '$global/stores/units';
 import { allUnits } from '$global/utils/constants';
 import { ipcSend } from '$global/ipc';
 import type { AllUnits } from '$types/game';

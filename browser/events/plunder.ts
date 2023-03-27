@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { assertKeyOf } from '@tb-dev/ts-guard';
-import { usePlunderConfigStore } from '$vue/stores/plunder';
+import { usePlunderConfigStore } from '$global/stores/plunder';
 import { BrowserError } from '$browser/error';
 import type { Pinia } from 'pinia';
 import type { PlunderConfigType, PlunderConfigKeys, PlunderConfigValues } from '$types/plunder';

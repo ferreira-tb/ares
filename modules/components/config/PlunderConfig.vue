@@ -6,10 +6,10 @@ import { NDivider, NGrid, NGridItem, NSelect, NButton, NButtonGroup, useDialog, 
 import { ipcInvoke, ipcSend } from '$global/ipc';
 import { ModuleConfigError } from '$modules/error';
 import { assertUserAlias, isDistance } from '$global/utils/guards';
-import InfoResult from '$vue/components/result/InfoResult.vue';
-import WallInput from '$vue/components/input/WallInput.vue';
-import NumberImput from '$vue/components/input/NumberInput.vue';
-import LabelPopover from '$vue/components/popover/LabelPopover.vue';
+import InfoResult from '$global/components/result/InfoResult.vue';
+import WallInput from '$global/components/input/WallInput.vue';
+import NumberImput from '$global/components/input/NumberInput.vue';
+import LabelPopover from '$global/components/popover/LabelPopover.vue';
 import type {
     PlunderConfigType,
     PlunderConfigKeys,

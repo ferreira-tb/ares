@@ -6,7 +6,7 @@ import { useDialog, useMessage } from 'naive-ui';
 import { isString, isInteger } from '@tb-dev/ts-guard';
 import { ipcInvoke } from '$global/ipc';
 import { ModuleError } from '$modules/error';
-import NumberInput from '$vue/components/input/NumberInput.vue';
+import NumberInput from '$global/components/input/NumberInput.vue';
 import ArcherIcon from '$icons/units/ArcherIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';
 import HeavyIcon from '$icons/units/HeavyIcon.vue';

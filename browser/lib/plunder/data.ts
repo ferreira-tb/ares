@@ -1,6 +1,6 @@
 import { Deimos } from '$deimos/shared/ipc';
 import { PlunderError } from '$browser/error';
-import { usePlunderStore, usePlunderConfigStore } from '$vue/stores/plunder';
+import { usePlunderStore, usePlunderConfigStore } from '$global/stores/plunder';
 import { ipcSend, ipcInvoke } from '$global/ipc';
 
 export async function getPlunderInfo() {

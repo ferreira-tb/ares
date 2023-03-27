@@ -1,10 +1,10 @@
 import { assertInteger } from '@tb-dev/ts-guard';
-import { useCurrentVillageStore } from '$vue/stores/village';
-import { usePlunderStore } from '$vue/stores/plunder';
+import { useCurrentVillageStore } from '$global/stores/village';
+import { usePlunderStore } from '$global/stores/plunder';
 import { ipcSend, ipcInvoke } from '$global/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
 import { getPlunderTargets } from '$lib/plunder/targets';
-import { usePlunderConfigStore } from '$vue/stores/plunder';
+import { usePlunderConfigStore } from '$global/stores/plunder';
 import { PlunderError } from '$browser/error';
 import { plunderSearchParams } from '$global/utils/constants';
 import type { PlunderCurrentVillageType, PlunderPageType } from '$types/plunder';

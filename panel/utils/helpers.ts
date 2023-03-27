@@ -1,8 +1,8 @@
 import { arrayIncludes } from '@tb-dev/ts-guard';
 import { routeNames, router } from '$panel/router/router';
 import { ipcSend } from '$global/ipc';
-import { usePlunderHistoryStore } from '$vue/stores/plunder';
-import type { useAresStore } from '$vue/stores/ares';
+import { usePlunderHistoryStore } from '$global/stores/plunder';
+import type { useAresStore } from '$global/stores/ares';
 
 export function pushRoute(screenName: ReturnType<typeof useAresStore>['screen']) {
     if (screenName && arrayIncludes(routeNames, screenName)) {

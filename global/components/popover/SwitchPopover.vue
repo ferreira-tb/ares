@@ -2,7 +2,7 @@
 import { reactive } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { NSwitch } from 'naive-ui';
-import LabelPopover from '$vue/components/popover/LabelPopover.vue';
+import LabelPopover from '$global/components/popover/LabelPopover.vue';
 
 interface Props {
     value?: boolean;

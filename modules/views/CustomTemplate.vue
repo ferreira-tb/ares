@@ -4,8 +4,8 @@ import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke } from '$global/ipc.js';
 import { isUserAlias } from '$global/utils/guards.js';
 import TemplateModal from '$modules/components/plunder/TemplateModal.vue';
-import ErrorResult from '$vue/components/result/ErrorResult.vue';
-import InfoResult from '$vue/components/result/InfoResult.vue';
+import ErrorResult from '$global/components/result/ErrorResult.vue';
+import InfoResult from '$global/components/result/InfoResult.vue';
 import TemplateCard from '$modules/components/plunder/TemplateCard.vue';
 import type { CustomPlunderTemplateType } from '$types/plunder.js';
 
