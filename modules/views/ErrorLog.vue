@@ -2,8 +2,8 @@
 import { ref, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { NTabs, NTab } from 'naive-ui';
-import { router } from '$modules/router/router.js';
-import type { ErrorModuleRoutes } from '$types/modules.js';
+import { router } from '$modules/router/router';
+import type { ErrorModuleRoutes } from '$types/modules';
 
 const route = ref<ErrorModuleRoutes>('normal-errors');
 watchEffect(() => router.push({ name: route.value }));

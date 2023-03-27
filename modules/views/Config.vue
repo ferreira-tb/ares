@@ -3,8 +3,8 @@ import { ref, watch, nextTick, onMounted } from 'vue';
 import { RouterView } from 'vue-router';
 import { NTabs, NTab, type TabsInst } from 'naive-ui';
 import { arrayIncludes } from '@tb-dev/ts-guard';
-import { configRouteNames, router } from '$modules/router/router.js';
-import type { ConfigModuleRoutes } from '$types/modules.js';
+import { configRouteNames, router } from '$modules/router/router';
+import type { ConfigModuleRoutes } from '$types/modules';
 
 const tabs = ref<TabsInst | null>(null);
 const tabName = ref<ConfigModuleRoutes>('general-config');
