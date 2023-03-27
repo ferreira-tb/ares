@@ -1,7 +1,7 @@
 import { URL } from 'url';
 import { ipcMain, BrowserWindow } from 'electron';
-import { assertObject, assertInteger, isKeyOf, isInteger } from '@tb-dev/ts-guard';
 import { storeToRefs } from 'mechanus';
+import { assertInteger, isKeyOf, isInteger } from '@tb-dev/ts-guard';
 import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards';
 import { sequelize } from '$database/database';
 import { MainProcessEventError } from '$electron/error';
@@ -91,6 +91,8 @@ export function setPlunderEvents() {
         };
     });
 
+    // Armazena informações relevantes sobre a aldeia atual no cache do Plunder.
+    // Entre elas estão detalhes sobre as páginas do assistente de saque.
     ipcMain.on('update-plunder-current-village-info', (_e, villageInfo: PlunderCurrentVillageType | null) => {
         if (
             villageInfo &&
@@ -105,19 +107,12 @@ export function setPlunderEvents() {
 
     // Emitido pela view após cada ataque realizado pelo Plunder.
     ipcMain.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
-        try {
-            assertObject(details, 'Erro ao atualizar os detalhes do ataque: o objeto é inválido.');
-            panelWindow.webContents.send('plunder-attack-sent', details);
-        } catch (err) {
-            MainProcessEventError.catch(err);
-        };
+        panelWindow.webContents.send('plunder-attack-sent', details);
     });
 
     // Emitido pela view quando o Plunder é desativado.
     ipcMain.on('save-plunder-attack-details', async (_e, details: PlunderAttackDetails) => {
         try {
-            assertObject(details, 'Erro ao salvar os detalhes do ataque: o objeto é inválido.');
-
             for (const [key, value] of Object.entries(details) as [keyof PlunderAttackDetails, number][]) {
                 assertInteger(value, 'Erro ao salvar os detalhes do ataque: valor inválido.');
                 lastPlunderHistoryStore[key] = value;
@@ -158,6 +153,7 @@ export function setPlunderEvents() {
         };
     });
 
+    // Calcula a capacidade de carga de um determinado conjunto de unidades.
     ipcMain.handle('calc-carry-capacity', async (_e, units: Partial<UnitAmount>, world?: World | null) => {
         try {
             world ??= cacheStore.world;
@@ -185,6 +181,7 @@ export function setPlunderEvents() {
         };
     });
 
+    // Navega para a próxima página do assistente de saque, se possível for.
     ipcMain.handle('navigate-to-next-plunder-page', async (e) => {
         try {
             if (!currentVillage.value) return false;
