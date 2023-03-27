@@ -1,10 +1,10 @@
-import type { ResourceAmount } from '$types/game.js';
+import type { ResourceAmount } from '$types/game';
 import type {
     RawTribalWarsGameData,
     RawPlunderInfo,
     MarketDataTrader,
     PremiumExchangeGraphResourceData
-} from '$types/deimos.js';
+} from '$types/deimos';
 
 declare global {
     const Accountmanager: {
