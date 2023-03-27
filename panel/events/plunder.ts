@@ -9,7 +9,7 @@ import type {
     PlunderInfoType,
     PlunderConfigKeys,
     PlunderConfigValues
-} from '$types/plunder.js';
+} from '$types/plunder';
 
 export function setPlunderEvents() {
     const plunderStore = usePlunderStore();
