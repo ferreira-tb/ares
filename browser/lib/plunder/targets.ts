@@ -54,6 +54,11 @@ const eventTarget = new EventTarget();
 /** Mapa com as informações sobre cada aldeia da tabela. */
 export const targets: Map<string, PlunderTargetInfo> = new Map();
 
+/** Retorna uma versão somente leitura do mapa com as informações sobre as aldeias-alvo. */
+export function getPlunderTargets() {
+    return targets as ReadonlyMap<string, Readonly<PlunderTargetInfo>>;
+};
+
 export function queryTargetsInfo() {
     // Desconecta qualquer observer que esteja ativo.
     eventTarget.dispatchEvent(new Event('stop'));

@@ -3,6 +3,8 @@ import { useCurrentVillageStore } from '$vue/stores/village';
 import { usePlunderStore } from '$vue/stores/plunder';
 import { ipcSend, ipcInvoke } from '$global/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
+import { getPlunderTargets } from '$lib/plunder/targets';
+import { usePlunderConfigStore } from '$vue/stores/plunder';
 import { PlunderError } from '$browser/error';
 import { plunderSearchParams } from '$global/utils/constants';
 import type { PlunderCurrentVillageType, PlunderPageType } from '$types/plunder';
@@ -71,10 +73,17 @@ function queryPlunderPages(villageInfo: PlunderCurrentVillageType) {
 
 export async function navigateToNextPage() {
     try {
-        // Antes de ir para a próxima página, verifica se há tropas disponíveis em algum dos modelos.
+        // Verifica se há tropas disponíveis em algum dos modelos.
         const allTemplates = getAllTemplates();
         const status = Array.from(allTemplates.values()).map((template) => template.ok.value);
         if (status.every((ok) => ok === false)) return false;
+
+        // Em seguida, verifica se algum dos alvos atuais obedece à distância máxima permitida.
+        const targets = getPlunderTargets();
+        const plunderConfigStore = usePlunderConfigStore();
+        
+        const distanceList = Array.from(targets.values(), (target) => target.distance);
+        if (distanceList.every((distance) => distance >= plunderConfigStore.maxDistance)) return false;
 
         return await ipcInvoke('navigate-to-next-plunder-page');
 
