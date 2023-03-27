@@ -190,6 +190,8 @@ export function setPlunderEvents() {
             const url = new URL(e.sender.getURL());
             url.searchParams.set('Farm_page', nextPage.page.toString(10));
             queueMicrotask(() => e.sender.loadURL(url.href));
+            
+            nextPage.done = true;
             return true;
 
         } catch (err) {

@@ -104,7 +104,7 @@ export type PlunderPageType = {
     /** Número da página. */
     readonly page: number;
     /** Indica se o Plunder já enviou comandos a partir dessa página. */
-    readonly done: boolean;
+    done: boolean;
 };
 
 export type PlunderCurrentVillageType = {
