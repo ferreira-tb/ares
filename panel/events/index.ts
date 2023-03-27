@@ -1,10 +1,10 @@
 import { ipcRenderer } from 'electron';
-import { useAresStore } from '$vue/stores/ares';
-import { useFeaturesStore } from '$vue/stores/features';
-import { usePlayerStore } from '$vue/stores/player';
-import { useCurrentVillageStore } from '$vue/stores/village';
-import { useUnitsStore } from '$vue/stores/units';
-import { useGroupsStore } from '$vue/stores/groups';
+import { useAresStore } from '$global/stores/ares';
+import { useFeaturesStore } from '$global/stores/features';
+import { usePlayerStore } from '$global/stores/player';
+import { useCurrentVillageStore } from '$global/stores/village';
+import { useUnitsStore } from '$global/stores/units';
+import { useGroupsStore } from '$global/stores/groups';
 import { setPlunderEvents } from '$panel/events/plunder';
 import type { TribalWarsGameDataType, UnitAmount, VillageGroup } from '$types/game';
 

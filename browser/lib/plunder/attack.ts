@@ -1,6 +1,6 @@
 import { useEventListener, useMutationObserver } from '@vueuse/core';
 import { assertInteger, isInstanceOf, assertString, assert } from '@tb-dev/ts-guard';
-import { usePlunderConfigStore } from '$vue/stores/plunder';
+import { usePlunderConfigStore } from '$global/stores/plunder';
 import { generateRandomDelay } from '$global/utils/helpers';
 import { wait } from '$browser/utils/helpers';
 import { unitsRegex } from '$global/utils/constants';

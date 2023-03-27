@@ -2,11 +2,11 @@
 import { h, computed, ref, reactive, watch } from 'vue';
 import { NDataTable, useMessage } from 'naive-ui';
 import { isObject, assertObject, assertKeyOf, toIntegerStrict, isInteger, assertSameType } from '@tb-dev/ts-guard';
-import { ipcInvoke } from '$global/ipc.js';
-import { assertUserAlias } from '$global/utils/guards.js';
-import { ModuleConfigError } from '$modules/error.js';
-import ErrorResult from '$vue/components/result/ErrorResult.vue';
-import NumberCell from '$vue/components/table/NumberCell.vue';
+import { ipcInvoke } from '$global/ipc';
+import { assertUserAlias } from '$global/utils/guards';
+import { ModuleConfigError } from '$modules/error';
+import ErrorResult from '$global/components/result/ErrorResult.vue';
+import NumberCell from '$global/components/table/NumberCell.vue';
 import SpearIcon from '$icons/units/SpearIcon.vue';
 import SwordIcon from '$icons/units/SwordIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';
@@ -18,7 +18,7 @@ import HeavyIcon from '$icons/units/HeavyIcon.vue';
 import RamIcon from '$icons/units/RamIcon.vue';
 import CatapultIcon from '$icons/units/CatapultIcon.vue';
 import type { PaginationProps, DataTableBaseColumn } from 'naive-ui';
-import type { DemolitionTroops } from '$types/game.js';
+import type { DemolitionTroops } from '$types/game';
 
 const message = useMessage();
 

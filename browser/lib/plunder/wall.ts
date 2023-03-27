@@ -1,5 +1,5 @@
 import { assertObject, assertInteger } from '@tb-dev/ts-guard';
-import { useUnitsStore } from '$vue/stores/units';
+import { useUnitsStore } from '$global/stores/units';
 import { ipcInvoke, ipcSend } from '$global/ipc';
 import { openPlace } from '$lib/plunder/place';
 import { sendAttackFromPlace } from '$lib/plunder/attack';

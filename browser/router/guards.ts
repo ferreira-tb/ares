@@ -1,8 +1,8 @@
 import { nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { getPlunderInfo, updatePlunderConfig } from '$browser/lib/plunder/data';
-import { useCurrentVillageStore } from '$vue/stores/village';
-import { usePlunderStore, usePlunderConfigStore } from '$vue/stores/plunder';
+import { useCurrentVillageStore } from '$global/stores/village';
+import { usePlunderStore, usePlunderConfigStore } from '$global/stores/plunder';
 import { ipcInvoke, ipcSend } from '$global/ipc';
 import type { Router } from 'vue-router';
 

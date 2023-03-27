@@ -27,7 +27,7 @@
             "$modules/*": ["./modules/*"],
             "$panel/*": ["./panel/*"],
             "$deimos/*": ["./deimos/*"],
-            "$icons/*": ["./vue/components/icons/*"],
+            "$icons/*": ["./global/components/icons/*"],
             "$main/*": ["./main/*"]
         },
 
