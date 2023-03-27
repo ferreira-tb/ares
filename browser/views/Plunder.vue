@@ -42,8 +42,8 @@ async function handleAttack(): Promise<void> {
     const villages = plunderList.queryAsMap('tr[data-tb-village]', (e) => e.getAttributeStrict('data-tb-village'));
     for (const [id, village] of villages.entries()) {
         // Ignora caso ela esteja oculta, removendo-a da tabela.
-        const style = village.getAttribute('style') ?? '';
-        if (/display:\s*none/.test(style)) {
+        const style = village.getAttribute('style');
+        if (style && /display:\s*none/.test(style)) {
             village.remove();
             targets.delete(id);
             continue;
