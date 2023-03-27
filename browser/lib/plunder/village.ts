@@ -1,13 +1,14 @@
 import { assertInteger } from '@tb-dev/ts-guard';
 import { useCurrentVillageStore } from '$vue/stores/village';
 import { usePlunderStore } from '$vue/stores/plunder';
-import { ipcSend } from '$global/ipc';
+import { ipcSend, ipcInvoke } from '$global/ipc';
+import { getAllTemplates } from '$lib/plunder/templates';
+import { PlunderError } from '$browser/error';
 import type { PlunderCurrentVillageType, PlunderPageType } from '$types/plunder';
 
 class PlunderCurrentVillageInfo implements PlunderCurrentVillageType {
     readonly id: number;
     readonly pageUrl: string;
-    readonly previousPage: number;
     readonly pages: PlunderPageType[] = [];
 
     constructor() {
@@ -15,11 +16,8 @@ class PlunderCurrentVillageInfo implements PlunderCurrentVillageType {
         assertInteger(currentVillageStore.id);
         this.id = currentVillageStore.id;
 
-        const plunderStore = usePlunderStore();
-        this.previousPage = plunderStore.page;
-
         const url = new URL(location.href);
-        url.search = 'screen=am_farm&Farm_page=0';
+        url.search = 'screen=am_farm&order=distance&dir=asc&Farm_page=0';
         this.pageUrl = url.href;
     };
 };
@@ -60,5 +58,20 @@ function queryPlunderPages(villageInfo: PlunderCurrentVillageType) {
     for (let i = 0; i <= lastPage; i++) {
         const plunderPage = new PlunderPage(plunderStore, i);
         villageInfo.pages.push(plunderPage);
+    };
+};
+
+export async function navigateToNextPage() {
+    try {
+        // Antes de ir para a próxima página, verifica se há tropas disponíveis em algum dos modelos.
+        const allTemplates = getAllTemplates();
+        const status = Array.from(allTemplates.values()).map((template) => template.ok.value);
+        if (status.every((ok) => ok === false)) return false;
+
+        return await ipcInvoke('navigate-to-next-plunder-page');
+
+    } catch (err) {
+        PlunderError.catch(err);
+        return false;
     };
 };

@@ -69,6 +69,7 @@ export async function ipcInvoke(channel: 'get-total-plunder-attack-details'): Pr
 export async function ipcInvoke(channel: 'get-custom-plunder-templates', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
 export async function ipcInvoke(channel: 'save-custom-plunder-template', template: CustomPlunderTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'destroy-custom-plunder-template', template: CustomPlunderTemplateType): Promise<boolean>;
+export async function ipcInvoke(channel: 'navigate-to-next-plunder-page'): Promise<boolean>;
 
 // Deimos
 export async function ipcInvoke(channel: 'get-deimos-file'): Promise<string | null>;

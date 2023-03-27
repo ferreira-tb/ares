@@ -5,7 +5,7 @@ import { usePlunderConfigStore } from '$vue/stores/plunder';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
 import { queryTargetsInfo, targets } from '$browser/lib/plunder/targets';
 import { queryAvailableUnits } from '$lib/plunder/units';
-import { queryCurrentVillageInfo } from '$lib/plunder/village';
+import { queryCurrentVillageInfo, navigateToNextPage } from '$lib/plunder/village';
 import { PlunderAttackWithLoot } from '$lib/plunder/resources';
 import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } from '$lib/plunder/attack';
 import { destroyWall } from '$lib/plunder/wall';
@@ -87,7 +87,7 @@ async function handleAttack(): Promise<void> {
         if (!best) continue;
 
         // Informações que serão enviadas ao painel.
-        const plunderAttack = new PlunderAttackWithLoot(info, best.carry);
+        const plunderAttack = new PlunderAttackWithLoot(info, best.carry.value);
 
         if (best.type === 'a' || best.type === 'b' || best.type === 'c') {
             const attackButton = info.button[best.type];
@@ -116,8 +116,8 @@ async function handleAttack(): Promise<void> {
     };
 
     // Caso, em toda tabela, não haja aldeia adequada para envio do ataque, verifica se há mais páginas.
-    // Em caso positivo, navega para a próxima após um breve delay.
-    setTimeout(() => console.log(config.pageDelay), generateRandomDelay(config.pageDelay, 200));
+    // Em caso positivo, tenta navegar para a próxima.
+    setTimeout(() => navigateToNextPage(), generateRandomDelay(config.pageDelay, 200));
 };
 </script>
 

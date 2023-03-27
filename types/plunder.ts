@@ -1,7 +1,7 @@
 import type { FarmUnitsAmount, UnitsToDestroyWall } from '$types/game';
 import type { UserAlias } from '$types/electron';
 
-export interface PlunderInfoType {
+export type PlunderInfoType = {
     /** Indica se as aldeias sob ataque estão ocultas. */
     readonly hideAttacked: boolean;
     /** Página atual. */
@@ -114,8 +114,6 @@ export type PlunderCurrentVillageType = {
     readonly pageUrl: string;
     /** Lista de páginas. */
     readonly pages: PlunderPageType[];
-    /** Última página acessada. */
-    previousPage: number;
 };
 
 export type PlunderCacheType = {

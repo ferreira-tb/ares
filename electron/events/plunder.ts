@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import { ipcMain, BrowserWindow } from 'electron';
 import { assertObject, assertInteger, isKeyOf, isInteger } from '@tb-dev/ts-guard';
 import { storeToRefs } from 'mechanus';
@@ -15,6 +16,7 @@ import {
     useLastPlunderHistoryStore,
     useTotalPlunderHistoryStore,
     useCacheStore,
+    usePlunderStore,
     usePlunderCacheStore,
     useBrowserViewStore,
     WorldUnit,
@@ -32,12 +34,14 @@ export function setPlunderEvents() {
     const panelWindow = getPanelWindow();
 
     const cacheStore = useCacheStore();
+    const plunderStore = usePlunderStore();
     const plunderCacheStore = usePlunderCacheStore();
     const plunderConfigStore = usePlunderConfigStore();
     const lastPlunderHistoryStore = useLastPlunderHistoryStore();
     const totalPlunderHistoryStore = useTotalPlunderHistoryStore();
     const browserViewStore = useBrowserViewStore();
 
+    const { page: currentPage } = storeToRefs(plunderStore);
     const { currentVillage } = storeToRefs(plunderCacheStore);
     const { allWebContents } = storeToRefs(browserViewStore);
 
@@ -171,6 +175,26 @@ export function setPlunderEvents() {
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
+        };
+    });
+
+    ipcMain.handle('navigate-to-next-plunder-page', async (e) => {
+        try {
+            if (!currentVillage.value) return false;
+
+            const pages = currentVillage.value.pages.filter(({ done }) => !done);
+            let nextPage = pages.find(({ page }) => page > currentPage.value);
+            if (!nextPage) nextPage = pages.find(({ page }) => page !== currentPage.value);
+            if (!nextPage) return false;
+            
+            const url = new URL(e.sender.getURL());
+            url.searchParams.set('Farm_page', nextPage.page.toString(10));
+            queueMicrotask(() => e.sender.loadURL(url.href));
+            return true;
+
+        } catch (err) {
+            MainProcessEventError.catch(err);
+            return false;
         };
     });
 };
