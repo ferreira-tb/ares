@@ -124,7 +124,7 @@ export function ipcSend(channel: 'open-custom-plunder-template-window'): void;
 export function ipcSend(channel: 'update-plunder-config', key: PlunderConfigKeys, value: PlunderConfigValues): void;
 export function ipcSend(channel: 'plunder-attack-sent', plunderAttack: PlunderAttack): void;
 export function ipcSend(channel: 'save-plunder-attack-details', details: PlunderAttackDetails): void;
-export function ipcSend(channel: 'update-plunder-current-village-info', villageInfo: PlunderCurrentVillageType): void;
+export function ipcSend(channel: 'update-plunder-current-village-info', villageInfo: PlunderCurrentVillageType | null): void;
 
 // Deimos
 export function ipcSend(channel: 'deimos-tag-is-ready'): void;

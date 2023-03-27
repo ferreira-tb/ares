@@ -91,8 +91,15 @@ export function setPlunderEvents() {
         };
     });
 
-    ipcMain.on('update-plunder-current-village-info', (_e, villageInfo: PlunderCurrentVillageType) => {
-        if (currentVillage.value && currentVillage.value.id === villageInfo.id) return;
+    ipcMain.on('update-plunder-current-village-info', (_e, villageInfo: PlunderCurrentVillageType | null) => {
+        if (
+            villageInfo &&
+            currentVillage.value &&
+            currentVillage.value.id === villageInfo.id
+        ) {
+            return;
+        };
+
         currentVillage.value = villageInfo;
     });
 

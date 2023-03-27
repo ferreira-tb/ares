@@ -34,14 +34,19 @@ class PlunderPage implements PlunderPageType {
 
 /** Obtém informações sobre a aldeia atual e as envia para o cache no processo principal. */
 export function queryCurrentVillageInfo() {
-    
     const villageInfo = new PlunderCurrentVillageInfo();
-    queryPlunderPages(villageInfo);
-    ipcSend('update-plunder-current-village-info', villageInfo);
+    const hasPages = queryPlunderPages(villageInfo);
+
+    if (hasPages) {
+        ipcSend('update-plunder-current-village-info', villageInfo);
+    } else {
+        ipcSend('update-plunder-current-village-info', null);
+    };
 };
 
 function queryPlunderPages(villageInfo: PlunderCurrentVillageType) {
-    const plunderNav = document.queryAndAssert('#plunder_list_nav table td:has(.paged-nav-item)');
+    const plunderNav = document.querySelector('#plunder_list_nav table td:has(.paged-nav-item)');
+    if (!plunderNav) return false;
 
     // A página atual está contida dentro de um elemento <strong> e não é um link.
     // Já as outras páginas são links, todas dentro de um elemento <a>.
@@ -59,6 +64,8 @@ function queryPlunderPages(villageInfo: PlunderCurrentVillageType) {
         const plunderPage = new PlunderPage(plunderStore, i);
         villageInfo.pages.push(plunderPage);
     };
+
+    return true;
 };
 
 export async function navigateToNextPage() {

@@ -11,7 +11,8 @@ import {
     arrayIncludesRef,
     wallLevelRef,
     positiveIntegerOrNullRef,
-    objectOrNullRef
+    objectOrNullRef,
+    integerOrNullRef
 } from '$electron/utils/mechanus';
 
 import type {
@@ -32,7 +33,7 @@ export function definePlunderStore(mechanus: Mechanus) {
     return mechanus.define('plunder', {
         hideAttacked: ref<boolean>(true, booleanRef),
         page: ref<number>(0, integerRef),
-        pageSize: ref<number>(15, integerRef),
+        pageSize: ref<number | null>(null, integerOrNullRef),
         plunderExhausted: ref<boolean>(false, booleanRef)
     } satisfies MechanusPlunderStoreType);
 };

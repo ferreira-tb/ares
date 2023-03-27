@@ -4,12 +4,9 @@ import type { PlunderConfigType, PlunderAttackDetails, BlindAttackPattern, UseCP
 import type { PiniaPlunderStoreType, PiniaPlunderConfigStoreType, PiniaPlunderHistoryStoreType } from '$types/stores';
 
 export const usePlunderStore = defineStore('plunder', () => {
-    /** Indica se as aldeias sob ataque estão ocultas. */
     const hideAttacked = ref<boolean>(true);
-    /** Página atual. */
     const page = ref<number>(0);
-    /** Quantidade de aldeias por página. */
-    const pageSize = ref<number>(15);
+    const pageSize = ref<number | null>(null);
     const plunderExhausted = ref<boolean>(false);
 
     return {

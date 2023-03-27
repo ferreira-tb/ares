@@ -20,7 +20,7 @@ const previousConfig = await ipcInvoke('get-plunder-config');
 if (previousConfig) config.$patch(previousConfig);
 
 /** Tabela do assistente de saque. */
-const plunderList = document.queryAndAssert('#plunder_list:has(tr[id^="village"]) tbody');
+const plunderList = document.querySelector('#plunder_list:has(tr[id^="village"]) tbody');
 
 // Reune informações necessárias para o funcionamento do Plunder.
 await queryTemplateData();
@@ -37,7 +37,7 @@ watchEffect(() => {
 });
 
 async function handleAttack(): Promise<void> {
-    if (!config.active) return;
+    if (!config.active || !plunderList) return;
     await queryAvailableUnits();
 
     // Seleciona todas as aldeias da tabela e itera sobre elas.
