@@ -16,7 +16,7 @@ import type {
     PlunderConfigValues,
     BlindAttackPattern,
     UseCPattern
-} from '$types/plunder.js';
+} from '$types/plunder';
 
 const dialog = useDialog();
 const message = useMessage();
