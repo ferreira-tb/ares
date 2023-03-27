@@ -7,7 +7,7 @@ import { ipcSend } from '$global/ipc';
 export async function getPlunderInfo() {
     try {
         const plunderInfo = await Deimos.invoke('get-plunder-info');
-        assertObject(plunderInfo, 'O objeto de informações do Plunder é inválido.');
+        assertObject(plunderInfo, 'Não foi possível obter as informações do Plunder.');
 
         const plunderStore = usePlunderStore();
         plunderStore.$patch(plunderInfo);
