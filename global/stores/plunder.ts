@@ -37,8 +37,10 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const maxDistance = ref<number>(20);
     const ignoreOlderThan = ref<number>(10);
     const plunderedResourcesRatio = ref<number>(1);
-    const plunderGroupID = ref<number | null>(null);
     const pageDelay = ref<number>(2000);
+
+    const plunderGroupID = ref<number | null>(null);
+    const fieldsPerWave = ref<number>(10);
 
     const blindAttackPattern = ref<BlindAttackPattern>('smaller');
     const useCPattern = ref<UseCPattern>('normal');
@@ -64,10 +66,11 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
             plunderedResourcesRatio: plunderedResourcesRatio.value,
             pageDelay: pageDelay.value,
 
-            blindAttackPattern: blindAttackPattern.value,
-            useCPattern: useCPattern.value,
+            plunderGroupID: plunderGroupID.value,
+            fieldsPerWave: fieldsPerWave.value,
 
-            plunderGroupID: plunderGroupID.value
+            blindAttackPattern: blindAttackPattern.value,
+            useCPattern: useCPattern.value
         };
     };
 
@@ -91,11 +94,12 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         plunderedResourcesRatio,
         pageDelay,
 
+        plunderGroupID,
+        fieldsPerWave,
+
         blindAttackPattern,
         useCPattern,
 
-        plunderGroupID,
-        
         raw
     } satisfies PiniaPlunderConfigStoreType;
 });

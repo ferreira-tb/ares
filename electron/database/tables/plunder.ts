@@ -41,8 +41,10 @@ export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCr
     declare readonly maxDistance: number;
     declare readonly ignoreOlderThan: number;
     declare readonly plunderedResourcesRatio: number;
-    declare readonly plunderGroupID: number | null;
     declare readonly pageDelay: number;
+
+    declare readonly plunderGroupID: number | null;
+    declare readonly fieldsPerWave: number;
 
     declare readonly blindAttackPattern: BlindAttackPattern;
     declare readonly useCPattern: UseCPattern;
@@ -121,57 +123,109 @@ PlunderConfig.init({
     destroyWallMaxDistance: {
         type: DataTypes.FLOAT,
         allowNull: false,
-        defaultValue: 20
+        defaultValue: 20,
+        validate: {
+            min: 1,
+            isFloat: true
+        }
     },
     attackDelay: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 200
+        defaultValue: 200,
+        validate: {
+            min: 100,
+            max: 5000,
+            isInt: true
+        }
     },
     resourceRatio: {
         type: DataTypes.FLOAT,
         allowNull: false,
-        defaultValue: 0.8
+        defaultValue: 0.8,
+        validate: {
+            min: 0.2,
+            max: 1,
+            isFloat: true
+        }
     },
     minutesUntilReload: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 10
+        defaultValue: 10,
+        validate: {
+            min: 1,
+            max: 60,
+            isInt: true
+        }
     },
     maxDistance: {
         type: DataTypes.FLOAT,
         allowNull: false,
-        defaultValue: 20
+        defaultValue: 20,
+        validate: {
+            min: 1,
+            isFloat: true
+        }
     },
     ignoreOlderThan: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 10
+        defaultValue: 10,
+        validate: {
+            isInt: true
+        }
     },
     plunderedResourcesRatio: {
         type: DataTypes.FLOAT,
         allowNull: false,
-        defaultValue: 1
-    },
-    plunderGroupID: {
-        type: DataTypes.INTEGER,
-        allowNull: true
+        defaultValue: 1,
+        validate: {
+            min: 0.2,
+            max: 1,
+            isFloat: true
+        }
     },
     pageDelay: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 2000
+        defaultValue: 2000,
+        validate: {
+            min: 1000,
+            max: 10000,
+            isInt: true
+        }
+    },
+
+    plunderGroupID: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    fieldsPerWave: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 10,
+        validate: {
+            min: 5,
+            isFloat: true
+        }
     },
 
     blindAttackPattern: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'smaller' satisfies BlindAttackPattern
+        defaultValue: 'smaller' satisfies BlindAttackPattern,
+        validate: {
+            isIn: [['smaller', 'bigger'] satisfies BlindAttackPattern[]]
+        }
     },
     useCPattern: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'normal' satisfies UseCPattern
+        defaultValue: 'normal' satisfies UseCPattern,
+        validate: {
+            isIn: [['normal', 'only'] satisfies UseCPattern[]]
+        }
     }
 }, { sequelize, tableName: 'plunder_config', timestamps: true });
 

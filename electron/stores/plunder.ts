@@ -67,10 +67,10 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         return refOptions;
     };
 
-    const maxDistanceValidator = (): MechanusRefOptions<number> => {
+    const maxDistanceValidator = (min: number = 1): MechanusRefOptions<number> => {
         const refOptions = { ...positiveNumberRef };
         refOptions.validator = (value: unknown): value is number => {
-            return isPositiveNumber(value) && value >= 1
+            return isPositiveNumber(value) && value >= min
         };
         return refOptions;
     };
@@ -101,8 +101,10 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const maxDistance = ref<number>(20, maxDistanceValidator());
     const ignoreOlderThan = ref<number>(10, positiveIntegerRef);
     const plunderedResourcesRatio = ref<number>(1, ratioValidator());
-    const plunderGroupID = ref<number | null>(null, positiveIntegerOrNullRef);
     const pageDelay = ref<number>(2000, pageDelayValidator());
+
+    const plunderGroupID = ref<number | null>(null, positiveIntegerOrNullRef);
+    const fieldsPerWave = ref<number>(10, maxDistanceValidator(5));
 
     const blindAttackPattern = ref<BlindAttackPattern>('smaller', arrayIncludesRef(blindAttackPatterns));
     const useCPattern = ref<UseCPattern>('normal', arrayIncludesRef(useCPatterns));
@@ -125,8 +127,10 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         maxDistance,
         ignoreOlderThan,
         plunderedResourcesRatio,
-        plunderGroupID,
         pageDelay,
+
+        plunderGroupID,
+        fieldsPerWave,
 
         blindAttackPattern,
         useCPattern,

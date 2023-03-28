@@ -73,10 +73,13 @@ export type PlunderConfigType = {
      * No entanto, essa opção permite ao usuário alterar o valor padrão.
      */
     plunderedResourcesRatio: number;
-    /** ID do grupo que será utilizado para atacar. */
-    plunderGroupID: number | null;
     /** Delay médio entre cada troca de página. */
     pageDelay: number;
+
+    /** ID do grupo que será utilizado para atacar. */
+    plunderGroupID: number | null;
+    /** Máximo de campos por onda. */
+    fieldsPerWave: number;
 
     /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
     blindAttackPattern: BlindAttackPattern;
