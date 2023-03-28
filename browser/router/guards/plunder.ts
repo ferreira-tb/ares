@@ -6,7 +6,7 @@ import { usePlunderStore, usePlunderConfigStore } from '$global/stores/plunder';
 import { ipcInvoke, ipcSend } from '$global/ipc';
 import type { Router } from 'vue-router';
 
-export function setNavigationGuards(router: Router) {
+export function setPlunderNavigationGuards(router: Router) {
     const plunderStore = usePlunderStore();
     const plunderConfigStore = usePlunderConfigStore();
     const currentVillageStore = useCurrentVillageStore();
@@ -14,10 +14,6 @@ export function setNavigationGuards(router: Router) {
     const { page: plunderPage } = storeToRefs(plunderStore);
     const { active: isPlunderActive } = storeToRefs(plunderConfigStore);
     const { id: currentVillageId } = storeToRefs(currentVillageStore);
-
-    router.beforeEach(async (to) => {
-        if (to.name === 'am_farm') await preparePlunderRoute();
-    });
 
     // As informações sobre a aldeia atual (para uso no AS) são atualizadas após o componente ser renderizado.
     // Isso significa que as informações presentes no cache no momento que o guarda é executado refletem a aldeia anterior.
@@ -42,7 +38,7 @@ export function setNavigationGuards(router: Router) {
     });
 };
 
-async function preparePlunderRoute() {
+export async function preparePlunderRoute() {
     await getPlunderInfo();
     await updatePlunderConfig();
     await nextTick();
