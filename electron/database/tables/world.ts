@@ -24,19 +24,31 @@ WorldConfig.init({
     },
     speed: {
         type: DataTypes.FLOAT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isFloat: true
+        }
     },
     unitSpeed: {
         type: DataTypes.FLOAT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isFloat: true
+        }
     },
     tradeCancelTime: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isInt: true
+        }
     },
     commandCancelTime: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isInt: true
+        }
     },
     archer: {
         type: DataTypes.BOOLEAN,
