@@ -1,4 +1,4 @@
-import { computed, nextTick, reactive, ref, toRaw } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { ipcRenderer } from 'electron';
 import { assert, isKeyOf, assertInteger, toIntegerStrict, isInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
@@ -24,10 +24,6 @@ class TemplateUnits implements FarmUnitsAmount {
     knight = 0;
     archer = 0;
     marcher = 0;
-
-    constructor() {
-        return reactive(this);
-    };
 };
 
 export class PlunderTemplate {
@@ -47,12 +43,8 @@ export class PlunderTemplate {
     /** Capacidade de carga. */
     readonly carry = ref(0);
     
-    /**
-     * Indica se há tropas o suficiente para o modelo ser usado.
-     * @see https://github.com/ferreira-tb/ares/issues/68
-     */
+    /** Indica se há tropas o suficiente para o modelo ser usado. */
     readonly ok = computed(() => {
-        if (this.carry.value === 0) return false;
         const unitStore = useUnitsStore();
         for (const [key, value] of Object.entries(this.units) as [FarmUnits, number][]) {
             if (unitStore[key] < value) return false;
@@ -166,6 +158,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * Se a opção `blindAttack` estiver ativada, todos os modelos com tropas disponíveis são retornados.
  * @param info - Informações sobre a aldeia-alvo.
  * @param config - Configurações do assistente de saque.
+ * @see https://github.com/ferreira-tb/ares/issues/68
  * @see https://github.com/ferreira-tb/ares/issues/69
  */
 async function filterTemplates(info: PlunderTargetInfo, config: ConfigReturnType): Promise<PlunderTemplate[]> {
@@ -181,6 +174,7 @@ async function filterTemplates(info: PlunderTargetInfo, config: ConfigReturnType
     const resources = info.res.total;
     for (const template of allTemplates.values()) {
         if (
+            template.carry.value === 0 ||
             template.ok.value !== true ||
             template.type === 'c' ||
             (template.type === 'a' && !info.button.a) ||
@@ -277,7 +271,7 @@ async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType): 
         plunderTemplate.units[unit] = amount;
     };
 
-    const carry = await ipcInvoke('calc-carry-capacity', toRaw(plunderTemplate.units));
+    const carry = await ipcInvoke('calc-carry-capacity', plunderTemplate.units);
     assertInteger(carry, `A capacidade de carga do modelo ${template.type} não é um número inteiro.`);
     plunderTemplate.carry.value = carry;
 
