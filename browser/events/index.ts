@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron';
 import { Deimos } from '$deimos/shared/ipc';
 import { useAresStore } from '$global/stores/ares';
 import { useFeaturesStore } from '$global/stores/features';
+import { useGroupsStore } from '$global/stores/groups';
 import { usePlayerStore } from '$global/stores/player';
 import { useCurrentVillageStore } from '$global/stores/village';
 import { ipcSend } from '$global/ipc';
@@ -14,9 +15,10 @@ export function setBrowserEvents(pinia: Pinia) {
     // Pinia.
     const aresStore = useAresStore(pinia);
     const featuresStore = useFeaturesStore(pinia);
+    const groupsStore = useGroupsStore(pinia);
     const playerStore = usePlayerStore(pinia);
     const currentVillageStore = useCurrentVillageStore(pinia);
-
+    
     ipcRenderer.on('get-game-data', async () => {
         try {
             const gameData = await Deimos.invoke('get-game-data');
@@ -25,6 +27,7 @@ export function setBrowserEvents(pinia: Pinia) {
             ipcSend('update-game-data', gameData);
             aresStore.$patch(gameData.ares);
             featuresStore.$patch(gameData.features);
+            groupsStore.$patch(gameData.groups);
             playerStore.$patch(gameData.player);
             currentVillageStore.$patch(gameData.currentVillage);
             

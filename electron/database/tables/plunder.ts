@@ -43,7 +43,7 @@ export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCr
     declare readonly plunderedResourcesRatio: number;
     declare readonly pageDelay: number;
 
-    declare readonly plunderGroupID: number | null;
+    declare readonly plunderGroupId: number | null;
     declare readonly fieldsPerWave: number;
 
     declare readonly blindAttackPattern: BlindAttackPattern;
@@ -197,7 +197,7 @@ PlunderConfig.init({
         }
     },
 
-    plunderGroupID: {
+    plunderGroupId: {
         type: DataTypes.INTEGER,
         allowNull: true
     },

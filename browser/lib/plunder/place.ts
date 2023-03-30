@@ -9,8 +9,7 @@ export function openPlace(placeButton: PlunderTargetInfo['button']['place']) {
             const found = mutations.some((mutation) => {
                 return Array.from(mutation.addedNodes).some((node) => {
                     if (!isInstanceOf(node, HTMLElement)) return false;
-                    const id = node.getAttribute('id');
-                    return id === 'command-data-form';
+                    return node.matches('#command-data-form');
                 });
             });
 

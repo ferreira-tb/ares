@@ -1,4 +1,4 @@
-import { assertObject, assertInteger } from '@tb-dev/ts-guard';
+import { assertInteger } from '@tb-dev/ts-guard';
 import { useUnitsStore } from '$global/stores/units';
 import { ipcInvoke, ipcSend } from '$global/ipc';
 import { openPlace } from '$lib/plunder/place';
@@ -15,9 +15,9 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
 
         // Obtém as unidades necessárias para destruir a muralha.
         const demolitionTemplate = await ipcInvoke('get-demolition-troops-config');
-        assertObject(demolitionTemplate, 'Não foi possível obter a configuração de tropas de demolição.');
-        const neededUnits: DemolitionTroops = demolitionTemplate.units[info.wallLevel.toString(10) as StringWallLevel];
-        assertObject(neededUnits, 'Não foi possível obter as unidades necessárias para destruir a muralha.');
+        if (!demolitionTemplate) throw new PlunderError('Could not get demolition troops config.');
+        const neededUnits = demolitionTemplate.units[info.wallLevel.toString(10) as StringWallLevel];
+        if (!neededUnits) throw new PlunderError(`Could not get demolition troops for wall level ${info.wallLevel}.`);
 
         // Verifica se há unidades o suficiente para destruir a muralha.
         const unitStore = useUnitsStore();
@@ -31,7 +31,7 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
         // Se o ataque foi enviado com sucesso, atualiza o histórico.
         if (sent) {
             const carry = await ipcInvoke('calc-carry-capacity', neededUnits);
-            assertInteger(carry, 'Não foi possível calcular a capacidade de carga.');
+            assertInteger(carry, 'Could not calculate carry capacity when destroying wall.');
             const attack = new PlunderAttackWithLoot(info, carry);
             attack.destroyedWalls = info.wallLevel;
             ipcSend('plunder-attack-sent', attack);

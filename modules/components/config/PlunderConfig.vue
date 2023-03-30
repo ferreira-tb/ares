@@ -37,7 +37,7 @@ const ignoreOlderThan = ref<number>(config.value?.ignoreOlderThan ?? 10);
 const plunderedResourcesRatio = ref<number>(config.value?.plunderedResourcesRatio ?? 1);
 const pageDelay = ref<number>(config.value?.pageDelay ?? 2000);
 
-const plunderGroupID = ref<number | null>(config.value?.plunderGroupID ?? null);
+const plunderGroupId = ref<number | null>(config.value?.plunderGroupId ?? null);
 const fieldsPerWave = ref<number>(config.value?.fieldsPerWave ?? 10);
 
 const blindAttackPattern = ref<BlindAttackPattern>(config.value?.blindAttackPattern ?? 'smaller');
@@ -55,7 +55,7 @@ watch(ignoreOlderThan, (v) => updateConfig('ignoreOlderThan', v));
 watch(plunderedResourcesRatio, (v) => updateConfig('plunderedResourcesRatio', v));
 watch(pageDelay, (v) => updateConfig('pageDelay', v));
 
-watch(plunderGroupID, (v) => updateConfig('plunderGroupID', v));
+watch(plunderGroupId, (v) => updateConfig('plunderGroupId', v));
 watch(fieldsPerWave, (v) => updateConfig('fieldsPerWave', v));
 
 watch(blindAttackPattern, (v) => updateConfig('blindAttackPattern', v));
@@ -72,7 +72,7 @@ useIpcRendererOn('plunder-config-updated', (_e, key: PlunderConfigKeys, value: P
     };
 });
 
-function updateConfig(name: 'plunderGroupID', value: number | null): void;
+function updateConfig(name: 'plunderGroupId', value: number | null): void;
 function updateConfig(name: 'blindAttackPattern', value: BlindAttackPattern): void;
 function updateConfig(name: 'useCPattern', value: UseCPattern): void;
 function updateConfig(name: PlunderConfigKeys, value: number): void;
@@ -246,7 +246,7 @@ const plunderGroupOptions = computed(() => {
             <NGridItem>
                 <div class="plunder-config-select">
                     <NSelect
-                        v-model:value="plunderGroupID"
+                        v-model:value="plunderGroupId"
                         :options="plunderGroupOptions"
                         placeholder="Selecione um grupo"
                         :disabled="plunderGroupOptions.length === 0"

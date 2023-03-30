@@ -1,7 +1,7 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
 import { getRouteNames } from '$global/utils/router';
 import Default from '$global/views/Default.vue';
-import Plunder from '$browser/views/Plunder.vue';
+import PlunderView from '$browser/views/PlunderView.vue';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/am_farm',
         name: 'am_farm',
-        component: Plunder
+        component: PlunderView
     }
 ];
 

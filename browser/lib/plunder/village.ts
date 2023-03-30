@@ -1,11 +1,7 @@
 import { assertInteger } from '@tb-dev/ts-guard';
 import { useCurrentVillageStore } from '$global/stores/village';
 import { usePlunderStore } from '$global/stores/plunder';
-import { ipcSend, ipcInvoke } from '$global/ipc';
-import { getAllTemplates } from '$lib/plunder/templates';
-import { getPlunderTargets } from '$lib/plunder/targets';
-import { usePlunderConfigStore } from '$global/stores/plunder';
-import { PlunderError } from '$browser/error';
+import { ipcSend } from '$global/ipc';
 import { plunderSearchParams } from '$global/utils/constants';
 import type { PlunderCurrentVillageType, PlunderPageType } from '$types/plunder';
 
@@ -69,26 +65,4 @@ function queryPlunderPages(villageInfo: PlunderCurrentVillageType) {
     };
 
     return true;
-};
-
-export async function navigateToNextPage() {
-    try {
-        // Verifica se há tropas disponíveis em algum dos modelos.
-        const allTemplates = getAllTemplates();
-        const status = Array.from(allTemplates.values()).map((template) => template.ok.value);
-        if (status.every((ok) => ok === false)) return false;
-
-        // Em seguida, verifica se algum dos alvos atuais obedece à distância máxima permitida.
-        const targets = getPlunderTargets();
-        const plunderConfigStore = usePlunderConfigStore();
-        
-        const distanceList = Array.from(targets.values(), (target) => target.distance);
-        if (distanceList.every((distance) => distance >= plunderConfigStore.maxDistance)) return false;
-
-        return await ipcInvoke('navigate-to-next-plunder-page');
-
-    } catch (err) {
-        PlunderError.catch(err);
-        return false;
-    };
 };

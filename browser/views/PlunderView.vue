@@ -1,51 +1,92 @@
 <script setup lang="ts">
-import { watchEffect } from 'vue';
+import { ref, nextTick, watch, watchEffect } from 'vue';
+import { computedEager } from '@vueuse/core';
+import { assertPositiveInteger } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
+import { useAresStore } from '$global/stores/ares';
 import { usePlunderConfigStore } from '$global/stores/plunder';
+import { useCurrentVillageStore } from '$global/stores/village';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
 import { queryTargetsInfo, targets } from '$browser/lib/plunder/targets';
 import { queryAvailableUnits } from '$lib/plunder/units';
-import { queryCurrentVillageInfo, navigateToNextPage } from '$lib/plunder/village';
+import { queryCurrentVillageInfo } from '$lib/plunder/village';
 import { PlunderAttackWithLoot } from '$lib/plunder/resources';
 import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } from '$lib/plunder/attack';
 import { destroyWall } from '$lib/plunder/wall';
 import { openPlace } from '$lib/plunder/place';
+import { handleLackOfTargets } from '$lib/plunder/next';
+import { queryPlunderGroupInfo, updateGroupInfo } from '$lib/plunder/group';
 import { PlunderError } from '$browser/error';
 import { ipcSend } from '$global/ipc';
 import { generateRandomDelay } from '$global/utils/helpers';
 import Reload from '$browser/components/plunder/Reload.vue';
+import type { PlunderGroupType } from '$types/plunder';
 
+const ares = useAresStore();
 const config = usePlunderConfigStore();
+const currentVillage = useCurrentVillageStore();
 
 /** Tabela do assistente de saque. */
 const plunderList = document.querySelector('#plunder_list:has(tr[id^="village"]) tbody');
+/** Informações sobre o grupo de saque. */
+const groupInfo = ref<PlunderGroupType | null>(null);
+groupInfo.value = await queryPlunderGroupInfo();
+
+/** Indica se a aldeia atual pertence ao grupo de saque. */
+const belongsToPlunderGroup = computedEager<boolean>(() => {
+    console.log(groupInfo.value, currentVillage.id);
+    if (!groupInfo.value || !currentVillage.id) return false;
+    console.log(groupInfo.value.villages);
+    return groupInfo.value.villages.has(currentVillage.id);
+});
+
+/** Indica se ataques devem ser enviados. */
+const shouldAttack = computedEager<boolean>(() => {
+    if (ares.captcha || !config.active || !plunderList) return false;
+    if (config.groupAttack && !belongsToPlunderGroup.value) return false;
+    return true;
+});
 
 // Reune informações necessárias para o funcionamento do Plunder.
 await queryTemplateData();
 queryTargetsInfo();
 
 // Não é necessário bloquear a execução, visto que não são informações críticas para os primeiros ataques.
-queueMicrotask(() => queryCurrentVillageInfo());
+nextTick(() => queryCurrentVillageInfo());
+
+watch(() => config.groupAttack, (newValue) => updateGroupInfo(newValue, groupInfo));
+watch(() => config.plunderGroupId, (newValue) => {
+    if (!newValue) return;
+    ipcSend('navigate-to-plunder-group');
+});
 
 watchEffect(() => {
     // Interrompe qualquer ataque em andamento.
     attackEventTarget.dispatchEvent(new Event('stop'));
     // Começa a atacar se o Plunder estiver ativado.
-    if (config.active) handleAttack();
+    if (config.active) {
+        // Se a aldeia atual não pertencer ao grupo de saque, navega para alguma aldeia do grupo.
+        if (config.groupAttack && !belongsToPlunderGroup.value) {
+            ipcSend('navigate-to-next-plunder-village');
+            return;
+        };
+
+        handleAttack();
+    };
 });
 
 async function handleAttack(): Promise<void> {
-    if (!config.active || !plunderList) return;
+    if (!shouldAttack.value) return;
     await queryAvailableUnits();
 
     // Seleciona todas as aldeias da tabela e itera sobre elas.
-    const villages = plunderList.queryAsMap('tr[data-tb-village]', (e) => e.getAttributeStrict('data-tb-village'));
+    const villages = plunderList!.queryAsMap('tr[data-tb-village]', (e) => e.getAttributeStrict('data-tb-village'));
     for (const [id, village] of villages.entries()) {
         // Ignora caso ela esteja oculta, removendo-a da tabela.
         const style = village.getAttribute('style');
         if (style && /display:\s*none/.test(style)) {
-            village.remove();
             targets.delete(id);
+            village.remove();
             continue;
         };
 
@@ -53,6 +94,7 @@ async function handleAttack(): Promise<void> {
         const attackIcon = village.querySelector('img[src*="attack.png" i]');
         if (attackIcon) {
             targets.delete(id);
+            village.remove();
             continue;
         };
 
@@ -63,6 +105,12 @@ async function handleAttack(): Promise<void> {
         if (info.distance > config.maxDistance) continue;
         // Ignora caso o relatório seja muito antigo.
         if ((Date.now() - info.lastAttack) > config.ignoreOlderThan * 3600000) continue;
+
+        if (config.groupAttack && groupInfo.value) {
+            assertPositiveInteger(currentVillage.id, `${currentVillage.id} is not a valid village id.`);
+            const groupVillage = groupInfo.value.villages.getStrict(currentVillage.id);
+            if (info.distance > groupVillage.waveMaxDistance) continue;
+        };
 
         // Destrói a muralha da aldeia caso `destroyWall` esteja ativado.
         // Se o ataque for enviado com sucesso, pula para a próxima aldeia.
@@ -89,7 +137,7 @@ async function handleAttack(): Promise<void> {
 
         if (best.type === 'a' || best.type === 'b' || best.type === 'c') {
             const attackButton = info.button[best.type];
-            assertElement(attackButton, `O botão do modelo ${best.type.toUpperCase()} não foi encontrado.`);
+            assertElement(attackButton, `Could not find attack button for template ${best.type.toUpperCase()}.`);
 
             return prepareAttack(plunderAttack, attackButton)
                 .then(() => best.reset())
@@ -102,7 +150,7 @@ async function handleAttack(): Promise<void> {
             await openPlace(info.button.place);
             const sent = await sendAttackFromPlace(best.units);
             if (!sent) {
-                throw new PlunderError(`O ataque usando o modelo ${best.type.toUpperCase()} falhou.`);
+                throw new PlunderError(`Attack using template ${best.type.toUpperCase()} could not be sent.`);
             };
 
             ipcSend('plunder-attack-sent', plunderAttack);
@@ -114,8 +162,8 @@ async function handleAttack(): Promise<void> {
     };
 
     // Caso, em toda tabela, não haja aldeia adequada para envio do ataque, verifica se há mais páginas.
-    // Em caso positivo, tenta navegar para a próxima.
-    setTimeout(() => navigateToNextPage(), generateRandomDelay(config.pageDelay, 200));
+    // Após acessar todas as páginas possíveis, navega para a próxima aldeia se o ataque em grupo estiver ativado.
+    setTimeout(() => handleLackOfTargets(groupInfo.value), generateRandomDelay(config.pageDelay, 200));
 };
 </script>
 

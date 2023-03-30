@@ -6,8 +6,9 @@ Ele visa substituir o [Insidious](https://github.com/ferreira-tb/insidious), mas
 Até o momento, não há previsão para o lançamento da versão beta.
 
 ## Colabore
-Se você possui conhecimento em TypeScript, Node.js ou alguma framework front-end, como Vue ou React, e quiser ajudar, basta entrar em contato pelo [Discord](https://discord.gg/tNQbrqbmdK).
+Se você possui conhecimento em TypeScript, Node.js ou alguma framework front-end, como Vue ou React, e quiser ajudar, basta entrar em contato pelo [Discord](https://discord.gg/tNQbrqbmdK) ou [WhatsApp](https://chat.whatsapp.com/HEUOoLakdSu19Lr8Ufgf26).
 
 ## Links úteis
 
 - Discord: https://discord.gg/tNQbrqbmdK
+- WhatsApp: https://chat.whatsapp.com/HEUOoLakdSu19Lr8Ufgf26

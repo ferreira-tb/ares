@@ -7,7 +7,7 @@ import { MainProcessError } from '$electron/error';
 export async function readDeimosFile() {
     try {
         const deimos = await fs.readFile(deimosJs, 'utf8');
-        assertString(deimos, 'O arquivo deimos.js não pode estar vazio.');
+        assertString(deimos, 'Could not read deimos.js file.');
         return deimos;
 
     } catch (err) {

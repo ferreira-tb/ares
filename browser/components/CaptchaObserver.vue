@@ -43,8 +43,7 @@ function thereIsBotCheckAmongNodes(rawNodes: NodeList) {
 
 function isBotCheck(node: Node) {
     if (!isInstanceOf(node, HTMLElement)) return false;
-    const id = node.getAttribute('id');
-    return id === 'bot_check';
+    return node.matches('#bot_check');
 };
 </script>
 

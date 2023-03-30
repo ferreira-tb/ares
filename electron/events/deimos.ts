@@ -71,7 +71,7 @@ export function setDeimosEvents() {
                         };
                         break;
                     default:
-                        throw new ProxyStoreError(`A chave "${key}" não é válida para o objeto \"gameData\".`);
+                        throw new ProxyStoreError(`Key \"${key}\" is not a valid game data key.`);
                 };
             };
 

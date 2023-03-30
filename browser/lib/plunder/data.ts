@@ -6,7 +6,7 @@ import { ipcSend, ipcInvoke } from '$global/ipc';
 export async function getPlunderInfo() {
     try {
         const plunderInfo = await Deimos.invoke('get-plunder-info');
-        if (!plunderInfo) throw new PlunderError('Não foi possível obter os dados do assistente de saque.');
+        if (!plunderInfo) throw new PlunderError('Could not get plunder info.');
         
         const plunderStore = usePlunderStore();
         plunderStore.$patch(plunderInfo);

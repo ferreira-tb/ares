@@ -99,7 +99,7 @@ export async function queryTemplateData() {
     // Campos do modelo A.
     const aRow = table.queryAndAssert('tr:nth-of-type(2):has(td input[type="text"][name^="spear" i])');
     const aFields = aRow.queryAsArray('td input[type="text"][name]');
-    assert(aFields.length >= 7, 'Não foi possível encontrar os campos de texto do modelo A.');
+    assert(aFields.length >= 7, 'Could not find all text fields for template A.');
     parseUnitAmount('a', aFields);
 
     const aCarryField = aRow.queryAndAssert('td:not(:has(input[data-tb-template-a])):not(:has(input[type*="hidden"]))');
@@ -108,7 +108,7 @@ export async function queryTemplateData() {
     // Campos do modelo B.
     const bRow = table.queryAndAssert('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
     const bFields = bRow.queryAsArray('td input[type="text"][name]');
-    assert(bFields.length >= 7, 'Não foi possível encontrar os campos de texto do modelo B.');
+    assert(bFields.length >= 7, 'Could not find all text fields for template B.');
     parseUnitAmount('b', bFields);
 
     const bCarryField = bRow.queryAndAssert('td:not(:has(input[data-tb-template-b])):not(:has(input[type*="hidden"]))');
@@ -143,7 +143,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
         /** O valor no atributo `name` é algo como `spear[11811]`. */
         const unitType = fieldName.replace(/\[\d+\]/g, '');
 
-        assertFarmUnit(unitType, PlunderError, `${unitType} não é uma unidade válida.`);
+        assertFarmUnit(unitType, PlunderError, `${unitType} is not a valid farm unit.`);
         field.setAttribute(`data-tb-template-${row}`, unitType);
 
         /** Contém a quantidade de unidades. */
@@ -231,7 +231,7 @@ export async function pickBestTemplate(info: PlunderTargetInfo): Promise<Plunder
 
 async function getTemplateC(info: PlunderTargetInfo): Promise<PlunderTemplate | null> {
     try {
-        assertElement(info.button.c, 'Não foi possível encontrar o botão de ataque do modelo C.');
+        assertElement(info.button.c, 'Could not find template C button.');
         const json = info.button.c.getAttributeStrict('data-units-forecast');
         const cUnits = JSON.parse(json) as UnitAmount;
         const templateC = allTemplates.getStrict('c');
@@ -266,13 +266,13 @@ async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType): 
     const plunderTemplate = new PlunderTemplate(template.type, template.alias);
 
     for (const [unit, amount] of Object.entries(template.units) as [FarmUnits, number][]) {
-        assertFarmUnit(unit, PlunderError, `${unit} não é uma unidade válida.`);
-        assertInteger(amount, `${amount} não é um número inteiro.`);
+        assertFarmUnit(unit, PlunderError, `${unit} is not a valid farm unit.`);
+        assertInteger(amount, `Expected ${unit} amount to be an integer, but got ${amount}.`);
         plunderTemplate.units[unit] = amount;
     };
 
     const carry = await ipcInvoke('calc-carry-capacity', plunderTemplate.units);
-    assertInteger(carry, `A capacidade de carga do modelo ${template.type} não é um número inteiro.`);
+    assertInteger(carry, `Expected carry capacity of template ${template.type} to be an integer, but got ${carry}.`);
     plunderTemplate.carry.value = carry;
 
     return plunderTemplate;

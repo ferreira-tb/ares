@@ -39,7 +39,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const plunderedResourcesRatio = ref<number>(1);
     const pageDelay = ref<number>(2000);
 
-    const plunderGroupID = ref<number | null>(null);
+    const plunderGroupId = ref<number | null>(null);
     const fieldsPerWave = ref<number>(10);
 
     const blindAttackPattern = ref<BlindAttackPattern>('smaller');
@@ -66,7 +66,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
             plunderedResourcesRatio: plunderedResourcesRatio.value,
             pageDelay: pageDelay.value,
 
-            plunderGroupID: plunderGroupID.value,
+            plunderGroupId: plunderGroupId.value,
             fieldsPerWave: fieldsPerWave.value,
 
             blindAttackPattern: blindAttackPattern.value,
@@ -94,7 +94,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         plunderedResourcesRatio,
         pageDelay,
 
-        plunderGroupID,
+        plunderGroupId,
         fieldsPerWave,
 
         blindAttackPattern,

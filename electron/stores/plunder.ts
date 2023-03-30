@@ -19,7 +19,8 @@ import type {
     BlindAttackPattern,
     UseCPattern,
     PlunderCurrentVillageType,
-    DemolitionTemplateType
+    DemolitionTemplateType,
+    PlunderGroupType
 } from '$types/plunder';
 
 import type {
@@ -103,7 +104,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const plunderedResourcesRatio = ref<number>(1, ratioValidator());
     const pageDelay = ref<number>(2000, pageDelayValidator());
 
-    const plunderGroupID = ref<number | null>(null, positiveIntegerOrNullRef);
+    const plunderGroupId = ref<number | null>(null, positiveIntegerOrNullRef);
     const fieldsPerWave = ref<number>(10, maxDistanceValidator(5));
 
     const blindAttackPattern = ref<BlindAttackPattern>('smaller', arrayIncludesRef(blindAttackPatterns));
@@ -129,7 +130,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         plunderedResourcesRatio,
         pageDelay,
 
-        plunderGroupID,
+        plunderGroupId,
         fieldsPerWave,
 
         blindAttackPattern,
@@ -165,6 +166,7 @@ export function setPlunderHistoryStores(mechanus: Mechanus) {
 export function definePlunderCacheStore(mechanus: Mechanus) {
     return mechanus.define('plunderCache', {
         currentVillage: ref<PlunderCurrentVillageType | null>(null, objectOrNullRef<PlunderCurrentVillageType>()),
+        plunderGroup: ref<PlunderGroupType | null>(null, objectOrNullRef<PlunderGroupType>()),
         demolitionTroops: ref<DemolitionTemplateType | null>(null, objectOrNullRef<DemolitionTemplateType>())
     } satisfies MechanusPlunderCacheStoreType);
 };

@@ -11,7 +11,7 @@ const { isDeimosReady } = storeToRefs(browserStore);
 whenever(isDeimosReady, () => ipcSend('deimos-tag-is-ready'), { flush: 'sync' });
 
 const deimos = await ipcInvoke('get-deimos-file');
-assertString(deimos, 'Não foi possível iniciar o Deimos.');
+assertString(deimos, 'Could not get Deimos file');
 
 const deimosBlob = new Blob([deimos], { type: 'text/javascript' });
 const objectURL = URL.createObjectURL(deimosBlob);
@@ -23,7 +23,7 @@ scriptTag.onload = () => isDeimosReady.value = true;
 document.head.appendChild(scriptTag);
 
 onBeforeUnmount(() => {
-    URL.revokeObjectURL(objectURL);
     document.head.removeChild(scriptTag);
+    URL.revokeObjectURL(objectURL);
 });
 </script>

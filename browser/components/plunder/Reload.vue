@@ -26,7 +26,7 @@ watchEffect(() => {
 
 function setPlunderTimeout() {
     return new Promise<void>((resolve) => {
-        const timeout = setTimeout(() => ipcSend('reload-main-view'), plunderTimeout.value);
+        const timeout = setTimeout(() => reloadMainView(), plunderTimeout.value);
         const cleanup = useEventListener(eventTarget, 'cancelreload', cancel);
 
         function cancel() {
@@ -35,6 +35,12 @@ function setPlunderTimeout() {
             resolve();
         };
     });
+};
+
+function reloadMainView() {
+    ipcSend('update-plunder-cache-village-info', null);
+    ipcSend('update-plunder-cache-group-info', null);
+    ipcSend('reload-main-view');
 };
 </script>
 
