@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
-import { ipcSend } from '$global/ipc';
+import { ipcSend, ipcInvoke } from '$global/ipc';
+import { PlunderError } from '$browser/error';
 import ReloadMessage from '$browser/components/plunder/ReloadMessage.vue';
 
 const props = defineProps<{
@@ -37,10 +38,16 @@ function setPlunderTimeout() {
     });
 };
 
-function reloadMainView() {
-    ipcSend('update-plunder-cache-village-info', null);
-    ipcSend('update-plunder-cache-group-info', null);
-    ipcSend('reload-main-view');
+async function reloadMainView() {
+    try {
+        ipcSend('update-plunder-cache-village-info', null);
+        const updated = await ipcInvoke('update-plunder-cache-group-info', null);
+        if (!updated) throw new PlunderError('Failed to update group info.');
+    } catch (err) {
+        PlunderError.catch(err);
+    } finally {
+        ipcSend('reload-main-view');
+    };
 };
 </script>
 

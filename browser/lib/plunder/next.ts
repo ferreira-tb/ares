@@ -1,4 +1,5 @@
-import { ipcInvoke, ipcSend } from '$global/ipc';
+import { toRaw } from 'vue';
+import { ipcInvoke } from '$global/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
 import { getPlunderTargets } from '$lib/plunder/targets';
 import { PlunderError } from '$browser/error';
@@ -48,7 +49,7 @@ async function navigateToNextPage(
     };
 };
 
-function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>, groupInfo: PlunderGroupType) {
+async function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>, groupInfo: PlunderGroupType) {
     try {
         const currentVillageId = useCurrentVillageStore().getId();
         const groupVillage = groupInfo.villages.getStrict(currentVillageId);
@@ -60,7 +61,8 @@ function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>,
             groupVillage.waveMaxDistance += config.fieldsPerWave;
         };
 
-        ipcSend('update-plunder-cache-group-info', groupInfo);
+        const updated = await ipcInvoke('update-plunder-cache-group-info', toRaw(groupInfo));
+        if (!updated) throw new PlunderError('Failed to update group info.');
         ipcInvoke('navigate-to-next-plunder-village', currentVillageId);
         
     } catch (err) {

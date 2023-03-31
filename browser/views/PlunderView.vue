@@ -34,9 +34,7 @@ groupInfo.value = await queryPlunderGroupInfo();
 
 /** Indica se a aldeia atual pertence ao grupo de saque. */
 const belongsToPlunderGroup = computedEager<boolean>(() => {
-    console.log(groupInfo.value, currentVillage.id);
     if (!groupInfo.value || !currentVillage.id) return false;
-    console.log(groupInfo.value.villages);
     return groupInfo.value.villages.has(currentVillage.id);
 });
 

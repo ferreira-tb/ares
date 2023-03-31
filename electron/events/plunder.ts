@@ -115,11 +115,13 @@ export function setPlunderEvents() {
     // Retorna as informações sobre a aldeia atual armazenadas no cache do Plunder.
     ipcMain.handle('get-plunder-cache-village-info', () => currentVillage.value);
 
-    ipcMain.on('update-plunder-cache-group-info', (_e, groupInfo: PlunderGroupType | null) => {
+    ipcMain.handle('update-plunder-cache-group-info', (_e, groupInfo: PlunderGroupType | null) => {
         try {
             plunderGroup.value = groupInfo;
+            return true;
         } catch (err) {
             MainProcessEventError.catch(err);
+            return false;
         };
     });
 

@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { until, useStyleTag, useMutationObserver } from '@vueuse/core';
 import { isInstanceOf, assertPositiveInteger } from '@tb-dev/ts-guard';
-import { ipcSend, ipcInvoke } from '$global/ipc';
+import { ipcInvoke } from '$global/ipc';
 import { useFeaturesStore } from '$global/stores/features';
 import { usePlunderConfigStore } from '$global/stores/plunder';
 import { PlunderError } from '$browser/error';
@@ -32,9 +32,10 @@ export async function updateGroupInfo(isGroupAttackEnabled: boolean, groupInfo: 
             groupInfo.value = await queryPlunderGroupInfo();
         } else {
             groupInfo.value = null;
-            ipcSend('update-plunder-cache-group-info', null);
+            const updated = await ipcInvoke('update-plunder-cache-group-info', null);
+            if (!updated) throw new PlunderError('Failed to update group info.');
         };
-        
+
     } catch (err) {
         PlunderError.catch(err);
     };
@@ -65,7 +66,7 @@ export async function queryPlunderGroupInfo(): Promise<PlunderGroupType | null> 
         return null;
 
     } finally {
-        ipcSend('update-plunder-cache-group-info', groupInfo);
+        ipcInvoke('update-plunder-cache-group-info', groupInfo);
     };
 };
 
