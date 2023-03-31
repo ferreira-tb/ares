@@ -337,8 +337,8 @@ const plunderGroupOptions = computed(() => {
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
                 <LabelPopover>
-                    <template #trigger>Recarregamento automático</template>
-                    <span>Tempo, em minutos, até que a página seja recarregada automaticamente durante o saque.</span>
+                    <template #trigger>Atualização automática</template>
+                    <span>Tempo, em minutos, até que a página seja atualizada automaticamente durante o saque.</span>
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
