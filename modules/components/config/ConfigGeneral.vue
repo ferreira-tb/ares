@@ -28,6 +28,7 @@ watch(config, () => ipcSend('update-app-general-config', toRaw(config)));
 
 <style scoped>
 .general-config {
+    padding-top: 0.5em;
     padding-bottom: 2em;
 }
 </style>
