@@ -3,11 +3,11 @@ import { app, BrowserWindow, BrowserView } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { setAppMenu } from '$electron/menu/menu';
 import { sequelize } from '$database/database';
-import { UserConfig, useBrowserViewStore } from '$interface/index';
 import { setEvents } from '$electron/events/index';
 import { gameURL, favicon, panelHtml, mainHtml, browserJs } from '$electron/utils/constants';
 import { setBrowserViewAutoResize } from '$electron/utils/view';
 import { MainProcessError } from '$electron/error';
+import { AppConfig, useBrowserViewStore, useAppGeneralConfigStore } from '$interface/index';
 
 process.env.ARES_MODE = 'dev';
 
@@ -93,7 +93,7 @@ function createWindow() {
 
     mainWindow.once('ready-to-show', () => mainWindow.show());
     panelWindow.once('ready-to-show', async () => {
-        await UserConfig.setPanelBounds();
+        await AppConfig.setPanelBounds();
         panelWindow.show();
         panelWindow.webContents.send('panel-visibility-did-change', panelWindow.isVisible());
     });
@@ -102,8 +102,19 @@ function createWindow() {
 app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
 
-if (process.env.ARES_MODE === 'dev') {
-    sequelize.sync({ alter: { drop: false } }).catch(MainProcessError.catch);
-} else {
-    sequelize.sync().catch(MainProcessError.catch);
-};
+// Inicializa o banco de dados.
+(async () => {
+    try {
+        if (process.env.ARES_MODE === 'dev') {
+            sequelize.sync({ alter: { drop: false } });
+        } else {
+            sequelize.sync();
+        };
+
+        const generalConfigStore = useAppGeneralConfigStore();
+        await AppConfig.setGeneralConfig(generalConfigStore);
+        
+    } catch (err) {
+        MainProcessError.catch(err);
+    };
+})();

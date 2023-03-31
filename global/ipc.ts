@@ -5,6 +5,7 @@ import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType, Main
 import type { WorldConfigType, WorldUnitType } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
+import type { GeneralAppConfigType } from '$types/config';
 
 import type {
     PlunderAttackDetails,
@@ -32,13 +33,15 @@ export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
 
-// Painel
-export async function ipcInvoke(channel: 'is-panel-visible'): Promise<boolean>;
-
 // Configurações
+export async function ipcInvoke(channel: 'get-app-general-config'): Promise<GeneralAppConfigType>;
+export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
 export async function ipcInvoke(channel: 'save-demolition-troops-config', template: DemolitionTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'destroy-demolition-troops-config', alias: UserAlias): Promise<boolean>;
+
+// Painel
+export async function ipcInvoke(channel: 'is-panel-visible'): Promise<boolean>;
 
 // Browser View
 export async function ipcInvoke(channel: 'main-view-url'): Promise<string>;
@@ -100,6 +103,7 @@ export function ipcSend(channel: 'update-captcha-status', status: boolean): void
 export function ipcSend(channel: 'update-response-time', time: number | null): void;
 
 // Configurações
+export function ipcSend(channel: 'update-app-general-config', config: GeneralAppConfigType): void;
 export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
 export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
 

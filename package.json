@@ -31,6 +31,7 @@
         "start": "npm run build && electron .",
         "start:browser": "npm run build:browser && npm run script:html && electron .",
         "start:main": "npm run build:main && npm run script:html && npm run script:fonts && electron .",
+        "start:mod": "npm run build:mod && npm run script:html && electron .",
         "start:panel": "npm run build:panel && npm run script:html && electron .",
         "start:rollup": "npm run build:rollup && electron .",
         "forge:start": "electron-forge start",

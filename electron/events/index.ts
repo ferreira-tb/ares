@@ -9,21 +9,12 @@ import { setBrowserViewEvents } from '$electron/events/view';
 import { setGroupsEvents } from '$electron/events/groups';
 import { setMenuEvents } from '$electron/events/menu';
 import { setBrowserEvents } from '$electron/events/browser';
+import { setConfigEvents } from '$electron/events/config';
 import { isUserAlias } from '$electron/utils/guards';
-import { openAresWebsite, openIssuesWebsite, openRepoWebsite, showAppSettings } from '$electron/app/modules';
+import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
+import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$interface/index';
+import { getPlayerNameFromAlias, extractWorldUnitsFromMap } from '$electron/utils/helpers';
 import type { UserAlias } from '$types/electron';
-import type { ConfigModuleRoutes } from '$types/modules';
-
-import {
-    useCacheStore,
-    useWorldConfigStore,
-    worldUnitsMap
-} from '$interface/index';
-
-import {
-    getPlayerNameFromAlias,
-    extractWorldUnitsFromMap
-} from '$electron/utils/helpers';
 
 export function setEvents() {
     const cacheStore = useCacheStore();
@@ -36,9 +27,6 @@ export function setEvents() {
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
     ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
-
-    // Configurações.
-    ipcMain.on('open-settings-window', (_e, route: ConfigModuleRoutes) => showAppSettings(route));
 
     // Website.
     ipcMain.on('open-ares-website', () => openAresWebsite());
@@ -57,6 +45,7 @@ export function setEvents() {
     });
 
     // Outros eventos.
+    setConfigEvents();
     setMainWindowEvents();
     setBrowserEvents();
     setBrowserViewEvents();

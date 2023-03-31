@@ -1,6 +1,6 @@
 import { Mechanus, watch, storeToRefs } from 'mechanus';
 
-import { UserConfig } from '$tables/config';
+import { AppConfig } from '$tables/config';
 import { ErrorLog, DOMErrorLog, MainProcessErrorLog } from '$tables/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$tables/plunder';
 import { User } from '$tables/user';
@@ -17,6 +17,7 @@ import { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/world'
 import { defineCurrentVillageStore } from '$stores/village';
 import { defineGroupsStore } from '$stores/groups';
 import { defineBrowserViewStore } from '$stores/view';
+import { defineAppGeneralConfigStore } from '$stores/config';
 
 import { patchAliasRelatedStores } from '$interface/alias';
 import { patchWorldRelatedStores } from '$interface/world';
@@ -26,6 +27,7 @@ import { MainProcessError } from '$electron/error';
 
 export const mechanus = new Mechanus();
 
+export const useAppGeneralConfigStore = defineAppGeneralConfigStore(mechanus);
 export const useAresStore = defineAresStore(mechanus);
 export const usePlunderStore = definePlunderStore(mechanus);
 export const usePlunderConfigStore = definePlunderConfigStore(mechanus);
@@ -85,7 +87,7 @@ watch(screen, (screen) => {
 });
 
 export {
-    UserConfig,
+    AppConfig,
     ErrorLog,
     DOMErrorLog,
     MainProcessErrorLog,
