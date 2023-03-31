@@ -32,5 +32,3 @@ website
 
 out
 *.env
-
-**/todo.md
