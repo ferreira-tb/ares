@@ -69,7 +69,7 @@ export type PiniaCurrentVillageStoreType = {
 };
 
 export type MechanusCurrentVillageStoreType = {
-    [K in keyof CurrentVillageStore]:
+    [K in keyof RemoveMethods<CurrentVillageStore>]:
         K extends keyof Omit<CurrentVillageStore, keyof CurrentVillageType> ?
         MechanusComputedRef<CurrentVillageStore[K]> :
         MechanusRef<CurrentVillageStore[K]>;
