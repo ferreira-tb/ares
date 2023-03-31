@@ -51,6 +51,24 @@ export function appendDevMenu(browserViewStore: ReturnType<typeof useBrowserView
     };
 };
 
+export function setModuleDevMenu(browserWindow: BrowserWindow) {
+    if (process.env.ARES_MODE !== 'dev') {
+        browserWindow.setMenu(null);
+        return;
+    };
+
+    const contents = browserWindow.webContents;
+    const options: MenuItemConstructorOptions[] = [
+        { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => contents.reloadIgnoringCache() },
+        { label: 'Conjurar magia', accelerator: 'F9', click: () => castDevMagic() },
+        { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => contents.openDevTools({ mode: 'detach'}) }
+    ];
+
+    options.forEach((option) => option.visible = false);
+    const menu = Menu.buildFromTemplate(options);
+    browserWindow.setMenu(menu);
+};
+
 /** Usado para situações de teste durante o desenvolvimento. */
 function castDevMagic() {
     const allWebContents = webContents.getAllWebContents();

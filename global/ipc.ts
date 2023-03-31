@@ -58,6 +58,7 @@ export async function ipcInvoke(channel: 'current-world-units'): Promise<WorldUn
 export async function ipcInvoke(channel: 'player-name', alias?: UserAlias): Promise<string | null>;
 export async function ipcInvoke(channel: 'is-archer-world'): Promise<boolean>;
 export async function ipcInvoke(channel: 'calc-carry-capacity', units: Partial<UnitAmount>, world?: World): Promise<number | null>;
+export async function ipcInvoke(channel: 'fetch-village-groups'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-village-groups'): Promise<Set<VillageGroup>>;
 
 // Erros

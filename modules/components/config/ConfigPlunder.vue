@@ -10,6 +10,8 @@ import InfoResult from '$global/components/result/InfoResult.vue';
 import WallInput from '$global/components/input/WallInput.vue';
 import NumberImput from '$global/components/input/NumberInput.vue';
 import LabelPopover from '$global/components/popover/LabelPopover.vue';
+import ButtonFetchGroups from '$modules/components/config/plunder/ButtonFetchGroups.vue';
+import type { VillageGroup } from '$types/game';
 import type {
     PlunderConfigType,
     PlunderConfigKeys,
@@ -23,7 +25,9 @@ const message = useMessage();
 
 const previousConfig = await ipcInvoke('get-plunder-config');
 const config = ref<PlunderConfigType | null>(previousConfig);
-const groups = ref(await ipcInvoke('get-village-groups'));
+
+const previousGroups = await ipcInvoke('get-village-groups');
+const groups = ref(previousGroups);
 
 // Refs das configurações.
 const wallLevelToIgnore = ref<number>(config.value?.wallLevelToIgnore ?? 1);
@@ -147,11 +151,17 @@ const plunderGroupOptions = computed(() => {
 
     return options.sort((a, b) => a.label.localeCompare(b.label, 'pt-br'));
 });
+
+function updateGroups(newGroups: Set<VillageGroup>) {
+    groups.value = newGroups;
+    const plunderGroup = Array.from(newGroups).find((group) => group.id === plunderGroupId.value);
+    if (plunderGroup?.type !== 'dynamic') plunderGroupId.value = null;
+};
 </script>
 
 <template>
     <section v-if="config" class="plunder-config">
-        <NDivider title-placement="left">Ataque</NDivider>
+        <NDivider title-placement="left" class="config-divider">Ataque</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
                 <LabelPopover>
@@ -237,7 +247,7 @@ const plunderGroupOptions = computed(() => {
             </NGridItem>
         </NGrid>
 
-        <NDivider title-placement="left">Grupo</NDivider>
+        <NDivider title-placement="left" class="config-divider">Grupo</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
                 <LabelPopover>
@@ -282,9 +292,13 @@ const plunderGroupOptions = computed(() => {
                 <NumberImput v-model:value="villageDelay" :min="100" :max="60000" :step="100"
                     :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
             </NGridItem>
+
+            <NGridItem :span="2">
+                <ButtonFetchGroups @update-groups="updateGroups" />
+            </NGridItem>
         </NGrid>
 
-        <NDivider title-placement="left">Muralha</NDivider>
+        <NDivider title-placement="left" class="config-divider">Muralha</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
                 <LabelPopover>
@@ -333,7 +347,7 @@ const plunderGroupOptions = computed(() => {
             </NGridItem>
         </NGrid>
 
-        <NDivider title-placement="left">Outros</NDivider>
+        <NDivider title-placement="left" class="config-divider">Outros</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
                 <LabelPopover>

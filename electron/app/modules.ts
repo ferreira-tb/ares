@@ -4,6 +4,7 @@ import { aresURL, favicon, moduleHtml, repoURL, issuesURL } from '$electron/util
 import { getMainWindow } from '$electron/utils/helpers';
 import { isAllowedURL } from '$electron/utils/guards';
 import { ModuleCreationError } from '$electron/error';
+import { setModuleDevMenu } from '$electron/menu/dev';
 import type { ModuleNames, ModuleRoutes, ModuleConstructorOptions, WebsiteModuleNames } from '$types/modules';
 
 const activeModules = new Map<ModuleNames, BrowserWindow>();
@@ -57,7 +58,7 @@ function createModule(
             };
 
             const moduleWindow = new BrowserWindow(windowOptions);
-            moduleWindow.setMenu(null);
+            setModuleDevMenu(moduleWindow);
             moduleWindow.loadFile(moduleHtml);
             moduleWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
             moduleWindow.on('system-context-menu', (e) => e.preventDefault());
@@ -136,7 +137,7 @@ function createWebsiteModule(name: WebsiteModuleNames, url: string) {
                 }
             });
 
-            websiteWindow.setMenu(null);
+            setModuleDevMenu(websiteWindow);
             websiteWindow.loadURL(url);
             websiteWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
             websiteWindow.on('system-context-menu', (e) => e.preventDefault());
