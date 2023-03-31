@@ -1,6 +1,6 @@
 import Config from '$modules/views/Config.vue';
-import GeneralConfig from '$modules/components/config/GeneralConfig.vue';
-import PlunderConfig from '$modules/components/config/PlunderConfig.vue';
+import ConfigGeneral from '$modules/components/config/ConfigGeneral.vue';
+import ConfigPlunder from '$modules/components/config/ConfigPlunder.vue';
 import type { ModuleRouteRecordRawStrict, ConfigModuleRoutes } from '$types/modules';
 
 export const configRoutes: ModuleRouteRecordRawStrict<'app-config' | ConfigModuleRoutes> = {
@@ -11,12 +11,12 @@ export const configRoutes: ModuleRouteRecordRawStrict<'app-config' | ConfigModul
         {
             path: 'general',
             name: 'general-config',
-            component: GeneralConfig
+            component: ConfigGeneral
         },
         {
             path: 'plunder',
             name: 'plunder-config',
-            component: PlunderConfig
+            component: ConfigPlunder
         }
     ]
 };
