@@ -36,6 +36,7 @@ const maxDistance = ref<number>(config.value?.maxDistance ?? 20);
 const ignoreOlderThan = ref<number>(config.value?.ignoreOlderThan ?? 10);
 const plunderedResourcesRatio = ref<number>(config.value?.plunderedResourcesRatio ?? 1);
 const pageDelay = ref<number>(config.value?.pageDelay ?? 2000);
+const villageDelay = ref<number>(config.value?.villageDelay ?? 2000);
 
 const plunderGroupId = ref<number | null>(config.value?.plunderGroupId ?? null);
 const fieldsPerWave = ref<number>(config.value?.fieldsPerWave ?? 10);
@@ -54,6 +55,7 @@ watch(maxDistance, (v) => updateConfig('maxDistance', v));
 watch(ignoreOlderThan, (v) => updateConfig('ignoreOlderThan', v));
 watch(plunderedResourcesRatio, (v) => updateConfig('plunderedResourcesRatio', v));
 watch(pageDelay, (v) => updateConfig('pageDelay', v));
+watch(villageDelay, (v) => updateConfig('villageDelay', v));
 
 watch(plunderGroupId, (v) => updateConfig('plunderGroupId', v));
 watch(fieldsPerWave, (v) => updateConfig('fieldsPerWave', v));
@@ -184,8 +186,8 @@ const plunderGroupOptions = computed(() => {
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="attackDelay" :min="100" :max="5000" :step="10"
-                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 5000" />
+                <NumberImput v-model:value="attackDelay" :min="100" :max="60000" :step="10"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
             </NGridItem>
 
             <NGridItem>
@@ -266,6 +268,19 @@ const plunderGroupOptions = computed(() => {
             </NGridItem>
             <NGridItem>
                 <NumberImput v-model:value="fieldsPerWave" :min="5" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
+            </NGridItem>
+
+            <NGridItem>
+                <LabelPopover>
+                    <template #trigger>Delay entre troca de aldeias</template>
+                    <span>
+                        Determina quantos milissegundos o Ares deve esperar antes de trocar de aldeia ao atacar em grupo.
+                    </span>
+                </LabelPopover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput v-model:value="villageDelay" :min="100" :max="60000" :step="100"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
             </NGridItem>
         </NGrid>
 
@@ -350,13 +365,13 @@ const plunderGroupOptions = computed(() => {
                     <template #trigger>Delay entre troca de páginas</template>
                     <span>
                         Quando o Ares não encontra aldeias para atacar, ele tenta trocar de página.
-                        Esse delay determina quantos milisegundos o Ares deve esperar antes dessa tentativa.
+                        Esse delay determina quantos milissegundos o Ares deve esperar antes dessa tentativa.
                     </span>
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="pageDelay" :min="1000" :max="10000" :step="100"
-                    :validator="(v) => isPositiveInteger(v) && v >= 1000 && v <= 10000" />
+                <NumberImput v-model:value="pageDelay" :min="100" :max="60000" :step="100"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
             </NGridItem>
         </NGrid>
     </section>

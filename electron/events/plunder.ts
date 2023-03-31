@@ -5,7 +5,7 @@ import { assertInteger, isKeyOf, isInteger, isPositiveInteger } from '@tb-dev/ts
 import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards';
 import { sequelize } from '$database/database';
 import { MainProcessEventError } from '$electron/error';
-import { getPanelWindow, extractWorldUnitsFromMap } from '$electron/utils/helpers';
+import { getPanelWindow, extractWorldUnitsFromMap, generateRandomDelay } from '$electron/utils/helpers';
 import { plunderSearchParams } from '$electron/utils/constants';
 import type { UnitAmount, World } from '$types/game';
 import type { WorldUnitType } from '$types/world';
@@ -215,7 +215,9 @@ export function setPlunderEvents() {
             
             const url = new URL(e.sender.getURL());
             url.searchParams.set('Farm_page', nextPage.page.toString(10));
-            queueMicrotask(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch));
+
+            const delay = generateRandomDelay(plunderConfigStore.pageDelay, 200);
+            setTimeout(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch), delay);
             
             nextPage.done = true;
             return true;
@@ -270,7 +272,9 @@ export function setPlunderEvents() {
             url.search = plunderSearchParams;
             url.searchParams.set('village', nextVillage[0].toString(10));
             url.searchParams.set('group', plunderGroup.value.id.toString(10));
-            queueMicrotask(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch));
+            
+            const delay = generateRandomDelay(plunderConfigStore.villageDelay, 200);
+            setTimeout(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch), delay);
             return true;
 
         } catch (err) {

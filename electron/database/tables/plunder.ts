@@ -42,6 +42,7 @@ export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCr
     declare readonly ignoreOlderThan: number;
     declare readonly plunderedResourcesRatio: number;
     declare readonly pageDelay: number;
+    declare readonly villageDelay: number;
 
     declare readonly plunderGroupId: number | null;
     declare readonly fieldsPerWave: number;
@@ -135,7 +136,7 @@ PlunderConfig.init({
         defaultValue: 200,
         validate: {
             min: 100,
-            max: 5000,
+            max: 60000,
             isInt: true
         }
     },
@@ -191,8 +192,18 @@ PlunderConfig.init({
         allowNull: false,
         defaultValue: 2000,
         validate: {
-            min: 1000,
-            max: 10000,
+            min: 100,
+            max: 60000,
+            isInt: true
+        }
+    },
+    villageDelay: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 2000,
+        validate: {
+            min: 100,
+            max: 60000,
             isInt: true
         }
     },
@@ -240,8 +251,7 @@ export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, Infer
             if (!isUserAlias(userAlias)) return null;
 
             const plunderHistory = await PlunderHistory.findByPk(userAlias);
-            if (!isObject(plunderHistory)) return null;
-            return plunderHistory.toJSON();
+            return plunderHistory ? plunderHistory.toJSON() : null;
     
         } catch (err) {
             DatabaseError.catch(err);

@@ -44,10 +44,10 @@ const blindAttackPatterns: BlindAttackPattern[] = ['smaller', 'bigger'];
 const useCPatterns: UseCPattern[] = ['normal', 'only'];
 
 export function definePlunderConfigStore(mechanus: Mechanus) {
-    const attackDelayValidator = (): MechanusRefOptions<number> => {
+    const delayValidator = (): MechanusRefOptions<number> => {
         const refOptions = { ...positiveIntegerRef };
         refOptions.validator = (value: unknown): value is number => {
-            return isPositiveInteger(value) && value >= 100 && value <= 5000;
+            return isPositiveInteger(value) && value >= 100 && value <= 60000;
         };
         return refOptions;
     };
@@ -76,14 +76,6 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         return refOptions;
     };
 
-    const pageDelayValidator = (): MechanusRefOptions<number> => {
-        const refOptions = { ...positiveIntegerRef };
-        refOptions.validator = (value: unknown): value is number => {
-            return isPositiveInteger(value) && value >= 1000 && value <= 10000;
-        };
-        return refOptions;
-    };
-
     const active = ref<boolean>(false, booleanRef);
 
     const ignoreWall = ref<boolean>(false, booleanRef);
@@ -96,13 +88,14 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const wallLevelToIgnore = ref<WallLevel>(1, wallLevelRef);
     const wallLevelToDestroy = ref<WallLevel>(1, wallLevelRef);
     const destroyWallMaxDistance = ref<number>(20, maxDistanceValidator());
-    const attackDelay = ref<number>(200, attackDelayValidator());
+    const attackDelay = ref<number>(200, delayValidator());
     const resourceRatio = ref<number>(0.8, ratioValidator());
     const minutesUntilReload = ref<number>(10, minutesUntilReloadValidator());
     const maxDistance = ref<number>(20, maxDistanceValidator());
     const ignoreOlderThan = ref<number>(10, positiveIntegerRef);
     const plunderedResourcesRatio = ref<number>(1, ratioValidator());
-    const pageDelay = ref<number>(2000, pageDelayValidator());
+    const pageDelay = ref<number>(2000, delayValidator());
+    const villageDelay = ref<number>(2000, delayValidator());
 
     const plunderGroupId = ref<number | null>(null, positiveIntegerOrNullRef);
     const fieldsPerWave = ref<number>(10, maxDistanceValidator(5));
@@ -129,6 +122,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         ignoreOlderThan,
         plunderedResourcesRatio,
         pageDelay,
+        villageDelay,
 
         plunderGroupId,
         fieldsPerWave,

@@ -75,6 +75,8 @@ export type PlunderConfigType = {
     plunderedResourcesRatio: number;
     /** Delay médio entre cada troca de página. */
     pageDelay: number;
+    /** Delay médio entre cada troca de aldeia. */
+    villageDelay: number;
 
     /** ID do grupo que será utilizado para atacar. */
     plunderGroupId: number | null;

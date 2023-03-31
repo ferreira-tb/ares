@@ -18,7 +18,6 @@ import { handleLackOfTargets } from '$lib/plunder/next';
 import { queryPlunderGroupInfo, updateGroupInfo } from '$lib/plunder/group';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke, ipcSend } from '$global/ipc';
-import { generateRandomDelay } from '$global/utils/helpers';
 import Reload from '$browser/components/plunder/Reload.vue';
 import type { PlunderGroupType } from '$types/plunder';
 
@@ -160,7 +159,7 @@ async function handleAttack(): Promise<void> {
 
     // Caso, em toda tabela, não haja aldeia adequada para envio do ataque, verifica se há mais páginas.
     // Após acessar todas as páginas possíveis, navega para a próxima aldeia se o ataque em grupo estiver ativado.
-    setTimeout(() => handleLackOfTargets(groupInfo.value), generateRandomDelay(config.pageDelay, 200));
+    handleLackOfTargets(groupInfo.value);
 };
 </script>
 
