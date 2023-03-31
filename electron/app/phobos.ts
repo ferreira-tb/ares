@@ -22,12 +22,9 @@ const activePhobos = new Map<PhobosNames, BrowserView>();
  * É possível passar um objeto `WebPreferences` com uma das opções.
  */
 export async function createPhobos(name: PhobosNames, url: URL, options?: PhobosOptions): Promise<BrowserView> {
-    assertString(name, 'Nome inválido.');
-    assertInstanceOf(url, URL, 'URL inválida');
-
     const mainWindow = getMainWindow();
-
     const alivePhobos = activePhobos.get(name);
+
     if (alivePhobos instanceof BrowserView) {
         if (options?.override === true) {
             mainWindow.removeBrowserView(alivePhobos);
@@ -80,7 +77,7 @@ export function getPhobosByName(name: PhobosNames) {
  * @param phobos Instância do Phobos.
  */
 export function destroyPhobos(phobos: BrowserView) {
-    assertInstanceOf(phobos, BrowserView, 'O objeto não é um BrowserView.');
+    assertInstanceOf(phobos, BrowserView, 'Object is not a BrowserView.');
     const mainWindow = getMainWindow();
     mainWindow.removeBrowserView(phobos);
     for (const [name, view] of activePhobos) {
@@ -96,7 +93,7 @@ export function destroyPhobos(phobos: BrowserView) {
  * @param name Nome da instância.
  */
 export function destroyPhobosByName(name: PhobosNames) {
-    assertString(name, `${name} não é um nome válido para um Phobos.`);
+    assertString(name, `${name} is not a valid Phobos name.`);
     const phobos = activePhobos.get(name);
     if (isInstanceOf(phobos, BrowserView)) {
         const mainWindow = getMainWindow();

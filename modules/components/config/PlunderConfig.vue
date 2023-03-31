@@ -65,7 +65,7 @@ watch(useCPattern, (v) => updateConfig('useCPattern', v));
 useIpcRendererOn('plunder-config-updated', (_e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
     try {
         if (!config.value) return;
-        assertKeyOf<PlunderConfigType>(key, config.value, `${key} não é uma configuração válida para o Plunder.`);
+        assertKeyOf<PlunderConfigType>(key, config.value, `${key} is not a valid key of PlunderConfigType`);
         Reflect.set(config, key, value);
     } catch (err) {
         ModuleConfigError.catch(err);

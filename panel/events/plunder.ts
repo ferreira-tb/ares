@@ -19,7 +19,7 @@ export function setPlunderEvents() {
     // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
     ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
         try {
-            assertKeyOf<PlunderConfigType>(key, plunderConfigStore, `${key} não é uma configuração válida para o Plunder.`);
+            assertKeyOf<PlunderConfigType>(key, plunderConfigStore, `${key} is not a valid plunder config key.`);
             Reflect.set(plunderConfigStore, key, value);
         } catch (err) {
             PanelPlunderError.catch(err);
@@ -30,7 +30,7 @@ export function setPlunderEvents() {
         try {
             if (plunderConfigStore.active === false) return;
             for (const [key, value] of Object.entries(details)) {
-                assertKeyOf<PlunderAttackDetails>(key, plunderHistoryStore, `${key} não é uma chave válida para o Plunder.`);
+                assertKeyOf<PlunderAttackDetails>(key, plunderHistoryStore, `${key} is not a valid plunder history key.`);
                 assertInteger(value, `${key} não é um número inteiro.`);
 
                 // O valor de `total` é gerado automaticamente por um `computed` e não deve ser atualizado manualmente.

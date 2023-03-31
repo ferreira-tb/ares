@@ -47,8 +47,8 @@ export function catchError(
 
                 } catch {
                     // Se não for possível gerar o log, emite um alerta.
-                    const errorMessage = `Contate o desenvolvedor.\n\n${(err as Error).stack}`;
-                    dialog.showErrorBox('ERRO CRÍTICO', errorMessage);
+                    const errorMessage = `Contact the Ares team with the following error message:\n\n${(anotherErr as Error).message}`;
+                    dialog.showErrorBox('CRITICAL ERROR', errorMessage);
                 };
             };
         };

@@ -10,18 +10,18 @@ import type { ErrorLogType } from '$types/error';
 import SucessResult from '$global/components/result/SuccessResult.vue';
 
 const raw = await ipcInvoke('get-error-log');
-assertArray(raw, 'Houve um erro durante a conexão com o banco de dados.');
+assertArray(raw, 'Database connection error.');
 const errors = reactive(raw);
 watchEffect(() => errors.sort((a, b) => b.time - a.time));
 
 useIpcRendererOn('error-log-updated', (_e, newError: ErrorLogType) => errors.push(newError));
 
 function deleteError(id: number) {
-    assertInteger(id, 'O ID do erro deve ser um número inteiro.');
+    assertInteger(id, 'Error ID must be an integer.');
     ipcSend('delete-error-log', id);
 
     const index = errors.findIndex((error) => error.id === id);
-    if (index === -1) throw new ModuleError('Não foi possível remover o erro da lista.');
+    if (index === -1) throw new ModuleError(`Could not find error with ID ${id}.`);
     errors.splice(index, 1);
 };
 </script>

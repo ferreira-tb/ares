@@ -281,7 +281,7 @@ function findBrowserViewByWebContentsId(webContentsId: number, mainWindow: Brows
     const browserViews = mainWindow.getBrowserViews();
     const browserView = browserViews.find((view) => view.webContents.id === webContentsId);
     if (browserView) return browserView;
-    throw new BrowserViewError(`BrowserView não encontrada para o WebContents ${webContentsId}.`);
+    throw new BrowserViewError(`Could not find BrowserView with WebContents ID ${webContentsId}`);
 };
 
 /**

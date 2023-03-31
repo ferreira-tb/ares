@@ -45,7 +45,7 @@ export function setErrorEvents() {
 
     ipcMain.on('delete-error-log', async (_e, id: number) => {
         try {
-            assertInteger(id, 'O ID do registro de erro é inválido.');
+            assertInteger(id, 'Error ID is invalid.');
             await sequelize.transaction(async (transaction) => {
                 await ErrorLog.destroy({ where: { id }, transaction });
             });
@@ -106,7 +106,7 @@ export function setErrorEvents() {
 
     ipcMain.on('delete-dom-error-log', async (_e, id: number) => {
         try {
-            assertInteger(id, 'O ID do registro de erro é inválido.');
+            assertInteger(id, 'Error ID is invalid.');
             await sequelize.transaction(async (transaction) => {
                 await DOMErrorLog.destroy({ where: { id }, transaction });
             });
@@ -135,7 +135,7 @@ export function setErrorEvents() {
 
     ipcMain.on('delete-main-process-error-log', async (_e, id: number) => {
         try {
-            assertInteger(id, 'O ID do registro de erro é inválido.');
+            assertInteger(id, 'Error ID is invalid.');
             await sequelize.transaction(async (transaction) => {
                 await MainProcessErrorLog.destroy({ where: { id }, transaction });
             });

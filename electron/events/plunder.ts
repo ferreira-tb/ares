@@ -134,7 +134,7 @@ export function setPlunderEvents() {
     ipcMain.on('save-plunder-attack-details', async (_e, details: PlunderAttackDetails) => {
         try {
             for (const [key, value] of Object.entries(details) as [keyof PlunderAttackDetails, number][]) {
-                assertInteger(value, 'Erro ao salvar os detalhes do ataque: valor inválido.');
+                assertInteger(value, `Could not save plunder attack details: ${key} is not an integer.`);
                 lastPlunderHistoryStore[key] = value;
                 totalPlunderHistoryStore[key] += value;
             };

@@ -16,14 +16,14 @@ export function restartAres() {
 export const getMainWindow = () => {
     const id = Number.parseIntStrict(process.env.MAIN_WINDOW_ID ?? '');
     const mainWindow = BrowserWindow.fromId(id);
-    assertInstanceOf(mainWindow, BrowserWindow, 'Não foi possível obter a janela do browser.');
+    assertInstanceOf(mainWindow, BrowserWindow, 'Could not get main window.');
     return mainWindow;
 };
 
 export const getPanelWindow = () => {
     const id = Number.parseIntStrict(process.env.PANEL_WINDOW_ID ?? '');
     const panelWindow = BrowserWindow.fromId(id);
-    assertInstanceOf(panelWindow, BrowserWindow, 'Não foi possível obter a janela do painel.');
+    assertInstanceOf(panelWindow, BrowserWindow, 'Could not get panel window.');
     return panelWindow;
 };
 

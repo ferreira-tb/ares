@@ -10,7 +10,7 @@ export function isUserAlias(alias: unknown): alias is UserAlias {
 };
 
 export function assertUserAlias(alias: unknown, err: typeof MainProcessError, message?: string): asserts alias is UserAlias {
-    if (!isString(message)) message = 'O alias do usuário é inválido.';
+    if (!isString(message)) message = 'Invalid user alias.';
     if (!isUserAlias(alias)) throw new err(message);
 };
 
@@ -20,7 +20,7 @@ export const isWorld = (world: unknown): world is World => {
 };
 
 export function assertWorld(world: unknown, err: typeof MainProcessError, message?: string): asserts world is World {
-    if (!isString(message)) message = 'O mundo informado é inválido.';
+    if (!isString(message)) message = 'Invalid world.';
     if (!isWorld(world)) throw new err(message);
 };
 
@@ -30,7 +30,7 @@ export const isWorldOrNull = (world: unknown): world is World | null => {
 };
 
 export function assertWorldOrNull(world: unknown, err: typeof MainProcessError, message?: string): asserts world is World | null {
-    if (!isString(message)) message = 'O mundo informado é inválido.';
+    if (!isString(message)) message = 'Invalid world.';
     if (!isWorldOrNull(world)) throw new err(message);
 };
 
@@ -40,7 +40,7 @@ export const isWallLevel = (level: unknown): level is WallLevel => {
 };
 
 export function assertWallLevel(level: unknown, err: typeof MainProcessError, message?: string): asserts level is WallLevel {
-    if (!isString(message)) message = 'O nível de muralha informado é inválido.';
+    if (!isString(message)) message = 'Invalid wall level.';
     if (!isWallLevel(level)) throw new err(message);
 };
 

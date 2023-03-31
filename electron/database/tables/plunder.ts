@@ -298,7 +298,7 @@ implements CustomPlunderTemplateType {
         try {
             for (const [unit, amount] of Object.entries(template.units)) {
                 assertInteger(amount);
-                if (amount < 0) throw new DatabaseError(`A quantidade de ${unit} não pode ser negativa.`);
+                if (amount < 0) throw new DatabaseError(`${unit} amount cannot be negative`);
             };
 
             await sequelize.transaction(async (transaction) => {
