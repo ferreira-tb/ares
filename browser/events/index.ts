@@ -22,7 +22,7 @@ export function setBrowserEvents(pinia: Pinia) {
     ipcRenderer.on('get-game-data', async () => {
         try {
             const gameData = await Deimos.invoke('get-game-data');
-            if (gameData === null) return;
+            if (!gameData) return;
 
             ipcSend('update-game-data', gameData);
             aresStore.$patch(gameData.ares);

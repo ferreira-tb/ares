@@ -68,7 +68,6 @@ watchEffect(() => {
             ipcInvoke('navigate-to-next-plunder-village');
             return;
         };
-
         handleAttack();
     };
 });
