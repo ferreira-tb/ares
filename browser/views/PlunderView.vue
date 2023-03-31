@@ -17,7 +17,7 @@ import { openPlace } from '$lib/plunder/place';
 import { handleLackOfTargets } from '$lib/plunder/next';
 import { queryPlunderGroupInfo, updateGroupInfo } from '$lib/plunder/group';
 import { PlunderError } from '$browser/error';
-import { ipcSend } from '$global/ipc';
+import { ipcInvoke, ipcSend } from '$global/ipc';
 import { generateRandomDelay } from '$global/utils/helpers';
 import Reload from '$browser/components/plunder/Reload.vue';
 import type { PlunderGroupType } from '$types/plunder';
@@ -57,7 +57,7 @@ nextTick(() => queryCurrentVillageInfo());
 watch(() => config.groupAttack, (newValue) => updateGroupInfo(newValue, groupInfo));
 watch(() => config.plunderGroupId, (newValue) => {
     if (!newValue) return;
-    ipcSend('navigate-to-plunder-group');
+    ipcInvoke('navigate-to-plunder-group');
 });
 
 watchEffect(() => {
@@ -67,7 +67,7 @@ watchEffect(() => {
     if (config.active) {
         // Se a aldeia atual não pertencer ao grupo de saque, navega para alguma aldeia do grupo.
         if (config.groupAttack && !belongsToPlunderGroup.value) {
-            ipcSend('navigate-to-next-plunder-village');
+            ipcInvoke('navigate-to-next-plunder-village');
             return;
         };
 

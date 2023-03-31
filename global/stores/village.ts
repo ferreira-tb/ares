@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { assertPositiveInteger } from '@tb-dev/ts-guard';
 import type { PiniaCurrentVillageStoreType } from '$types/stores';
 
 export const useCurrentVillageStore = defineStore('current-village', () => {
@@ -23,6 +24,11 @@ export const useCurrentVillageStore = defineStore('current-village', () => {
         return wood.value + stone.value + iron.value;
     });
 
+    function getId() {
+        assertPositiveInteger(id.value, `${id.value} is not a valid village id.`);
+        return id.value;
+    };
+
     return {
         x,
         y,
@@ -36,6 +42,8 @@ export const useCurrentVillageStore = defineStore('current-village', () => {
         iron,
         maxStorage,
         coords,
-        totalResources
+        totalResources,
+
+        getId
     } satisfies PiniaCurrentVillageStoreType;
 });

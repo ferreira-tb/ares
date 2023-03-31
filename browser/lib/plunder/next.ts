@@ -1,4 +1,3 @@
-import { assertPositiveInteger } from '@tb-dev/ts-guard';
 import { ipcInvoke, ipcSend } from '$global/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
 import { getPlunderTargets } from '$lib/plunder/targets';
@@ -10,7 +9,7 @@ import type { PlunderGroupType } from '$types/plunder';
 export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
     try {
         const config = usePlunderConfigStore();
-        const wentToNextPage = await navigateToNextPage(config);
+        const wentToNextPage = await navigateToNextPage(config, groupInfo);
         if (wentToNextPage || !config.groupAttack || !groupInfo) return;
         navigateToNextVillage(config, groupInfo);
     } catch (err) {
@@ -18,7 +17,10 @@ export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
     };
 };
 
-async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStore>) {
+async function navigateToNextPage(
+    config: ReturnType<typeof usePlunderConfigStore>,
+    groupInfo: PlunderGroupType | null
+) {
     try {
         // Verifica se há tropas disponíveis em algum dos modelos.
         if (!canSomeTemplateAttack(config)) return false;
@@ -26,10 +28,18 @@ async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStor
         // Em seguida, verifica se algum dos alvos atuais obedece à distância máxima permitida.
         const targets = getPlunderTargets();        
         const distanceList = Array.from(targets.values(), (target) => target.distance);
-        if (distanceList.every((distance) => distance >= config.maxDistance)) {
-            return false;
+
+        let maxDistance = config.maxDistance;
+        if (config.groupAttack && groupInfo) {
+            const currentVillageId = useCurrentVillageStore().getId();
+            const groupVillage = groupInfo.villages.get(currentVillageId);
+            if (groupVillage) maxDistance = groupVillage.waveMaxDistance;
         };
 
+        if (distanceList.every((distance) => distance >= maxDistance)) {
+            return false;
+        };
+        
         return await ipcInvoke('navigate-to-next-plunder-page');
 
     } catch (err) {
@@ -40,9 +50,8 @@ async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStor
 
 function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>, groupInfo: PlunderGroupType) {
     try {
-        const currentVillage = useCurrentVillageStore();
-        assertPositiveInteger(currentVillage.id, `${currentVillage.id} is not a valid village id.`);
-        const groupVillage = groupInfo.villages.getStrict(currentVillage.id);
+        const currentVillageId = useCurrentVillageStore().getId();
+        const groupVillage = groupInfo.villages.getStrict(currentVillageId);
         if (groupVillage.done) return;
 
         if (!canSomeTemplateAttack(config) || (groupVillage.waveMaxDistance >= config.maxDistance)) {
@@ -52,7 +61,7 @@ function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>,
         };
 
         ipcSend('update-plunder-cache-group-info', groupInfo);
-        ipcSend('navigate-to-next-plunder-village', currentVillage.id);
+        ipcInvoke('navigate-to-next-plunder-village', currentVillageId);
         
     } catch (err) {
         PlunderError.catch(err);

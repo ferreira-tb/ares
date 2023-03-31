@@ -5,7 +5,7 @@ import { getPlunderInfo, updatePlunderConfig } from '$browser/lib/plunder/data';
 import { useCurrentVillageStore } from '$global/stores/village';
 import { usePlunderStore, usePlunderConfigStore } from '$global/stores/plunder';
 import { useGroupsStore } from '$global/stores/groups';
-import { ipcInvoke, ipcSend } from '$global/ipc';
+import { ipcInvoke } from '$global/ipc';
 import { BrowserRouterError } from '$browser/error';
 import type { Router } from 'vue-router';
 
@@ -27,7 +27,7 @@ export function setPlunderNavigationGuards(router: Router) {
 
             await until(currentGroupId).toMatch((id) => typeof id === 'number', { timeout: 3000, throwOnTimeout: true });
             if (plunderGroupId.value !== currentGroupId.value) {
-                nextTick(() => ipcSend('navigate-to-plunder-group'));
+                nextTick(() => ipcInvoke('navigate-to-plunder-group'));
                 return false;
             };
 
@@ -50,12 +50,12 @@ export function setPlunderNavigationGuards(router: Router) {
             // Isso é um problema, pois a nova aldeia deveria começar a atacar a partir da primeira página.
             const villageInfo = await ipcInvoke('get-plunder-cache-village-info');
             if (villageInfo && plunderPage.value !== 0 && currentVillageId.value !== villageInfo.id) {
-                nextTick(() => ipcSend('navigate-to-first-plunder-page'));
+                nextTick(() => ipcInvoke('navigate-to-first-plunder-page'));
                 return false;
             };
 
             return true;
-            
+
         } catch (err) {
             BrowserRouterError.catch(err);
             return false;

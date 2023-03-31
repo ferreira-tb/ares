@@ -225,26 +225,27 @@ export function setPlunderEvents() {
     });
 
     // Navega para a primeira página do assistente de saque.
-    ipcMain.on('navigate-to-first-plunder-page', async (e) => {
+    ipcMain.handle('navigate-to-first-plunder-page', (e) => {
         try {
             const url = new URL(e.sender.getURL());
             url.search = plunderSearchParams;
-            await e.sender.loadURL(url.href);
+            queueMicrotask(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch));
+            return true;
         } catch (err) {
             MainProcessEventError.catch(err);
+            return false;
         };
     });
 
-    ipcMain.on('navigate-to-next-plunder-village', async (e, currentVillageId?: number | null) => {
+    ipcMain.handle('navigate-to-next-plunder-village', (e, currentVillageId?: number | null) => {
         try {
-            if (!plunderGroup.value) return;
-
+            if (!plunderGroup.value) return false;
             let villages = Array.from(plunderGroup.value.villages.entries());
 
             // Se todas as aldeias do grupo já foram atacadas, avisa a view.
             if (villages.length > 0 && villages.every(([, { done }]) => done)) {
                 e.sender.send('plunder-group-is-exhausted');
-                return;
+                return false;
             };
 
             // Do contrário, remove as aldeias que já atacaram, além da aldeia atual se houver um id válido.
@@ -253,7 +254,7 @@ export function setPlunderEvents() {
                 villages = villages.filter(([id]) => id !== currentVillageId);
             };
             
-            if (villages.length === 0) return;
+            if (villages.length === 0) return false;
 
             const nextVillage = villages.reduce((prev, curr) => {
                 if (!prev) return curr;
@@ -261,29 +262,34 @@ export function setPlunderEvents() {
                 return prev;
             }, null as [number, PlunderGroupVillageType] | null);
 
-            if (!nextVillage) return;
+            if (!nextVillage) return false;
 
             const url = new URL(e.sender.getURL());
             url.search = plunderSearchParams;
             url.searchParams.set('village', nextVillage[0].toString(10));
-            await e.sender.loadURL(url.href);
+            url.searchParams.set('group', plunderGroup.value.id.toString(10));
+            queueMicrotask(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch));
+            return true;
 
         } catch (err) {
             MainProcessEventError.catch(err);
+            return false;
         };
     });
 
-    ipcMain.on('navigate-to-plunder-group', async (e) => {
+    ipcMain.handle('navigate-to-plunder-group', (e) => {
         try {
-            if (!plunderConfigStore.plunderGroupId) return;
+            if (!plunderConfigStore.plunderGroupId) return false;
 
             const url = new URL(e.sender.getURL());
             url.search = plunderSearchParams;
             url.searchParams.set('group', plunderConfigStore.plunderGroupId.toString(10));
-            await e.sender.loadURL(url.href);
-            
+            queueMicrotask(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch));
+            return true;
+
         } catch (err) {
             MainProcessEventError.catch(err);
+            return false;
         };
     });
 };
