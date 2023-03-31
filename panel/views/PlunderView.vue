@@ -6,7 +6,7 @@ import { useFeaturesStore } from '$global/stores/features';
 import { useGroupsStore } from '$global/stores/groups';
 import { ipcSend } from '$global/ipc';
 import { togglePlunder } from '$panel/utils/helpers';
-import Resources from '$panel/components/Resources.vue';
+import PlunderResources from '$panel/components/PlunderResources.vue';
 import SwitchPopover from '$global/components/popover/SwitchPopover.vue';
 
 const config = usePlunderConfigStore();
@@ -53,7 +53,7 @@ watchEffect(() => {
             </NButtonGroup>
         </div>
 
-        <Resources :plunder-status="config.active" />
+        <PlunderResources :plunder-status="config.active" />
 
         <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
             <NGridItem>

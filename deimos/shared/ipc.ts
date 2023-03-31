@@ -117,7 +117,7 @@ export class Deimos {
 
 
     static #handleKey(channel: string) {
-        assertString(channel, 'A chave para o Deimos deve ser uma string');
+        assertString(channel, 'Deimos channel must be a string.');
         return `deimos-${channel}`;
     };
 };

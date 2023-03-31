@@ -73,10 +73,15 @@ export type PlunderConfigType = {
      * No entanto, essa opção permite ao usuário alterar o valor padrão.
      */
     plunderedResourcesRatio: number;
-    /** ID do grupo que será utilizado para atacar. */
-    plunderGroupID: number | null;
     /** Delay médio entre cada troca de página. */
     pageDelay: number;
+    /** Delay médio entre cada troca de aldeia. */
+    villageDelay: number;
+
+    /** ID do grupo que será utilizado para atacar. */
+    plunderGroupId: number | null;
+    /** Máximo de campos por onda. */
+    fieldsPerWave: number;
 
     /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
     blindAttackPattern: BlindAttackPattern;
@@ -108,7 +113,7 @@ export type PlunderHistoryType = {
 export type PlunderPageType = {
     /** Número da página. */
     readonly page: number;
-    /** Indica se o Plunder já enviou comandos a partir dessa página. */
+    /** Indica se o Plunder já enviou ataques a partir dessa página. */
     done: boolean;
 };
 
@@ -121,9 +126,25 @@ export type PlunderCurrentVillageType = {
     readonly pages: PlunderPageType[];
 };
 
+export type PlunderGroupVillageType = {
+    /** Distância coberta pela última onda de ataques. */
+    waveMaxDistance: number;
+    /** Indica se o Plunder já enviou todos os ataques possíveis a partir dessa aldeia. */
+    done: boolean;
+};
+
+export type PlunderGroupType = {
+    /** ID do grupo. */
+    readonly id: number;
+    /** Mapa contento as aldeias do grupo. As chaves são os IDs das aldeias. */
+    readonly villages: Map<number, PlunderGroupVillageType>;
+};
+
 export type PlunderCacheType = {
-    /** Aldeia atual. */
+    /** Informações sobre a aldeia atual, como, por exemplo, os status de cada página. */
     readonly currentVillage: PlunderCurrentVillageType | null;
+    /** Informações sobre o grupo de saque. */
+    readonly plunderGroup: PlunderGroupType | null;
     /** Modelos usados no assistente de saque para demolição de muralhas. */
     readonly demolitionTroops: DemolitionTemplateType | null;
 };

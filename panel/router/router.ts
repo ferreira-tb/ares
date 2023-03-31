@@ -1,8 +1,8 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
 import { getRouteNames } from '$global/utils/router';
-import Home from '$panel/views/Home.vue';
-import Captcha from '$panel/views/Captcha.vue';
-import Plunder from '$panel/views/Plunder.vue';
+import HomeView from '$panel/views/HomeView.vue';
+import CaptchaView from '$panel/views/CaptchaView.vue';
+import PlunderView from '$panel/views/PlunderView.vue';
 
 // Os componentes devem ser passados diretamente.
 // Importá-los gera problemas ao compilar.
@@ -11,17 +11,17 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/',
         name: 'home',
-        component: Home
+        component: HomeView
     },
     {
         path: '/captcha',
         name: 'captcha',
-        component: Captcha
+        component: CaptchaView
     },
     {
         path: '/am_farm',
         name: 'am_farm',
-        component: Plunder
+        component: PlunderView
     }
 ];
 

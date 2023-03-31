@@ -102,7 +102,7 @@ export interface RawTribalWarsGameData {
     // TribalWars.getGameData()
     readonly device: string;
     readonly features: Readonly<Features>;
-    readonly group_id: string;
+    readonly group_id: string | number;
     readonly link_base: string;
     readonly link_base_pure: string;
     readonly locale: string;

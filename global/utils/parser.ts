@@ -1,5 +1,5 @@
 import { assert, assertInteger, assertString, assertArrayIncludes, assertArray } from '@tb-dev/ts-guard';
-import { months } from '$global/utils/constants.js';
+import { months } from '$global/utils/constants';
 
 /**
  * Analisa o texto contido num elemento a procura de coordenadas válidas.
@@ -13,13 +13,13 @@ export function parseCoordsFromTextContent(text: string | null): [number, number
     if (!targetCoords) return null;
 
     const coords = targetCoords[0].splitAsIntegerListStrict('\|');
-    assert(coords.length === 2, 'As coordenadas são inválidas.');
+    assert(coords.length === 2, 'Expected a XY tuple, but got a different length.');
     return coords as [number, number];
 };
 
 export function assertCoordsFromTextContent(text: string | null): [number, number] {
     const coords = parseCoordsFromTextContent(text);
-    assertArray(coords, 'Não foi possível obter as coordenadas da aldeia.');
+    assertArray(coords, 'Could not parse coords from text content.');
     return coords;
 };
 
@@ -90,8 +90,8 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
     const dateFields = rawDateFields.map((field, index) => {
         if (index === 0) {
             const rawMonth: string = field.replace(/\W/g, '').slice(0, 3);
-            assertString(rawMonth, 'O mês obtido é inválido.');
-            assertArrayIncludes((months as unknown) as string[], rawMonth, 'O mês obtido é inválido.');
+            assertString(rawMonth, 'Invalid month.');
+            assertArrayIncludes((months as unknown) as string[], rawMonth, 'Invalid month.');
             
             // Date.prototype.setFullYear() usa índice zero para os meses.
             return ((months as unknown) as string[]).indexOf(rawMonth);
@@ -111,7 +111,7 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
 
     const [hour, minute, second, millisec] = dateFields[3] as number[];
     const date = new Date(fullYear).setHours(hour, minute, second, millisec);
-    assertInteger(date, 'A data obtida é inválida.');
+    assertInteger(date, 'Invalid report date.');
 
     if (ms === false) return Math.ceil(date / 1000);
     return date;

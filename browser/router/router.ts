@@ -1,18 +1,18 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
 import { getRouteNames } from '$global/utils/router';
-import Default from '$global/views/Default.vue';
-import Plunder from '$browser/views/Plunder.vue';
+import DefaultView from '$global/views/DefaultView.vue';
+import PlunderView from '$browser/views/PlunderView.vue';
 
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
         name: 'default',
-        component: Default
+        component: DefaultView
     },
     {
         path: '/am_farm',
         name: 'am_farm',
-        component: Plunder
+        component: PlunderView
     }
 ];
 

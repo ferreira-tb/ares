@@ -13,8 +13,8 @@ export function setErrorEvents() {
 
     ipcMain.on('set-error-log', async (_e, err: ErrorLogBase) => {
         try {
-            assertString(err.name, 'O nome do erro é inválido.');
-            assertString(err.message, 'Não há uma mensagem válida no relatório de erro.');
+            assertString(err.name, 'Error name is invalid.');
+            assertString(err.message, 'The error message is invalid.');
 
             const errorLog: Omit<ErrorLogType, 'id' | 'pending'> = {
                 name: err.name,
@@ -45,7 +45,7 @@ export function setErrorEvents() {
 
     ipcMain.on('delete-error-log', async (_e, id: number) => {
         try {
-            assertInteger(id, 'O ID do registro de erro é inválido.');
+            assertInteger(id, 'Error ID is invalid.');
             await sequelize.transaction(async (transaction) => {
                 await ErrorLog.destroy({ where: { id }, transaction });
             });
@@ -74,7 +74,7 @@ export function setErrorEvents() {
 
     ipcMain.on('set-dom-error-log', async (e, err: DOMErrorLogBase) => {
         try {
-            assertString(err.selector, 'O seletor informado no relatório de erro é inválido.');
+            assertString(err.selector, `Invalid CSS selector: ${err.selector}`);
 
             const domErrorLog: Omit<DOMErrorLogType, 'id' | 'pending'> = {
                 name: err.name,
@@ -106,7 +106,7 @@ export function setErrorEvents() {
 
     ipcMain.on('delete-dom-error-log', async (_e, id: number) => {
         try {
-            assertInteger(id, 'O ID do registro de erro é inválido.');
+            assertInteger(id, 'Error ID is invalid.');
             await sequelize.transaction(async (transaction) => {
                 await DOMErrorLog.destroy({ where: { id }, transaction });
             });
@@ -135,7 +135,7 @@ export function setErrorEvents() {
 
     ipcMain.on('delete-main-process-error-log', async (_e, id: number) => {
         try {
-            assertInteger(id, 'O ID do registro de erro é inválido.');
+            assertInteger(id, 'Error ID is invalid.');
             await sequelize.transaction(async (transaction) => {
                 await MainProcessErrorLog.destroy({ where: { id }, transaction });
             });

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useIpcRendererOn } from '@vueuse/electron';
-import { isObject, assertKeyOf, toNull, isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
+import { assertKeyOf, isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
 import { NDivider, NGrid, NGridItem, NSelect, NButton, NButtonGroup, useDialog, useMessage } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$global/ipc';
 import { ModuleConfigError } from '$modules/error';
@@ -21,7 +21,7 @@ import type {
 const dialog = useDialog();
 const message = useMessage();
 
-const previousConfig = toNull(await ipcInvoke('get-plunder-config'), isObject);
+const previousConfig = await ipcInvoke('get-plunder-config');
 const config = ref<PlunderConfigType | null>(previousConfig);
 const groups = ref(await ipcInvoke('get-village-groups'));
 
@@ -35,8 +35,11 @@ const minutesUntilReload = ref<number>(config.value?.minutesUntilReload ?? 10);
 const maxDistance = ref<number>(config.value?.maxDistance ?? 20);
 const ignoreOlderThan = ref<number>(config.value?.ignoreOlderThan ?? 10);
 const plunderedResourcesRatio = ref<number>(config.value?.plunderedResourcesRatio ?? 1);
-const plunderGroupID = ref<number | null>(config.value?.plunderGroupID ?? null);
 const pageDelay = ref<number>(config.value?.pageDelay ?? 2000);
+const villageDelay = ref<number>(config.value?.villageDelay ?? 2000);
+
+const plunderGroupId = ref<number | null>(config.value?.plunderGroupId ?? null);
+const fieldsPerWave = ref<number>(config.value?.fieldsPerWave ?? 10);
 
 const blindAttackPattern = ref<BlindAttackPattern>(config.value?.blindAttackPattern ?? 'smaller');
 const useCPattern = ref<UseCPattern>(config.value?.useCPattern ?? 'normal');
@@ -51,8 +54,11 @@ watch(minutesUntilReload, (v) => updateConfig('minutesUntilReload', v));
 watch(maxDistance, (v) => updateConfig('maxDistance', v));
 watch(ignoreOlderThan, (v) => updateConfig('ignoreOlderThan', v));
 watch(plunderedResourcesRatio, (v) => updateConfig('plunderedResourcesRatio', v));
-watch(plunderGroupID, (v) => updateConfig('plunderGroupID', v));
 watch(pageDelay, (v) => updateConfig('pageDelay', v));
+watch(villageDelay, (v) => updateConfig('villageDelay', v));
+
+watch(plunderGroupId, (v) => updateConfig('plunderGroupId', v));
+watch(fieldsPerWave, (v) => updateConfig('fieldsPerWave', v));
 
 watch(blindAttackPattern, (v) => updateConfig('blindAttackPattern', v));
 watch(useCPattern, (v) => updateConfig('useCPattern', v));
@@ -60,20 +66,20 @@ watch(useCPattern, (v) => updateConfig('useCPattern', v));
 // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
 useIpcRendererOn('plunder-config-updated', (_e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
     try {
-        if (!isObject(config.value)) return;
-        assertKeyOf<PlunderConfigType>(key, config.value, `${key} não é uma configuração válida para o Plunder.`);
+        if (!config.value) return;
+        assertKeyOf<PlunderConfigType>(key, config.value, `${key} is not a valid key of PlunderConfigType`);
         Reflect.set(config, key, value);
     } catch (err) {
         ModuleConfigError.catch(err);
     };
 });
 
-function updateConfig(name: 'plunderGroupID', value: number | null): void;
+function updateConfig(name: 'plunderGroupId', value: number | null): void;
 function updateConfig(name: 'blindAttackPattern', value: BlindAttackPattern): void;
 function updateConfig(name: 'useCPattern', value: UseCPattern): void;
 function updateConfig(name: PlunderConfigKeys, value: number): void;
 function updateConfig(name: PlunderConfigKeys, value: PlunderConfigValues) {
-    if (!isObject(config.value)) return;
+    if (!config.value) return;
     Reflect.set(config.value, name, value);
     ipcSend('update-plunder-config', name, value);
 };
@@ -180,8 +186,8 @@ const plunderGroupOptions = computed(() => {
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="attackDelay" :min="100" :max="5000" :step="10"
-                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 5000" />
+                <NumberImput v-model:value="attackDelay" :min="100" :max="60000" :step="10"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
             </NGridItem>
 
             <NGridItem>
@@ -242,12 +248,39 @@ const plunderGroupOptions = computed(() => {
             <NGridItem>
                 <div class="plunder-config-select">
                     <NSelect
-                        v-model:value="plunderGroupID"
+                        v-model:value="plunderGroupId"
                         :options="plunderGroupOptions"
                         placeholder="Selecione um grupo"
                         :disabled="plunderGroupOptions.length === 0"
                     />
                 </div>
+            </NGridItem>
+
+            <NGridItem>
+                <LabelPopover>
+                    <template #trigger>Campos por onda</template>
+                    <span>
+                        Ao atacar em grupos, o Ares não envia todos os ataques de uma só vez.
+                        Em vez disso, ele envia uma onda de ataques de uma aldeia e então passa para a próxima,
+                        repetindo o processo até que todas as aldeias tenham enviado seus ataques.
+                    </span>
+                </LabelPopover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput v-model:value="fieldsPerWave" :min="5" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
+            </NGridItem>
+
+            <NGridItem>
+                <LabelPopover>
+                    <template #trigger>Delay entre troca de aldeias</template>
+                    <span>
+                        Determina quantos milissegundos o Ares deve esperar antes de trocar de aldeia ao atacar em grupo.
+                    </span>
+                </LabelPopover>
+            </NGridItem>
+            <NGridItem>
+                <NumberImput v-model:value="villageDelay" :min="100" :max="60000" :step="100"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
             </NGridItem>
         </NGrid>
 
@@ -304,8 +337,8 @@ const plunderGroupOptions = computed(() => {
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
                 <LabelPopover>
-                    <template #trigger>Recarregamento automático</template>
-                    <span>Tempo, em minutos, até que a página seja recarregada automaticamente durante o saque.</span>
+                    <template #trigger>Atualização automática</template>
+                    <span>Tempo, em minutos, até que a página seja atualizada automaticamente durante o saque.</span>
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
@@ -332,13 +365,13 @@ const plunderGroupOptions = computed(() => {
                     <template #trigger>Delay entre troca de páginas</template>
                     <span>
                         Quando o Ares não encontra aldeias para atacar, ele tenta trocar de página.
-                        Esse delay determina quantos milisegundos o Ares deve esperar antes dessa tentativa.
+                        Esse delay determina quantos milissegundos o Ares deve esperar antes dessa tentativa.
                     </span>
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="pageDelay" :min="1000" :max="10000" :step="100"
-                    :validator="(v) => isPositiveInteger(v) && v >= 1000 && v <= 10000" />
+                <NumberImput v-model:value="pageDelay" :min="100" :max="60000" :step="100"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
             </NGridItem>
         </NGrid>
     </section>

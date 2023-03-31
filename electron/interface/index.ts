@@ -59,6 +59,9 @@ const aliasArgs = [
     useGroupsStore
 ] as const;
 
+////// ERROS
+MainProcessError.catch = catchError(useAresStore(), MainProcessErrorLog);
+
 ////// WATCHERS
 const { name: playerName } = storeToRefs(usePlayerStore());
 watch(playerName, (name) => User.savePlayerAsUser(name));
@@ -68,8 +71,18 @@ const { world, userAlias } = storeToRefs(useCacheStore());
 watch(world, patchWorldRelatedStores(...worldArgs));
 watch(userAlias, patchAliasRelatedStores(...aliasArgs));
 
-////// ERROS
-MainProcessError.catch = catchError(useAresStore(), MainProcessErrorLog);
+const { screen } = storeToRefs(useAresStore());
+const { currentVillage: plunderCurrentVillage, plunderGroup } = storeToRefs(usePlunderCacheStore());
+watch(screen, (screen) => {
+    try {
+        if (screen !== 'am_farm') {
+            if (plunderCurrentVillage.value) plunderCurrentVillage.value = null;
+            if (plunderGroup.value) plunderGroup.value = null;
+        };
+    } catch (error) {
+        MainProcessError.catch(error);
+    };
+});
 
 export {
     UserConfig,

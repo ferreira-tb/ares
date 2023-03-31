@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from 'electron';
-import { assertInstanceOf } from '@tb-dev/ts-guard';
+import { assertInstanceOf, isInteger } from '@tb-dev/ts-guard';
 import { assertWorld } from '$electron/utils/guards';
 import { MainProcessError } from '$electron/error';
 import type { MechanusStore } from 'mechanus';
@@ -16,14 +16,14 @@ export function restartAres() {
 export const getMainWindow = () => {
     const id = Number.parseIntStrict(process.env.MAIN_WINDOW_ID ?? '');
     const mainWindow = BrowserWindow.fromId(id);
-    assertInstanceOf(mainWindow, BrowserWindow, 'Não foi possível obter a janela do browser.');
+    assertInstanceOf(mainWindow, BrowserWindow, 'Could not get main window.');
     return mainWindow;
 };
 
 export const getPanelWindow = () => {
     const id = Number.parseIntStrict(process.env.PANEL_WINDOW_ID ?? '');
     const panelWindow = BrowserWindow.fromId(id);
-    assertInstanceOf(panelWindow, BrowserWindow, 'Não foi possível obter a janela do painel.');
+    assertInstanceOf(panelWindow, BrowserWindow, 'Could not get panel window.');
     return panelWindow;
 };
 
@@ -93,4 +93,19 @@ export function extractWorldUnitsFromMap(worldUnitsMap: ReturnType<typeof create
         acc[key] = { ...unitStore };
         return acc;
     }, {} as WorldUnitType);
+};
+
+/** Gera um número inteiro entre dois outros. */
+export function generateIntegerBetween(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min) + min);
+};
+
+/**
+ * Gera um número inteiro aleatório com base em um valor e um intervalo.
+ * @param base Valor base.
+ * @param range Intervalo.
+ */
+export function generateRandomDelay(base: number, range?: number) {
+    if (!isInteger(range)) range = 50;
+    return generateIntegerBetween(base - range, base + range);
 };

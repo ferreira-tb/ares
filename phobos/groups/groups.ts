@@ -9,7 +9,7 @@ export function getVillageGroups(port: MessagePort) {
             const groupName = el.getTextContentStrict().replace(/(^\[|\]$)/g, '');
             const groupType = el.getAttributeStrict('data-group-type');
             if (groupType !== 'dynamic' && groupType !== 'static') {
-                throw new PhobosError(`Grupo inválido: ${groupType}`);
+                throw new PhobosError(`Invalid group type: ${groupType}`);
             };
 
             return {

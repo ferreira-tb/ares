@@ -14,7 +14,7 @@ function handlePort(port: MessagePort) {
     try {
         port.onmessage = (e) => {
             const { channel } = e.data as PhobosPortMessage;
-            assertString(channel, 'O canal não é uma string.');
+            assertString(channel, `Channel should be a string, got ${channel}.`);
             
             switch (channel) {
                 case 'fetch-world-config':
@@ -27,7 +27,7 @@ function handlePort(port: MessagePort) {
                     getVillageGroups(port);
                     break;
                 default:
-                    throw new PhobosError(`Canal desconhecido: ${channel}`);
+                    throw new PhobosError(`Unknown channel: ${channel}`);
             };
         };
 

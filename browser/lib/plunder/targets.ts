@@ -128,7 +128,7 @@ function queryLastAttack(row: Element, info: PlunderTargetInfo) {
         };
     };
 
-    throw new PlunderError('Não foi possível determinar a data do último ataque');
+    throw new PlunderError('Could not find last attack date.');
 };
 
 /**
@@ -176,10 +176,10 @@ function queryWallLevel(resourcesField: Element | null, info: PlunderTargetInfo)
     if (!resourcesField) return;
 
     const wallLevelField = resourcesField.nextElementSibling;
-    assertElement(wallLevelField, 'O campo com o nível da muralha não foi encontrado');
+    assertElement(wallLevelField, 'Wall level not found.');
 
     const wallLevel = wallLevelField.parseIntStrict();
-    assertWallLevel(wallLevel, PlunderError, 'O valor encontrado não corresponde ao nível da muralha');
+    assertWallLevel(wallLevel, PlunderError, 'Found invalid wall level.');
 
     info.wallLevel = wallLevel;
 };

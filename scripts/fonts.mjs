@@ -22,7 +22,7 @@ try {
         let fileContent = await fs.readFile(cssFile, { encoding: 'utf-8' });
         fileContent = fileContent.replace(regex, replacement);
         await fs.writeFile(cssFile, fileContent, { encoding: 'utf-8' });
-    }
+    };
 
     console.log(`Fim dos trabalhos. Tempo total: ${Date.now() - startTime}ms.`);
 

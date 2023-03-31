@@ -28,9 +28,11 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
             farmAssistant: toNull(rawGameData.features.FarmAssistent.active, isBoolean)
         };
 
-        this.groups = {
-            groupId: isString(rawGameData.group_id) ? Number.parseIntStrict(rawGameData.group_id) : null
-        };
+        // O valor de group_id pode ser uma string ou um número.
+        const groupId = isInteger(rawGameData.group_id) ? rawGameData.group_id :
+            isString(rawGameData.group_id) ? Number.parseIntStrict(rawGameData.group_id) : null;
+
+        this.groups = { groupId };
 
         this.player = {
             name: toNull(rawGameData.player.name, isString),

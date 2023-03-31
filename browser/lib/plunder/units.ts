@@ -27,7 +27,7 @@ function queryUnitsRow(unitStore: ReturnType<typeof useUnitsStore>) {
     const unitsRow = document.queryAndAssert<HTMLTableRowElement>(selector);
 
     const unitFields = unitsRow.queryAsArray('td[id][class*="unit" i]');
-    assert(unitFields.length >= 7, 'Não foi possível encontrar os campos com as unidades disponíveis.');
+    assert(unitFields.length >= 7, 'Could not find all unit fields.');
 
     for (const field of unitFields) {
         const unitType = field.getAttributeStrict<AllUnits>('id');

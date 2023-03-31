@@ -79,7 +79,7 @@ export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<bool
 
         for (const [key, value] of Object.entries(units)) {
             if (!isArcherWorld && /archer/.test(key)) continue;
-            assertInteger(value, `O valor de ${key} não é um número inteiro.`);
+            assertInteger(value, `Expected integer value for ${key}, but got ${value}.`);
 
             const selector = `input#unit_input_${key}[name*="${key}" i][class*="unitsInput" i]`;
             const input = commandForm.queryAndAssert<HTMLInputElement>(selector);
@@ -98,10 +98,10 @@ export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<bool
         for (const unit of unitsBeingSent) {
             const elClass = unit.getAttributeStrict('class');
             const unitName = elClass.match(unitsRegex)?.[0] as keyof PlaceUnitsAmount | undefined;
-            assertString(unitName, `Não foi possível extrair o nome da unidade a partir da classe \"${elClass}\".`);
+            assertString(unitName, `Could not determine unit name from class \"${elClass}\".`);
             const unitAmount = unit.parseIntStrict(10, false);
-            assertInteger(unitAmount, `Não foi possível extrair a quantidade da unidade \"${unitName}\".`);
-            assert(unitAmount === units[unitName], `A quantidade de tropas sendo enviada é diferente da quantidade exigida.`);
+            assertInteger(unitAmount, `Could not determine ${unitName} amount.`);
+            assert(unitAmount === units[unitName], `${unitName} amount is not equal to the required amount.`);
         };
 
         await sendAttack(confirmationButton);
@@ -123,8 +123,7 @@ function submitAndWaitConfirmationPopup(commandForm: Element) {
             const found = mutations.some((mutation) => {
                 return Array.from(mutation.addedNodes).some((node) => {
                     if (!isInstanceOf(node, HTMLElement)) return false;
-                    const id = node.getAttribute('id');
-                    return id === 'command-data-form';
+                    return node.matches('#command-data-form');
                 });
             });
 
