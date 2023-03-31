@@ -5,12 +5,29 @@ import { DatabaseError } from '$electron/error';
 import { getPanelWindow } from '$electron/utils/helpers';
 import type { Rectangle } from 'electron';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { AppConfigName, AppConfigJSON } from '$types/config';
+import type { AppConfigName, AppConfigJSON, GeneralAppConfigType } from '$types/config';
+import type { useAppGeneralConfigStore } from '$interface/index';
 
 /** Diz respeito a configurações que abrangem toda a aplicação, independentemente do usuário. */
 export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAttributes<AppConfig>> {
     declare readonly name: AppConfigName;
     declare readonly json: AppConfigJSON;
+
+    public static async setGeneralConfig(config: ReturnType<typeof useAppGeneralConfigStore>) {
+        try {
+            const previousConfig = (await AppConfig.findByPk('general_config'))?.toJSON();
+            if (!previousConfig || !isObject<GeneralAppConfigType>(previousConfig.json)) return;
+
+            type ConfigEntries = [keyof GeneralAppConfigType, GeneralAppConfigType[keyof GeneralAppConfigType]][];
+            for (const [key, value] of Object.entries(previousConfig.json) as ConfigEntries) {
+                if (config[key] === value) continue;
+                config[key] = value;
+            };
+
+        } catch (err) {
+            DatabaseError.catch(err);
+        };
+    };
 
     //////// PAINEL
     public static async savePanelBounds(rectangle: Rectangle) {
@@ -46,6 +63,6 @@ AppConfig.init({
     },
     json: {
         type: DataTypes.JSON,
-        allowNull: true,
+        allowNull: true
     }
 }, { sequelize, tableName: 'app_config', timestamps: true });

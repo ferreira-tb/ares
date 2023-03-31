@@ -5,6 +5,7 @@ import type { RemoveMethods } from '$types/utils';
 import type { WorldConfigType } from '$types/world';
 import type { UnitDetails } from '$types/world';
 import type { UserAlias } from '$types/electron';
+import type { GeneralAppConfigType } from '$types/config';
 
 import type {
     AllUnits,
@@ -20,6 +21,12 @@ import type {
     PlunderAttackDetails,
     PlunderCacheType
 } from '$types/plunder';
+
+////// APP GENERAL CONFIG
+export type AppGeneralConfigStore = GeneralAppConfigType;
+export type MechanusAppGeneralConfigStoreType = {
+    [K in keyof AppGeneralConfigStore]: MechanusRef<AppGeneralConfigStore[K]>;
+};
 
 ////// ARES
 type AresType = TribalWarsGameDataType['ares'];
