@@ -1,4 +1,4 @@
-import Config from '$modules/views/Config.vue';
+import ConfigView from '$modules/views/ConfigView.vue';
 import ConfigGeneral from '$modules/components/config/ConfigGeneral.vue';
 import ConfigPlunder from '$modules/components/config/ConfigPlunder.vue';
 import type { ModuleRouteRecordRawStrict, ConfigModuleRoutes } from '$types/modules';
@@ -6,7 +6,7 @@ import type { ModuleRouteRecordRawStrict, ConfigModuleRoutes } from '$types/modu
 export const configRoutes: ModuleRouteRecordRawStrict<'app-config' | ConfigModuleRoutes> = {
     path: '/app-config',
     name: 'app-config',
-    component: Config,
+    component: ConfigView,
     children: [
         {
             path: 'general',
