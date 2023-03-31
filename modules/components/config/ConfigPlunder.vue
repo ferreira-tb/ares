@@ -376,8 +376,10 @@ const plunderGroupOptions = computed(() => {
         </NGrid>
     </section>
 
-    <InfoResult v-else title="Você está logado?"
-        description="É necessário estar logado para acessar as configurações do assistente de saque." />
+    <InfoResult v-else
+        title="Você está logado?"
+        description="É necessário estar logado para acessar as configurações do assistente de saque."
+    />
 </template>
 
 <style scoped lang="scss">

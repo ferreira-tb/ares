@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia';
 import { useMutationObserver } from '@vueuse/core';
 import { isInstanceOf } from '@tb-dev/ts-guard';
 import { useAresStore } from '$global/stores/ares';
-import { ipcSend } from '$global/ipc';
+import { ipcSend, ipcInvoke } from '$global/ipc';
 import type { UseMutationObserverOptions } from '@vueuse/core';
 
 const aresStore = useAresStore();
@@ -26,7 +26,7 @@ useMutationObserver(content, (mutations) => {
             captcha.value = true;
         } else if (thereIsBotCheckAmongNodes(mutation.removedNodes)) {
             captcha.value = false;
-            nextTick(() => ipcSend('reload-main-view'));
+            reloadMainView();
         };
     });
 }, options);
@@ -44,6 +44,11 @@ function thereIsBotCheckAmongNodes(rawNodes: NodeList) {
 function isBotCheck(node: Node) {
     if (!isInstanceOf(node, HTMLElement)) return false;
     return node.matches('#bot_check');
+};
+
+async function reloadMainView() {
+    const shouldReload = await ipcInvoke('should-reload-after-captcha');
+    if (shouldReload) nextTick(() => ipcSend('reload-main-view'));
 };
 </script>
 

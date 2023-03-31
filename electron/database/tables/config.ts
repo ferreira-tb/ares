@@ -13,15 +13,27 @@ export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAt
     declare readonly name: AppConfigName;
     declare readonly json: AppConfigJSON;
 
-    public static async setGeneralConfig(config: ReturnType<typeof useAppGeneralConfigStore>) {
+    public static async saveGeneralConfig(configStore: ReturnType<typeof useAppGeneralConfigStore>) {
+        try {
+            const config = { ...configStore };
+            await sequelize.transaction(async (transaction) => {
+                await AppConfig.upsert({ name: 'general_config', json: config }, { transaction });
+            });
+
+        } catch (err) {
+            DatabaseError.catch(err);
+        };
+    };
+
+    public static async setGeneralConfig(configStore: ReturnType<typeof useAppGeneralConfigStore>) {
         try {
             const previousConfig = (await AppConfig.findByPk('general_config'))?.toJSON();
             if (!previousConfig || !isObject<GeneralAppConfigType>(previousConfig.json)) return;
 
             type ConfigEntries = [keyof GeneralAppConfigType, GeneralAppConfigType[keyof GeneralAppConfigType]][];
             for (const [key, value] of Object.entries(previousConfig.json) as ConfigEntries) {
-                if (config[key] === value) continue;
-                config[key] = value;
+                if (configStore[key] === value) continue;
+                configStore[key] = value;
             };
 
         } catch (err) {
