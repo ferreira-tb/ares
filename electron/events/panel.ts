@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { UserConfig } from '$interface/index';
+import { AppConfig } from '$interface/index';
 import { getPanelWindow } from '$electron/utils/helpers';
 
 export function setPanelEvents() {
@@ -9,11 +9,11 @@ export function setPanelEvents() {
 
     panelWindow.on('moved', async () => {
         const rectangle = panelWindow.getBounds();
-        await UserConfig.savePanelBounds(rectangle);
+        await AppConfig.savePanelBounds(rectangle);
     });
 
     panelWindow.on('resized', async () => {
         const rectangle = panelWindow.getBounds();
-        await UserConfig.savePanelBounds(rectangle);
+        await AppConfig.savePanelBounds(rectangle);
     });
 };

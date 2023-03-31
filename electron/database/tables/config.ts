@@ -5,17 +5,18 @@ import { DatabaseError } from '$electron/error';
 import { getPanelWindow } from '$electron/utils/helpers';
 import type { Rectangle } from 'electron';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { UserConfigName, UserConfigJSON } from '$types/config';
+import type { AppConfigName, AppConfigJSON } from '$types/config';
 
-export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreationAttributes<UserConfig>> {
-    declare readonly name: UserConfigName;
-    declare readonly json: UserConfigJSON;
+/** Diz respeito a configurações que abrangem toda a aplicação, independentemente do usuário. */
+export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAttributes<AppConfig>> {
+    declare readonly name: AppConfigName;
+    declare readonly json: AppConfigJSON;
 
     //////// PAINEL
     public static async savePanelBounds(rectangle: Rectangle) {
         try {
             await sequelize.transaction(async (transaction) => {
-                await UserConfig.upsert({ name: 'panel_bounds', json: rectangle }, { transaction });
+                await AppConfig.upsert({ name: 'panel_bounds', json: rectangle }, { transaction });
             });
 
         } catch (err) {
@@ -26,9 +27,9 @@ export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreation
     public static async setPanelBounds() {
         try {
             const panelWindow = getPanelWindow();
-            const bounds = (await UserConfig.findByPk('panel_bounds'))?.toJSON();
-            if (!bounds || !isObject(bounds.json)) return;
-            panelWindow.setBounds(bounds.json as Rectangle);
+            const bounds = (await AppConfig.findByPk('panel_bounds'))?.toJSON();
+            if (!bounds || !isObject<Rectangle>(bounds.json)) return;
+            panelWindow.setBounds(bounds.json);
 
         } catch (err) {
             DatabaseError.catch(err);
@@ -36,7 +37,7 @@ export class UserConfig extends Model<InferAttributes<UserConfig>, InferCreation
     };
 };
 
-UserConfig.init({
+AppConfig.init({
     name: {
         type: DataTypes.STRING,
         primaryKey: true,
@@ -47,4 +48,4 @@ UserConfig.init({
         type: DataTypes.JSON,
         allowNull: true,
     }
-}, { sequelize, tableName: 'user_config', timestamps: true });
+}, { sequelize, tableName: 'app_config', timestamps: true });

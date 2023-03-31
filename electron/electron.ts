@@ -3,7 +3,7 @@ import { app, BrowserWindow, BrowserView } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { setAppMenu } from '$electron/menu/menu';
 import { sequelize } from '$database/database';
-import { UserConfig, useBrowserViewStore } from '$interface/index';
+import { AppConfig, useBrowserViewStore } from '$interface/index';
 import { setEvents } from '$electron/events/index';
 import { gameURL, favicon, panelHtml, mainHtml, browserJs } from '$electron/utils/constants';
 import { setBrowserViewAutoResize } from '$electron/utils/view';
@@ -93,7 +93,7 @@ function createWindow() {
 
     mainWindow.once('ready-to-show', () => mainWindow.show());
     panelWindow.once('ready-to-show', async () => {
-        await UserConfig.setPanelBounds();
+        await AppConfig.setPanelBounds();
         panelWindow.show();
         panelWindow.webContents.send('panel-visibility-did-change', panelWindow.isVisible());
     });
