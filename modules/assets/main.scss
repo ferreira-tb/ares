@@ -45,3 +45,12 @@ html {
 .error-log:last-of-type {
     margin-bottom: 1em;
 }
+
+.config-divider {
+    margin-top: 1em !important;
+    margin-bottom: 0.3em !important;
+}
+
+.config-divider:first-of-type {
+    margin-top: 0.3em !important;
+}

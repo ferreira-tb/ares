@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, watch, toRaw } from 'vue';
-import { NGrid, NGridItem } from 'naive-ui';
+import { NDivider, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$global/ipc';
 import SwitchPopover from '$global/components/popover/SwitchPopover.vue';
 
@@ -11,6 +11,7 @@ watch(config, () => ipcSend('update-app-general-config', toRaw(config)));
 
 <template>
     <section class="general-config">
+        <NDivider title-placement="left" class="config-divider">Captcha</NDivider>
         <NGrid class="switch-area" :cols="1" :y-gap="10">
             <NGridItem>
                 <SwitchPopover v-model:value="config.reloadAfterCaptcha" size="medium">
@@ -28,7 +29,6 @@ watch(config, () => ipcSend('update-app-general-config', toRaw(config)));
 
 <style scoped>
 .general-config {
-    padding-top: 0.5em;
-    padding-bottom: 2em;
+    padding: 0.5em;
 }
 </style>
