@@ -1,6 +1,6 @@
 import { Mechanus, watch, storeToRefs } from 'mechanus';
 
-import { UserConfig } from '$tables/config';
+import { AppConfig } from '$tables/config';
 import { ErrorLog, DOMErrorLog, MainProcessErrorLog } from '$tables/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$tables/plunder';
 import { User } from '$tables/user';
@@ -85,7 +85,7 @@ watch(screen, (screen) => {
 });
 
 export {
-    UserConfig,
+    AppConfig,
     ErrorLog,
     DOMErrorLog,
     MainProcessErrorLog,
