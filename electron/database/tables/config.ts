@@ -48,4 +48,4 @@ AppConfig.init({
         type: DataTypes.JSON,
         allowNull: true,
     }
-}, { sequelize, tableName: 'user_config', timestamps: true });
+}, { sequelize, tableName: 'app_config', timestamps: true });
