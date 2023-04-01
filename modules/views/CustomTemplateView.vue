@@ -3,10 +3,10 @@ import { ref, watchEffect } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke } from '$global/ipc';
 import { isUserAlias } from '$global/utils/guards';
-import TemplateModal from '$modules/components/plunder/TemplateModal.vue';
+import PlunderTemplateModal from '$modules/components/PlunderTemplateModal.vue';
 import ErrorResult from '$global/components/result/ErrorResult.vue';
 import InfoResult from '$global/components/result/InfoResult.vue';
-import TemplateCard from '$modules/components/plunder/TemplateCard.vue';
+import PlunderTemplateCard from '$modules/components/PlunderTemplateCard.vue';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 
 const userAlias = await ipcInvoke('user-alias');
@@ -37,7 +37,7 @@ function removeTemplate(template: CustomPlunderTemplateType) {
             </div>
 
             <Suspense>
-                <TemplateModal
+                <PlunderTemplateModal
                     v-model:show="showTemplateModal"
                     v-model:templates="templates"
                     :userAlias="userAlias"
@@ -48,7 +48,7 @@ function removeTemplate(template: CustomPlunderTemplateType) {
             <div v-if="templates.length > 0" class="template-grid tb-scrollbar">
                 <NGrid :cols="4" :x-gap="8" :y-gap="10">
                     <NGridItem v-for="template of templates" :key="uuid(template.type)">
-                        <TemplateCard :template="template" @template-destroyed="removeTemplate" />
+                        <PlunderTemplateCard :template="template" @template-destroyed="removeTemplate" />
                     </NGridItem>
                 </NGrid>
             </div>

@@ -1,6 +1,6 @@
 import ConfigView from '$modules/views/ConfigView.vue';
-import ConfigGeneral from '$modules/components/config/ConfigGeneral.vue';
-import ConfigPlunder from '$modules/components/config/ConfigPlunder.vue';
+import ConfigGeneral from '$modules/components/ConfigGeneral.vue';
+import ConfigPlunder from '$modules/components/ConfigPlunder.vue';
 import type { ModuleRouteRecordRawStrict, ConfigModuleRoutes } from '$types/modules';
 
 export const configRoutes: ModuleRouteRecordRawStrict<'app-config' | ConfigModuleRoutes> = {

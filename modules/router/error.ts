@@ -1,7 +1,7 @@
 import ErrorLogView from '$modules/views/ErrorLogView.vue';
-import ErrorLogGeneral from '$modules/components/error/ErrorLogGeneral.vue';
-import ErrorLogDom from '$modules/components/error/ErrorLogDom.vue';
-import ErrorLogElectron from '$modules/components/error/ErrorLogElectron.vue';
+import ErrorLogGeneral from '$modules/components/ErrorLogGeneral.vue';
+import ErrorLogDom from '$modules/components/ErrorLogDom.vue';
+import ErrorLogElectron from '$modules/components/ErrorLogElectron.vue';
 import type { ModuleRouteRecordRawStrict, ErrorModuleRoutes } from '$types/modules';
 
 export const errorRoutes: ModuleRouteRecordRawStrict<'error-log' | ErrorModuleRoutes> = {
