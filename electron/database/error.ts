@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import type { ErrorLogType, ElectronProcessErrorLogType } from '$types/error';
+import type { ErrorLogType, ElectronErrorLogType } from '$types/error';
 import type { World } from '$types/game';
 
 export class ErrorLog extends Model<InferAttributes<ErrorLog>, InferCreationAttributes<ErrorLog>> implements ErrorLogType {
@@ -82,7 +82,7 @@ ErrorLog.init({
 
 type EELAttributes = InferAttributes<ElectronErrorLog>;
 type EELCreationAttributes = InferCreationAttributes<ElectronErrorLog>;
-export class ElectronErrorLog extends Model<EELAttributes, EELCreationAttributes> implements ElectronProcessErrorLogType {
+export class ElectronErrorLog extends Model<EELAttributes, EELCreationAttributes> implements ElectronErrorLogType {
     declare readonly id: CreationOptional<number>;
     declare readonly name: string;
     declare readonly message: string;

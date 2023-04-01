@@ -19,13 +19,16 @@ export interface ErrorLogType extends ErrorLogBase {
     readonly pending: boolean;
 };
 
-export interface ElectronProcessErrorLogType extends ErrorLogBase {
-    readonly id: number;
+export interface ElectronErrorLogBase extends ErrorLogBase {
     readonly time: number;
     readonly ares: string;
     readonly electron: string;
     readonly chrome: string;
     readonly tribal: string | null;
     readonly locale: string | null;
+};
+
+export interface ElectronErrorLogType extends ElectronErrorLogBase {
+    readonly id: number;
     readonly pending: boolean;
 };

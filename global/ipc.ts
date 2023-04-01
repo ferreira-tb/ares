@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$lib/plunder/attack';
 import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$types/game';
-import type { ErrorLogBase, ErrorLogType, ElectronProcessErrorLogType } from '$types/error';
+import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType } from '$types/error';
 import type { WorldConfigType, WorldUnitType } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
@@ -63,7 +63,7 @@ export async function ipcInvoke(channel: 'get-village-groups'): Promise<Set<Vill
 
 // Erros
 export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
-export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<ElectronProcessErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<ElectronErrorLogType[] | null>;
 
 // Plunder
 export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
