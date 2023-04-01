@@ -7,7 +7,13 @@ import { setEvents } from '$electron/events/index';
 import { gameURL, favicon, panelHtml, mainHtml, browserJs } from '$electron/utils/constants';
 import { setBrowserViewAutoResize } from '$electron/utils/view';
 import { MainProcessError } from '$electron/error';
-import { AppConfig, useBrowserViewStore, useAppGeneralConfigStore } from '$interface/index';
+
+import {
+    AppConfig,
+    useBrowserViewStore,
+    useAppGeneralConfigStore,
+    useAppNotificationsStore
+} from '$interface/index';
 
 process.env.ARES_MODE = 'dev';
 
@@ -112,7 +118,11 @@ app.on('window-all-closed', () => app.quit());
         };
 
         const generalConfigStore = useAppGeneralConfigStore();
-        await AppConfig.setGeneralConfig(generalConfigStore);
+        const notificationsConfigStore = useAppNotificationsStore();
+        await Promise.all([
+            AppConfig.setConfig('config_general', generalConfigStore),
+            AppConfig.setConfig('config_notifications', notificationsConfigStore)
+        ]);
         
     } catch (err) {
         MainProcessError.catch(err);

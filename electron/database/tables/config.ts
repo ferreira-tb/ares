@@ -5,19 +5,30 @@ import { DatabaseError } from '$electron/error';
 import { getPanelWindow } from '$electron/utils/helpers';
 import type { Rectangle } from 'electron';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { AppConfigName, AppConfigJSON, GeneralAppConfigType } from '$types/config';
-import type { useAppGeneralConfigStore } from '$interface/index';
+import type { AppConfigName, AppConfigJSON, AppConfigByName } from '$types/config';
+import type { useAppGeneralConfigStore, useAppNotificationsStore } from '$interface/index';
+
+type OnlyConfig = Extract<AppConfigName, `config_${string}`>;
+
+type AllConfigStoresReturnType =
+    | ReturnType<typeof useAppGeneralConfigStore>
+    | ReturnType<typeof useAppNotificationsStore>;
+
+type ConfigStoreByName<T extends OnlyConfig> =
+    T extends 'config_general' ? ReturnType<typeof useAppGeneralConfigStore> :
+    T extends 'config_notifications' ? ReturnType<typeof useAppNotificationsStore> :
+    never;
 
 /** Diz respeito a configurações que abrangem toda a aplicação, independentemente do usuário. */
 export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAttributes<AppConfig>> {
     declare readonly name: AppConfigName;
     declare readonly json: AppConfigJSON;
 
-    public static async saveGeneralConfig(configStore: ReturnType<typeof useAppGeneralConfigStore>) {
+    static async saveConfig<T extends OnlyConfig>(name: T, store: AllConfigStoresReturnType) {
         try {
-            const config = { ...configStore };
+            const json = { ...store };
             await sequelize.transaction(async (transaction) => {
-                await AppConfig.upsert({ name: 'general_config', json: config }, { transaction });
+                await AppConfig.upsert({ name, json }, { transaction });
             });
 
         } catch (err) {
@@ -25,15 +36,24 @@ export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAt
         };
     };
 
-    public static async setGeneralConfig(configStore: ReturnType<typeof useAppGeneralConfigStore>) {
+    /**
+     * Atualiza a store com os valores contidos no objeto `json`.
+     * 
+     * Se `json` não for passado, os dados serão buscados no banco de dados.
+     */
+    static async setConfig<T extends OnlyConfig, U extends AppConfigByName<T>, V extends keyof ConfigStoreByName<T>>(
+        name: T, store: ConfigStoreByName<T>, json?: U
+    ) {
         try {
-            const previousConfig = (await AppConfig.findByPk('general_config'))?.toJSON();
-            if (!previousConfig || !isObject<GeneralAppConfigType>(previousConfig.json)) return;
-
-            type ConfigEntries = [keyof GeneralAppConfigType, GeneralAppConfigType[keyof GeneralAppConfigType]][];
-            for (const [key, value] of Object.entries(previousConfig.json) as ConfigEntries) {
-                if (configStore[key] === value) continue;
-                configStore[key] = value;
+            if (!json) {
+                const previous = (await AppConfig.findByPk(name))?.toJSON();
+                if (!previous || !isObject<U>(previous.json)) return;
+                json = previous.json;
+            };
+            
+            for (const [key, value] of Object.entries(json) as [V, U[V]][]) {
+                if (store[key] === value) continue;
+                store[key] = value;
             };
 
         } catch (err) {
@@ -42,7 +62,7 @@ export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAt
     };
 
     //////// PAINEL
-    public static async savePanelBounds(rectangle: Rectangle) {
+    static async savePanelBounds(rectangle: Rectangle) {
         try {
             await sequelize.transaction(async (transaction) => {
                 await AppConfig.upsert({ name: 'panel_bounds', json: rectangle }, { transaction });
@@ -53,7 +73,7 @@ export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAt
         };
     };
 
-    public static async setPanelBounds() {
+    static async setPanelBounds() {
         try {
             const panelWindow = getPanelWindow();
             const bounds = (await AppConfig.findByPk('panel_bounds'))?.toJSON();

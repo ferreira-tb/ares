@@ -5,7 +5,7 @@ import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType, Main
 import type { WorldConfigType, WorldUnitType } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
-import type { GeneralAppConfigType } from '$types/config';
+import type { GeneralAppConfigType, AppNotificationsConfigType } from '$types/config';
 
 import type {
     PlunderAttackDetails,
@@ -103,6 +103,7 @@ export function ipcSend(channel: 'update-response-time', time: number | null): v
 
 // Configurações
 export function ipcSend(channel: 'update-app-general-config', config: GeneralAppConfigType): void;
+export function ipcSend(channel: 'update-app-notifications-config', config: AppNotificationsConfigType): void;
 export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
 export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
 
