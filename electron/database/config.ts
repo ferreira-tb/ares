@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { isObject } from '@tb-dev/ts-guard';
-import { sequelize } from '$database/database';
+import { sequelize } from '$electron/database';
 import { DatabaseError } from '$electron/error';
 import { getPanelWindow } from '$electron/utils/helpers';
 import type { Rectangle } from 'electron';

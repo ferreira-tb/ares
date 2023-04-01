@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { isObject, assertInteger } from '@tb-dev/ts-guard';
-import { sequelize } from '$database/database';
+import { sequelize } from '$electron/database';
 import { isUserAlias, assertUserAlias, assertWallLevel } from '$electron/utils/guards';
 import { DatabaseError } from '$electron/error';
 import { unitsToDestroyWall } from '$electron/utils/constants';

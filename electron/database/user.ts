@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '$database/database';
+import { sequelize } from '$electron/database';
 import { DatabaseError } from '$electron/error';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 

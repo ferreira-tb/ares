@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '$electron/database/database';
+import { sequelize } from '$electron/database';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import type { ErrorLogType, ElectronProcessErrorLogType } from '$types/error';
 import type { World } from '$types/game';

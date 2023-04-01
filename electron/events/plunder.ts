@@ -3,7 +3,7 @@ import { ipcMain, webContents } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { assertInteger, isKeyOf, isInteger, isPositiveInteger } from '@tb-dev/ts-guard';
 import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards';
-import { sequelize } from '$database/database';
+import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
 import { getPanelWindow, extractWorldUnitsFromMap, generateRandomDelay } from '$electron/utils/helpers';
 import { plunderSearchParams } from '$electron/utils/constants';

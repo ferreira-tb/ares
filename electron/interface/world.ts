@@ -5,11 +5,11 @@ import { WorldPatchError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { worldConfigURL, worldUnitURL } from '$electron/utils/constants';
 import { isWorld } from '$electron/utils/guards';
-import { sequelize } from '$database/database';
+import { sequelize } from '$electron/database';
 import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world';
 import type { PhobosPortMessage } from '$types/phobos';
 import type { World } from '$types/game';
-import type { WorldConfig as WorldConfigTable, WorldUnit as WorldUnitTable } from '$tables/world';
+import type { WorldConfig as WorldConfigTable, WorldUnit as WorldUnitTable } from '$electron/database/world';
 import type { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/world';
 
 /**

@@ -3,11 +3,11 @@ import { getPanelWindow } from '$electron/utils/helpers';
 import { isUserAlias } from '$electron/utils/guards';
 import { fetchVillageGroups, patchVillageGroups } from '$electron/utils/groups';
 import { AliasPatchError } from '$electron/error';
-import { sequelize } from '$database/database';
+import { sequelize } from '$electron/database';
 import type { PlunderAttackDetails, PlunderHistoryType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
-import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$tables/plunder';
-import type { VillageGroups as VillageGroupsTable } from '$tables/groups';
+import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$database/plunder';
+import type { VillageGroups as VillageGroupsTable } from '$database/groups';
 import type { definePlunderConfigStore, setPlunderHistoryStores } from '$stores/plunder';
 import type { defineGroupsStore } from '$stores/groups';
 

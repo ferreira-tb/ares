@@ -1,11 +1,11 @@
 import { Mechanus, watch, storeToRefs } from 'mechanus';
 
-import { AppConfig } from '$tables/config';
-import { ErrorLog, ElectronErrorLog } from '$tables/error';
-import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$tables/plunder';
-import { User } from '$tables/user';
-import { WorldConfig, WorldUnit } from '$tables/world';
-import { VillageGroups } from '$tables/groups';
+import { AppConfig } from '$database/config';
+import { ErrorLog, ElectronErrorLog } from '$database/error';
+import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
+import { User } from '$database/user';
+import { WorldConfig, WorldUnit } from '$database/world';
+import { VillageGroups } from '$database/groups';
 
 import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores, definePlunderCacheStore } from '$stores/plunder';
 import { defineAresStore } from '$stores/ares';

@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { app, dialog, BrowserWindow } from 'electron';
 import { isString, toNull } from '@tb-dev/ts-guard';
-import { sequelize } from '$database/database';
+import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/app/modules';
 import type { useAresStore } from '$interface/index';
 import type { ElectronErrorLog as MainProcessErrorLogTable } from '$interface/index';

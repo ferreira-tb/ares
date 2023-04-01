@@ -2,7 +2,7 @@ import '@tb-dev/prototype';
 import { app, BrowserWindow, BrowserView } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { setAppMenu } from '$electron/menu/menu';
-import { sequelize } from '$database/database';
+import { sequelize } from '$electron/database';
 import { setEvents } from '$electron/events/index';
 import { gameURL, favicon, panelHtml, mainHtml, browserJs } from '$electron/utils/constants';
 import { setBrowserViewAutoResize } from '$electron/utils/view';

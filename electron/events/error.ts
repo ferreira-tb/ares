@@ -2,7 +2,7 @@ import { URL } from 'url';
 import { Op } from 'sequelize';
 import { app, ipcMain, BrowserWindow } from 'electron';
 import { MainProcessEventError } from '$electron/error';
-import { sequelize } from '$database/database';
+import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/app/modules';
 import { ErrorLog, ElectronErrorLog, useAresStore } from '$interface/index';
 import type { ErrorLogBase, ErrorLogType } from '$types/error';
