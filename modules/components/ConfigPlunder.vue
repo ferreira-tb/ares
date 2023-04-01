@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { ipcInvoke, ipcSend } from '$global/ipc';
 import { ModuleConfigError } from '$modules/error';
-import InfoResult from '$global/components/result/InfoResult.vue';
+import ResultInfo from '$global/components/ResultInfo.vue';
 import ConfigPlunderGridAttack from '$modules/components/ConfigPlunderGridAttack.vue';
 import ConfigPlunderGridGroups from '$modules/components/ConfigPlunderGridGroups.vue';
 import ConfigPlunderGridWall from '$modules/components/ConfigPlunderGridWall.vue';
@@ -38,7 +38,7 @@ function updateConfig<T extends keyof PlunderConfigType>(name: T, value: Plunder
         <ConfigPlunderGridOthers :config="config" @update:config="updateConfig" />
     </section>
 
-    <InfoResult v-else
+    <ResultInfo v-else
         title="Você está logado?"
         description="É necessário estar logado para acessar as configurações do assistente de saque."
     />

@@ -7,7 +7,7 @@ import { ipcInvoke, ipcSend } from '$global/ipc';
 import { getLocaleDateString } from '$global/utils/helpers';
 import { ModuleError } from '$modules/error';
 import type { ErrorLogType } from '$types/error';
-import SucessResult from '$global/components/result/SuccessResult.vue';
+import ResultSucess from '$global/components/ResultSucess.vue';
 
 const raw = await ipcInvoke('get-main-process-error-log');
 assertArray(raw, 'Database connection error.');
@@ -43,6 +43,6 @@ function deleteError(id: number) {
                 </NCard>
             </TransitionGroup>
         </template>
-        <SucessResult v-else description="Nenhum erro registrado :)" />
+        <ResultSucess v-else description="Nenhum erro registrado :)" />
     </section>
 </template>

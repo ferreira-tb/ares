@@ -7,7 +7,7 @@ import { useGroupsStore } from '$global/stores/groups';
 import { ipcSend } from '$global/ipc';
 import { togglePlunder } from '$panel/utils/helpers';
 import PlunderResources from '$panel/components/PlunderResources.vue';
-import SwitchPopover from '$global/components/popover/SwitchPopover.vue';
+import SwitchPopover from '$global/components/SwitchPopover.vue';
 
 const config = usePlunderConfigStore();
 const features = useFeaturesStore();

@@ -5,8 +5,8 @@ import { isObject, assertObject, assertKeyOf, toIntegerStrict, isInteger, assert
 import { ipcInvoke } from '$global/ipc';
 import { assertUserAlias } from '$global/utils/guards';
 import { ModuleConfigError } from '$modules/error';
-import ErrorResult from '$global/components/result/ErrorResult.vue';
-import NumberCell from '$global/components/table/NumberCell.vue';
+import ResultError from '$global/components/ResultError.vue';
+import TableCellNumber from '$global/components/TableCellNumber.vue';
 import SpearIcon from '$icons/units/SpearIcon.vue';
 import SwordIcon from '$icons/units/SwordIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';
@@ -66,7 +66,7 @@ for (const column of columns) {
     column.resizable = false;
     
     if (column.key !== 'level') {
-        column.render = (row) => h(NumberCell, {
+        column.render = (row) => h(TableCellNumber, {
             value: toIntegerStrict(row[column.key], isInteger, 10) as number,
             onCellUpdated(newValue: number) {
                 const dataItem = demolitionData.find((data) => data.level === row.level);
@@ -119,7 +119,7 @@ watch(demolitionData, async (newData) => {
         />
     </main>
 
-    <ErrorResult v-else />
+    <ResultError v-else />
 </template>
 
 <style scoped>

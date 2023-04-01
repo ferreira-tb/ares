@@ -4,9 +4,9 @@ import { NDivider, NGrid, NGridItem, NButton, NButtonGroup, useDialog, useMessag
 import { assertUserAlias, isDistance } from '$global/utils/guards';
 import { ipcInvoke, ipcSend } from '$global/ipc';
 import { ModuleConfigError } from '$modules/error';
-import WallInput from '$global/components/input/WallInput.vue';
-import NumberImput from '$global/components/input/NumberInput.vue';
-import LabelPopover from '$global/components/popover/LabelPopover.vue';
+import InputWall from '$global/components/InputWall.vue';
+import InputNumber from '$global/components/InputNumber.vue';
+import LabelPopover from '$global/components/LabelPopover.vue';
 import type { PlunderConfigType } from '$types/plunder';
 
 const props = defineProps<{
@@ -63,7 +63,7 @@ function resetDemolitionConfig() {
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <WallInput v-model:value="wallLevelToIgnore" />
+                <InputWall v-model:value="wallLevelToIgnore" />
             </NGridItem>
 
             <NGridItem>
@@ -73,7 +73,7 @@ function resetDemolitionConfig() {
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <WallInput v-model:value="wallLevelToDestroy" />
+                <InputWall v-model:value="wallLevelToDestroy" />
             </NGridItem>
 
             <NGridItem>
@@ -84,7 +84,7 @@ function resetDemolitionConfig() {
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="destroyWallMaxDistance" :min="1" :max="9999" :step="1"
+                <InputNumber v-model:value="destroyWallMaxDistance" :min="1" :max="9999" :step="1"
                     :validator="(v) => isDistance(v)" />
             </NGridItem>
 

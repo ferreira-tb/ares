@@ -2,8 +2,8 @@
 import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem } from 'naive-ui';
 import { isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
-import NumberImput from '$global/components/input/NumberInput.vue';
-import LabelPopover from '$global/components/popover/LabelPopover.vue';
+import InputNumber from '$global/components/InputNumber.vue';
+import LabelPopover from '$global/components/LabelPopover.vue';
 import type { PlunderConfigType } from '$types/plunder';
 
 const props = defineProps<{
@@ -34,7 +34,7 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="minutesUntilReload" :min="1" :max="60" :step="1"
+                <InputNumber v-model:value="minutesUntilReload" :min="1" :max="60" :step="1"
                     :validator="(v) => isPositiveInteger(v) && v >= 1 && v <= 60" />
             </NGridItem>
 
@@ -48,7 +48,7 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="plunderedResourcesRatio" :min="0.2" :max="1" :step="0.05"
+                <InputNumber v-model:value="plunderedResourcesRatio" :min="0.2" :max="1" :step="0.05"
                     :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1" />
             </NGridItem>
 
@@ -62,7 +62,7 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="pageDelay" :min="100" :max="60000" :step="100"
+                <InputNumber v-model:value="pageDelay" :min="100" :max="60000" :step="100"
                     :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
             </NGridItem>
         </NGrid>

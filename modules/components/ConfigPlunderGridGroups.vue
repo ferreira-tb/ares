@@ -4,8 +4,8 @@ import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
 import { isPositiveInteger } from '@tb-dev/ts-guard';
 import { isDistance } from '$global/utils/guards';
 import { ipcInvoke } from '$global/ipc';
-import NumberImput from '$global/components/input/NumberInput.vue';
-import LabelPopover from '$global/components/popover/LabelPopover.vue';
+import InputNumber from '$global/components/InputNumber.vue';
+import LabelPopover from '$global/components/LabelPopover.vue';
 import ConfigPlunderButtonUpdateGroups from '$modules/components/ConfigPlunderButtonUpdateGroups.vue';
 import type { PlunderConfigType } from '$types/plunder';
 
@@ -76,7 +76,7 @@ watchEffect(() => {
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="fieldsPerWave" :min="5" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
+                <InputNumber v-model:value="fieldsPerWave" :min="5" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
             </NGridItem>
 
             <NGridItem>
@@ -88,7 +88,7 @@ watchEffect(() => {
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="villageDelay" :min="100" :max="60000" :step="100"
+                <InputNumber v-model:value="villageDelay" :min="100" :max="60000" :step="100"
                     :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
             </NGridItem>
 

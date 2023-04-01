@@ -4,8 +4,8 @@ import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke } from '$global/ipc';
 import { isUserAlias } from '$global/utils/guards';
 import PlunderTemplateModal from '$modules/components/PlunderTemplateModal.vue';
-import ErrorResult from '$global/components/result/ErrorResult.vue';
-import InfoResult from '$global/components/result/InfoResult.vue';
+import ResultError from '$global/components/ResultError.vue';
+import ResultInfo from '$global/components/ResultInfo.vue';
 import PlunderTemplateCard from '$modules/components/PlunderTemplateCard.vue';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 
@@ -53,10 +53,10 @@ function removeTemplate(template: CustomPlunderTemplateType) {
                 </NGrid>
             </div>
 
-            <InfoResult v-else title="Não há modelos salvos" description="Experimente criar um modelo para começar" />
+            <ResultInfo v-else title="Não há modelos salvos" description="Experimente criar um modelo para começar" />
         </div>
         
-        <ErrorResult v-else />
+        <ResultError v-else />
     </main>
 </template>
 

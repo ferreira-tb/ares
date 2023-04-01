@@ -3,8 +3,8 @@ import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
 import { isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
 import { isDistance } from '$global/utils/guards';
-import NumberImput from '$global/components/input/NumberInput.vue';
-import LabelPopover from '$global/components/popover/LabelPopover.vue';
+import InputNumber from '$global/components/InputNumber.vue';
+import LabelPopover from '$global/components/LabelPopover.vue';
 import type { PlunderConfigType, BlindAttackPattern, UseCPattern } from '$types/plunder';
 import type { NSelectPatternOption } from '$types/utils';
 
@@ -52,7 +52,7 @@ const useCOptions = [
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="maxDistance" :min="1" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
+                <InputNumber v-model:value="maxDistance" :min="1" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
             </NGridItem>
 
             <NGridItem>
@@ -65,7 +65,7 @@ const useCOptions = [
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="ignoreOlderThan" :min="1" :max="9999" :step="1"
+                <InputNumber v-model:value="ignoreOlderThan" :min="1" :max="9999" :step="1"
                     :validator="(v) => isPositiveInteger(v) && v >= 1" />
             </NGridItem>
 
@@ -78,7 +78,7 @@ const useCOptions = [
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="attackDelay" :min="100" :max="60000" :step="10"
+                <InputNumber v-model:value="attackDelay" :min="100" :max="60000" :step="10"
                     :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
             </NGridItem>
 
@@ -93,7 +93,7 @@ const useCOptions = [
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <NumberImput v-model:value="resourceRatio" :min="0.2" :max="1" :step="0.05"
+                <InputNumber v-model:value="resourceRatio" :min="0.2" :max="1" :step="0.05"
                     :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1" />
             </NGridItem>
 
