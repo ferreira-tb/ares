@@ -89,9 +89,6 @@ export type PlunderConfigType = {
     useCPattern: UseCPattern;
 };
 
-export type PlunderConfigKeys = keyof PlunderConfigType;
-export type PlunderConfigValues = PlunderConfigType[PlunderConfigKeys];
-
 export type PlunderPanelConfig = Pick<PlunderConfigType,
     | 'active'
     | 'ignoreWall'

@@ -1,25 +1,44 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
+import { isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
+import { isDistance } from '$global/utils/guards';
 import NumberImput from '$global/components/input/NumberInput.vue';
 import LabelPopover from '$global/components/popover/LabelPopover.vue';
-import type { BlindAttackPattern, UseCPattern } from '$types/plunder';
+import type { PlunderConfigType, BlindAttackPattern, UseCPattern } from '$types/plunder';
+import type { NSelectPatternOption } from '$types/utils';
 
-// Opções dos NSelect.
-type PatternOption<T> = ReadonlyArray<{
-    label: string;
-    value: T;
-}>;
+const props = defineProps<{
+    config: PlunderConfigType;
+}>();
+
+const emit = defineEmits<{
+    <T extends keyof PlunderConfigType>(event: 'update:config', name: T, value: PlunderConfigType[T]): void;
+}>();
+
+const maxDistance = ref<number>(props.config.maxDistance);
+const ignoreOlderThan = ref<number>(props.config.ignoreOlderThan);
+const attackDelay = ref<number>(props.config.attackDelay);
+const resourceRatio = ref<number>(props.config.resourceRatio);
+const blindAttackPattern = ref<BlindAttackPattern>(props.config.blindAttackPattern);
+const useCPattern = ref<UseCPattern>(props.config.useCPattern);
+
+watch(maxDistance, (v) => emit('update:config', 'maxDistance', v));
+watch(ignoreOlderThan, (v) => emit('update:config', 'ignoreOlderThan', v));
+watch(attackDelay, (v) => emit('update:config', 'attackDelay', v));
+watch(resourceRatio, (v) => emit('update:config', 'resourceRatio', v));
+watch(blindAttackPattern, (v) => emit('update:config', 'blindAttackPattern', v));
+watch(useCPattern, (v) => emit('update:config', 'useCPattern', v));
 
 const blindAttackOptions = [
     { label: 'Menor capacidade', value: 'smaller' },
     { label: 'Maior capacidade', value: 'bigger' }
-] satisfies PatternOption<BlindAttackPattern>;
+] satisfies NSelectPatternOption<BlindAttackPattern>;
 
 const useCOptions = [
     { label: 'Normal', value: 'normal' },
     { label: 'Somente C', value: 'only'}
-] satisfies PatternOption<UseCPattern>;
+] satisfies NSelectPatternOption<UseCPattern>;
 </script>
 
 <template>

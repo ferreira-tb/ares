@@ -17,3 +17,9 @@ type Enumerate<N extends number, Acc extends number[] = []> = Acc['length'] exte
 export type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>;
 /** Range de números inteiros convertidos para strings. `F` é inclusivo e `T` é exclusivo. */
 export type IntRangeToStrings<F extends number, T extends number> = NumberToString<IntRange<F, T>>;
+
+/** Opções do componente `NSelect` do Naive UI. */
+export type NSelectPatternOption<T> = ReadonlyArray<{
+    label: string;
+    value: T;
+}>;

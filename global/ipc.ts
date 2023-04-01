@@ -10,8 +10,6 @@ import type { GeneralAppConfigType } from '$types/config';
 import type {
     PlunderAttackDetails,
     PlunderInfoType,
-    PlunderConfigKeys,
-    PlunderConfigValues,
     CustomPlunderTemplateType,
     DemolitionTemplateType,
     PlunderConfigType,
@@ -133,7 +131,7 @@ export function ipcSend(channel: 'delete-main-process-error-log', id: number): v
 
 // Plunder
 export function ipcSend(channel: 'open-custom-plunder-template-window'): void;
-export function ipcSend(channel: 'update-plunder-config', key: PlunderConfigKeys, value: PlunderConfigValues): void;
+export function ipcSend<T extends keyof PlunderConfigType>(channel: 'update-plunder-config', key: T, value: PlunderConfigType[T]): void;
 export function ipcSend(channel: 'plunder-attack-sent', plunderAttack: PlunderAttack): void;
 export function ipcSend(channel: 'save-plunder-attack-details', details: PlunderAttackDetails): void;
 export function ipcSend(channel: 'update-plunder-cache-village-info', villageInfo: PlunderCurrentVillageType | null): void;

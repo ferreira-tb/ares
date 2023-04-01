@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import { showAppSettings } from '$electron/app/modules';
 import { useAppGeneralConfigStore, AppConfig } from '$interface/index';
 import { MainProcessEventError } from '$electron/error';
+import type { IpcMainEvent } from 'electron';
 import type { ConfigModuleRoutes } from '$types/modules';
 import type { GeneralAppConfigType } from '$types/config';
 
@@ -12,10 +13,11 @@ export function setConfigEvents() {
     ipcMain.handle('get-app-general-config', () => ({ ...appGeneralConfigStore }));
     ipcMain.handle('should-reload-after-captcha', () => appGeneralConfigStore.reloadAfterCaptcha);
 
-    ipcMain.on('update-app-general-config', async (_e, config: GeneralAppConfigType) => {
+    ipcMain.on('update-app-general-config', async <T extends keyof GeneralAppConfigType>(
+        _e: IpcMainEvent, config: GeneralAppConfigType
+    ) => {
         try {
-            type ConfigEntries = [keyof GeneralAppConfigType, GeneralAppConfigType[keyof GeneralAppConfigType]][];
-            for (const [key, value] of Object.entries(config) as ConfigEntries) {
+            for (const [key, value] of Object.entries(config) as [T, GeneralAppConfigType[T]][]) {
                 if (appGeneralConfigStore[key] === value) continue;
                 appGeneralConfigStore[key] = value;
             };
