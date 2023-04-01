@@ -33,6 +33,7 @@ export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
 
 // Configurações
 export async function ipcInvoke(channel: 'get-app-general-config'): Promise<GeneralAppConfigType>;
+export async function ipcInvoke(channel: 'get-app-notifications-config'): Promise<AppNotificationsConfigType>;
 export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
 export async function ipcInvoke(channel: 'save-demolition-troops-config', template: DemolitionTemplateType): Promise<boolean>;

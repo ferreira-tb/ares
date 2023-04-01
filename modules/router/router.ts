@@ -22,8 +22,8 @@ const singleRoutes: ModuleRouteRecordRaw[] = [
         component: DemolitionView
     },
     {
-        path: '/custom-plunder-template',
-        name: 'custom-plunder-template',
+        path: '/plunder-template',
+        name: 'plunder-template',
         component: PlunderTemplateView
     }
 ];

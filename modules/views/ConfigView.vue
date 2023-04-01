@@ -7,15 +7,14 @@ import { configRouteNames, router } from '$modules/router/router';
 import type { ConfigModuleRoutes } from '$types/modules';
 
 const tabs = ref<TabsInst | null>(null);
-const tabName = ref<ConfigModuleRoutes>('general-config');
+const tabName = ref<ConfigModuleRoutes>('config-general');
 watch(tabName, () => router.push({ name: tabName.value }));
 
-onMounted(async () => {
+onMounted(() => {
     // Se uma rota já tiver sido direcionada, atualiza o tabName.
     if (arrayIncludes(configRouteNames, router.currentRoute.value.name)) {
         tabName.value = router.currentRoute.value.name;
-        await nextTick();
-        tabs.value?.syncBarPosition();
+        nextTick(() => tabs.value?.syncBarPosition());
     };
 });
 </script>
@@ -24,14 +23,15 @@ onMounted(async () => {
     <nav class="module-nav-bar">
         <NTabs
             ref="tabs"
-            defaultValue="general-config"
+            defaultValue="config-general"
             v-model:value="tabName"
             justifyContent="start"
             tab-style="margin-right: 2em;"
             animated
         >
-            <NTab name="general-config" tab="Geral" />
-            <NTab name="plunder-config" tab="Saque" />
+            <NTab name="config-general" tab="Geral" />
+            <NTab name="config-plunder" tab="Saque" />
+            <NTab name="config-notifications" tab="Notificações" />
         </NTabs>
     </nav>
 

@@ -11,6 +11,7 @@ export function setConfigEvents() {
 
     ipcMain.on('open-settings-window', (_e, route: ConfigModuleRoutes) => showAppSettings(route));
     ipcMain.handle('get-app-general-config', () => ({ ...appGeneralConfigStore }));
+    ipcMain.handle('get-app-notifications-config', () => ({ ...appNotificationsStore }));
     ipcMain.handle('should-reload-after-captcha', () => appGeneralConfigStore.reloadAfterCaptcha);
 
     ipcMain.on('update-app-general-config', async (_e, config: GeneralAppConfigType) => {

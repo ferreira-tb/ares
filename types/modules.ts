@@ -25,12 +25,12 @@ export type ModuleRouteRecordRawStrict<T> = Omit<ModuleRouteRecordRaw, 'name' | 
     children?: ModuleRouteRecordRawStrict<T>[];
 };
 
-export type SingleModules = 'default' | 'demolition' | 'custom-plunder-template';
+export type SingleModules = 'default' | 'demolition' | 'plunder-template';
 export type NestedModules = 'app-config' | 'error-log';
 export type ModuleNames = NestedModules | SingleModules;
 
-export type ErrorModuleRoutes = 'normal-errors' | 'dom-errors' | 'main-process-errors';
-export type ConfigModuleRoutes = 'general-config' | 'plunder-config';
+export type ErrorModuleRoutes = 'error-general' | 'error-dom' | 'error-electron';
+export type ConfigModuleRoutes = 'config-general' | 'config-notifications' | 'config-plunder';
 
 export type ModuleRoutes = ModuleNames | ErrorModuleRoutes | ConfigModuleRoutes;
 

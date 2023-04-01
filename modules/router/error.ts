@@ -11,17 +11,17 @@ export const errorRoutes: ModuleRouteRecordRawStrict<'error-log' | ErrorModuleRo
     children: [
         {
             path: 'normal',
-            name: 'normal-errors',
+            name: 'error-general',
             component: ErrorLogGeneral
         },
         {
             path: 'dom',
-            name: 'dom-errors',
+            name: 'error-dom',
             component: ErrorLogDom
         },
         {
-            path: 'main-process',
-            name: 'main-process-errors',
+            path: 'electron',
+            name: 'error-electron',
             component: ErrorLogElectron
         }
     ]
