@@ -4,7 +4,7 @@ import { errorRoutes } from '$modules/router/error';
 import { configRoutes } from '$modules/router/config';
 import DefaultView from '$global/views/DefaultView.vue';
 import DemolitionView from '$modules/views/DemolitionView.vue';
-import CustomTemplateView from '$modules/views/CustomTemplateView.vue';
+import PlunderTemplateView from '$modules/views/PlunderTemplateView.vue';
 import type { ModuleRouteRecordRaw, ModuleRoutes, ConfigModuleRoutes } from '$types/modules';
 
 // Os componentes devem ser passados diretamente.
@@ -24,7 +24,7 @@ const singleRoutes: ModuleRouteRecordRaw[] = [
     {
         path: '/custom-plunder-template',
         name: 'custom-plunder-template',
-        component: CustomTemplateView
+        component: PlunderTemplateView
     }
 ];
 

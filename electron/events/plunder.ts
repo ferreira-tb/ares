@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import { ipcMain, BrowserWindow } from 'electron';
+import { ipcMain, webContents } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { assertInteger, isKeyOf, isInteger, isPositiveInteger } from '@tb-dev/ts-guard';
 import { assertUserAlias, isUserAlias, isWorld } from '$electron/utils/guards';
@@ -7,6 +7,7 @@ import { sequelize } from '$database/database';
 import { MainProcessEventError } from '$electron/error';
 import { getPanelWindow, extractWorldUnitsFromMap, generateRandomDelay } from '$electron/utils/helpers';
 import { plunderSearchParams } from '$electron/utils/constants';
+import type { IpcMainEvent } from 'electron';
 import type { UnitAmount, World } from '$types/game';
 import type { WorldUnitType } from '$types/world';
 
@@ -19,15 +20,12 @@ import {
     useCacheStore,
     usePlunderStore,
     usePlunderCacheStore,
-    useBrowserViewStore,
     WorldUnit,
     worldUnitsMap
 } from '$interface/index';
 
 import type {
     PlunderAttackDetails,
-    PlunderConfigKeys,
-    PlunderConfigValues,
     PlunderCurrentVillageType,
     PlunderGroupType,
     PlunderGroupVillageType
@@ -42,11 +40,9 @@ export function setPlunderEvents() {
     const plunderConfigStore = usePlunderConfigStore();
     const lastPlunderHistoryStore = useLastPlunderHistoryStore();
     const totalPlunderHistoryStore = useTotalPlunderHistoryStore();
-    const browserViewStore = useBrowserViewStore();
 
     const { page: currentPage } = storeToRefs(plunderStore);
     const { currentVillage, plunderGroup } = storeToRefs(plunderCacheStore);
-    const { allWebContents } = storeToRefs(browserViewStore);
 
     // Verifica se o Plunder está ativo.
     ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
@@ -59,26 +55,21 @@ export function setPlunderEvents() {
     });
 
     // Recebe as configurações do Plunder do painel ou do módulo de configuração e as salva no banco de dados.
-    ipcMain.on('update-plunder-config', async (e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
+    ipcMain.on('update-plunder-config', async <T extends keyof typeof plunderConfigStore>(
+        e: IpcMainEvent, key: T, value: typeof plunderConfigStore[T]
+    ) => {
         try {
             if (!isKeyOf(key, plunderConfigStore)) return;
-            const previousValue = Reflect.get(plunderConfigStore, key);
+            const previousValue = plunderConfigStore[key];
             if (previousValue === value) return;
 
             // A confirmação dos tipos é feita na store.
             Reflect.set(plunderConfigStore, key, value);
 
             // Comunica a mudança aos processos diferentes daquele que enviou os dados.
-            for (const contents of allWebContents.value) {
+            for (const contents of webContents.getAllWebContents()) {
                 if (contents !== e.sender) {
                     contents.send('plunder-config-updated', key, value);
-                };
-            };
-
-            for (const browserWindow of BrowserWindow.getAllWindows()) {
-                const content = browserWindow.webContents;
-                if (content !== e.sender && !allWebContents.value.has(content)) {
-                    browserWindow.webContents.send('plunder-config-updated', key, value);
                 };
             };
 
@@ -98,11 +89,7 @@ export function setPlunderEvents() {
     // Entre elas estão detalhes sobre as páginas do assistente de saque.
     ipcMain.on('update-plunder-cache-village-info', (_e, villageInfo: PlunderCurrentVillageType | null) => {
         try {
-            if (
-                villageInfo &&
-                currentVillage.value &&
-                currentVillage.value.id === villageInfo.id
-            ) {
+            if (villageInfo && currentVillage.value?.id === villageInfo.id) {
                 return;
             };
     

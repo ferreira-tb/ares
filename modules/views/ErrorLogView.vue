@@ -35,3 +35,14 @@ watchEffect(() => router.push({ name: route.value }));
         </RouterView>
     </div>
 </template>
+
+<style scoped>
+:deep(.error-log) {
+    margin-bottom: 0.5em;
+    user-select: text;
+}
+
+:deep(.error-log:last-of-type) {
+    margin-bottom: 1em;
+}
+</style>

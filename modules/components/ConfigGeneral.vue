@@ -2,7 +2,7 @@
 import { reactive, watch, toRaw } from 'vue';
 import { NDivider, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$global/ipc';
-import SwitchPopover from '$global/components/popover/SwitchPopover.vue';
+import SwitchPopover from '$global/components/SwitchPopover.vue';
 
 const previous = await ipcInvoke('get-app-general-config');
 const config = reactive(previous);

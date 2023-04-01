@@ -2,14 +2,7 @@ import { ipcRenderer } from 'electron';
 import { assertKeyOf, assertInteger } from '@tb-dev/ts-guard';
 import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$global/stores/plunder';
 import { PanelPlunderError } from '$panel/error';
-
-import type {
-    PlunderConfigType,
-    PlunderAttackDetails,
-    PlunderInfoType,
-    PlunderConfigKeys,
-    PlunderConfigValues
-} from '$types/plunder';
+import type { PlunderConfigType, PlunderAttackDetails, PlunderInfoType } from '$types/plunder';
 
 export function setPlunderEvents() {
     const plunderStore = usePlunderStore();
@@ -17,13 +10,10 @@ export function setPlunderEvents() {
     const plunderHistoryStore = usePlunderHistoryStore();
 
     // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
-    ipcRenderer.on('plunder-config-updated', (_e, key: PlunderConfigKeys, value: PlunderConfigValues) => {
-        try {
-            assertKeyOf<PlunderConfigType>(key, plunderConfigStore, `${key} is not a valid plunder config key.`);
-            Reflect.set(plunderConfigStore, key, value);
-        } catch (err) {
-            PanelPlunderError.catch(err);
-        };
+    ipcRenderer.on('plunder-config-updated', <T extends keyof typeof plunderConfigStore>(
+        _e: unknown, key: T, value: typeof plunderConfigStore[T]
+    ) => {
+        plunderConfigStore[key] = value;
     });
 
     ipcRenderer.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {

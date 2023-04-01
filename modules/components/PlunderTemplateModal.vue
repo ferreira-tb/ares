@@ -6,7 +6,7 @@ import { useDialog, useMessage } from 'naive-ui';
 import { isString, isInteger } from '@tb-dev/ts-guard';
 import { ipcInvoke } from '$global/ipc';
 import { ModuleError } from '$modules/error';
-import NumberInput from '$global/components/input/NumberInput.vue';
+import InputNumber from '$global/components/InputNumber.vue';
 import ArcherIcon from '$icons/units/ArcherIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';
 import HeavyIcon from '$icons/units/HeavyIcon.vue';
@@ -212,56 +212,56 @@ async function resetTemplate() {
                         <template #label>
                             <SpearIcon />
                         </template>
-                        <NumberInput v-model:value="templateUnits.units.spear" v-bind="numberInputProps" />
+                        <InputNumber v-model:value="templateUnits.units.spear" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.sword">
                         <template #label>
                             <SwordIcon />
                         </template>
-                        <NumberInput v-model:value="templateUnits.units.sword" v-bind="numberInputProps" />
+                        <InputNumber v-model:value="templateUnits.units.sword" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.axe">
                         <template #label>
                             <AxeIcon />
                         </template>
-                        <NumberInput v-model:value="templateUnits.units.axe" v-bind="numberInputProps" />
+                        <InputNumber v-model:value="templateUnits.units.axe" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.archer" v-if="props.isArcherWorld">
                         <template #label>
                             <ArcherIcon />
                         </template>
-                        <NumberInput v-model:value="templateUnits.units.archer" v-bind="numberInputProps" />
+                        <InputNumber v-model:value="templateUnits.units.archer" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.spy">
                         <template #label>
                             <SpyIcon />
                         </template>
-                        <NumberInput v-model:value="templateUnits.units.spy" v-bind="numberInputProps" />
+                        <InputNumber v-model:value="templateUnits.units.spy" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.light">
                         <template #label>
                             <LightIcon />
                         </template>
-                        <NumberInput v-model:value="templateUnits.units.light" v-bind="numberInputProps" />
+                        <InputNumber v-model:value="templateUnits.units.light" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.marcher" v-if="props.isArcherWorld">
                         <template #label>
                             <MarcherIcon />
                         </template>
-                        <NumberInput v-model:value="templateUnits.units.marcher" v-bind="numberInputProps" />
+                        <InputNumber v-model:value="templateUnits.units.marcher" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.heavy">
                         <template #label>
                             <HeavyIcon />
                         </template>
-                        <NumberInput v-model:value="templateUnits.units.heavy" v-bind="numberInputProps" />
+                        <InputNumber v-model:value="templateUnits.units.heavy" v-bind="numberInputProps" />
                     </NFormItemGi>
                 </NGrid>
 

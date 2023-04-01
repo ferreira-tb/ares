@@ -41,19 +41,19 @@ export function setModuleEvents() {
     });
 
     ipcMain.handle('save-demolition-troops-config', async (_e, template: DemolitionTemplateType): Promise<boolean> => {
-        const status = await DemolitionTemplate.saveDemolitionTroopsConfig(template);
-        if (status === true && template.alias === cacheStore.userAlias) {
+        const saved = await DemolitionTemplate.saveDemolitionTroopsConfig(template);
+        if (saved && template.alias === cacheStore.userAlias) {
             demolitionTroops.value = template;
         };
-        return status;
+        return saved;
     });
 
     ipcMain.handle('destroy-demolition-troops-config', async (_e, alias: UserAlias): Promise<boolean> => {
-        const status = await DemolitionTemplate.destroyDemolitionTroopsConfig(alias);
-        if (status === true && alias === cacheStore.userAlias) {
+        const destroyed = await DemolitionTemplate.destroyDemolitionTroopsConfig(alias);
+        if (destroyed && alias === cacheStore.userAlias) {
             demolitionTroops.value = null;
         };
-        return status;
+        return destroyed;
     });
 
     // Modelos do Plunder.
@@ -66,30 +66,30 @@ export function setModuleEvents() {
     });
 
     ipcMain.handle('save-custom-plunder-template', async (e, template: CustomPlunderTemplateType): Promise<boolean> => {
-        const status = await CustomPlunderTemplate.saveCustomPlunderTemplate(template);
+        const saved = await CustomPlunderTemplate.saveCustomPlunderTemplate(template);
         
         // Se o template foi salvo com sucesso, notifica o browser.
-        if (status === true) {
+        if (saved) {
             for (const contents of allWebContents.value) {
                 if (contents === e.sender) continue;
                 contents.send('custom-plunder-template-saved', template);
             };
         };
 
-        return status;
+        return saved;
     });
 
     ipcMain.handle('destroy-custom-plunder-template', async (e, template: CustomPlunderTemplateType): Promise<boolean> => {
-        const status = await CustomPlunderTemplate.destroyCustomPlunderTemplate(template);
+        const destroyed = await CustomPlunderTemplate.destroyCustomPlunderTemplate(template);
 
         // Se o template foi excluído com sucesso, notifica o browser.
-        if (status === true) {
+        if (destroyed) {
             for (const contents of allWebContents.value) {
                 if (contents === e.sender) continue;
                 contents.send('custom-plunder-template-destroyed', template);
             };
         };
 
-        return status;
+        return destroyed;
     });
 };

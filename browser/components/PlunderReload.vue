@@ -3,7 +3,7 @@ import { ref, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { ipcSend, ipcInvoke } from '$global/ipc';
 import { PlunderError } from '$browser/error';
-import ReloadMessage from '$browser/components/plunder/ReloadMessage.vue';
+import PlunderReloadMessage from '$browser/components/PlunderReloadMessage.vue';
 
 const props = defineProps<{
     /** Indica se o Plunder está ativo. */
@@ -54,7 +54,7 @@ async function reloadMainView() {
 <template>
     <Teleport :to="plunderListTitle">
         <Transition name="tb-fade" mode="out-in">
-            <ReloadMessage :active="props.active" :plunderTimeout="plunderTimeout" />
+            <PlunderReloadMessage :active="props.active" :plunderTimeout="plunderTimeout" />
         </Transition>
     </Teleport>
 </template>

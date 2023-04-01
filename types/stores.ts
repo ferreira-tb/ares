@@ -6,21 +6,8 @@ import type { WorldConfigType } from '$types/world';
 import type { UnitDetails } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { GeneralAppConfigType } from '$types/config';
-
-import type {
-    AllUnits,
-    TribalWarsGameDataType,
-    UnitAmount,
-    VillageGroup,
-    World
-} from '$types/game';
-
-import type {
-    PlunderInfoType,
-    PlunderConfigType,
-    PlunderAttackDetails,
-    PlunderCacheType
-} from '$types/plunder';
+import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails, PlunderCacheType } from '$types/plunder';
+import type { AllUnits, TribalWarsGameDataType, UnitAmount, VillageGroup, World } from '$types/game';
 
 ////// APP GENERAL CONFIG
 export type AppGeneralConfigStore = GeneralAppConfigType;
@@ -119,6 +106,7 @@ export interface PlunderConfigStore extends PlunderConfigType {
 };
 
 export type PiniaPlunderConfigStoreActions = PlunderConfigStore['raw'];
+
 export type PiniaPlunderConfigStoreType = {
     [K in keyof PlunderConfigStore]:
         PlunderConfigStore[K] extends PiniaPlunderConfigStoreActions ?
@@ -134,7 +122,10 @@ export interface PlunderHistoryStore extends PlunderAttackDetails {
     raw(): PlunderAttackDetails;
     reset(): void;
 };
-export type PiniaPlunderHistoryStoreActions = PlunderHistoryStore['raw'] | PlunderHistoryStore['reset'];
+export type PiniaPlunderHistoryStoreActions =
+    | PlunderHistoryStore['raw']
+    | PlunderHistoryStore['reset'];
+
 export type PiniaPlunderHistoryStoreType = {
     [K in keyof PlunderHistoryStore]:
         PlunderHistoryStore[K] extends PiniaPlunderHistoryStoreActions ?

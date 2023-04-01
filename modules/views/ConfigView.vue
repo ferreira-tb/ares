@@ -52,3 +52,14 @@ onMounted(async () => {
         </RouterView>
     </div>
 </template>
+
+<style scoped>
+:deep(.config-divider) {
+    margin-top: 1em !important;
+    margin-bottom: 0.3em !important;
+}
+
+:deep(.config-divider:first-of-type) {
+    margin-top: 0.3em !important;
+}
+</style>
