@@ -63,7 +63,7 @@ const aliasArgs = [
 ] as const;
 
 ////// ERROS
-MainProcessError.catch = catchError(useAresStore(), ElectronErrorLog);
+MainProcessError.catch = catchError(useAresStore(), useAppNotificationsStore(), ElectronErrorLog);
 
 ////// WATCHERS
 const { name: playerName } = storeToRefs(usePlayerStore());
