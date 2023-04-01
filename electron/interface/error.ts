@@ -1,24 +1,28 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { app, dialog, BrowserWindow } from 'electron';
-import { isString, toNull } from '@tb-dev/ts-guard';
-import { sequelize } from '$database/database';
+import { storeToRefs } from 'mechanus';
+import { isString } from '@tb-dev/ts-guard';
+import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/app/modules';
-import type { useAresStore } from '$interface/index';
-import type { MainProcessErrorLog as MainProcessErrorLogTable } from '$interface/index';
-import type { MainProcessErrorLogType } from '$types/error';
+import { getMainWindow } from '$electron/utils/helpers';
+import type { ElectronErrorLogBase } from '$types/error';
+import type { useAresStore, useAppNotificationsStore } from '$interface/index';
+import type { ElectronErrorLog as ElectronErrorLogTable } from '$interface/index';
 
 export function catchError(
     aresStore: ReturnType<typeof useAresStore>,
-    MainProcessErrorLog: typeof MainProcessErrorLogTable
+    appNotificationsStore: ReturnType<typeof useAppNotificationsStore>,
+    ElectronErrorLog: typeof ElectronErrorLogTable
 ) {
+    const { notifyOnError } = storeToRefs(appNotificationsStore);
     return async function (err: unknown) {
         try {
             if (err instanceof Error) {
-                const errorLog: Omit<MainProcessErrorLogType, 'id' | 'pending'> = {
+                const errorLog: ElectronErrorLogBase = {
                     name: err.name,
                     message: err.message,
-                    stack: toNull(err.stack, isString) as string | null,
+                    stack: isString(err.stack) ? err.stack : null,
                     time: Date.now(),
                     ares: app.getVersion(),
                     chrome: process.versions.chrome,
@@ -28,12 +32,17 @@ export function catchError(
                 };
 
                 await sequelize.transaction(async (transaction) => {
-                    const newRow = await MainProcessErrorLog.create(errorLog, { transaction });
+                    const newRow = await ElectronErrorLog.create(errorLog, { transaction });
                     const errorModule = getActiveModule('error-log');
                     if (errorModule instanceof BrowserWindow) {
-                        errorModule.webContents.send('main-process-error-log-updated', newRow.toJSON());
+                        errorModule.webContents.send('electron-error-log-did-update', newRow.toJSON());
                     };
                 });
+
+                if (notifyOnError.value) {
+                    const mainWindow = getMainWindow();
+                    mainWindow.webContents.send('notify-electron-error', errorLog);
+                };
             };
 
         } catch (anotherErr) {

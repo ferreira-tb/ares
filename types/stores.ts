@@ -5,7 +5,7 @@ import type { RemoveMethods } from '$types/utils';
 import type { WorldConfigType } from '$types/world';
 import type { UnitDetails } from '$types/world';
 import type { UserAlias } from '$types/electron';
-import type { GeneralAppConfigType } from '$types/config';
+import type { GeneralAppConfigType, AppNotificationsConfigType } from '$types/config';
 import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails, PlunderCacheType } from '$types/plunder';
 import type { AllUnits, TribalWarsGameDataType, UnitAmount, VillageGroup, World } from '$types/game';
 
@@ -13,6 +13,12 @@ import type { AllUnits, TribalWarsGameDataType, UnitAmount, VillageGroup, World 
 export type AppGeneralConfigStore = GeneralAppConfigType;
 export type MechanusAppGeneralConfigStoreType = {
     [K in keyof AppGeneralConfigStore]: MechanusRef<AppGeneralConfigStore[K]>;
+};
+
+////// APP NOTIFICATIONS CONFIG
+export type AppNotificationsConfigStore = AppNotificationsConfigType;
+export type MechanusAppNotificationsConfigStoreType = {
+    [K in keyof AppNotificationsConfigStore]: MechanusRef<AppNotificationsConfigStore[K]>;
 };
 
 ////// ARES

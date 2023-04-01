@@ -67,7 +67,7 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
             <div class="menu-icon" @click="ipcSend('current-view-go-home')">
                 <NIcon :size="22" :depth="3" :component="HomeSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('open-settings-window', 'general-config')">
+            <div class="menu-icon" @click="ipcSend('open-settings-window', 'config-general')">
                 <NIcon :size="22" :depth="3" :component="SettingsSharp" />
             </div>
             <div class="menu-icon" @click="ipcSend('open-region-select-menu')">

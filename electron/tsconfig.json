@@ -8,27 +8,12 @@
         "target": "esnext",
         "lib": ["esnext", "dom"],
         "paths": {
-            "$electron/*": [
-                "./*"
-            ],
-            "$tables/*": [
-                "./database/tables/*"
-            ],
-            "$types/*": [
-                "../types/*"
-            ],
-            "$global/*": [
-                "../global/*"
-            ],
-            "$stores/*": [
-                "./stores/*"
-            ],
-            "$interface/*": [
-                "./interface/*"
-            ],
-            "$database/*": [
-                "./database/*"
-            ]
+            "$electron/*": ["./*"],
+            "$types/*": ["../types/*"],
+            "$global/*": ["../global/*"],
+            "$stores/*": ["./stores/*"],
+            "$interface/*": ["./interface/*"],
+            "$database/*": ["./database/*"]
         },
         
         // Modo estrito
@@ -57,6 +42,7 @@
         "removeComments": true,
         "moduleResolution": "node",
         "esModuleInterop": true,
+        "noEmitOnError": true,
 
         "types": [
             "@tb-dev/prototype/dist/index"

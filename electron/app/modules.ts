@@ -97,7 +97,7 @@ export const showDemolitionConfig = createModule('demolition', 'demolition', {
     minimizable: true
 });
 
-export const showCustomPlunderTemplate = createModule('custom-plunder-template', 'custom-plunder-template', {
+export const showCustomPlunderTemplate = createModule('plunder-template', 'plunder-template', {
     width: 1000,
     height: 600,
     title: 'Modelos',

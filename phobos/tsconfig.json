@@ -9,33 +9,14 @@
         "target": "esnext",
         "lib": ["esnext", "dom"],
         "paths": {
-            "$types/*": [
-                "../types/*"
-            ],
-            "$global/*": [
-                "../global/*"
-            ],
-            "$phobos/*": [
-                "./*"
-            ],
-            "$browser/*": [
-                "../browser/*"
-            ],
-            "$lib/*": [
-                "../browser/lib/*"
-            ],
-            "$vue/*": [
-                "../vue/*"
-            ],
-            "$modules/*": [
-                "../modules/*"
-            ],
-            "$panel/*": [
-                "../panel/*"
-            ],
-            "$deimos/*": [
-                "../deimos/*"
-            ]
+            "$types/*": ["../types/*"],
+            "$global/*": ["../global/*"],
+            "$phobos/*": ["./*"],
+            "$browser/*": ["../browser/*"],
+            "$lib/*": ["../browser/lib/*"],
+            "$modules/*": ["../modules/*"],
+            "$panel/*": ["../panel/*"],
+            "$deimos/*": ["../deimos/*"]
         },
         
         // Modo estrito
@@ -63,6 +44,7 @@
         "forceConsistentCasingInFileNames": true,
         "removeComments": true,
         "moduleResolution": "node",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "noEmitOnError": true
     }
 }

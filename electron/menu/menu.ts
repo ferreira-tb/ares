@@ -24,7 +24,7 @@ export function setAppMenu(browserViewStore: ReturnType<typeof useBrowserViewSto
 
         { label: 'Focar view principal', accelerator: 'F1', click: () => mainWindow.webContents.send('focus-main-view') },
         { label: 'Exibir ou ocultar painel', accelerator: 'F2', click: () => togglePanelWindow() },
-        { label: 'Configurações', accelerator: 'F3', click: () => showAppSettings('general-config') },
+        { label: 'Configurações', accelerator: 'F3', click: () => showAppSettings('config-general') },
         
         { label: 'Sair', accelerator: 'Esc', role: 'quit' }
     ];

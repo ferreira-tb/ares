@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '$database/database';
+import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$electron/utils/guards';
 import { DatabaseError } from '$electron/error';
 import type { VillageGroup, VillageGroupsType } from '$types/game';

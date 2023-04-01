@@ -5,16 +5,15 @@ import { NTabs, NTab } from 'naive-ui';
 import { router } from '$modules/router/router';
 import type { ErrorModuleRoutes } from '$types/modules';
 
-const route = ref<ErrorModuleRoutes>('normal-errors');
+const route = ref<ErrorModuleRoutes>('error-general');
 watchEffect(() => router.push({ name: route.value }));
 </script>
 
 <template>
     <nav class="module-nav-bar">
-        <NTabs animated defaultValue="normal-errors" v-model:value="route" justifyContent="start" tab-style="margin-right: 2em;">
-            <NTab name="normal-errors" tab="Geral"></NTab>
-            <NTab name="dom-errors" tab="DOM"></NTab>
-            <NTab name="main-process-errors" tab="Núcleo"></NTab>
+        <NTabs animated defaultValue="error-general" v-model:value="route" justifyContent="start" tab-style="margin-right: 2em;">
+            <NTab name="error-general" tab="Geral"></NTab>
+            <NTab name="error-electron" tab="Electron"></NTab>
         </NTabs>
     </nav>
 

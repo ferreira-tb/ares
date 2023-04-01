@@ -1,6 +1,5 @@
 import ErrorLogView from '$modules/views/ErrorLogView.vue';
 import ErrorLogGeneral from '$modules/components/ErrorLogGeneral.vue';
-import ErrorLogDom from '$modules/components/ErrorLogDom.vue';
 import ErrorLogElectron from '$modules/components/ErrorLogElectron.vue';
 import type { ModuleRouteRecordRawStrict, ErrorModuleRoutes } from '$types/modules';
 
@@ -11,17 +10,12 @@ export const errorRoutes: ModuleRouteRecordRawStrict<'error-log' | ErrorModuleRo
     children: [
         {
             path: 'normal',
-            name: 'normal-errors',
+            name: 'error-general',
             component: ErrorLogGeneral
         },
         {
-            path: 'dom',
-            name: 'dom-errors',
-            component: ErrorLogDom
-        },
-        {
-            path: 'main-process',
-            name: 'main-process-errors',
+            path: 'electron',
+            name: 'error-electron',
             component: ErrorLogElectron
         }
     ]

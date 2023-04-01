@@ -1,5 +1,6 @@
 import ConfigView from '$modules/views/ConfigView.vue';
 import ConfigGeneral from '$modules/components/ConfigGeneral.vue';
+import ConfigNotifications from '$modules/components/ConfigNotifications.vue';
 import ConfigPlunder from '$modules/components/ConfigPlunder.vue';
 import type { ModuleRouteRecordRawStrict, ConfigModuleRoutes } from '$types/modules';
 
@@ -10,12 +11,17 @@ export const configRoutes: ModuleRouteRecordRawStrict<'app-config' | ConfigModul
     children: [
         {
             path: 'general',
-            name: 'general-config',
+            name: 'config-general',
             component: ConfigGeneral
         },
         {
+            path: 'notifications',
+            name: 'config-notifications',
+            component: ConfigNotifications
+        },
+        {
             path: 'plunder',
-            name: 'plunder-config',
+            name: 'config-plunder',
             component: ConfigPlunder
         }
     ]

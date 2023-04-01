@@ -9,25 +9,7 @@ export type ErrorLogBase = {
 export interface ErrorLogType extends ErrorLogBase {
     readonly id: number;
     readonly world: World | null;
-    readonly time: number;
-    readonly ares: string;
-    readonly electron: string;
-    readonly chrome: string;
-    readonly tribal: string | null;
-    readonly locale: string | null;
-    readonly pending: boolean;
-}
-
-export type DOMErrorLogBase = {
-    readonly name: string;
-    readonly selector: string;
-    readonly stack: string | null;
-};
-
-export interface DOMErrorLogType extends DOMErrorLogBase {
-    readonly id: number;
     readonly url: string;
-    readonly world: World | null;
     readonly time: number;
     readonly ares: string;
     readonly electron: string;
@@ -37,19 +19,16 @@ export interface DOMErrorLogType extends DOMErrorLogBase {
     readonly pending: boolean;
 };
 
-export type MainProcessErrorLogBase = {
-    readonly name: string;
-    readonly message: string;
-    readonly stack: string | null;
-};
-
-export interface MainProcessErrorLogType extends MainProcessErrorLogBase {
-    readonly id: number;
+export interface ElectronErrorLogBase extends ErrorLogBase {
     readonly time: number;
     readonly ares: string;
     readonly electron: string;
     readonly chrome: string;
     readonly tribal: string | null;
     readonly locale: string | null;
+};
+
+export interface ElectronErrorLogType extends ElectronErrorLogBase {
+    readonly id: number;
     readonly pending: boolean;
 };

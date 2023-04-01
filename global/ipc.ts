@@ -1,11 +1,11 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$lib/plunder/attack';
 import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$types/game';
-import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType, MainProcessErrorLogType } from '$types/error';
+import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType } from '$types/error';
 import type { WorldConfigType, WorldUnitType } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
-import type { GeneralAppConfigType } from '$types/config';
+import type { GeneralAppConfigType, AppNotificationsConfigType } from '$types/config';
 
 import type {
     PlunderAttackDetails,
@@ -33,7 +33,9 @@ export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
 
 // Configurações
 export async function ipcInvoke(channel: 'get-app-general-config'): Promise<GeneralAppConfigType>;
+export async function ipcInvoke(channel: 'get-app-notifications-config'): Promise<AppNotificationsConfigType>;
 export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise<boolean>;
+export async function ipcInvoke(channel: 'should-notify-on-error'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
 export async function ipcInvoke(channel: 'save-demolition-troops-config', template: DemolitionTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'destroy-demolition-troops-config', alias: UserAlias): Promise<boolean>;
@@ -61,8 +63,7 @@ export async function ipcInvoke(channel: 'get-village-groups'): Promise<Set<Vill
 
 // Erros
 export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
-export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorLogType[] | null>;
-export async function ipcInvoke(channel: 'get-main-process-error-log'): Promise<MainProcessErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<ElectronErrorLogType[] | null>;
 
 // Plunder
 export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
@@ -103,6 +104,7 @@ export function ipcSend(channel: 'update-response-time', time: number | null): v
 
 // Configurações
 export function ipcSend(channel: 'update-app-general-config', config: GeneralAppConfigType): void;
+export function ipcSend(channel: 'update-app-notifications-config', config: AppNotificationsConfigType): void;
 export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
 export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
 
@@ -124,10 +126,8 @@ export function ipcSend(channel: 'destroy-browser-view', webContentsId: number):
 // Erros
 export function ipcSend(channel: 'open-error-log-window'): void;
 export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
-export function ipcSend(channel: 'set-dom-error-log', err: DOMErrorLogBase): void;
 export function ipcSend(channel: 'delete-error-log', id: number): void;
-export function ipcSend(channel: 'delete-dom-error-log', id: number): void;
-export function ipcSend(channel: 'delete-main-process-error-log', id: number): void;
+export function ipcSend(channel: 'delete-electron-error-log', id: number): void;
 
 // Plunder
 export function ipcSend(channel: 'open-custom-plunder-template-window'): void;

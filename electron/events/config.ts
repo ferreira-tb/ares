@@ -1,29 +1,33 @@
 import { ipcMain } from 'electron';
 import { showAppSettings } from '$electron/app/modules';
-import { useAppGeneralConfigStore, AppConfig } from '$interface/index';
+import { AppConfig, useAppGeneralConfigStore, useAppNotificationsStore } from '$interface/index';
 import { MainProcessEventError } from '$electron/error';
-import type { IpcMainEvent } from 'electron';
 import type { ConfigModuleRoutes } from '$types/modules';
-import type { GeneralAppConfigType } from '$types/config';
+import type { GeneralAppConfigType, AppNotificationsConfigType } from '$types/config';
 
 export function setConfigEvents() {
     const appGeneralConfigStore = useAppGeneralConfigStore();
+    const appNotificationsStore = useAppNotificationsStore();
 
     ipcMain.on('open-settings-window', (_e, route: ConfigModuleRoutes) => showAppSettings(route));
     ipcMain.handle('get-app-general-config', () => ({ ...appGeneralConfigStore }));
+    ipcMain.handle('get-app-notifications-config', () => ({ ...appNotificationsStore }));
     ipcMain.handle('should-reload-after-captcha', () => appGeneralConfigStore.reloadAfterCaptcha);
+    ipcMain.handle('should-notify-on-error', () => appNotificationsStore.notifyOnError);
 
-    ipcMain.on('update-app-general-config', async <T extends keyof GeneralAppConfigType>(
-        _e: IpcMainEvent, config: GeneralAppConfigType
-    ) => {
+    ipcMain.on('update-app-general-config', async (_e, config: GeneralAppConfigType) => {
         try {
-            for (const [key, value] of Object.entries(config) as [T, GeneralAppConfigType[T]][]) {
-                if (appGeneralConfigStore[key] === value) continue;
-                appGeneralConfigStore[key] = value;
-            };
+            await AppConfig.setConfig('config_general', appGeneralConfigStore, config);
+            await AppConfig.saveConfig('config_general', appGeneralConfigStore);
+        } catch (err) {
+            MainProcessEventError.catch(err);
+        };
+    });
 
-            await AppConfig.saveGeneralConfig(appGeneralConfigStore);
-            
+    ipcMain.on('update-app-notifications-config', async (_e, config: AppNotificationsConfigType) => {
+        try {
+            await AppConfig.setConfig('config_notifications', appNotificationsStore, config);
+            await AppConfig.saveConfig('config_notifications', appNotificationsStore);
         } catch (err) {
             MainProcessEventError.catch(err);
         };

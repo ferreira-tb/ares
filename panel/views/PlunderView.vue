@@ -49,7 +49,7 @@ watchEffect(() => {
                 <NButton round @click="config.active = !config.active" :disabled="features.farmAssistant === false">
                     {{ plunderButtonText }}
                 </NButton>
-                <NButton round @click="ipcSend('open-settings-window', 'plunder-config')">Configurações</NButton>
+                <NButton round @click="ipcSend('open-settings-window', 'config-plunder')">Configurações</NButton>
             </NButtonGroup>
         </div>
 

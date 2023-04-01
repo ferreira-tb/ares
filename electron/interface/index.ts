@@ -1,11 +1,11 @@
 import { Mechanus, watch, storeToRefs } from 'mechanus';
 
-import { AppConfig } from '$tables/config';
-import { ErrorLog, DOMErrorLog, MainProcessErrorLog } from '$tables/error';
-import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$tables/plunder';
-import { User } from '$tables/user';
-import { WorldConfig, WorldUnit } from '$tables/world';
-import { VillageGroups } from '$tables/groups';
+import { AppConfig } from '$database/config';
+import { ErrorLog, ElectronErrorLog } from '$database/error';
+import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
+import { User } from '$database/user';
+import { WorldConfig, WorldUnit } from '$database/world';
+import { VillageGroups } from '$database/groups';
 
 import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores, definePlunderCacheStore } from '$stores/plunder';
 import { defineAresStore } from '$stores/ares';
@@ -17,7 +17,7 @@ import { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/world'
 import { defineCurrentVillageStore } from '$stores/village';
 import { defineGroupsStore } from '$stores/groups';
 import { defineBrowserViewStore } from '$stores/view';
-import { defineAppGeneralConfigStore } from '$stores/config';
+import { defineAppGeneralConfigStore, defineAppNotificationsStore } from '$stores/config';
 
 import { patchAliasRelatedStores } from '$interface/alias';
 import { patchWorldRelatedStores } from '$interface/world';
@@ -28,6 +28,7 @@ import { MainProcessError } from '$electron/error';
 export const mechanus = new Mechanus();
 
 export const useAppGeneralConfigStore = defineAppGeneralConfigStore(mechanus);
+export const useAppNotificationsStore = defineAppNotificationsStore(mechanus);
 export const useAresStore = defineAresStore(mechanus);
 export const usePlunderStore = definePlunderStore(mechanus);
 export const usePlunderConfigStore = definePlunderConfigStore(mechanus);
@@ -62,7 +63,7 @@ const aliasArgs = [
 ] as const;
 
 ////// ERROS
-MainProcessError.catch = catchError(useAresStore(), MainProcessErrorLog);
+MainProcessError.catch = catchError(useAresStore(), useAppNotificationsStore(), ElectronErrorLog);
 
 ////// WATCHERS
 const { name: playerName } = storeToRefs(usePlayerStore());
@@ -89,8 +90,7 @@ watch(screen, (screen) => {
 export {
     AppConfig,
     ErrorLog,
-    DOMErrorLog,
-    MainProcessErrorLog,
+    ElectronErrorLog,
     PlunderHistory,
     PlunderConfig,
     CustomPlunderTemplate,
