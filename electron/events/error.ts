@@ -1,11 +1,11 @@
-import { app, ipcMain, BrowserWindow } from 'electron';
 import { URL } from 'url';
 import { Op } from 'sequelize';
+import { app, ipcMain, BrowserWindow } from 'electron';
 import { assertInteger, assertString } from '@tb-dev/ts-guard';
 import { MainProcessEventError } from '$electron/error';
 import { sequelize } from '$database/database';
-import { ErrorLog, DOMErrorLog, MainProcessErrorLog, useAresStore } from '$interface/index';
 import { getActiveModule } from '$electron/app/modules';
+import { ErrorLog, DOMErrorLog, MainProcessErrorLog, useAresStore } from '$interface/index';
 import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType } from '$types/error';
 
 export function setErrorEvents() {
@@ -35,20 +35,8 @@ export function setErrorEvents() {
 
             const errorModule = getActiveModule('error-log');
             if (errorModule instanceof BrowserWindow) {
-                errorModule.webContents.send('error-log-updated', newRow.toJSON());
+                errorModule.webContents.send('error-log-did-update', newRow.toJSON());
             };
-
-        } catch (err) {
-            MainProcessEventError.catch(err);
-        };
-    });
-
-    ipcMain.on('delete-error-log', async (_e, id: number) => {
-        try {
-            assertInteger(id, 'Error ID is invalid.');
-            await sequelize.transaction(async (transaction) => {
-                await ErrorLog.destroy({ where: { id }, transaction });
-            });
 
         } catch (err) {
             MainProcessEventError.catch(err);
@@ -69,6 +57,18 @@ export function setErrorEvents() {
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
+        };
+    });
+
+    ipcMain.on('delete-error-log', async (_e, id: number) => {
+        try {
+            assertInteger(id, 'Error ID is invalid.');
+            await sequelize.transaction(async (transaction) => {
+                await ErrorLog.destroy({ where: { id }, transaction });
+            });
+
+        } catch (err) {
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -96,24 +96,12 @@ export function setErrorEvents() {
 
             const errorModule = getActiveModule('error-log');
             if (errorModule instanceof BrowserWindow) {
-                errorModule.webContents.send('dom-error-log-updated', newRow.toJSON());
+                errorModule.webContents.send('dom-error-log-did-update', newRow.toJSON());
             };
 
         } catch (err) {
             MainProcessEventError.catch(err);
         }; 
-    });
-
-    ipcMain.on('delete-dom-error-log', async (_e, id: number) => {
-        try {
-            assertInteger(id, 'Error ID is invalid.');
-            await sequelize.transaction(async (transaction) => {
-                await DOMErrorLog.destroy({ where: { id }, transaction });
-            });
-            
-        } catch (err) {
-            MainProcessEventError.catch(err);
-        };
     });
 
     ipcMain.handle('get-dom-error-log', async () => {
@@ -133,11 +121,11 @@ export function setErrorEvents() {
         };
     });
 
-    ipcMain.on('delete-main-process-error-log', async (_e, id: number) => {
+    ipcMain.on('delete-dom-error-log', async (_e, id: number) => {
         try {
             assertInteger(id, 'Error ID is invalid.');
             await sequelize.transaction(async (transaction) => {
-                await MainProcessErrorLog.destroy({ where: { id }, transaction });
+                await DOMErrorLog.destroy({ where: { id }, transaction });
             });
             
         } catch (err) {
@@ -145,7 +133,7 @@ export function setErrorEvents() {
         };
     });
 
-    ipcMain.handle('get-main-process-error-log', async () => {
+    ipcMain.handle('get-electron-error-log', async () => {
         try {
             await sequelize.transaction(async (transaction) => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
@@ -159,6 +147,18 @@ export function setErrorEvents() {
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
+        };
+    });
+
+    ipcMain.on('delete-electron-error-log', async (_e, id: number) => {
+        try {
+            assertInteger(id, 'Error ID is invalid.');
+            await sequelize.transaction(async (transaction) => {
+                await MainProcessErrorLog.destroy({ where: { id }, transaction });
+            });
+            
+        } catch (err) {
+            MainProcessEventError.catch(err);
         };
     });
 };

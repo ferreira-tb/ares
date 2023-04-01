@@ -14,7 +14,7 @@ assertArray(raw, 'Database connection error.');
 const errors = reactive(raw);
 watchEffect(() => errors.sort((a, b) => b.time - a.time));
 
-useIpcRendererOn('error-log-updated', (_e, newError: ErrorLogType) => errors.push(newError));
+useIpcRendererOn('error-log-did-update', (_e, newError: ErrorLogType) => errors.push(newError));
 
 function deleteError(id: number) {
     assertInteger(id, 'Error ID must be an integer.');

@@ -11,7 +11,7 @@ watch(config, () => ipcSend('update-app-notifications-config', toRaw(config)));
 
 <template>
     <section class="notifications-config">
-        <NDivider title-placement="left" class="config-divider">Ares</NDivider>
+        <NDivider title-placement="left" class="config-divider">Geral</NDivider>
         <NGrid class="switch-area" :cols="1" :y-gap="10">
             <NGridItem>
                 <SwitchPopover v-model:value="config.notifyOnError" size="medium">

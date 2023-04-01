@@ -13,6 +13,7 @@ export function setConfigEvents() {
     ipcMain.handle('get-app-general-config', () => ({ ...appGeneralConfigStore }));
     ipcMain.handle('get-app-notifications-config', () => ({ ...appNotificationsStore }));
     ipcMain.handle('should-reload-after-captcha', () => appGeneralConfigStore.reloadAfterCaptcha);
+    ipcMain.handle('should-notify-on-error', () => appNotificationsStore.notifyOnError);
 
     ipcMain.on('update-app-general-config', async (_e, config: GeneralAppConfigType) => {
         try {

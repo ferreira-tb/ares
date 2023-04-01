@@ -35,6 +35,7 @@ export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
 export async function ipcInvoke(channel: 'get-app-general-config'): Promise<GeneralAppConfigType>;
 export async function ipcInvoke(channel: 'get-app-notifications-config'): Promise<AppNotificationsConfigType>;
 export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise<boolean>;
+export async function ipcInvoke(channel: 'should-notify-on-error'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
 export async function ipcInvoke(channel: 'save-demolition-troops-config', template: DemolitionTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'destroy-demolition-troops-config', alias: UserAlias): Promise<boolean>;
@@ -63,7 +64,7 @@ export async function ipcInvoke(channel: 'get-village-groups'): Promise<Set<Vill
 // Erros
 export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
 export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorLogType[] | null>;
-export async function ipcInvoke(channel: 'get-main-process-error-log'): Promise<MainProcessErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<MainProcessErrorLogType[] | null>;
 
 // Plunder
 export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
@@ -129,7 +130,7 @@ export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
 export function ipcSend(channel: 'set-dom-error-log', err: DOMErrorLogBase): void;
 export function ipcSend(channel: 'delete-error-log', id: number): void;
 export function ipcSend(channel: 'delete-dom-error-log', id: number): void;
-export function ipcSend(channel: 'delete-main-process-error-log', id: number): void;
+export function ipcSend(channel: 'delete-electron-error-log', id: number): void;
 
 // Plunder
 export function ipcSend(channel: 'open-custom-plunder-template-window'): void;

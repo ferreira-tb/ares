@@ -31,7 +31,7 @@ export function catchError(
                     const newRow = await MainProcessErrorLog.create(errorLog, { transaction });
                     const errorModule = getActiveModule('error-log');
                     if (errorModule instanceof BrowserWindow) {
-                        errorModule.webContents.send('main-process-error-log-updated', newRow.toJSON());
+                        errorModule.webContents.send('electron-error-log-did-update', newRow.toJSON());
                     };
                 });
             };
