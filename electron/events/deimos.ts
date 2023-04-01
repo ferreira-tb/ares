@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { readDeimosFile } from '$electron/app/deimos';
 import { getPanelWindow } from '$electron/utils/helpers';
-import { ProxyStoreError } from '$electron/error';
+import { MainProcessEventError } from '$electron/error';
 import type { PlunderInfoType } from '$types/plunder';
 import type { UnitAmount, TribalWarsGameDataType } from '$types/game';
 
@@ -71,7 +71,7 @@ export function setDeimosEvents() {
                         };
                         break;
                     default:
-                        throw new ProxyStoreError(`Key \"${key}\" is not a valid game data key.`);
+                        throw new MainProcessEventError(`Key \"${key}\" is not a valid game data key.`);
                 };
             };
 
@@ -79,7 +79,7 @@ export function setDeimosEvents() {
             panelWindow.webContents.send('patch-panel-game-data', gameData);
 
         } catch (err) {
-            ProxyStoreError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -94,7 +94,7 @@ export function setDeimosEvents() {
             panelWindow.webContents.send('patch-panel-plunder-info', plunderInfo);
 
         } catch (err) {
-            ProxyStoreError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 
@@ -109,7 +109,7 @@ export function setDeimosEvents() {
             panelWindow.webContents.send('patch-panel-current-village-units', units);
 
         } catch (err) {
-            ProxyStoreError.catch(err);
+            MainProcessEventError.catch(err);
         };
     });
 };

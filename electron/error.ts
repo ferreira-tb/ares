@@ -13,10 +13,10 @@ export class MainProcessError extends Error {
     };
 };
 
-export class ProxyStoreError extends MainProcessError {
+export class MechanusStoreError extends MainProcessError {
     constructor(message: string) {
         super(message);
-        this.name = 'ProxyStoreError';
+        this.name = 'MechanusStoreError';
     };
 };
 
