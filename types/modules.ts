@@ -29,7 +29,7 @@ export type SingleModules = 'default' | 'demolition' | 'plunder-template';
 export type NestedModules = 'app-config' | 'error-log';
 export type ModuleNames = NestedModules | SingleModules;
 
-export type ErrorModuleRoutes = 'error-general' | 'error-dom' | 'error-electron';
+export type ErrorModuleRoutes = 'error-general' | 'error-electron';
 export type ConfigModuleRoutes = 'config-general' | 'config-notifications' | 'config-plunder';
 
 export type ModuleRoutes = ModuleNames | ErrorModuleRoutes | ConfigModuleRoutes;

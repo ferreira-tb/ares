@@ -1,7 +1,7 @@
 import { Mechanus, watch, storeToRefs } from 'mechanus';
 
 import { AppConfig } from '$tables/config';
-import { ErrorLog, DOMErrorLog, MainProcessErrorLog } from '$tables/error';
+import { ErrorLog, ElectronErrorLog } from '$tables/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$tables/plunder';
 import { User } from '$tables/user';
 import { WorldConfig, WorldUnit } from '$tables/world';
@@ -63,7 +63,7 @@ const aliasArgs = [
 ] as const;
 
 ////// ERROS
-MainProcessError.catch = catchError(useAresStore(), MainProcessErrorLog);
+MainProcessError.catch = catchError(useAresStore(), ElectronErrorLog);
 
 ////// WATCHERS
 const { name: playerName } = storeToRefs(usePlayerStore());
@@ -90,8 +90,7 @@ watch(screen, (screen) => {
 export {
     AppConfig,
     ErrorLog,
-    DOMErrorLog,
-    MainProcessErrorLog,
+    ElectronErrorLog,
     PlunderHistory,
     PlunderConfig,
     CustomPlunderTemplate,

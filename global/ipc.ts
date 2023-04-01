@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$lib/plunder/attack';
 import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$types/game';
-import type { ErrorLogBase, ErrorLogType, DOMErrorLogBase, DOMErrorLogType, MainProcessErrorLogType } from '$types/error';
+import type { ErrorLogBase, ErrorLogType, ElectronProcessErrorLogType } from '$types/error';
 import type { WorldConfigType, WorldUnitType } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
@@ -63,8 +63,7 @@ export async function ipcInvoke(channel: 'get-village-groups'): Promise<Set<Vill
 
 // Erros
 export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
-export async function ipcInvoke(channel: 'get-dom-error-log'): Promise<DOMErrorLogType[] | null>;
-export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<MainProcessErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<ElectronProcessErrorLogType[] | null>;
 
 // Plunder
 export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
@@ -127,9 +126,7 @@ export function ipcSend(channel: 'destroy-browser-view', webContentsId: number):
 // Erros
 export function ipcSend(channel: 'open-error-log-window'): void;
 export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
-export function ipcSend(channel: 'set-dom-error-log', err: DOMErrorLogBase): void;
 export function ipcSend(channel: 'delete-error-log', id: number): void;
-export function ipcSend(channel: 'delete-dom-error-log', id: number): void;
 export function ipcSend(channel: 'delete-electron-error-log', id: number): void;
 
 // Plunder

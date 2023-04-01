@@ -5,17 +5,17 @@ import { isString, toNull } from '@tb-dev/ts-guard';
 import { sequelize } from '$database/database';
 import { getActiveModule } from '$electron/app/modules';
 import type { useAresStore } from '$interface/index';
-import type { MainProcessErrorLog as MainProcessErrorLogTable } from '$interface/index';
-import type { MainProcessErrorLogType } from '$types/error';
+import type { ElectronErrorLog as MainProcessErrorLogTable } from '$interface/index';
+import type { ElectronProcessErrorLogType } from '$types/error';
 
 export function catchError(
     aresStore: ReturnType<typeof useAresStore>,
-    MainProcessErrorLog: typeof MainProcessErrorLogTable
+    ElectronErrorLog: typeof MainProcessErrorLogTable
 ) {
     return async function (err: unknown) {
         try {
             if (err instanceof Error) {
-                const errorLog: Omit<MainProcessErrorLogType, 'id' | 'pending'> = {
+                const errorLog: Omit<ElectronProcessErrorLogType, 'id' | 'pending'> = {
                     name: err.name,
                     message: err.message,
                     stack: toNull(err.stack, isString) as string | null,
@@ -28,7 +28,7 @@ export function catchError(
                 };
 
                 await sequelize.transaction(async (transaction) => {
-                    const newRow = await MainProcessErrorLog.create(errorLog, { transaction });
+                    const newRow = await ElectronErrorLog.create(errorLog, { transaction });
                     const errorModule = getActiveModule('error-log');
                     if (errorModule instanceof BrowserWindow) {
                         errorModule.webContents.send('electron-error-log-did-update', newRow.toJSON());
