@@ -18,7 +18,7 @@ import { handleLackOfTargets } from '$lib/plunder/next';
 import { queryPlunderGroupInfo, updateGroupInfo } from '$lib/plunder/group';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke, ipcSend } from '$global/ipc';
-import Reload from '$browser/components/plunder/Reload.vue';
+import PlunderReload from '$browser/components/PlunderReload.vue';
 import type { PlunderGroupType } from '$types/plunder';
 
 const ares = useAresStore();
@@ -164,5 +164,5 @@ async function handleAttack(): Promise<void> {
 </script>
 
 <template>
-    <Reload :active="config.active" :minutesUntilReload="config.minutesUntilReload" />
+    <PlunderReload :active="config.active" :minutesUntilReload="config.minutesUntilReload" />
 </template>

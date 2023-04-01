@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { NConfigProvider, NLoadingBarProvider, darkTheme } from 'naive-ui';
-import TopContainer from '$main/components/TopContainer.vue';
-import LoadingBar from '$main/components/LoadingBar.vue';
+import TheTopContainer from '$main/components/TheTopContainer.vue';
+import TheLoadingBar from '$main/components/TheLoadingBar.vue';
 </script>
 
 <template>
     <NConfigProvider :theme="darkTheme">
-        <TopContainer />
+        <TheTopContainer />
         
         <NLoadingBarProvider>
-            <LoadingBar />
+            <TheLoadingBar />
         </NLoadingBarProvider>
     </NConfigProvider>
 </template>

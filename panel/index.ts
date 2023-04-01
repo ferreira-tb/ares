@@ -7,9 +7,9 @@ import { router } from '$panel/router/router';
 import { setNavigationGuards } from '$panel/router/guards';
 import { setPanelEvents } from '$panel/events/index';
 import { PanelError } from '$panel/error';
-import Panel from '$panel/Panel.vue';
+import App from '$panel/App.vue';
 
-const panel = createApp(Panel);
+const panel = createApp(App);
 const pinia = createPinia();
 
 // Plugins.

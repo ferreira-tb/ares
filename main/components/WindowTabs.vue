@@ -5,7 +5,7 @@ import { useElementSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { assertInteger } from '@tb-dev/ts-guard';
 import { ipcInvoke, ipcSend } from '$global/ipc';
-import WindowButtons from '$main/components/WindowButtons.vue';
+import WindowTabsButtons from '$main/components/WindowTabsButtons.vue';
 import LightIcon from '$icons/units/LightIcon.vue';
 import type { WebContents } from 'electron';
 
@@ -77,7 +77,7 @@ function renderMainTab() {
 
         <!-- Botões para controle da janela -->
         <Suspense>
-            <WindowButtons />
+            <WindowTabsButtons />
         </Suspense>
     </div>
 </template>

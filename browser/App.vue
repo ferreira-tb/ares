@@ -10,8 +10,8 @@ import { useAresStore } from '$global/stores/ares';
 import { useBrowserStore } from '$browser/stores/browser';
 import { ipcSend } from '$global/ipc';
 import { gameURLRegex } from '$global/utils/constants';
-import DeimosTag from '$browser/components/DeimosTag.vue';
-import CaptchaObserver from '$browser/components/CaptchaObserver.vue';
+import TheDeimosTag from '$browser/components/TheDeimosTag.vue';
+import TheCaptchaObserver from '$browser/components/TheCaptchaObserver.vue';
 
 const aresStore = useAresStore();
 const browserStore = useBrowserStore();
@@ -39,10 +39,10 @@ whenever(isDeimosReady, async () => {
 </script>
 
 <template>
-    <CaptchaObserver />
+    <TheCaptchaObserver />
 
     <Suspense>
-        <DeimosTag />
+        <TheDeimosTag />
     </Suspense>
 
     <RouterView v-slot="{ Component }">
