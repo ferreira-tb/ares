@@ -44,10 +44,6 @@ export const allowedOriginRegexList = [
     authorURLRegex
 ] as const;
 
-// Proxy keys.
-export const aresKeys = ['locale', 'world', 'majorVersion', 'groupId', 'screen', 'screenMode', 'pregame'] as const;
-export const featuresKeys = ['premium', 'accountManager', 'farmAssistant'] as const;
-
 // Jogo.
 export const resources = ['wood', 'stone', 'iron'] as const;
 export const farmUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'marcher', 'heavy', 'knight'] as const;
