@@ -32,6 +32,7 @@ onMounted(() => {
             <NTab name="config-general" tab="Geral" />
             <NTab name="config-plunder" tab="Saque" />
             <NTab name="config-notifications" tab="Notificações" />
+            <NTab name="config-advanced" tab="Avançado" />
         </NTabs>
     </nav>
 
@@ -56,7 +57,7 @@ onMounted(() => {
 <style scoped>
 :deep(.config-divider) {
     margin-top: 1em !important;
-    margin-bottom: 0.3em !important;
+    margin-bottom: 0.5em !important;
 }
 
 :deep(.config-divider:first-of-type) {

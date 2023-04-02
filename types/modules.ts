@@ -30,7 +30,12 @@ export type NestedModules = 'app-config' | 'error-log';
 export type ModuleNames = NestedModules | SingleModules;
 
 export type ErrorModuleRoutes = 'error-general' | 'error-electron';
-export type ConfigModuleRoutes = 'config-general' | 'config-notifications' | 'config-plunder';
+
+export type ConfigModuleRoutes =
+    | 'config-advanced'
+    | 'config-general'
+    | 'config-notifications'
+    | 'config-plunder';
 
 export type ModuleRoutes = ModuleNames | ErrorModuleRoutes | ConfigModuleRoutes;
 

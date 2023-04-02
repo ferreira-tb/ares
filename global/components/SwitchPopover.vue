@@ -59,6 +59,7 @@ const popoverStyle = reactive({
             :scrollable="props.popScrollable"
             :keep-alive-on-hover="props.popKeepAliveOnHover"
             :style="popoverStyle"
+            :displayAsBlock="false"
         >
             <template #trigger>
                 <slot name="trigger"></slot>

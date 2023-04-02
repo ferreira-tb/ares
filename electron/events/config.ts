@@ -1,7 +1,9 @@
 import { ipcMain } from 'electron';
 import { showAppSettings } from '$electron/app/modules';
+import { sequelize } from '$electron/database';
 import { AppConfig, useAppGeneralConfigStore, useAppNotificationsStore } from '$interface/index';
 import { MainProcessEventError } from '$electron/error';
+import { restartAres } from '$electron/utils/helpers';
 import type { ConfigModuleRoutes } from '$types/modules';
 import type { GeneralAppConfigType, AppNotificationsConfigType } from '$types/config';
 
@@ -14,6 +16,17 @@ export function setConfigEvents() {
     ipcMain.handle('get-app-notifications-config', () => ({ ...appNotificationsStore }));
     ipcMain.handle('should-reload-after-captcha', () => appGeneralConfigStore.reloadAfterCaptcha);
     ipcMain.handle('should-notify-on-error', () => appNotificationsStore.notifyOnError);
+
+    ipcMain.handle('drop-database', async () => {
+        try {
+            await sequelize.drop();
+            setTimeout(() => restartAres(), 3000);
+            return true;
+        } catch (err) {
+            MainProcessEventError.catch(err);
+            return false;
+        };
+    });
 
     ipcMain.on('update-app-general-config', async (_e, config: GeneralAppConfigType) => {
         try {
