@@ -21,13 +21,16 @@
     @include bold-text-color(var(--color-green));
 }
 
-.bold-red {
-    @include bold-text-color(var(--color-red));
-}
-
 .to-center {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+@mixin flex-center-y {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
 }

@@ -32,6 +32,7 @@ export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
 
 // Configurações
+export async function ipcInvoke(channel: 'drop-database'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-app-general-config'): Promise<GeneralAppConfigType>;
 export async function ipcInvoke(channel: 'get-app-notifications-config'): Promise<AppNotificationsConfigType>;
 export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise<boolean>;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { NPopover } from 'naive-ui';
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
     keepAliveOnHover?: boolean;
     maxWidth?: number;
     maxHeight?: number;
+    displayAsBlock?: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -17,8 +18,11 @@ const props = withDefaults(defineProps<Props>(), {
     scrollable: true,
     keepAliveOnHover: true,
     maxWidth: 250,
-    maxHeight: 100
+    maxHeight: 100,
+    displayAsBlock: true
 });
+
+const triggerElement = computed(() => props.displayAsBlock ? 'div' : 'span');
 
 const style = reactive({
     maxWidth: `${props.maxWidth}px`,
@@ -27,19 +31,30 @@ const style = reactive({
 </script>
 
 <template>
-    <NPopover :delay="props.delay" :animated="props.animated" :scrollable="props.scrollable"
-        :keep-alive-on-hover="props.keepAliveOnHover" :style="style">
+    <NPopover
+        :delay="props.delay"
+        :animated="props.animated"
+        :scrollable="props.scrollable"
+        :keep-alive-on-hover="props.keepAliveOnHover"
+        :style="style"
+    >
         <template #trigger>
-            <span class="trigger-label">
+            <component :is="triggerElement" class="trigger-label" :class="{ 'flex-center-y': props.displayAsBlock }">
                 <slot name="trigger"></slot>
-            </span>
+            </component>
         </template>
         <slot></slot>
     </NPopover>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use '$styles/utils.scss';
+
 .trigger-label {
     margin-left: 0.5em;
+}
+
+.flex-center-y {
+    @include utils.flex-center-y;
 }
 </style>
