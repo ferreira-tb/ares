@@ -1,49 +1,40 @@
-import { assertInteger } from '@tb-dev/ts-guard';
 import { useCurrentVillageStore } from '$global/stores/village';
 import { usePlunderStore } from '$global/stores/plunder';
 import { ipcSend } from '$global/ipc';
-import { plunderSearchParams } from '$global/utils/constants';
-import type { PlunderCurrentVillageType, PlunderPageType } from '$types/plunder';
+import type { PlunderPageListType, PlunderPageType } from '$types/plunder';
 
-class PlunderCurrentVillageInfo implements PlunderCurrentVillageType {
+class PlunderPageList implements PlunderPageListType {
     readonly id: number;
-    readonly pageUrl: string;
-    readonly pages: PlunderPageType[] = [];
+    readonly all: PlunderPageType[] = [];
 
     constructor() {
-        const currentVillageStore = useCurrentVillageStore();
-        assertInteger(currentVillageStore.id);
-        this.id = currentVillageStore.id;
-
-        const url = new URL(location.href);
-        url.search = plunderSearchParams;
-        this.pageUrl = url.href;
+        this.id = useCurrentVillageStore().getId();
     };
 };
 
 class PlunderPage implements PlunderPageType {
-    readonly page: number;
+    readonly index: number;
     readonly done: boolean;
 
-    constructor(plunderStore: ReturnType<typeof usePlunderStore>, page: number) {
-        this.page = page;
-        this.done = plunderStore.page === page;
+    constructor(plunderStore: ReturnType<typeof usePlunderStore>, index: number) {
+        this.index = index;
+        this.done = plunderStore.page === index;
     };
 };
 
 /** Obtém informações sobre a aldeia atual e as envia para o cache no processo principal. */
 export function queryCurrentVillageInfo() {
-    const villageInfo = new PlunderCurrentVillageInfo();
-    const hasPages = queryPlunderPages(villageInfo);
+    const pages = new PlunderPageList();
+    const hasPages = queryPlunderPages(pages);
 
     if (hasPages) {
-        ipcSend('update-plunder-cache-village-info', villageInfo);
+        ipcSend('update-plunder-pages-info', pages);
     } else {
-        ipcSend('update-plunder-cache-village-info', null);
+        ipcSend('update-plunder-pages-info', null);
     };
 };
 
-function queryPlunderPages(villageInfo: PlunderCurrentVillageType) {
+function queryPlunderPages(pages: PlunderPageListType) {
     const plunderNav = document.querySelector('#plunder_list_nav table td:has(.paged-nav-item)');
     if (!plunderNav) return false;
 
@@ -51,17 +42,17 @@ function queryPlunderPages(villageInfo: PlunderCurrentVillageType) {
     // Já as outras páginas são links, todas dentro de um elemento <a>.
     // Nas URLs e nas variáveis do jogo, as páginas são numeradas a partir de 0.
     // No entanto, no texto dos links, elas são numeradas a partir de 1.
-    const pages = plunderNav.queryAsArray('a.paged-nav-item').map((el) => el.parseIntStrict() - 1);
+    const indexList = plunderNav.queryAsArray('a.paged-nav-item').map((el) => el.parseIntStrict() - 1);
 
     // Adiciona a página atual.
     const plunderStore = usePlunderStore();
-    const currentPage = plunderStore.page;
-    pages.push(currentPage);
+    const currentIndex = plunderStore.page;
+    indexList.push(currentIndex);
 
-    const lastPage = pages.reduce((a, b) => Math.max(a, b), -Infinity);
-    for (let i = 0; i <= lastPage; i++) {
+    const lastIndex = indexList.reduce((a, b) => Math.max(a, b), -Infinity);
+    for (let i = 0; i <= lastIndex; i++) {
         const plunderPage = new PlunderPage(plunderStore, i);
-        villageInfo.pages.push(plunderPage);
+        pages.all.push(plunderPage);
     };
 
     return true;

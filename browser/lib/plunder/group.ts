@@ -32,7 +32,7 @@ export async function updateGroupInfo(isGroupAttackEnabled: boolean, groupInfo: 
             groupInfo.value = await queryPlunderGroupInfo();
         } else {
             groupInfo.value = null;
-            const updated = await ipcInvoke('update-plunder-cache-group-info', null);
+            const updated = await ipcInvoke('update-plunder-group-info', null);
             if (!updated) throw new PlunderError('Failed to update group info.');
         };
 
@@ -56,7 +56,7 @@ export async function queryPlunderGroupInfo(): Promise<PlunderGroupType | null> 
             return null;
         };
 
-        groupInfo = await ipcInvoke('get-plunder-cache-group-info');
+        groupInfo = await ipcInvoke('get-plunder-group-info');
         if (!groupInfo) groupInfo = await queryVillagesFromPopup(config);
         return groupInfo;
         
@@ -66,7 +66,7 @@ export async function queryPlunderGroupInfo(): Promise<PlunderGroupType | null> 
         return null;
 
     } finally {
-        ipcInvoke('update-plunder-cache-group-info', groupInfo);
+        ipcInvoke('update-plunder-group-info', groupInfo);
     };
 };
 

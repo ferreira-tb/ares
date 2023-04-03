@@ -2,8 +2,10 @@ import { ipcMain } from 'electron';
 import { readDeimosFile } from '$electron/app/deimos';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { MainProcessEventError } from '$electron/error';
+import type { IpcMainEvent } from 'electron';
+import type { MechanusStore } from 'mechanus';
 import type { PlunderInfoType } from '$types/plunder';
-import type { UnitAmount, TribalWarsGameDataType } from '$types/game';
+import type { UnitAmount, TribalWarsGameDataType, World } from '$types/game';
 
 import {
     useAresStore,
@@ -24,7 +26,6 @@ export function setDeimosEvents() {
     const plunderStore = usePlunderStore();
     const currentVillageStore = useCurrentVillageStore();
     const groupsStore = useGroupsStore();
-    const cacheStore = useCacheStore();
 
     /** Conteúdo do arquivo `deimos.js`. */
     let deimos: string | null = null;
@@ -39,39 +40,27 @@ export function setDeimosEvents() {
     });
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
-    ipcMain.on('update-game-data', (_e, gameData: TribalWarsGameDataType) => {
+    ipcMain.on('update-game-data', <T extends keyof TribalWarsGameDataType>(_e: IpcMainEvent, gameData: TribalWarsGameDataType) => {
         try {
-            for (const [key, value] of Object.entries(gameData)) {
+            for (const key of Object.keys(gameData) as T[]) {
                 switch (key) {
                     case 'ares':
-                        for (const [aresKey, aresValue] of Object.entries(value)) {
-                            if (aresKey === 'world') Reflect.set(cacheStore, 'world', aresValue);
-                            Reflect.set(aresStore, aresKey, aresValue);
-                        };
+                        patchGameData('ares', aresStore, gameData);
                         break;
                     case 'features':
-                        for (const [featureKey, featureValue] of Object.entries(value)) {
-                            Reflect.set(featuresStore, featureKey, featureValue);
-                        };
-                        break;
-                    case 'groups':
-                        for (const [groupKey, groupValue] of Object.entries(value)) {
-                            Reflect.set(groupsStore, groupKey, groupValue);
-                        };
+                        patchGameData('features', featuresStore, gameData);
                         break;
                     case 'player':
-                        for (const [playerKey, playerValue] of Object.entries(value)) {
-                            if (playerKey === 'name') Reflect.set(cacheStore, 'player', playerValue);
-                            Reflect.set(playerStore, playerKey, playerValue);
-                        };
+                        patchGameData('player', playerStore, gameData);
                         break;
                     case 'currentVillage':
-                        for (const [villageKey, villageValue] of Object.entries(value)) {
-                            Reflect.set(currentVillageStore, villageKey, villageValue);
-                        };
+                        patchGameData('currentVillage', currentVillageStore, gameData);
+                        break;
+                    case 'groups':
+                        patchGameData('groups', groupsStore, gameData);
                         break;
                     default:
-                        throw new MainProcessEventError(`Key \"${key}\" is not a valid game data key.`);
+                        throw new MainProcessEventError(`Could not update game data: ${key} is not a valid key.`);
                 };
             };
 
@@ -84,32 +73,56 @@ export function setDeimosEvents() {
     });
 
     // Recebe as informações referentes ao assistente de saque, salva-as localmente e então envia-as ao painel.
-    ipcMain.on('update-plunder-info', (_e, plunderInfo: PlunderInfoType) => {
+    ipcMain.handle('update-plunder-info', <T extends keyof typeof plunderStore>(
+        _e: IpcMainEvent, plunderInfo: PlunderInfoType
+    ) => {
         try {
-            for (const [key, value] of Object.entries(plunderInfo)) {
-                Reflect.set(plunderStore, key, value);
+            for (const [key, value] of Object.entries(plunderInfo) as [T, typeof plunderStore[T]][]) {
+                plunderStore[key] = value;
             };
     
             const panelWindow = getPanelWindow();
             panelWindow.webContents.send('patch-panel-plunder-info', plunderInfo);
+            return true;
 
         } catch (err) {
             MainProcessEventError.catch(err);
+            return false;
         };
     });
 
     // Recebe as informações referentes às unidades da aldeia atual, salva-as localmente e então envia-as ao painel.
-    ipcMain.on('update-current-village-units', (_e, units: UnitAmount) => {
+    ipcMain.handle('update-current-village-units', <T extends keyof typeof unitsStore>(
+        _e: IpcMainEvent, units: UnitAmount
+    ) => {
         try {
-            for (const [key, value] of Object.entries(units) as [keyof UnitAmount, number][]) {
+            for (const [key, value] of Object.entries(units) as [T, typeof unitsStore[T]][]) {
                 unitsStore[key] = value;
             };
     
             const panelWindow = getPanelWindow();
             panelWindow.webContents.send('patch-panel-current-village-units', units);
+            return true;
 
         } catch (err) {
             MainProcessEventError.catch(err);
+            return false;
         };
     });
+};
+
+function patchGameData(dataType: 'ares', store: ReturnType<typeof useAresStore>, gameData: TribalWarsGameDataType): void;
+function patchGameData(dataType: 'features', store: ReturnType<typeof useFeaturesStore>, gameData: TribalWarsGameDataType): void;
+function patchGameData(dataType: 'groups', store: ReturnType<typeof useGroupsStore>, gameData: TribalWarsGameDataType): void;
+function patchGameData(dataType: 'player', store: ReturnType<typeof usePlayerStore>, gameData: TribalWarsGameDataType): void;
+function patchGameData(dataType: 'currentVillage', store: ReturnType<typeof useCurrentVillageStore>, gameData: TribalWarsGameDataType): void;
+function patchGameData<T extends keyof TribalWarsGameDataType, U extends keyof TribalWarsGameDataType[T]>(
+    dataType: T, store: MechanusStore<TribalWarsGameDataType[T]>, gameData: TribalWarsGameDataType
+) {
+    const cacheStore = useCacheStore();
+    for (const [key, value] of Object.entries(gameData[dataType]) as [U, typeof store[U]][]) {
+        if (key === 'world' && dataType === 'ares') cacheStore.world = value as World | null;
+        if (key === 'name' && dataType === 'player') cacheStore.player = value as string | null;
+        store[key] = value;
+    };
 };

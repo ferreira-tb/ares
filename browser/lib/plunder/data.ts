@@ -1,7 +1,7 @@
 import { Deimos } from '$deimos/shared/ipc';
 import { PlunderError } from '$browser/error';
 import { usePlunderStore, usePlunderConfigStore } from '$global/stores/plunder';
-import { ipcSend, ipcInvoke } from '$global/ipc';
+import { ipcInvoke } from '$global/ipc';
 
 export async function getPlunderInfo() {
     try {
@@ -11,7 +11,8 @@ export async function getPlunderInfo() {
         const plunderStore = usePlunderStore();
         plunderStore.$patch(plunderInfo);
         
-        ipcSend('update-plunder-info', plunderInfo);
+        const updated = await ipcInvoke('update-plunder-info', plunderInfo);
+        if (!updated) throw new PlunderError('Could not update plunder info.');
     } catch (err) {
         PlunderError.catch(err);
     };

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, nextTick, watch, watchEffect } from 'vue';
+import { ref, watch, watchEffect } from 'vue';
 import { computedEager } from '@vueuse/core';
-import { assertPositiveInteger } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
 import { useAresStore } from '$global/stores/ares';
 import { usePlunderConfigStore } from '$global/stores/plunder';
@@ -47,9 +46,7 @@ const shouldAttack = computedEager<boolean>(() => {
 // Reune informações necessárias para o funcionamento do Plunder.
 await queryTemplateData();
 queryTargetsInfo();
-
-// Não é necessário bloquear a execução, visto que não são informações críticas para os primeiros ataques.
-nextTick(() => queryCurrentVillageInfo());
+queryCurrentVillageInfo();
 
 watch(() => config.groupAttack, (newValue) => updateGroupInfo(newValue, groupInfo));
 watch(() => config.plunderGroupId, (newValue) => {
@@ -103,9 +100,8 @@ async function handleAttack(): Promise<void> {
         if ((Date.now() - info.lastAttack) > config.ignoreOlderThan * 3600000) continue;
 
         if (config.groupAttack && groupInfo.value) {
-            assertPositiveInteger(currentVillage.id, `${currentVillage.id} is not a valid village id.`);
-            const groupVillage = groupInfo.value.villages.getStrict(currentVillage.id);
-            if (info.distance > groupVillage.waveMaxDistance) continue;
+            const villageStatus = groupInfo.value.villages.getStrict(currentVillage.getId());
+            if (info.distance > villageStatus.waveMaxDistance) continue;
         };
 
         // Destrói a muralha da aldeia caso `destroyWall` esteja ativado.
@@ -125,7 +121,7 @@ async function handleAttack(): Promise<void> {
         if (config.ignoreWall && info.wallLevel >= config.wallLevelToIgnore) continue;
 
         // Seleciona o modelo mais adequado para o ataque.
-        const best = await pickBestTemplate(info);
+        const best = await pickBestTemplate(info, config);
         if (!best) continue;
 
         // Informações que serão enviadas ao painel.

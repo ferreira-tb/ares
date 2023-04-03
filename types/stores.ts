@@ -45,36 +45,6 @@ export type MechanusPlayerStoreType = {
     [K in keyof PlayerStore]: MechanusRef<PlayerStore[K]>;
 };
 
-////// CURRENT VILLAGE
-type CurrentVillageType = TribalWarsGameDataType['currentVillage'];
-export interface CurrentVillageStore extends CurrentVillageType {
-    readonly coords: [CurrentVillageType['x'], CurrentVillageType['y']];
-    readonly totalResources: number | null;
-
-    /**
-     * Retorna o id da aldeia atual.
-     * Essa função emitirá um erro caso o id não seja um número positivo.
-     */
-    getId(): number;
-};
-
-export type PiniaCurrentVillageStoreActions = CurrentVillageStore['getId'];
-export type PiniaCurrentVillageStoreType = {
-    [K in keyof CurrentVillageStore]:
-        CurrentVillageStore[K] extends PiniaCurrentVillageStoreActions ?
-        CurrentVillageStore[K] :
-        K extends keyof Omit<CurrentVillageStore, keyof CurrentVillageType> ?
-        ComputedRef<CurrentVillageStore[K]> :
-        Ref<CurrentVillageStore[K]>;
-};
-
-export type MechanusCurrentVillageStoreType = {
-    [K in keyof RemoveMethods<CurrentVillageStore>]:
-        K extends keyof Omit<CurrentVillageStore, keyof CurrentVillageType> ?
-        MechanusComputedRef<CurrentVillageStore[K]> :
-        MechanusRef<CurrentVillageStore[K]>;
-};
-
 ////// FEATURES
 export type FeaturesStore = TribalWarsGameDataType['features'];
 export type PiniaFeaturesStoreType = {
@@ -95,6 +65,36 @@ export type PiniaGroupsStoreType = {
 };
 export type MechanusGroupsStoreType = {
     [K in keyof GroupsStore]: MechanusRef<GroupsStore[K]>;
+};
+
+////// CURRENT VILLAGE
+type CurrentVillageType = TribalWarsGameDataType['currentVillage'];
+export interface CurrentVillageStore extends CurrentVillageType {
+    readonly coords: [CurrentVillageType['x'], CurrentVillageType['y']];
+    readonly totalResources: number | null;
+
+    /**
+     * Retorna o id da aldeia atual.
+     * Essa função emitirá um erro caso o id não seja um número inteiro.
+     */
+    getId(): number;
+};
+
+export type PiniaCurrentVillageStoreActions = CurrentVillageStore['getId'];
+export type PiniaCurrentVillageStoreType = {
+    [K in keyof CurrentVillageStore]:
+        CurrentVillageStore[K] extends PiniaCurrentVillageStoreActions ?
+        CurrentVillageStore[K] :
+        K extends keyof Omit<CurrentVillageStore, keyof CurrentVillageType> ?
+        ComputedRef<CurrentVillageStore[K]> :
+        Ref<CurrentVillageStore[K]>;
+};
+
+export type MechanusCurrentVillageStoreType = {
+    [K in keyof RemoveMethods<CurrentVillageStore>]:
+        K extends keyof Omit<CurrentVillageStore, keyof CurrentVillageType> ?
+        MechanusComputedRef<CurrentVillageStore[K]> :
+        MechanusRef<CurrentVillageStore[K]>;
 };
 
 ////// PLUNDER INFO

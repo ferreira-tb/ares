@@ -2,8 +2,9 @@ import { nextTick } from 'vue';
 import { assert } from '@tb-dev/ts-guard';
 import { Deimos } from '$deimos/shared/ipc';
 import { useUnitsStore } from '$global/stores/units';
-import { allUnits } from '$global/utils/constants';
-import { ipcSend } from '$global/ipc';
+import { assertUnit } from '$global/utils/guards';
+import { ipcInvoke } from '$global/ipc';
+import { PlunderError } from '$browser/error';
 import type { AllUnits } from '$types/game';
 
 /** Atualiza a quantidade de unidades disponíveis no assistente de saque. */
@@ -18,7 +19,8 @@ export async function queryAvailableUnits() {
         queryUnitsRow(unitStore);
     };
 
-    ipcSend('update-current-village-units', unitStore.raw());
+    const updated = await ipcInvoke('update-current-village-units', unitStore.raw());
+    if (!updated) throw new PlunderError('Could not update available units.');
     await nextTick();
 };
 
@@ -31,8 +33,7 @@ function queryUnitsRow(unitStore: ReturnType<typeof useUnitsStore>) {
 
     for (const field of unitFields) {
         const unitType = field.getAttributeStrict<AllUnits>('id');
-        assert(allUnits.includes(unitType), `Tipo inválido de unidade: ${unitType}`);
-        const amount = field.parseIntStrict();
-        unitStore[unitType] = amount;
+        assertUnit(unitType, PlunderError, `${unitType} is not a valid unit type.`);
+        unitStore[unitType] = field.parseIntStrict();
     };
 };

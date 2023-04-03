@@ -70,6 +70,7 @@ export function queryTargetsInfo() {
         // Registra o ID da aldeia.
         const villageId = row.getAttributeStrict('id').replace(/\D/g, '');
         row.setAttribute('data-tb-village', villageId);
+        if (targets.has(villageId)) continue;
 
         // Objeto onde serão armazenadas as informações sobre a aldeia.
         const info = new PlunderTargetInfo();

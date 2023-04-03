@@ -1,14 +1,16 @@
 import { toRaw } from 'vue';
 import { ipcInvoke } from '$global/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
-import { getPlunderTargets } from '$lib/plunder/targets';
+import { queryAvailableUnits } from '$lib/plunder/units';
 import { PlunderError } from '$browser/error';
 import { usePlunderConfigStore } from '$global/stores/plunder';
 import { useCurrentVillageStore } from '$global/stores/village';
 import type { PlunderGroupType } from '$types/plunder';
+import { PlunderTargetInfo, getPlunderTargets } from '$lib/plunder/targets';
 
 export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
     try {
+        await queryAvailableUnits();
         const config = usePlunderConfigStore();
         const wentToNextPage = await navigateToNextPage(config, groupInfo);
         if (wentToNextPage || !config.groupAttack || !groupInfo) return;
@@ -18,30 +20,24 @@ export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
     };
 };
 
-async function navigateToNextPage(
-    config: ReturnType<typeof usePlunderConfigStore>,
-    groupInfo: PlunderGroupType | null
-) {
+async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStore>, groupInfo: PlunderGroupType | null) {
     try {
         // Verifica se há tropas disponíveis em algum dos modelos.
         if (!canSomeTemplateAttack(config)) return false;
-
-        // Em seguida, verifica se algum dos alvos atuais obedece à distância máxima permitida.
-        const targets = getPlunderTargets();        
-        const distanceList = Array.from(targets.values(), (target) => target.distance);
-
+        
         let maxDistance = config.maxDistance;
         if (config.groupAttack && groupInfo) {
             const currentVillageId = useCurrentVillageStore().getId();
-            const groupVillage = groupInfo.villages.get(currentVillageId);
-            if (groupVillage) maxDistance = groupVillage.waveMaxDistance;
+            const villageStatus = groupInfo.villages.get(currentVillageId);
+            if (villageStatus) maxDistance = villageStatus.waveMaxDistance;
         };
 
-        if (distanceList.every((distance) => distance >= maxDistance)) {
-            return false;
-        };
+        const targets: ReadonlyArray<Readonly<PlunderTargetInfo>> = Array.from(getPlunderTargets().values());
+        const biggestDistance = targets.reduce((biggest, target) => Math.max(biggest, target.distance), 0);
+        if (biggestDistance >= maxDistance) return false;
         
-        return await ipcInvoke('navigate-to-next-plunder-page');
+        const navigated = await ipcInvoke('navigate-to-next-plunder-page');
+        return navigated;
 
     } catch (err) {
         PlunderError.catch(err);
@@ -61,7 +57,7 @@ async function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigS
             groupVillage.waveMaxDistance += config.fieldsPerWave;
         };
 
-        const updated = await ipcInvoke('update-plunder-cache-group-info', toRaw(groupInfo));
+        const updated = await ipcInvoke('update-plunder-group-info', toRaw(groupInfo));
         if (!updated) throw new PlunderError('Failed to update group info.');
         ipcInvoke('navigate-to-next-plunder-village', currentVillageId);
         

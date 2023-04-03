@@ -108,19 +108,17 @@ export type PlunderHistoryType = {
 };
 
 export type PlunderPageType = {
-    /** Número da página. */
-    readonly page: number;
+    /** Índice da página (inicia em zero). */
+    readonly index: number;
     /** Indica se o Plunder já enviou ataques a partir dessa página. */
     done: boolean;
-};
+}
 
-export type PlunderCurrentVillageType = {
-    /** ID da aldeia. */
+export type PlunderPageListType = {
+    /** ID da aldeia a qual as páginas pertencem. */
     readonly id: number;
-    /** URL base das páginas. */
-    readonly pageUrl: string;
     /** Lista de páginas. */
-    readonly pages: PlunderPageType[];
+    readonly all: PlunderPageType[];
 };
 
 export type PlunderGroupVillageType = {
@@ -138,8 +136,8 @@ export type PlunderGroupType = {
 };
 
 export type PlunderCacheType = {
-    /** Informações sobre a aldeia atual, como, por exemplo, os status de cada página. */
-    readonly currentVillage: PlunderCurrentVillageType | null;
+    /** Páginas do assistente de saque referentes à aldeia atual. */
+    readonly pages: PlunderPageListType | null;
     /** Informações sobre o grupo de saque. */
     readonly plunderGroup: PlunderGroupType | null;
     /** Modelos usados no assistente de saque para demolição de muralhas. */
