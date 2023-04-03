@@ -26,7 +26,7 @@ import {
 
 import type {
     PlunderAttackDetails,
-    PlunderCurrentVillageType,
+    PlunderPageListType,
     PlunderGroupType,
     PlunderGroupVillageType
 } from '$types/plunder';
@@ -42,7 +42,7 @@ export function setPlunderEvents() {
     const totalPlunderHistoryStore = useTotalPlunderHistoryStore();
 
     const { page: currentPage } = storeToRefs(plunderStore);
-    const { currentVillage, plunderGroup } = storeToRefs(plunderCacheStore);
+    const { pages, plunderGroup } = storeToRefs(plunderCacheStore);
 
     // Verifica se o Plunder está ativo.
     ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
@@ -87,22 +87,19 @@ export function setPlunderEvents() {
 
     // Armazena informações relevantes sobre a aldeia atual no cache do Plunder.
     // Entre elas estão detalhes sobre as páginas do assistente de saque.
-    ipcMain.on('update-plunder-cache-village-info', (_e, villageInfo: PlunderCurrentVillageType | null) => {
+    ipcMain.on('update-plunder-pages-info', (_e, pagesInfo: PlunderPageListType | null) => {
         try {
-            if (villageInfo && currentVillage.value?.id === villageInfo.id) {
-                return;
-            };
-    
-            currentVillage.value = villageInfo;
+            if (pagesInfo && pages.value?.id === pagesInfo.id) return;
+            pages.value = pagesInfo;
         } catch (err) {
             MainProcessEventError.catch(err);
         };
     });
 
     // Retorna as informações sobre a aldeia atual armazenadas no cache do Plunder.
-    ipcMain.handle('get-plunder-cache-village-info', () => currentVillage.value);
+    ipcMain.handle('get-plunder-pages-info', () => pages.value);
 
-    ipcMain.handle('update-plunder-cache-group-info', (_e, groupInfo: PlunderGroupType | null) => {
+    ipcMain.handle('update-plunder-group-info', (_e, groupInfo: PlunderGroupType | null) => {
         try {
             plunderGroup.value = groupInfo;
             return true;
@@ -112,7 +109,7 @@ export function setPlunderEvents() {
         };
     });
 
-    ipcMain.handle('get-plunder-cache-group-info', () => plunderGroup.value);
+    ipcMain.handle('get-plunder-group-info', () => plunderGroup.value);
 
     // Emitido pela view após cada ataque realizado pelo Plunder.
     ipcMain.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
@@ -193,15 +190,15 @@ export function setPlunderEvents() {
     // Navega para a próxima página do assistente de saque, se possível for.
     ipcMain.handle('navigate-to-next-plunder-page', async (e) => {
         try {
-            if (!currentVillage.value || currentVillage.value.pages.length <= 1) return false;
+            if (!pages.value || pages.value.all.length <= 1) return false;
 
-            const pages = currentVillage.value.pages.filter(({ done }) => !done);
-            let nextPage = pages.find(({ page }) => page > currentPage.value);
-            if (!nextPage) nextPage = pages.find(({ page }) => page !== currentPage.value);
+            const availablePages = pages.value.all.filter(({ done }) => !done);
+            let nextPage = availablePages.find(({ index }) => index > currentPage.value);
+            if (!nextPage) nextPage = availablePages.find(({ index }) => index !== currentPage.value);
             if (!nextPage) return false;
             
             const url = new URL(e.sender.getURL());
-            url.searchParams.set('Farm_page', nextPage.page.toString(10));
+            url.searchParams.set('Farm_page', nextPage.index.toString(10));
 
             const delay = generateRandomDelay(plunderConfigStore.pageDelay, 200);
             setTimeout(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch), delay);

@@ -100,8 +100,8 @@ async function handleAttack(): Promise<void> {
         if ((Date.now() - info.lastAttack) > config.ignoreOlderThan * 3600000) continue;
 
         if (config.groupAttack && groupInfo.value) {
-            const groupVillage = groupInfo.value.villages.getStrict(currentVillage.getId());
-            if (info.distance > groupVillage.waveMaxDistance) continue;
+            const villageStatus = groupInfo.value.villages.getStrict(currentVillage.getId());
+            if (info.distance > villageStatus.waveMaxDistance) continue;
         };
 
         // Destrói a muralha da aldeia caso `destroyWall` esteja ativado.

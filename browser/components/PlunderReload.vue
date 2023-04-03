@@ -40,8 +40,8 @@ function setPlunderTimeout() {
 
 async function reloadMainView() {
     try {
-        ipcSend('update-plunder-cache-village-info', null);
-        const updated = await ipcInvoke('update-plunder-cache-group-info', null);
+        ipcSend('update-plunder-pages-info', null);
+        const updated = await ipcInvoke('update-plunder-group-info', null);
         if (!updated) throw new PlunderError('Failed to update group info.');
     } catch (err) {
         PlunderError.catch(err);

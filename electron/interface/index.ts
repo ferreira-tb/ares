@@ -75,11 +75,11 @@ watch(world, patchWorldRelatedStores(...worldArgs));
 watch(userAlias, patchAliasRelatedStores(...aliasArgs));
 
 const { screen } = storeToRefs(useAresStore());
-const { currentVillage: plunderCurrentVillage, plunderGroup } = storeToRefs(usePlunderCacheStore());
+const { pages: plunderPages, plunderGroup } = storeToRefs(usePlunderCacheStore());
 watch(screen, (screen) => {
     try {
         if (screen !== 'am_farm') {
-            if (plunderCurrentVillage.value) plunderCurrentVillage.value = null;
+            if (plunderPages.value) plunderPages.value = null;
             if (plunderGroup.value) plunderGroup.value = null;
         };
     } catch (error) {

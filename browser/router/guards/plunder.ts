@@ -48,7 +48,7 @@ export function setPlunderNavigationGuards(router: Router) {
 
             // Se houver navegação entre aldeias sem que o usuário deixe o AS, a página permanece a mesma.
             // Isso é um problema, pois a nova aldeia deveria começar a atacar a partir da primeira página.
-            const villageInfo = await ipcInvoke('get-plunder-cache-village-info');
+            const villageInfo = await ipcInvoke('get-plunder-pages-info');
             if (villageInfo && plunderPage.value !== 0 && currentVillageId.value !== villageInfo.id) {
                 nextTick(() => ipcInvoke('navigate-to-first-plunder-page'));
                 return false;

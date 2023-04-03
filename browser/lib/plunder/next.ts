@@ -28,8 +28,8 @@ async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStor
         let maxDistance = config.maxDistance;
         if (config.groupAttack && groupInfo) {
             const currentVillageId = useCurrentVillageStore().getId();
-            const groupVillage = groupInfo.villages.get(currentVillageId);
-            if (groupVillage) maxDistance = groupVillage.waveMaxDistance;
+            const villageStatus = groupInfo.villages.get(currentVillageId);
+            if (villageStatus) maxDistance = villageStatus.waveMaxDistance;
         };
 
         const targets: ReadonlyArray<Readonly<PlunderTargetInfo>> = Array.from(getPlunderTargets().values());
@@ -57,7 +57,7 @@ async function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigS
             groupVillage.waveMaxDistance += config.fieldsPerWave;
         };
 
-        const updated = await ipcInvoke('update-plunder-cache-group-info', toRaw(groupInfo));
+        const updated = await ipcInvoke('update-plunder-group-info', toRaw(groupInfo));
         if (!updated) throw new PlunderError('Failed to update group info.');
         ipcInvoke('navigate-to-next-plunder-village', currentVillageId);
         
