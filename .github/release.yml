@@ -18,7 +18,8 @@ changelog:
       exclude:
         labels:
           - dependencies
-        
+          - auto
+
     - title: Dependências
       labels:
         - dependencies
