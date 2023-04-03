@@ -55,6 +55,7 @@
     "devDependencies": {
         "@electron-forge/cli": "^6.0.5",
         "@electron-forge/maker-zip": "^6.0.5",
+        "@octokit/core": "^4.2.0",
         "@rollup/plugin-commonjs": "^24.0.1",
         "@rollup/plugin-json": "^6.0.0",
         "@rollup/plugin-node-resolve": "^15.0.1",
