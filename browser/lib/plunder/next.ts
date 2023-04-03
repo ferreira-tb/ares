@@ -2,6 +2,7 @@ import { toRaw } from 'vue';
 import { ipcInvoke } from '$global/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
 import { getPlunderTargets } from '$lib/plunder/targets';
+import { queryAvailableUnits } from '$lib/plunder/units';
 import { PlunderError } from '$browser/error';
 import { usePlunderConfigStore } from '$global/stores/plunder';
 import { useCurrentVillageStore } from '$global/stores/village';
@@ -9,6 +10,7 @@ import type { PlunderGroupType } from '$types/plunder';
 
 export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
     try {
+        await queryAvailableUnits();
         const config = usePlunderConfigStore();
         const wentToNextPage = await navigateToNextPage(config, groupInfo);
         if (wentToNextPage || !config.groupAttack || !groupInfo) return;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, watch, watchEffect } from 'vue';
+import { ref, watch, watchEffect } from 'vue';
 import { computedEager } from '@vueuse/core';
 import { assertPositiveInteger } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
@@ -47,9 +47,7 @@ const shouldAttack = computedEager<boolean>(() => {
 // Reune informações necessárias para o funcionamento do Plunder.
 await queryTemplateData();
 queryTargetsInfo();
-
-// Não é necessário bloquear a execução, visto que não são informações críticas para os primeiros ataques.
-nextTick(() => queryCurrentVillageInfo());
+queryCurrentVillageInfo();
 
 watch(() => config.groupAttack, (newValue) => updateGroupInfo(newValue, groupInfo));
 watch(() => config.plunderGroupId, (newValue) => {

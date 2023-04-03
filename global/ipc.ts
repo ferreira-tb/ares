@@ -84,6 +84,8 @@ export async function ipcInvoke(channel: 'navigate-to-next-plunder-village', cur
 
 // Deimos
 export async function ipcInvoke(channel: 'get-deimos-file'): Promise<string | null>;
+export async function ipcInvoke(channel: 'update-plunder-info', plunderInfo: PlunderInfoType): Promise<boolean>;
+export async function ipcInvoke(channel: 'update-current-village-units', units: UnitAmount): Promise<boolean>;
 
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
     const response = await ipcRenderer.invoke(channel, ...args);
@@ -140,8 +142,6 @@ export function ipcSend(channel: 'update-plunder-cache-village-info', villageInf
 // Deimos
 export function ipcSend(channel: 'deimos-tag-is-ready'): void;
 export function ipcSend(channel: 'update-game-data', gameData: TribalWarsGameDataType): void;
-export function ipcSend(channel: 'update-current-village-units', units: UnitAmount): void;
-export function ipcSend(channel: 'update-plunder-info', plunderInfo: PlunderInfoType): void;
 
 export function ipcSend(channel: string, ...args: any[]): void {
     ipcRenderer.send(channel, ...args);

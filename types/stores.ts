@@ -45,6 +45,28 @@ export type MechanusPlayerStoreType = {
     [K in keyof PlayerStore]: MechanusRef<PlayerStore[K]>;
 };
 
+////// FEATURES
+export type FeaturesStore = TribalWarsGameDataType['features'];
+export type PiniaFeaturesStoreType = {
+    [K in keyof FeaturesStore]: Ref<FeaturesStore[K]>;
+};
+export type MechanusFeaturesStoreType = {
+    [K in keyof FeaturesStore]: MechanusRef<FeaturesStore[K]>;
+};
+
+////// GROUPS
+type GameDataGroups = TribalWarsGameDataType['groups'];
+export interface GroupsStore extends GameDataGroups {
+    /** Todos os grupos de aldeias referentes ao alias atual. */
+    readonly all: Set<VillageGroup>;
+};
+export type PiniaGroupsStoreType = {
+    [K in keyof GroupsStore]: Ref<GroupsStore[K]>;
+};
+export type MechanusGroupsStoreType = {
+    [K in keyof GroupsStore]: MechanusRef<GroupsStore[K]>;
+};
+
 ////// CURRENT VILLAGE
 type CurrentVillageType = TribalWarsGameDataType['currentVillage'];
 export interface CurrentVillageStore extends CurrentVillageType {
@@ -73,28 +95,6 @@ export type MechanusCurrentVillageStoreType = {
         K extends keyof Omit<CurrentVillageStore, keyof CurrentVillageType> ?
         MechanusComputedRef<CurrentVillageStore[K]> :
         MechanusRef<CurrentVillageStore[K]>;
-};
-
-////// FEATURES
-export type FeaturesStore = TribalWarsGameDataType['features'];
-export type PiniaFeaturesStoreType = {
-    [K in keyof FeaturesStore]: Ref<FeaturesStore[K]>;
-};
-export type MechanusFeaturesStoreType = {
-    [K in keyof FeaturesStore]: MechanusRef<FeaturesStore[K]>;
-};
-
-////// GROUPS
-type GameDataGroups = TribalWarsGameDataType['groups'];
-export interface GroupsStore extends GameDataGroups {
-    /** Todos os grupos de aldeias referentes ao alias atual. */
-    readonly all: Set<VillageGroup>;
-};
-export type PiniaGroupsStoreType = {
-    [K in keyof GroupsStore]: Ref<GroupsStore[K]>;
-};
-export type MechanusGroupsStoreType = {
-    [K in keyof GroupsStore]: MechanusRef<GroupsStore[K]>;
 };
 
 ////// PLUNDER INFO
