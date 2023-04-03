@@ -27,4 +27,4 @@ jobs:
         git add ./docs
         git commit -m "chore: atualiza versão do Ares"
         git push origin update-to-latest 
-    - run: 'gh pr create -t "chore: atualiza versão do Ares" -b "Atualização automática da versão." -H update-to-latest -B master'
+    - run: 'gh pr create -f -t "chore: atualiza versão do Ares" -H update-to-latest -B master -l auto'
