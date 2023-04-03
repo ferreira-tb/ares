@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, watchEffect } from 'vue';
 import { computedEager } from '@vueuse/core';
-import { assertPositiveInteger } from '@tb-dev/ts-guard';
 import { assertElement } from '@tb-dev/ts-guard-dom';
 import { useAresStore } from '$global/stores/ares';
 import { usePlunderConfigStore } from '$global/stores/plunder';
@@ -101,8 +100,7 @@ async function handleAttack(): Promise<void> {
         if ((Date.now() - info.lastAttack) > config.ignoreOlderThan * 3600000) continue;
 
         if (config.groupAttack && groupInfo.value) {
-            assertPositiveInteger(currentVillage.id, `${currentVillage.id} is not a valid village id.`);
-            const groupVillage = groupInfo.value.villages.getStrict(currentVillage.id);
+            const groupVillage = groupInfo.value.villages.getStrict(currentVillage.getId());
             if (info.distance > groupVillage.waveMaxDistance) continue;
         };
 
@@ -123,7 +121,7 @@ async function handleAttack(): Promise<void> {
         if (config.ignoreWall && info.wallLevel >= config.wallLevelToIgnore) continue;
 
         // Seleciona o modelo mais adequado para o ataque.
-        const best = await pickBestTemplate(info);
+        const best = await pickBestTemplate(info, config);
         if (!best) continue;
 
         // Informações que serão enviadas ao painel.
