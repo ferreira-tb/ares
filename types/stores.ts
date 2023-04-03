@@ -75,7 +75,7 @@ export interface CurrentVillageStore extends CurrentVillageType {
 
     /**
      * Retorna o id da aldeia atual.
-     * Essa função emitirá um erro caso o id não seja um número positivo.
+     * Essa função emitirá um erro caso o id não seja um número inteiro.
      */
     getId(): number;
 };
