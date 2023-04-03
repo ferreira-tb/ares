@@ -19,8 +19,12 @@ jobs:
       with:
         node-version: '18.x'
     - run: npm install @octokit/core
+    - run: |
+        git checkout -b update-to-latest
     - run: node scripts/latest.mjs
     - run: |
+        git config user.name ${{ github.actor }}
         git add ./docs
         git commit -m "chore: atualiza versão do Ares"
-        git push
+        git push origin update-to-latest 
+    - run: 'gh pr create -t "chore: atualiza versão do Ares" -b "Atualização automática da versão." -H update-to-latest -B master'
