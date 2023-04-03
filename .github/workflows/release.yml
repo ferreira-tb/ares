@@ -1,0 +1,22 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+  label:
+    types: [created, deleted]
+    
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  update-to-latest:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Atualização da versão do Ares
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+    - run: npm ci
+    - run: node scripts/latest.mjs
