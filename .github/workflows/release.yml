@@ -20,3 +20,9 @@ jobs:
         node-version: '18.x'
     - run: npm install @octokit/core
     - run: node scripts/latest.mjs
+    - run: |
+        git config user.name
+        git config user.email
+        git add ./docs
+        git commit -m "chore: atualiza versão do Ares"
+        git push
