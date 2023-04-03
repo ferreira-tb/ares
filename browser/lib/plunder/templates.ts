@@ -1,18 +1,16 @@
 import { computed, nextTick, ref } from 'vue';
 import { ipcRenderer } from 'electron';
-import { assert, isKeyOf, assertInteger, toIntegerStrict, isInteger } from '@tb-dev/ts-guard';
+import { assert, isKeyOf, assertInteger, isInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
-import { usePlunderConfigStore } from '$global/stores/plunder';
 import { useUnitsStore } from '$global/stores/units';
 import { assertFarmUnit } from '$global/utils/guards';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke } from '$global/ipc';
+import type { usePlunderConfigStore } from '$global/stores/plunder';
 import type { FarmUnits, FarmUnitsAmount, UnitAmount } from '$types/game';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
-
-type ConfigReturnType = ReturnType<typeof usePlunderConfigStore>;
 
 class TemplateUnits implements FarmUnitsAmount {
     spear = 0;
@@ -30,7 +28,7 @@ export class PlunderTemplate {
     /** Tipo do modelo. */
     readonly type: string;
     /** Quantidade de tropas no modelo. */
-    readonly units: FarmUnitsAmount;
+    readonly units: TemplateUnits;
     /** Alias do criador do modelo. Somente válido para modelos personalizados. */
     readonly alias: UserAlias | null;
 
@@ -161,7 +159,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * @see https://github.com/ferreira-tb/ares/issues/68
  * @see https://github.com/ferreira-tb/ares/issues/69
  */
-async function filterTemplates(info: PlunderTargetInfo, config: ConfigReturnType): Promise<PlunderTemplate[]> {
+async function filterTemplates(info: PlunderTargetInfo, config: ReturnType<typeof usePlunderConfigStore>) {
     // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.
     // Os modelos com capacidade de carga maior que a quantidade de recursos são colocados no grupo `bigger`.
     // Os demais são colocados no grupo `smaller`.
@@ -203,9 +201,7 @@ async function filterTemplates(info: PlunderTargetInfo, config: ConfigReturnType
     return [...smaller, ...bigger];
 };
 
-export async function pickBestTemplate(info: PlunderTargetInfo): Promise<PlunderTemplate | null> {
-    const config = usePlunderConfigStore();
-
+export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnType<typeof usePlunderConfigStore>) {
     if (config.useC) {
         const templateC = await getTemplateC(info);
         if (templateC) return templateC;
@@ -237,19 +233,19 @@ async function getTemplateC(info: PlunderTargetInfo): Promise<PlunderTemplate | 
         const templateC = allTemplates.getStrict('c');
 
         // Atualiza a quantidade de tropas disponíveis no modelo C.
-        for (const unit in cUnits) {
+        for (const [unit, amount] of Object.entries(cUnits) as [keyof UnitAmount, number | string][]) {
             if (!isKeyOf(unit, templateC.units)) continue;
 
             // De maneira completamente aleatória, o jogo às vezes retorna uma string em vez de um número no JSON.
             // Por isso, é necessário garantir que o valor seja um número inteiro.
-            templateC.units[unit] = toIntegerStrict(cUnits[unit], isInteger);
+            templateC.units[unit] = isInteger(amount) ? amount : Number.parseIntStrict(amount);
         };
 
         if (Object.values(templateC.units).every((amount) => amount === 0)) return null;
 
         // Atualiza a capacidade de carga do modelo C.
         const carry = await ipcInvoke('calc-carry-capacity', templateC.units);
-        assertInteger(carry, 'A capacidade de carga do modelo C não é um número inteiro.');
+        assertInteger(carry, `Expected carry capacity of template C to be an integer, but got ${carry}.`);
         templateC.carry.value = carry;
 
         await nextTick();
