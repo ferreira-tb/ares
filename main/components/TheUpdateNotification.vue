@@ -19,10 +19,13 @@ const updateAvailable = computed(() => {
     return semverGt(data.value.version, appVersion);
 });
 
-watchEffect(() => {
-    console.log(data.value);
-    if (updateAvailable.value) {
-        
+watchEffect(async () => {
+    if (data.value && updateAvailable.value) {
+        const isIgnored = await ipcInvoke('is-ignored-app-version', data.value.version);
+        if (isIgnored) return;
+
+        const shouldDownload = await ipcInvoke('show-update-available-dialog', data.value.version);
+        if (shouldDownload) return;
     };
 });
 </script>

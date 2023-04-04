@@ -30,6 +30,8 @@ export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
+export async function ipcInvoke(channel: 'show-update-available-dialog', newVersion: string): Promise<boolean>;
+export async function ipcInvoke(channel: 'is-ignored-app-version', version: string): Promise<boolean>;
 
 // Configurações
 export async function ipcInvoke(channel: 'drop-database'): Promise<boolean>;
