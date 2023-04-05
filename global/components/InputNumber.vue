@@ -18,9 +18,9 @@ interface Props {
     bordered?: boolean;
     clearable?: boolean;
     disabled?: boolean;
-    size?: 'tiny' | 'small' | 'medium' | 'large';
+    size?: 'large' | 'medium' | 'small' | 'tiny';
     step?: number;
-    marginRight?: number | boolean;
+    marginRight?: boolean | number;
     validator?: (value: number) => boolean;
 };
 
@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'update:value', value: number): void
+    (e: 'update:value', value: number): void
 }>();
 
 const value = useVModel(props, 'value', emit);
@@ -54,16 +54,18 @@ const computedMarginRight = computed(() => {
         return '0.5em';
     } else if (props.marginRight === false) {
         return '0';
-    } else {
-        return `${props.marginRight.toString(10)}em`;
-    }
+    };
+
+    return `${props.marginRight.toString(10)}em`;
 });
 </script>
 
 <template>
-        <NInputNumber class="standard-number-input"
+        <NInputNumber
             v-model:value="value"
-            :min="props.min" :max="props.max"
+            class="standard-number-input"
+            :min="props.min"
+            :max="props.max"
             :keyboard="keyboardOptions"
             :bordered="props.bordered"
             :clearable="props.clearable"

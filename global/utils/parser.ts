@@ -12,7 +12,7 @@ export function parseCoordsFromTextContent(text: string | null): [number, number
     const targetCoords = text.trim().match(/\d{3}\|\d{3}/m);
     if (!targetCoords) return null;
 
-    const coords = targetCoords[0].splitAsIntegerListStrict('\|');
+    const coords = targetCoords[0].splitAsIntegerListStrict('|');
     assert(coords.length === 2, 'Expected a XY tuple, but got a different length.');
     return coords as [number, number];
 };
@@ -39,7 +39,7 @@ export function parseGameDate(date: string): number | null {
     const splitDate: string | undefined = writtenDate.split(' ').pop();
     if (!splitDate) return null;
 
-    const dateFields = splitDate.splitAsIntegerList('\:');
+    const dateFields = splitDate.splitAsIntegerList(':');
     if (dateFields.length < 3) return null;
     if (dateFields.some((item) => Number.isNaN(item))) return null;
 
@@ -98,10 +98,9 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
 
         } else if (index === 3) {
             return field.split(':').map((value) => getDigits(value));
-  
-        } else {
-            return getDigits(field);
         };
+
+        return getDigits(field);
     });
 
     const year = dateFields[2] as number;
@@ -113,6 +112,6 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
     const date = new Date(fullYear).setHours(hour, minute, second, millisec);
     assertInteger(date, 'Invalid report date.');
 
-    if (ms === false) return Math.ceil(date / 1000);
+    if (!ms) return Math.ceil(date / 1000);
     return date;
 };

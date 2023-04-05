@@ -24,8 +24,13 @@ export function setPanelEvents() {
         groupsStore.$patch(data.groups);
     });
     
-    ipcRenderer.on('patch-panel-current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
-    ipcRenderer.on('patch-panel-village-groups-set', (_e, groups: Set<VillageGroup>) => groupsStore.$patch({ all: groups }));
+    ipcRenderer.on('patch-panel-current-village-units', (_e, units: UnitAmount) => {
+        unitStore.$patch(units);
+    });
+    
+    ipcRenderer.on('patch-panel-village-groups-set', (_e, groups: Set<VillageGroup>) => {
+        groupsStore.$patch({ all: groups });
+    });
 
     setPlunderEvents();
 };

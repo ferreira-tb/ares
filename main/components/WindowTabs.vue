@@ -18,7 +18,7 @@ const mainViewWebContentsId = await ipcInvoke('main-view-web-contents-id');
 const activeView = ref<WebContents['id']>(mainViewWebContentsId);
 watch(activeView, (webContentsId) => ipcSend('update-current-view', webContentsId));
 
-useIpcRendererOn('focus-main-view', () => activeView.value = mainViewWebContentsId);
+useIpcRendererOn('focus-main-view', () => (activeView.value = mainViewWebContentsId));
 
 useIpcRendererOn('browser-view-created', (_e, webContentsId: number, viewTitle: string) => {
     allTabs.set(webContentsId, viewTitle);
@@ -49,27 +49,27 @@ function renderMainTab() {
 </script>
 
 <template>
-    <div class="main-window-tabs-container" ref="tabsContainer">
+    <div ref="tabsContainer" class="main-window-tabs-container">
         <div class="main-window-tab-area">
             <NTabs
+                v-model:value="activeView"
                 closable
                 type="card"
                 trigger="click"
-                v-model:value="activeView"
-                @close="destroyBrowserView"
                 tab-style="-webkit-app-region: no-drag;"
+                @close="destroyBrowserView"
             >
                 <NTab
-                    :name="mainViewWebContentsId"
                     :key="mainViewWebContentsId"
+                    :name="mainViewWebContentsId"
                     :closable="false"
                     :tab="renderMainTab"
                 />
 
                 <NTab
-                    v-for="[viewId, title] in allTabs"
-                    :name="viewId"
+                    v-for="[viewId, title] of allTabs"
                     :key="viewId"
+                    :name="viewId"
                     :tab="title"
                 />
             </NTabs>

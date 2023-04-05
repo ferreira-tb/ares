@@ -39,13 +39,15 @@ function resetDemolitionConfig() {
             try {
                 const userAlias = await ipcInvoke('user-alias');
                 assertUserAlias(userAlias, ModuleConfigError);
-                const result = await ipcInvoke('destroy-demolition-troops-config', userAlias);
-                if (result !== true) throw result;
-                message.success('Resetado com sucesso!');
-
+                const destroyed = await ipcInvoke('destroy-demolition-troops-config', userAlias);
+                if (destroyed) {
+                    message.success('Resetado com sucesso!');
+                } else {
+                    message.error('Ocorreu algum erro :(');
+                };
+                
             } catch (err) {
                 ModuleConfigError.catch(err);
-                message.error('Ocorreu algum erro :(');
             };
         }
     });
@@ -84,8 +86,13 @@ function resetDemolitionConfig() {
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="destroyWallMaxDistance" :min="1" :max="9999" :step="1"
-                    :validator="(v) => isDistance(v)" />
+                <InputNumber
+                    v-model:value="destroyWallMaxDistance"
+                    :min="1"
+                    :max="9999"
+                    :step="1"
+                    :validator="(v) => isDistance(v)"
+                />
             </NGridItem>
 
             <NGridItem>

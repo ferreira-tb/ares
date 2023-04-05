@@ -19,7 +19,7 @@ const objectURL = URL.createObjectURL(deimosBlob);
 const scriptTag = document.createElement('script');
 scriptTag.setAttribute('fetchpriority', 'high');
 scriptTag.setAttribute('src', objectURL);
-scriptTag.onload = () => isDeimosReady.value = true;
+scriptTag.onload = () => (isDeimosReady.value = true);
 document.head.appendChild(scriptTag);
 
 onBeforeUnmount(() => {

@@ -7,10 +7,7 @@ export type AppConfigName =
     | 'panel_bounds';
 
 export type AppConfigJSON =
-    | GeneralAppConfigType
-    | AppNotificationsConfigType
-    | AppUpdateConfigType
-    | PanelBoundsConfigType;
+    AppNotificationsConfigType | AppUpdateConfigType | GeneralAppConfigType | PanelBoundsConfigType;
 
 export type AppConfigByName<T extends AppConfigName> =
     T extends 'config_general' ? GeneralAppConfigType :

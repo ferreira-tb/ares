@@ -90,13 +90,7 @@ export type PlunderConfigType = {
 };
 
 export type PlunderPanelConfig = Pick<PlunderConfigType,
-    | 'active'
-    | 'ignoreWall'
-    | 'destroyWall'
-    | 'groupAttack'
-    | 'useC'
-    | 'ignoreDelay'
-    | 'blindAttack'
+    'active' | 'blindAttack' | 'destroyWall' | 'groupAttack' | 'ignoreDelay' | 'ignoreWall' | 'useC'
 >;
 
 export type PlunderPanelConfigKeys = keyof PlunderPanelConfig;

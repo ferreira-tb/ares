@@ -7,6 +7,13 @@ export class ModuleError extends AresError {
     };
 };
 
+export class ModuleRouterError extends ModuleError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'ModuleRouterError';
+    };
+};
+
 export class ModuleConfigError extends ModuleError {
     constructor(message: string) {
         super(message);

@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { AppConfig } from '$interface/index';
+import { AppConfig } from '$electron/interface';
 import { getPanelWindow } from '$electron/utils/helpers';
 
 export function setPanelEvents() {

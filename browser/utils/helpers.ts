@@ -39,5 +39,7 @@ export function wait(extra?: number) {
     let responseTime = aresStore.responseTime ?? 200;
     if (extra) responseTime += extra;
     
-    return new Promise<void>((resolve) => setTimeout(resolve, responseTime));
+    return new Promise<void>((resolve) => {
+        setTimeout(() => resolve(), responseTime);
+    });
 };

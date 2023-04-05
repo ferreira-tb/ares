@@ -5,10 +5,11 @@ import { storeToRefs } from 'pinia';
 import { NConfigProvider, darkTheme } from 'naive-ui';
 import { computedEager } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
-import { router } from '$panel/router/router';
+import { router } from '$panel/router';
 import { useAresStore } from '$global/stores/ares';
 import { usePanelStore } from '$panel/stores/panel';
 import { pushRoute } from '$panel/utils/helpers';
+import { PanelError } from '$panel/error';
 
 const aresStore = useAresStore();
 const panelStore = usePanelStore();
@@ -31,21 +32,22 @@ useIpcRendererOn('panel-visibility-did-change', (_e, status: boolean) => {
 watchEffect(() => pushRoute(screenName.value));
 // Redireciona para a janela do captcha caso ele esteja ativo.
 watchEffect(() => {
-    if (captcha.value === true) {
-        router.push({ name: 'captcha' });
+    if (captcha.value) {
+        router.push({ name: 'captcha' })
+            .catch((err: unknown) => PanelError.catch(err));
     };
 });
 </script>
 
 <template>
     <NConfigProvider :theme="darkTheme">
-        <RouterView v-slot="{ Component }">
+        <RouterView #default="{ Component }">
             <template v-if="Component">
                 <component :is="wrapper" name="tb-fade" mode="out-in">
                     <Suspense>
                         <component :is="Component" />
                         <template #fallback>
-                            <span class="to-center bold-green">Carregando...</span>
+                            <span class="bold-green to-center">Carregando...</span>
                         </template>
                     </Suspense>
                 </component>

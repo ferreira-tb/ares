@@ -6,7 +6,7 @@ import { getPanelWindow } from '$electron/utils/helpers';
 import type { Rectangle } from 'electron';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { AppConfigName, AppConfigJSON, AppConfigByName } from '$types/config';
-import type { useAppGeneralConfigStore, useAppNotificationsStore } from '$interface/index';
+import type { useAppGeneralConfigStore, useAppNotificationsStore } from '$electron/interface';
 
 type OnlyConfig = Extract<AppConfigName, `config_${string}`>;
 
@@ -61,7 +61,7 @@ export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAt
         };
     };
 
-    //////// PAINEL
+    // PAINEL
     static async savePanelBounds(rectangle: Rectangle) {
         try {
             await sequelize.transaction(async (transaction) => {

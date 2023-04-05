@@ -16,7 +16,7 @@ import { setConfigEvents } from '$electron/events/config';
 import { isUserAlias } from '$electron/utils/guards';
 import { MainProcessEventError } from '$electron/error';
 import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
-import { useCacheStore, useWorldConfigStore, worldUnitsMap, AppConfig } from '$interface/index';
+import { useCacheStore, useWorldConfigStore, worldUnitsMap, AppConfig } from '$electron/interface';
 import { getPlayerNameFromAlias, extractWorldUnitsFromMap } from '$electron/utils/helpers';
 import type { UserAlias } from '$types/electron';
 import type { AppUpdateConfigType } from '$types/config';

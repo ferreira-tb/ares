@@ -4,7 +4,7 @@ import { NResult } from 'naive-ui';
 interface Props {
     title?: string;
     description?: string;
-    size?: 'small' | 'medium' | 'large' | 'huge';
+    size?: 'huge' | 'large' | 'medium' | 'small';
     userSelect?: boolean;
 }
 

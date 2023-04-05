@@ -88,8 +88,13 @@ watchEffect(() => {
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="villageDelay" :min="100" :max="60000" :step="100"
-                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
+                <InputNumber
+                    v-model:value="villageDelay"
+                    :min="100"
+                    :max="60000"
+                    :step="100"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000"
+                />
             </NGridItem>
 
             <NGridItem :span="2">

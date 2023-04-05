@@ -16,11 +16,14 @@ function dropDatabase() {
             status.loading = true;
             try {
                 const dropped = await ipcInvoke('drop-database');
-                if (dropped !== true) throw dropped;
-                message.success('O Ares reiniciará em instantes...');
+                if (dropped) {
+                    message.success('O Ares reiniciará em instantes...');
+                } else {
+                    message.error('Ocorreu algum erro :(');
+                };
+                
             } catch (err) {
                 ModuleConfigError.catch(err);
-                message.error('Ocorreu algum erro :(');
             };
         }
     });

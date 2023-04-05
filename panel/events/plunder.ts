@@ -18,10 +18,10 @@ export function setPlunderEvents() {
 
     ipcRenderer.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
         try {
-            if (plunderConfigStore.active === false) return;
+            if (!plunderConfigStore.active) return;
             for (const [key, value] of Object.entries(details)) {
                 assertKeyOf<PlunderAttackDetails>(key, plunderHistoryStore, `${key} is not a valid plunder history key.`);
-                assertInteger(value, `${key} não é um número inteiro.`);
+                assertInteger(value, `${key} amount is not an integer.`);
 
                 // O valor de `total` é gerado automaticamente por um `computed` e não deve ser atualizado manualmente.
                 if (key === 'total') continue;

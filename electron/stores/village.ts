@@ -1,7 +1,7 @@
 import { computed, ref } from 'mechanus';
 import { integerOrNullRef, stringOrNullRef } from '$electron/utils/mechanus';
-import { MechanusCurrentVillageStoreType } from '$types/stores';
 import type { Mechanus, MechanusComputedRef } from 'mechanus';
+import type { MechanusCurrentVillageStoreType } from '$types/stores';
 
 export function defineCurrentVillageStore(mechanus: Mechanus) {
     const x = ref<number | null>(null, integerOrNullRef);

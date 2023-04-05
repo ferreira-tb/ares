@@ -8,7 +8,7 @@ export function calcDistance(originX: number, originY: number, destX: number, de
 
 /** Gera um número inteiro entre dois outros. */
 export function generateIntegerBetween(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min) + min);
+    return Math.floor((Math.random() * (max - min)) + min);
 };
 
 /**
@@ -36,17 +36,14 @@ export function getLocaleDateString(raw?: number, includeTime: boolean = false):
         day: '2-digit'
     });
 
-    if (includeTime === false) {
-        return date;
+    if (!includeTime) return date;
 
-    } else {
-        const time = dateObject.toLocaleTimeString('pt-br', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    const time = dateObject.toLocaleTimeString('pt-br', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 
-        return `${date} ${time}`;
-    };
+    return `${date} ${time}`;
 };
 
 export function getPlayerNameFromAlias(alias: UserAlias): string {

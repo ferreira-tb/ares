@@ -13,7 +13,7 @@ const config = usePlunderConfigStore();
 const features = useFeaturesStore();
 const groups = useGroupsStore();
 
-const plunderButtonText = computed(() => config.active === false ? 'Saquear' : 'Parar');
+const plunderButtonText = computed(() => config.active ? 'Parar' : 'Saquear');
 
 // Não deve ser possível ativar o ataque em grupo se não houver grupos dinâmicos.
 const dynamicGroupsAmount = computed<number>(() => {
@@ -45,11 +45,15 @@ watchEffect(() => {
     <main>
         <div class="button-area">
             <NButtonGroup>
-                <NButton round @click="ipcSend('open-custom-plunder-template-window')">Modelos</NButton>
-                <NButton round @click="config.active = !config.active" :disabled="features.farmAssistant === false">
+                <NButton round @click="ipcSend('open-custom-plunder-template-window')">
+                    Modelos
+                </NButton>
+                <NButton round :disabled="features.farmAssistant === false" @click="config.active = !config.active">
                     {{ plunderButtonText }}
                 </NButton>
-                <NButton round @click="ipcSend('open-settings-window', 'config-plunder')">Configurações</NButton>
+                <NButton round @click="ipcSend('open-settings-window', 'config-plunder')">
+                    Configurações
+                </NButton>
             </NButtonGroup>
         </div>
 

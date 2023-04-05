@@ -108,11 +108,11 @@ ElectronErrorLog.init({
     },
     message: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
     stack: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: true
     },
     time: {
         type: DataTypes.INTEGER,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unified-signatures */
 import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$lib/plunder/attack';
 import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$types/game';
@@ -90,11 +91,9 @@ export async function ipcInvoke(channel: 'update-plunder-info', plunderInfo: Plu
 export async function ipcInvoke(channel: 'update-current-village-units', units: UnitAmount): Promise<boolean>;
 
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
-    const response = await ipcRenderer.invoke(channel, ...args);
+    const response: unknown = await ipcRenderer.invoke(channel, ...args);
     return response;
 };
-
-/////////////////////////////////////////
 
 // Janela
 export function ipcSend(channel: 'minimize-main-window'): void;

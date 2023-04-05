@@ -1,7 +1,7 @@
 import { URL } from 'url';
 import { ipcMain, BrowserView } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
-import { useBrowserViewStore } from '$interface/index';
+import { useBrowserViewStore } from '$electron/interface';
 import { isAllowedURL } from '$electron/utils/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
@@ -115,7 +115,7 @@ function setViewSharedEvents(
             if (!isAllowedURL(url)) e.preventDefault();
         });
 
-        contents.on('page-title-updated', (_e) => {
+        contents.on('page-title-updated', () => {
             if (contents === mainViewWebContents) return;
             const title = contents.getTitle();
             mainWindow.webContents.send('browser-view-title-updated', contents.id, title);
@@ -143,7 +143,7 @@ function setCurrentViewEvents(view: WebContents, mainWindow: BrowserWindow = get
     });
 
     view.on('did-navigate', () => {
-        insertViewCSS(view);
+        insertViewCSS(view).catch(BrowserViewError.catch);
         updateCurrentViewBackForwardStatus(view);
     });
 

@@ -18,7 +18,7 @@ const routes: RouteRecordRaw[] = [
 
 export const router = createRouter({
     history: createMemoryHistory(),
-    routes: routes
+    routes
 });
 
 export const routeNames = getRouteNames(routes);

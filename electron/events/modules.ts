@@ -11,7 +11,7 @@ import {
     useBrowserViewStore,
     DemolitionTemplate,
     CustomPlunderTemplate
-} from '$interface/index';
+} from '$electron/interface';
 
 export function setModuleEvents() {
     const cacheStore = useCacheStore();
@@ -21,23 +21,26 @@ export function setModuleEvents() {
     const { demolitionTroops } = storeToRefs(plunderCacheStore);
     const { allWebContents } = storeToRefs(browserViewStore);
 
-    //////// INICIALIZAÇÃO
+    // INICIALIZAÇÃO
     ipcMain.on('open-error-log-window', () => showErrorLog());
     ipcMain.on('open-demolition-troops-config-window', () => showDemolitionConfig());
     ipcMain.on('open-custom-plunder-template-window', () => showCustomPlunderTemplate());
 
-    //////// OUTROS
+    // OUTROS
     // Demolição.
     ipcMain.handle('get-demolition-troops-config', async (_e, alias: UserAlias | null): Promise<DemolitionTemplateType | null> => {
         alias ??= cacheStore.userAlias;
         if (!isUserAlias(alias)) return null;
 
-        let troops = demolitionTroops.value;
-        if (!troops || troops.alias !== alias) {
-            troops = await DemolitionTemplate.getDemolitionTroopsConfig(alias);
-            if (alias === cacheStore.userAlias) demolitionTroops.value = troops;
+        if (!demolitionTroops.value || demolitionTroops.value.alias !== alias) {
+            const troops = await DemolitionTemplate.getDemolitionTroopsConfig(alias);
+            if (alias === cacheStore.userAlias) {
+                // eslint-disable-next-line require-atomic-updates
+                demolitionTroops.value = troops;
+            };
         };
-        return troops;
+
+        return demolitionTroops.value;
     });
 
     ipcMain.handle('save-demolition-troops-config', async (_e, template: DemolitionTemplateType): Promise<boolean> => {

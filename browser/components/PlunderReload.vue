@@ -22,19 +22,17 @@ const plunderTimeout = ref<number>(props.minutesUntilReload * 60000);
 watchEffect(() => {
     eventTarget.dispatchEvent(new Event('cancelreload'));
     plunderTimeout.value = props.minutesUntilReload * 60000;
-    if (props.active === true) setPlunderTimeout();
+    if (props.active) setPlunderTimeout().catch(PlunderError.catch);
 });
 
 function setPlunderTimeout() {
     return new Promise<void>((resolve) => {
         const timeout = setTimeout(() => reloadMainView(), plunderTimeout.value);
-        const cleanup = useEventListener(eventTarget, 'cancelreload', cancel);
-
-        function cancel() {
+        const cleanup = useEventListener(eventTarget, 'cancelreload', () => {
             clearTimeout(timeout);
             cleanup();
             resolve();
-        };
+        });
     });
 };
 
@@ -54,7 +52,7 @@ async function reloadMainView() {
 <template>
     <Teleport :to="plunderListTitle">
         <Transition name="tb-fade" mode="out-in">
-            <PlunderReloadMessage :active="props.active" :plunderTimeout="plunderTimeout" />
+            <PlunderReloadMessage :active="props.active" :plunder-timeout="plunderTimeout" />
         </Transition>
     </Teleport>
 </template>

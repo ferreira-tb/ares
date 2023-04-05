@@ -35,8 +35,8 @@ export const unitsRegex = /(spear|sword|axe|archer|spy|light|heavy|ram|catapult|
 
 export const gameURLRegex = /\.?tribalwars\.com\.br/;
 export const aresURLRegex = /\.?tb\.dev\.br\/ares/;
-export const authorURLRegex = /\.?github\.com\/ferreira\-tb/;
-export const repoURLRegex = /\.?github\.com\/ferreira\-tb\/ares/;
+export const authorURLRegex = /\.?github\.com\/ferreira-tb/;
+export const repoURLRegex = /\.?github\.com\/ferreira-tb\/ares/;
 
 export const allowedOriginRegexList = [
     gameURLRegex,

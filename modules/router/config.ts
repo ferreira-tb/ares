@@ -5,7 +5,7 @@ import ConfigNotifications from '$modules/components/ConfigNotifications.vue';
 import ConfigPlunder from '$modules/components/ConfigPlunder.vue';
 import type { ModuleRouteRecordRawStrict, ConfigModuleRoutes } from '$types/modules';
 
-export const configRoutes: ModuleRouteRecordRawStrict<'app-config' | ConfigModuleRoutes> = {
+export const configRoutes: ModuleRouteRecordRawStrict<ConfigModuleRoutes | 'app-config'> = {
     path: '/app-config',
     name: 'app-config',
     component: ConfigView,

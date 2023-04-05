@@ -13,7 +13,7 @@ import {
     useBrowserViewStore,
     useAppGeneralConfigStore,
     useAppNotificationsStore
-} from '$interface/index';
+} from '$electron/interface';
 
 process.env.ARES_MODE = 'dev';
 
@@ -75,9 +75,11 @@ function createWindow() {
     process.env.MAIN_VIEW_WEB_CONTENTS_ID = mainView.webContents.id.toString(10);
     process.env.PANEL_WINDOW_ID = panelWindow.id.toString(10);
 
-    mainView.webContents.loadURL(gameURL);
-    mainWindow.loadFile(mainHtml);
-    panelWindow.loadFile(panelHtml);
+    Promise.all([
+        mainView.webContents.loadURL(gameURL),
+        mainWindow.loadFile(mainHtml),
+        panelWindow.loadFile(panelHtml)
+    ]).catch(MainProcessError.catch);
 
     mainWindow.maximize();
     mainWindow.addBrowserView(mainView);
@@ -105,16 +107,17 @@ function createWindow() {
     });
 };
 
-app.whenReady().then(() => createWindow());
 app.on('window-all-closed', () => app.quit());
+app.whenReady().then(() => createWindow())
+    .catch(MainProcessError.catch);
 
 // Inicializa o banco de dados.
 (async () => {
     try {
         if (process.env.ARES_MODE === 'dev') {
-            sequelize.sync({ alter: { drop: false } });
+            await sequelize.sync({ alter: { drop: false } });
         } else {
-            sequelize.sync();
+            await sequelize.sync();
         };
 
         const generalConfigStore = useAppGeneralConfigStore();

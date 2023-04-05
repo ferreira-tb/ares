@@ -15,14 +15,16 @@ const history = usePlunderHistoryStore();
 
 watchEffect(async () => {
     // Se o Plunder estiver ativado, atualiza o histórico com as informações salvas.
-    if (props.plunderStatus === true) {
+    if (props.plunderStatus) {
         const lastPlundered = await ipcInvoke('get-last-plunder-attack-details');
-        if (lastPlundered) history.$patch({ 
-            wood: lastPlundered.wood,
-            stone: lastPlundered.stone,
-            iron: lastPlundered.iron,
-            attackAmount: lastPlundered.attackAmount,
-        });
+        if (lastPlundered) {
+            history.$patch({ 
+                wood: lastPlundered.wood,
+                stone: lastPlundered.stone,
+                iron: lastPlundered.iron,
+                attackAmount: lastPlundered.attackAmount
+            });
+        };
     };
 });
 </script>

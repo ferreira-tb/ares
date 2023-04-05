@@ -32,7 +32,8 @@ function deleteError(id: number) {
                     v-for="error of errors"
                     :key="error.id"
                     class="error-log"
-                    hoverable closable
+                    hoverable
+                    closable
                     @close="deleteError(error.id)"
                 >
                     <template #header>{{ error.name }}</template>

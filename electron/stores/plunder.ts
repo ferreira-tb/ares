@@ -71,7 +71,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const maxDistanceValidator = (min: number = 1): MechanusRefOptions<number> => {
         const refOptions = { ...positiveNumberRef };
         refOptions.validator = (value: unknown): value is number => {
-            return isPositiveNumber(value) && value >= min
+            return isPositiveNumber(value) && value >= min;
         };
         return refOptions;
     };
@@ -128,7 +128,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         fieldsPerWave,
 
         blindAttackPattern,
-        useCPattern,
+        useCPattern
     } satisfies MechanusPlunderConfigStoreType);
 };
 

@@ -24,7 +24,7 @@ useIpcRendererOn('response-time-did-update', (_e, time: number) => {
 <template>
     <div class="response-time-tag">
         <Transition name="tb-fade" mode="out-in">
-            <div v-if="responseTime" class="tag-wrapper" :key="responseTimeTagType">
+            <div v-if="responseTime" :key="responseTimeTagType" class="tag-wrapper">
                 <NTag round :type="responseTimeTagType" size="small">
                     {{ `${responseTime}ms` }}
                 </NTag>

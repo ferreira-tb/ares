@@ -25,7 +25,7 @@ watchEffect(async () => {
         if (isIgnored) return;
 
         const shouldDownload = await ipcInvoke('show-update-available-dialog', data.value.version);
-        if (shouldDownload) return;
+        if (shouldDownload) return; // TODO
     };
 });
 </script>
@@ -33,7 +33,7 @@ watchEffect(async () => {
 <template>
     <div class="update-notification-tag">
         <Transition name="tb-fade" mode="out-in">
-            <div v-if="data && updateAvailable" class="tag-wrapper" :key="data.version">
+            <div v-if="data && updateAvailable" :key="data.version" class="tag-wrapper">
                 <NTag round type="success" size="small" class="version-tag">
                     Nova versão disponível
                 </NTag>

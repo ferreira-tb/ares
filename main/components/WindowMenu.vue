@@ -40,7 +40,7 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
 </script>
 
 <template>
-    <div class="main-window-menu" ref="mainWindowMenu">
+    <div ref="mainWindowMenu" class="main-window-menu">
         <div class="menu-icon-area">
             <div class="menu-icon" @click="ipcSend('current-view-go-back')">
                 <NIcon :size="22" :depth="goBackDepth" :component="ArrowBackSharp" />
@@ -71,7 +71,7 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
             </div>
         </div>
 
-        <div class="menu-tag-area" v-show="!isSmallScreen">
+        <div v-show="!isSmallScreen" class="menu-tag-area">
             <TheUpdateNotification />
             <TheResponseTime />
         </div>

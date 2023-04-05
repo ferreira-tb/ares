@@ -8,8 +8,13 @@ import type { PlunderAttackDetails, PlunderHistoryType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
 import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$database/plunder';
 import type { VillageGroups as VillageGroupsTable } from '$database/groups';
-import type { definePlunderConfigStore, setPlunderHistoryStores } from '$stores/plunder';
-import type { defineGroupsStore } from '$stores/groups';
+
+import type {
+    useGroupsStore as useGroupsStoreType,
+    usePlunderConfigStore as usePlunderConfigStoreType,
+    useLastPlunderHistoryStore as useLastPlunderHistoryStoreType,
+    useTotalPlunderHistoryStore as useTotalPlunderHistoryStoreType
+} from '$electron/interface';
 
 /**
  * Define o estado das stores de acordo com o alias atual.
@@ -22,12 +27,12 @@ import type { defineGroupsStore } from '$stores/groups';
 export function patchAliasRelatedStores(
     PlunderConfig: typeof PlunderConfigTable,
     PlunderHistory: typeof PlunderHistoryTable,
-    usePlunderConfigStore: ReturnType<typeof definePlunderConfigStore>,
-    useLastPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useLastPlunderHistoryStore'],
-    useTotalPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useTotalPlunderHistoryStore'],
+    usePlunderConfigStore: typeof usePlunderConfigStoreType,
+    useLastPlunderHistoryStore: typeof useLastPlunderHistoryStoreType,
+    useTotalPlunderHistoryStore: typeof useTotalPlunderHistoryStoreType,
 
     VillageGroups: typeof VillageGroupsTable,
-    useGroupsStore: ReturnType<typeof defineGroupsStore>
+    useGroupsStore: typeof useGroupsStoreType
 ) {
     const plunderArgs = [
         PlunderConfig,
@@ -37,7 +42,7 @@ export function patchAliasRelatedStores(
         useTotalPlunderHistoryStore
     ] as const;
 
-    return async function (alias: UserAlias | null) {
+    return async function(alias: UserAlias | null) {
         try {
             if (!isUserAlias(alias)) return;
             await Promise.all([
@@ -54,9 +59,9 @@ async function patchAllPlunderStoresState(
     alias: UserAlias,
     PlunderConfig: typeof PlunderConfigTable,
     PlunderHistory: typeof PlunderHistoryTable,
-    usePlunderConfigStore: ReturnType<typeof definePlunderConfigStore>,
-    useLastPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useLastPlunderHistoryStore'],
-    useTotalPlunderHistoryStore: ReturnType<typeof setPlunderHistoryStores>['useTotalPlunderHistoryStore']
+    usePlunderConfigStore: typeof usePlunderConfigStoreType,
+    useLastPlunderHistoryStore: typeof useLastPlunderHistoryStoreType,
+    useTotalPlunderHistoryStore: typeof useTotalPlunderHistoryStoreType
 ) {
     const panelWindow = getPanelWindow();
     const plunderConfigStore = usePlunderConfigStore();
@@ -80,28 +85,26 @@ async function patchAllPlunderStoresState(
     const plunderHistory = (await PlunderHistory.findByPk(alias))?.toJSON();
     if (plunderHistory) {
         for (const [key, value] of Object.entries(plunderHistory) as [keyof PlunderHistoryType, PlunderAttackDetails][]) {
-            if (!value) continue;
-
             if (key === 'last') {
-                for (const [innerKey, innerValue] of Object.entries(value)) {
-                    if (innerKey in lastPlunderHistoryStore) {
-                        Reflect.set(lastPlunderHistoryStore, innerKey, innerValue);
-                    };
-                };
-                
-            } else if (key === 'total') {
-                for (const [innerKey, innerValue] of Object.entries(value)) {
-                    if (innerKey in totalPlunderHistoryStore) {
-                        Reflect.set(totalPlunderHistoryStore, innerKey, innerValue);
-                    };
-                };
+                patchHistoryStore(value, lastPlunderHistoryStore);
+            } else {
+                patchHistoryStore(value, totalPlunderHistoryStore);
             };
         };
 
         // Se o Plunder estiver ativo para o alias atual, atualiza o painel com o histórico de recursos.
         // Isso permite que ele continue de onde parou.
-        if (plunderConfig && plunderConfig.active === true) {
+        if (plunderConfig?.active) {
             panelWindow.webContents.send('patch-panel-plunder-history', plunderHistory);
+        };
+    };
+};
+
+type HistoryStores = ReturnType<typeof useLastPlunderHistoryStoreType> | ReturnType<typeof useTotalPlunderHistoryStoreType>;
+function patchHistoryStore<T extends PlunderAttackDetails, U extends HistoryStores, V extends keyof U>(state: T, store: U) {
+    for (const [key, value] of Object.entries(state) as [V, U[V]][]) {
+        if (key in store) {
+            store[key] = value;
         };
     };
 };
@@ -109,7 +112,7 @@ async function patchAllPlunderStoresState(
 async function patchGroupsStoreState(
     alias: UserAlias,
     VillageGroups: typeof VillageGroupsTable,
-    useGroupsStore: ReturnType<typeof defineGroupsStore>
+    useGroupsStore: typeof useGroupsStoreType
 ) {
     try {
         const groupsStore = useGroupsStore();
@@ -117,10 +120,15 @@ async function patchGroupsStoreState(
 
         // Obtém os grupos do banco de dados.
         const villageGroups = await VillageGroups.findByPk(alias);
-        let groups = new Set(villageGroups?.allGroups ?? []);
-        if (groups.size === 0) groups = await fetchVillageGroups();
-        patchVillageGroups(groups, all);
+        const groups = new Set(villageGroups?.allGroups ?? []);
+        if (groups.size === 0) {
+            (await fetchVillageGroups()).forEach((group) => {
+                groups.add(group);
+            });
+        };
 
+        patchVillageGroups(groups, all);
+        
         await sequelize.transaction(async (transaction) => {
             await VillageGroups.upsert({
                 id: alias,

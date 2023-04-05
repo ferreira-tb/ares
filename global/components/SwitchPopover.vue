@@ -6,7 +6,7 @@ import LabelPopover from '$global/components/LabelPopover.vue';
 
 interface Props {
     value?: boolean;
-    size?: 'small' | 'medium' | 'large';
+    size?: 'large' | 'medium' | 'small';
     round?: boolean;
     disabled?: boolean;
     textAlign?: 'start';
@@ -59,7 +59,7 @@ const popoverStyle = reactive({
             :scrollable="props.popScrollable"
             :keep-alive-on-hover="props.popKeepAliveOnHover"
             :style="popoverStyle"
-            :displayAsBlock="false"
+            :display-as-block="false"
         >
             <template #trigger>
                 <slot name="trigger"></slot>

@@ -7,7 +7,7 @@ import { ipcSend } from '$global/ipc';
 interface Props {
     title?: string;
     description?: string;
-    size?: 'small' | 'medium' | 'large' | 'huge';
+    size?: 'huge' | 'large' | 'medium' | 'small';
     showDefaultSlot?: boolean;
     showDefaultFooter?: boolean;
     userSelect?: boolean;

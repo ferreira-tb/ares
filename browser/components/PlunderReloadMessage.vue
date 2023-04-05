@@ -10,7 +10,7 @@ const props = defineProps<{
 
 /** Data do próximo recarregamento automático. */
 const nextAutoReload = computed(() => {
-    if (props.active === false) return null;
+    if (!props.active) return null;
     return new Date(Date.now() + props.plunderTimeout);
 });
 

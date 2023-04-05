@@ -14,6 +14,6 @@ export function defineAppNotificationsStore(mechanus: Mechanus) {
     const isDev = process.env.ARES_MODE === 'dev';
 
     return mechanus.define('appNotifications', {
-        notifyOnError: ref<boolean>(isAlpha || isDev, booleanRef),
+        notifyOnError: ref<boolean>(isAlpha || isDev, booleanRef)
     } satisfies MechanusAppNotificationsConfigStoreType);
 };

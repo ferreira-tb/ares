@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { sequelize } from '$electron/database';
-import { useCacheStore, useGroupsStore, VillageGroups } from '$interface/index';
+import { useCacheStore, useGroupsStore, VillageGroups } from '$electron/interface';
 import { MainProcessEventError } from '$electron/error';
 import { fetchVillageGroups, patchVillageGroups } from '$electron/utils/groups';
 

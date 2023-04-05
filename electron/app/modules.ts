@@ -12,7 +12,7 @@ const activeWebsiteModules = new Map<WebsiteModuleNames, BrowserWindow>();
 export const getActiveModule = (name: ModuleNames) => activeModules.get(name);
 export const getActiveWebsiteModule = (name: WebsiteModuleNames) => activeWebsiteModules.get(name);
 
-function createModule(
+function createModule<T extends keyof ModuleConstructorOptions>(
     name: ModuleNames,
     defaultRoute: ModuleRoutes,
     options: ModuleConstructorOptions = {}
@@ -24,10 +24,10 @@ function createModule(
             // Se a janela já estiver aberta, foca-a.
             const previousWindow = getActiveModule(name);
             if (isInstanceOf(previousWindow, BrowserWindow) && !previousWindow.isDestroyed()) {
-                if (!previousWindow.isVisible()) {
-                    previousWindow.show();
+                if (previousWindow.isVisible()) {
+                    previousWindow.focus();   
                 } else {
-                    previousWindow.focus();
+                    previousWindow.show();
                 };
                 return;
             };
@@ -53,17 +53,17 @@ function createModule(
                 }
             };
 
-            for (const [key, value] of Object.entries(options) as [keyof ModuleConstructorOptions, any][]) {
-                Reflect.set(windowOptions, key, value);
+            for (const [key, value] of Object.entries(options) as [T, ModuleConstructorOptions[T]][]) {
+                windowOptions[key] = value;
             };
 
             const moduleWindow = new BrowserWindow(windowOptions);
             setModuleDevMenu(moduleWindow);
-            moduleWindow.loadFile(moduleHtml);
+            moduleWindow.loadFile(moduleHtml).catch(ModuleCreationError.catch);
             moduleWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
             moduleWindow.on('system-context-menu', (e) => e.preventDefault());
 
-            moduleWindow.once('ready-to-show', () =>  {
+            moduleWindow.once('ready-to-show', () => {
                 activeModules.set(name, moduleWindow);
                 moduleWindow.webContents.send('set-module-route', route ?? defaultRoute);
                 moduleWindow.show();
@@ -110,10 +110,10 @@ function createWebsiteModule(name: WebsiteModuleNames, url: string) {
             // Se a janela já estiver aberta, foca-a.
             const previousWindow = activeWebsiteModules.get(name);
             if (isInstanceOf(previousWindow, BrowserWindow) && !previousWindow.isDestroyed()) {
-                if (!previousWindow.isVisible()) {
-                    previousWindow.show();
+                if (previousWindow.isVisible()) {
+                    previousWindow.focus();  
                 } else {
-                    previousWindow.focus();
+                    previousWindow.show();
                 };
                 return;
             };
@@ -138,17 +138,17 @@ function createWebsiteModule(name: WebsiteModuleNames, url: string) {
             });
 
             setModuleDevMenu(websiteWindow);
-            websiteWindow.loadURL(url);
+            websiteWindow.loadURL(url).catch(ModuleCreationError.catch);
             websiteWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
             websiteWindow.on('system-context-menu', (e) => e.preventDefault());
 
-            websiteWindow.once('ready-to-show', () =>  {
+            websiteWindow.once('ready-to-show', () => {
                 activeWebsiteModules.set(name, websiteWindow);
                 websiteWindow.show();
             });
 
-            websiteWindow.webContents.on('will-navigate', (e, url) => {
-                if (!isAllowedURL(url)) e.preventDefault();
+            websiteWindow.webContents.on('will-navigate', (e, targetUrl) => {
+                if (!isAllowedURL(targetUrl)) e.preventDefault();
             });
 
             websiteWindow.once('close', () => activeWebsiteModules.delete(name));

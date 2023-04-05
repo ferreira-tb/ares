@@ -9,19 +9,19 @@ import type { GeneralAppConfigType, AppNotificationsConfigType } from '$types/co
 import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails, PlunderCacheType } from '$types/plunder';
 import type { AllUnits, TribalWarsGameDataType, UnitAmount, VillageGroup, World } from '$types/game';
 
-////// APP GENERAL CONFIG
+// APP GENERAL CONFIG
 export type AppGeneralConfigStore = GeneralAppConfigType;
 export type MechanusAppGeneralConfigStoreType = {
     [K in keyof AppGeneralConfigStore]: MechanusRef<AppGeneralConfigStore[K]>;
 };
 
-////// APP NOTIFICATIONS CONFIG
+// APP NOTIFICATIONS CONFIG
 export type AppNotificationsConfigStore = AppNotificationsConfigType;
 export type MechanusAppNotificationsConfigStoreType = {
     [K in keyof AppNotificationsConfigStore]: MechanusRef<AppNotificationsConfigStore[K]>;
 };
 
-////// ARES
+// ARES
 type AresType = TribalWarsGameDataType['ares'];
 export interface AresStore extends AresType {
     /** Indica se há um captcha ativo. */
@@ -36,7 +36,7 @@ export type MechanusAresStoreType = {
     [K in keyof AresStore]: MechanusRef<AresStore[K]>;
 };
 
-////// PLAYER
+// PLAYER
 export type PlayerStore = TribalWarsGameDataType['player'];
 export type PiniaPlayerStoreType = {
     [K in keyof PlayerStore]: Ref<PlayerStore[K]>;
@@ -45,7 +45,7 @@ export type MechanusPlayerStoreType = {
     [K in keyof PlayerStore]: MechanusRef<PlayerStore[K]>;
 };
 
-////// FEATURES
+// FEATURES
 export type FeaturesStore = TribalWarsGameDataType['features'];
 export type PiniaFeaturesStoreType = {
     [K in keyof FeaturesStore]: Ref<FeaturesStore[K]>;
@@ -54,7 +54,7 @@ export type MechanusFeaturesStoreType = {
     [K in keyof FeaturesStore]: MechanusRef<FeaturesStore[K]>;
 };
 
-////// GROUPS
+// GROUPS
 type GameDataGroups = TribalWarsGameDataType['groups'];
 export interface GroupsStore extends GameDataGroups {
     /** Todos os grupos de aldeias referentes ao alias atual. */
@@ -67,7 +67,7 @@ export type MechanusGroupsStoreType = {
     [K in keyof GroupsStore]: MechanusRef<GroupsStore[K]>;
 };
 
-////// CURRENT VILLAGE
+// CURRENT VILLAGE
 type CurrentVillageType = TribalWarsGameDataType['currentVillage'];
 export interface CurrentVillageStore extends CurrentVillageType {
     readonly coords: [CurrentVillageType['x'], CurrentVillageType['y']];
@@ -97,7 +97,7 @@ export type MechanusCurrentVillageStoreType = {
         MechanusRef<CurrentVillageStore[K]>;
 };
 
-////// PLUNDER INFO
+// PLUNDER INFO
 export type PlunderStore = PlunderInfoType;
 export type PiniaPlunderStoreType = {
     [K in keyof PlunderStore]: Ref<PlunderStore[K]>;
@@ -106,7 +106,7 @@ export type MechanusPlunderStoreType = {
     [K in keyof PlunderStore]: MechanusRef<PlunderStore[K]>;
 };
 
-////// PLUNDER CONFIG
+// PLUNDER CONFIG
 export interface PlunderConfigStore extends PlunderConfigType {
     raw(): PlunderConfigType;
 };
@@ -123,7 +123,7 @@ export type MechanusPlunderConfigStoreType = {
     [K in keyof RemoveMethods<PlunderConfigStore>]: MechanusRef<RemoveMethods<PlunderConfigStore>[K]>;
 };
 
-////// PLUNDER HISTORY
+// PLUNDER HISTORY
 export interface PlunderHistoryStore extends PlunderAttackDetails {
     raw(): PlunderAttackDetails;
     reset(): void;
@@ -142,13 +142,13 @@ export type MechanusPlunderHistoryStoreType = {
     [K in keyof RemoveMethods<PlunderHistoryStore>]: MechanusRef<RemoveMethods<PlunderHistoryStore>[K]>;
 };
 
-////// PLUNDER CACHE
+// PLUNDER CACHE
 export type PlunderCacheStore = PlunderCacheType;
 export type MechanusPlunderCacheStoreType = {
     [K in keyof PlunderCacheStore]: MechanusRef<PlunderCacheStore[K]>;
 };
 
-////// UNITS
+// UNITS
 export interface UnitsStore extends UnitAmount {
     raw(): UnitAmount;
 };
@@ -164,19 +164,19 @@ export type MechanusUnitsStoreType = {
     [K in keyof RemoveMethods<UnitsStore>]: MechanusRef<RemoveMethods<UnitsStore>[K]>;
 };
 
-////// WORLD CONFIG
+// WORLD CONFIG
 export type WorldConfigStore = WorldConfigType;
 export type MechanusWorldConfigStoreType = {
     [K in keyof WorldConfigStore]: MechanusRef<WorldConfigStore[K]>;
 };
 
-////// WORLD UNIT
+// WORLD UNIT
 export type WorldUnitStoresMap = ReadonlyMap<AllUnits, () => MechanusStore<UnitDetails>>;
 export type MechanusWorldUnitStoreType = {
     [K in keyof UnitDetails]: MechanusRef<UnitDetails[K]>;
 };
 
-////// CACHE
+// CACHE
 export interface CacheStore {
     readonly world: World | null;
     readonly player: string | null;
@@ -190,7 +190,7 @@ export type MechanusCacheStoreType = {
         MechanusRef<CacheStore[K]>;
 };
 
-////// BROWSER VIEW
+// BROWSER VIEW
 export interface BrowserViewStore {
     /** Todos os WebContents de BrowserViews associados à janela principal. */
     readonly allWebContents: Set<WebContents>;
@@ -206,7 +206,7 @@ export type MechanusBrowserViewStoreType = {
     [K in keyof BrowserViewStore]: MechanusRef<BrowserViewStore[K]>;
 };
 
-////// BROWSER
+// BROWSER
 export interface BrowserStore {
     /** Indica se o Deimos está pronto para receber comandos. */
     readonly isDeimosReady: boolean;
@@ -216,7 +216,7 @@ export type PiniaBrowserStoreType = {
     [K in keyof BrowserStore]: Ref<BrowserStore[K]>;
 };
 
-////// PAINEL
+// PAINEL
 export interface PanelStore {
     /** Indica se o painel está visível. */
     readonly isVisible: boolean;

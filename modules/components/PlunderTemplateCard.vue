@@ -13,16 +13,16 @@ import SpyIcon from '$icons/units/SpyIcon.vue';
 import SwordIcon from '$icons/units/SwordIcon.vue';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 
-const dialog = useDialog();
-const message = useMessage();
-
 const props = defineProps<{
     template: CustomPlunderTemplateType;
 }>();
 
 const emit = defineEmits<{
-    (event: 'template-destroyed', template: CustomPlunderTemplateType): void;
+    (e: 'template-destroyed', template: CustomPlunderTemplateType): void;
 }>();
+
+const dialog = useDialog();
+const message = useMessage();
 
 function destroyTemplate() {
     const status = dialog.warning({
@@ -36,13 +36,15 @@ function destroyTemplate() {
             try {
                 const rawTemplate = toRaw(props.template);
                 const destroyed = await ipcInvoke('destroy-custom-plunder-template', rawTemplate);
-                if (destroyed !== true) throw destroyed;
-                emit('template-destroyed', rawTemplate);
-                message.success('O modelo foi excluído');
+                if (destroyed) {
+                    emit('template-destroyed', rawTemplate);
+                    message.success('O modelo foi excluído');
+                } else {
+                    message.error('Ocorreu algum erro :(');
+                };
 
             } catch (err) {
                 ModuleError.catch(err);
-                message.error('Ocorreu algum erro :(');
             };
         }
     });
@@ -50,7 +52,14 @@ function destroyTemplate() {
 </script>
 
 <template>
-    <NCard :title="template.type" closable hoverable bordered class="template-card" @close="destroyTemplate">
+    <NCard
+        class="template-card"
+        :title="template.type"
+        closable
+        hoverable
+        bordered
+        @close="destroyTemplate"
+    >
         <NSpace>
             <span v-if="template.units.spear > 0">
                 <SpearIcon />{{ template.units.spear.toLocaleString('pt-br') }}

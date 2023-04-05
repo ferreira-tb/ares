@@ -11,7 +11,7 @@ watch(config, () => ipcSend('update-app-general-config', toRaw(config)));
 
 <template>
     <section class="general-config">
-        <NDivider title-placement="left" class="config-divider">Captcha</NDivider>
+        <NDivider class="config-divider" title-placement="left">Captcha</NDivider>
         <NGrid class="switch-area" :cols="1" :y-gap="10">
             <NGridItem>
                 <SwitchPopover v-model:value="config.reloadAfterCaptcha" size="medium">

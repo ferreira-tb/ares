@@ -5,7 +5,7 @@ import { NConfigProvider, NDialogProvider, NMessageProvider, darkTheme } from 'n
 
 <template>
     <NConfigProvider :theme="darkTheme">
-        <RouterView v-slot="{ Component }">
+        <RouterView #default="{ Component }">
             <NDialogProvider>
                 <NMessageProvider>
                     <template v-if="Component">
@@ -13,7 +13,7 @@ import { NConfigProvider, NDialogProvider, NMessageProvider, darkTheme } from 'n
                             <Suspense>
                                 <component :is="Component" />
                                 <template #fallback>
-                                    <span class="to-center bold-green">Carregando...</span>
+                                    <span class="bold-green to-center">Carregando...</span>
                                 </template>
                             </Suspense>
                         </Transition>

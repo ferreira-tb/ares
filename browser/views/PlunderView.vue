@@ -51,6 +51,7 @@ queryCurrentVillageInfo();
 watch(() => config.groupAttack, (newValue) => updateGroupInfo(newValue, groupInfo));
 watch(() => config.plunderGroupId, (newValue) => {
     if (!newValue) return;
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     ipcInvoke('navigate-to-plunder-group');
 });
 
@@ -61,10 +62,12 @@ watchEffect(() => {
     if (config.active) {
         // Se a aldeia atual não pertencer ao grupo de saque, navega para alguma aldeia do grupo.
         if (config.groupAttack && !belongsToPlunderGroup.value) {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             ipcInvoke('navigate-to-next-plunder-village');
             return;
         };
-        handleAttack();
+        
+        handleAttack().catch(PlunderError.catch);
     };
 });
 
@@ -131,34 +134,34 @@ async function handleAttack(): Promise<void> {
             const attackButton = info.button[best.type];
             assertElement(attackButton, `Could not find attack button for template ${best.type.toUpperCase()}.`);
 
-            return prepareAttack(plunderAttack, attackButton)
+            prepareAttack(plunderAttack, attackButton)
                 .then(() => best.reset())
                 .then(() => targets.delete(id))
                 .then(() => village.remove())
                 .then(() => handleAttack())
                 .catch(PlunderError.catch);
 
-        } else {
-            await openPlace(info.button.place);
-            const sent = await sendAttackFromPlace(best.units);
-            if (!sent) {
-                throw new PlunderError(`Attack using template ${best.type.toUpperCase()} could not be sent.`);
-            };
-
-            ipcSend('plunder-attack-sent', plunderAttack);
-            targets.delete(id);
-            village.remove();
-            
-            return handleAttack().catch(PlunderError.catch);
+            return;
         };
+
+        await openPlace(info.button.place);
+        const sent = await sendAttackFromPlace(best.units);
+        if (!sent) throw new PlunderError(`Could not use template ${best.type.toUpperCase()}.`);
+
+        ipcSend('plunder-attack-sent', plunderAttack);
+        targets.delete(id);
+        village.remove();
+        
+        handleAttack().catch(PlunderError.catch);
+        return;
     };
 
     // Caso, em toda tabela, não haja aldeia adequada para envio do ataque, verifica se há mais páginas.
     // Após acessar todas as páginas possíveis, navega para a próxima aldeia se o ataque em grupo estiver ativado.
-    handleLackOfTargets(groupInfo.value);
+    handleLackOfTargets(groupInfo.value).catch(PlunderError.catch);
 };
 </script>
 
 <template>
-    <PlunderReload :active="config.active" :minutesUntilReload="config.minutesUntilReload" />
+    <PlunderReload :active="config.active" :minutes-until-reload="config.minutesUntilReload" />
 </template>

@@ -1,6 +1,6 @@
 import { isString, isInteger } from '@tb-dev/ts-guard';
-import { MainProcessError } from '$electron/error';
 import { worldRegex, aliasRegex, allowedOriginRegexList } from '$electron/utils/constants';
+import type { MainProcessError } from '$electron/error';
 import type { UserAlias } from '$types/electron';
 import type { World, WallLevel } from '$types/game';
 
@@ -9,9 +9,9 @@ export function isUserAlias(alias: unknown): alias is UserAlias {
     return aliasRegex.test(alias);
 };
 
-export function assertUserAlias(alias: unknown, err: typeof MainProcessError, message?: string): asserts alias is UserAlias {
+export function assertUserAlias(alias: unknown, SomeError: typeof MainProcessError, message?: string): asserts alias is UserAlias {
     if (!isString(message)) message = 'Invalid user alias.';
-    if (!isUserAlias(alias)) throw new err(message);
+    if (!isUserAlias(alias)) throw new SomeError(message);
 };
 
 export const isWorld = (world: unknown): world is World => {
@@ -19,9 +19,9 @@ export const isWorld = (world: unknown): world is World => {
     return worldRegex.test(world);
 };
 
-export function assertWorld(world: unknown, err: typeof MainProcessError, message?: string): asserts world is World {
+export function assertWorld(world: unknown, SomeError: typeof MainProcessError, message?: string): asserts world is World {
     if (!isString(message)) message = 'Invalid world.';
-    if (!isWorld(world)) throw new err(message);
+    if (!isWorld(world)) throw new SomeError(message);
 };
 
 export const isWorldOrNull = (world: unknown): world is World | null => {
@@ -29,9 +29,9 @@ export const isWorldOrNull = (world: unknown): world is World | null => {
     return isWorld(world);
 };
 
-export function assertWorldOrNull(world: unknown, err: typeof MainProcessError, message?: string): asserts world is World | null {
+export function assertWorldOrNull(world: unknown, SomeError: typeof MainProcessError, message?: string): asserts world is World | null {
     if (!isString(message)) message = 'Invalid world.';
-    if (!isWorldOrNull(world)) throw new err(message);
+    if (!isWorldOrNull(world)) throw new SomeError(message);
 };
 
 export const isWallLevel = (level: unknown): level is WallLevel => {
@@ -39,9 +39,9 @@ export const isWallLevel = (level: unknown): level is WallLevel => {
     return level >= 0 && level <= 20;
 };
 
-export function assertWallLevel(level: unknown, err: typeof MainProcessError, message?: string): asserts level is WallLevel {
+export function assertWallLevel(level: unknown, SomeError: typeof MainProcessError, message?: string): asserts level is WallLevel {
     if (!isString(message)) message = 'Invalid wall level.';
-    if (!isWallLevel(level)) throw new err(message);
+    if (!isWallLevel(level)) throw new SomeError(message);
 };
 
 export function isAllowedURL(url: string): boolean {
