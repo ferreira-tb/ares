@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { showAppSettings } from '$electron/app/modules';
 import { sequelize } from '$electron/database';
-import { AppConfig, useAppGeneralConfigStore, useAppNotificationsStore } from '$interface/index';
+import { AppConfig, useAppGeneralConfigStore, useAppNotificationsStore } from '$electron/interface';
 import { MainProcessEventError } from '$electron/error';
 import { restartAres } from '$electron/utils/helpers';
 import type { ConfigModuleRoutes } from '$types/modules';

@@ -39,7 +39,9 @@ export function fetchVillageGroups() {
 
 export function patchVillageGroups(groups: Set<VillageGroup>, all: MechanusRef<Set<VillageGroup>>) {
     all.value.clear();
-    groups.forEach((group) => all.value.add(group));
+    groups.forEach((group) => {
+        all.value.add(group);
+    });
 
     const panelWindow = getPanelWindow();
     panelWindow.webContents.send('patch-panel-village-groups-set', all.value);

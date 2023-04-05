@@ -2,11 +2,12 @@ import { toRaw } from 'vue';
 import { ipcInvoke } from '$global/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
 import { queryAvailableUnits } from '$lib/plunder/units';
+import { getPlunderTargets } from '$lib/plunder/targets';
 import { PlunderError } from '$browser/error';
 import { usePlunderConfigStore } from '$global/stores/plunder';
 import { useCurrentVillageStore } from '$global/stores/village';
 import type { PlunderGroupType } from '$types/plunder';
-import { PlunderTargetInfo, getPlunderTargets } from '$lib/plunder/targets';
+import type { PlunderTargetInfo } from '$lib/plunder/targets';
 
 export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
     try {
@@ -14,7 +15,7 @@ export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
         const config = usePlunderConfigStore();
         const wentToNextPage = await navigateToNextPage(config, groupInfo);
         if (wentToNextPage || !config.groupAttack || !groupInfo) return;
-        navigateToNextVillage(config, groupInfo);
+        await navigateToNextVillage(config, groupInfo);
     } catch (err) {
         PlunderError.catch(err);
     };
@@ -59,6 +60,7 @@ async function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigS
 
         const updated = await ipcInvoke('update-plunder-group-info', toRaw(groupInfo));
         if (!updated) throw new PlunderError('Failed to update group info.');
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         ipcInvoke('navigate-to-next-plunder-village', currentVillageId);
         
     } catch (err) {

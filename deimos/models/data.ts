@@ -18,7 +18,7 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
             majorVersion: toNull(rawGameData.majorVersion, isString),
             screen: toNull(rawGameData.screen, isString),
             screenMode: toNull(rawGameData.mode, isString),
-            pregame: toNull(rawGameData.pregame, isBoolean),
+            pregame: toNull(rawGameData.pregame, isBoolean)
         };
 
         this.features = {

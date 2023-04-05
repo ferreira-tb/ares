@@ -3,7 +3,7 @@ import ErrorLogGeneral from '$modules/components/ErrorLogGeneral.vue';
 import ErrorLogElectron from '$modules/components/ErrorLogElectron.vue';
 import type { ModuleRouteRecordRawStrict, ErrorModuleRoutes } from '$types/modules';
 
-export const errorRoutes: ModuleRouteRecordRawStrict<'error-log' | ErrorModuleRoutes> = {
+export const errorRoutes: ModuleRouteRecordRawStrict<ErrorModuleRoutes | 'error-log'> = {
     path: '/error-log',
     name: 'error-log',
     component: ErrorLogView,

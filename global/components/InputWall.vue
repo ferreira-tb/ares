@@ -19,7 +19,7 @@ interface Props {
     bordered?: boolean;
     clearable?: boolean;
     disabled?: boolean;
-    size?: 'tiny' | 'small' | 'medium' | 'large';
+    size?: 'large' | 'medium' | 'small' | 'tiny';
     step?: number;
     marginRight?: number;
 };
@@ -38,7 +38,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'update:value', wallLevel: number): void
+    (e: 'update:value', wallLevel: number): void
 }>();
 
 const value = useVModel(props, 'value', emit);
@@ -54,9 +54,11 @@ assertWallLevel(props.value, AresError);
 </script>
 
 <template>
-        <NInputNumber class="wall-input"
+        <NInputNumber
             v-model:value="value"
-            :min="props.min" :max="props.max"
+            class="wall-input"
+            :min="props.min"
+            :max="props.max"
             :keyboard="keyboardOptions"
             :validator="isWallLevel"
             :bordered="props.bordered"

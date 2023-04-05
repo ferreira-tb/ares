@@ -1,6 +1,6 @@
 import { ref, type Mechanus } from 'mechanus';
 import { booleanOrNullRef } from '$electron/utils/mechanus';
-import { MechanusFeaturesStoreType } from '$types/stores';
+import type { MechanusFeaturesStoreType } from '$types/stores';
 
 export function defineFeaturesStore(mechanus: Mechanus) {
     return mechanus.define('features', {

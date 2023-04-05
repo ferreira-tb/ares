@@ -16,7 +16,7 @@ import {
     useCurrentVillageStore,
     useCacheStore,
     useGroupsStore
-} from '$interface/index';
+} from '$electron/interface';
 
 export function setDeimosEvents() {
     const aresStore = useAresStore();
@@ -35,7 +35,9 @@ export function setDeimosEvents() {
 
     // Retorna o conteúdo do arquivo `deimos.js`.
     ipcMain.handle('get-deimos-file', async () => {
-        deimos ??= await readDeimosFile();
+        if (deimos) return deimos;
+        const deimosFile = await readDeimosFile();
+        deimos ??= deimosFile;
         return deimos;
     });
 

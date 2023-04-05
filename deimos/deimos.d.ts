@@ -92,5 +92,3 @@ declare global {
         SuccessMessage(message: string): void;
     };
 }
-
-export {};

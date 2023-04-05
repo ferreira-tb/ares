@@ -2,6 +2,7 @@
     "recommendations": [
         "vscode-icons-team.vscode-icons",
         "vivaxy.vscode-conventional-commits",
-        "mhutchie.git-graph"
+        "mhutchie.git-graph",
+        "dbaeumer.vscode-eslint"
     ]
 }

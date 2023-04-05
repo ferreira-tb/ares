@@ -4,6 +4,7 @@ export const authorURL = 'https://github.com/ferreira-tb';
 export const repoURL = 'https://github.com/ferreira-tb/ares';
 export const issuesURL = 'https://github.com/ferreira-tb/ares/issues';
 export const discordURL = 'https://discord.gg/tNQbrqbmdK';
+export const latestJson = 'https://tb.dev.br/ares/latest.json';
 
 export const plunderSearchParams = 'screen=am_farm&order=distance&dir=asc&Farm_page=0';
 
@@ -18,10 +19,15 @@ export const worldRegex = /^br([sp](?![sp]))*\d+$/;
 export const aliasRegex = /^br([sp](?![sp]))*\d+__USERID__/;
 export const unitsRegex = /(spear|sword|axe|archer|spy|light|heavy|ram|catapult|knight|snob|militia)/;
 
-export const gameURLRegex = /\.?tribalwars\.com\.br/;
-export const aresURLRegex = /\.?tb\.dev\.br\/ares/;
-export const authorURLRegex = /\.?github\.com\/ferreira\-tb/;
-export const repoURLRegex = /\.?github\.com\/ferreira\-tb\/ares/;
+export const gameOriginRegex = /tribalwars\.com\.br/;
+export const tbOriginRegex = /tb\.dev\.br/;
+export const githubOriginRegex = /github\.com/;
+
+export const allowedOriginRegexList = [
+    gameOriginRegex,
+    tbOriginRegex,
+    githubOriginRegex
+] as const;
 
 // Mapas.
 export const unitsToDestroyWall = {

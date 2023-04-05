@@ -1,8 +1,9 @@
-import { BrowserWindow, Menu, MenuItem, webContents } from 'electron';
+import { Menu, MenuItem, webContents } from 'electron';
 import { computed, storeToRefs } from 'mechanus';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
-import type { useBrowserViewStore } from '$interface/index';
+import type { BrowserWindow } from 'electron';
+import type { useBrowserViewStore } from '$electron/interface';
 import type { MenuItemConstructorOptions, WebContents } from 'electron';
 
 function getDevOptions(browserViewStore: ReturnType<typeof useBrowserViewStore>): MenuItemConstructorOptions[] {
@@ -17,12 +18,15 @@ function getDevOptions(browserViewStore: ReturnType<typeof useBrowserViewStore>)
     const options: MenuItemConstructorOptions[] = [
         { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => contents.value.reloadIgnoringCache() },
         { label: 'Conjurar magia', accelerator: 'F9', click: () => castDevMagic() },
-        { label: 'Inspecionar', accelerator: 'F10', click: () => contents.value.openDevTools({ mode: 'detach'}) },
-        { label: 'Inspecionar janela principal', accelerator: 'F11', click: () => mainContents.openDevTools({ mode: 'detach'}) },
-        { label: 'Inspecionar painel', accelerator: 'F12', click: () => panelContents.openDevTools({ mode: 'detach'}) },
+        { label: 'Inspecionar', accelerator: 'F10', click: () => contents.value.openDevTools({ mode: 'detach' }) },
+        { label: 'Inspecionar janela principal', accelerator: 'F11', click: () => mainContents.openDevTools({ mode: 'detach' }) },
+        { label: 'Inspecionar painel', accelerator: 'F12', click: () => panelContents.openDevTools({ mode: 'detach' }) }
     ];
 
-    options.forEach((option) => option.visible = false);
+    options.forEach((option) => {
+        option.visible = false;
+    });
+
     return options;
 };
 
@@ -61,10 +65,13 @@ export function setModuleDevMenu(browserWindow: BrowserWindow) {
     const options: MenuItemConstructorOptions[] = [
         { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => contents.reloadIgnoringCache() },
         { label: 'Conjurar magia', accelerator: 'F9', click: () => castDevMagic() },
-        { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => contents.openDevTools({ mode: 'detach'}) }
+        { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => contents.openDevTools({ mode: 'detach' }) }
     ];
 
-    options.forEach((option) => option.visible = false);
+    options.forEach((option) => {
+        option.visible = false;
+    });
+
     const menu = Menu.buildFromTemplate(options);
     browserWindow.setMenu(menu);
 };

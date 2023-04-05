@@ -40,12 +40,12 @@ function removeTemplate(template: CustomPlunderTemplateType) {
                 <PlunderTemplateModal
                     v-model:show="showTemplateModal"
                     v-model:templates="templates"
-                    :userAlias="userAlias"
-                    :isArcherWorld="isArcherWorld"
+                    :user-alias="userAlias"
+                    :is-archer-world="isArcherWorld"
                 />
             </Suspense>
 
-            <div v-if="templates.length > 0" class="template-grid tb-scrollbar">
+            <div v-if="templates.length > 0" class="tb-scrollbar template-grid">
                 <NGrid :cols="4" :x-gap="8" :y-gap="10">
                     <NGridItem v-for="template of templates" :key="uuid(template.type)">
                         <PlunderTemplateCard :template="template" @template-destroyed="removeTemplate" />
@@ -53,7 +53,11 @@ function removeTemplate(template: CustomPlunderTemplateType) {
                 </NGrid>
             </div>
 
-            <ResultInfo v-else title="Não há modelos salvos" description="Experimente criar um modelo para começar" />
+            <ResultInfo
+                v-else
+                title="Não há modelos salvos"
+                description="Experimente criar um modelo para começar"
+            />
         </div>
         
         <ResultError v-else />

@@ -1,33 +1,38 @@
 import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
-import { isInstanceOf } from '@tb-dev/ts-guard';
+import { isInstanceOf, isString } from '@tb-dev/ts-guard';
 import { aresURL, favicon, moduleHtml, repoURL, issuesURL } from '$electron/utils/constants';
 import { getMainWindow } from '$electron/utils/helpers';
-import { isAllowedURL } from '$electron/utils/guards';
+import { isAllowedOrigin } from '$electron/utils/guards';
 import { ModuleCreationError } from '$electron/error';
 import { setModuleDevMenu } from '$electron/menu/dev';
 import type { ModuleNames, ModuleRoutes, ModuleConstructorOptions, WebsiteModuleNames } from '$types/modules';
 
 const activeModules = new Map<ModuleNames, BrowserWindow>();
 const activeWebsiteModules = new Map<WebsiteModuleNames, BrowserWindow>();
-export const getActiveModule = (name: ModuleNames) => activeModules.get(name);
-export const getActiveWebsiteModule = (name: WebsiteModuleNames) => activeWebsiteModules.get(name);
+export const getActiveModule = (name: ModuleNames) => activeModules.get(name) ?? null;
+export const getActiveWebsiteModule = (name: WebsiteModuleNames) => activeWebsiteModules.get(name) ?? null;
 
-function createModule(
+export function getActiveModuleWebContents(name: ModuleNames) {
+    const moduleWindow = getActiveModule(name);
+    return moduleWindow?.webContents ?? null;
+};
+
+function createModule<T extends keyof ModuleConstructorOptions>(
     name: ModuleNames,
     defaultRoute: ModuleRoutes,
     options: ModuleConstructorOptions = {}
 ) {
-    return function(route?: ModuleRoutes) {
+    return function(route?: ModuleRoutes): void {
         try {
             const mainWindow = getMainWindow();
 
             // Se a janela já estiver aberta, foca-a.
             const previousWindow = getActiveModule(name);
             if (isInstanceOf(previousWindow, BrowserWindow) && !previousWindow.isDestroyed()) {
-                if (!previousWindow.isVisible()) {
-                    previousWindow.show();
+                if (previousWindow.isVisible()) {
+                    previousWindow.focus();   
                 } else {
-                    previousWindow.focus();
+                    previousWindow.show();
                 };
                 return;
             };
@@ -53,17 +58,17 @@ function createModule(
                 }
             };
 
-            for (const [key, value] of Object.entries(options) as [keyof ModuleConstructorOptions, any][]) {
-                Reflect.set(windowOptions, key, value);
+            for (const [key, value] of Object.entries(options) as [T, ModuleConstructorOptions[T]][]) {
+                windowOptions[key] = value;
             };
 
             const moduleWindow = new BrowserWindow(windowOptions);
             setModuleDevMenu(moduleWindow);
-            moduleWindow.loadFile(moduleHtml);
+            moduleWindow.loadFile(moduleHtml).catch(ModuleCreationError.catch);
             moduleWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
             moduleWindow.on('system-context-menu', (e) => e.preventDefault());
 
-            moduleWindow.once('ready-to-show', () =>  {
+            moduleWindow.once('ready-to-show', () => {
                 activeModules.set(name, moduleWindow);
                 moduleWindow.webContents.send('set-module-route', route ?? defaultRoute);
                 moduleWindow.show();
@@ -82,6 +87,12 @@ export const showAppSettings = createModule('app-config', 'app-config', {
     width: 500,
     height: 600,
     title: 'Configurações'
+});
+
+export const showAppUpdate = createModule('app-update', 'app-update', {
+    width: 350,
+    height: 260,
+    title: 'Atualização'
 });
 
 export const showErrorLog = createModule('error-log', 'error-log', {
@@ -105,15 +116,26 @@ export const showCustomPlunderTemplate = createModule('plunder-template', 'plund
 });
 
 function createWebsiteModule(name: WebsiteModuleNames, url: string) {
-    return function() {
+    return function(arbitraryUrl?: string) {
         try {
+            if (name === 'any-allowed') {
+                if (!isString(arbitraryUrl) || !isAllowedOrigin(arbitraryUrl)) {
+                    throw new ModuleCreationError('When module name is "any-allowed", arbitraryUrl must be a string.');
+                } else {
+                    url = arbitraryUrl;
+                };
+
+            } else if (isString(arbitraryUrl)) {
+                throw new ModuleCreationError('Cannot pass arbitraryUrl when module name is not "any".');
+            };
+
             // Se a janela já estiver aberta, foca-a.
             const previousWindow = activeWebsiteModules.get(name);
             if (isInstanceOf(previousWindow, BrowserWindow) && !previousWindow.isDestroyed()) {
-                if (!previousWindow.isVisible()) {
-                    previousWindow.show();
+                if (previousWindow.isVisible()) {
+                    previousWindow.focus();  
                 } else {
-                    previousWindow.focus();
+                    previousWindow.show();
                 };
                 return;
             };
@@ -138,17 +160,17 @@ function createWebsiteModule(name: WebsiteModuleNames, url: string) {
             });
 
             setModuleDevMenu(websiteWindow);
-            websiteWindow.loadURL(url);
+            websiteWindow.loadURL(url).catch(ModuleCreationError.catch);
             websiteWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
             websiteWindow.on('system-context-menu', (e) => e.preventDefault());
 
-            websiteWindow.once('ready-to-show', () =>  {
+            websiteWindow.once('ready-to-show', () => {
                 activeWebsiteModules.set(name, websiteWindow);
                 websiteWindow.show();
             });
 
-            websiteWindow.webContents.on('will-navigate', (e, url) => {
-                if (!isAllowedURL(url)) e.preventDefault();
+            websiteWindow.webContents.on('will-navigate', (e, targetUrl) => {
+                if (!isAllowedOrigin(targetUrl)) e.preventDefault();
             });
 
             websiteWindow.once('close', () => activeWebsiteModules.delete(name));
@@ -159,6 +181,7 @@ function createWebsiteModule(name: WebsiteModuleNames, url: string) {
     };
 };
 
+export const openAnyAllowedWebsite = createWebsiteModule('any-allowed', '');
 export const openAresWebsite = createWebsiteModule('ares', aresURL);
 export const openRepoWebsite = createWebsiteModule('repo', repoURL);
 export const openIssuesWebsite = createWebsiteModule('issues', issuesURL);

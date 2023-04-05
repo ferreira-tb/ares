@@ -2,12 +2,7 @@ import type { RouteComponent } from 'vue-router';
 import type { BrowserWindowConstructorOptions } from 'electron';
 
 export type ModuleConstructorOptions = Pick<BrowserWindowConstructorOptions,
-    | 'width'
-    | 'height'
-    | 'title'
-    | 'minimizable'
-    | 'maximizable'
-    | 'resizable'
+    'height' | 'maximizable' | 'minimizable' | 'resizable' | 'title' | 'width'
 >;
 
 export interface ModuleRouteToPush {
@@ -20,16 +15,16 @@ export interface ModuleRouteRecordRaw extends ModuleRouteToPush {
     children?: ModuleRouteRecordRaw[];
 };
 
-export type ModuleRouteRecordRawStrict<T> = Omit<ModuleRouteRecordRaw, 'name' | 'children'> & {
+export type ModuleRouteRecordRawStrict<T> = Omit<ModuleRouteRecordRaw, 'children' | 'name'> & {
     name: T;
     children?: ModuleRouteRecordRawStrict<T>[];
 };
 
-export type SingleModules = 'default' | 'demolition' | 'plunder-template';
+export type SingleModules = 'app-update' | 'default' | 'demolition' | 'plunder-template';
 export type NestedModules = 'app-config' | 'error-log';
 export type ModuleNames = NestedModules | SingleModules;
 
-export type ErrorModuleRoutes = 'error-general' | 'error-electron';
+export type ErrorModuleRoutes = 'error-electron' | 'error-general';
 
 export type ConfigModuleRoutes =
     | 'config-advanced'
@@ -37,8 +32,8 @@ export type ConfigModuleRoutes =
     | 'config-notifications'
     | 'config-plunder';
 
-export type ModuleRoutes = ModuleNames | ErrorModuleRoutes | ConfigModuleRoutes;
+export type ModuleRoutes = ConfigModuleRoutes | ErrorModuleRoutes | ModuleNames;
 
 
-////// WEBSITE
-export type WebsiteModuleNames = 'ares' | 'repo' | 'issues';
+// WEBSITE
+export type WebsiteModuleNames = 'any-allowed' | 'ares' | 'issues' | 'repo';

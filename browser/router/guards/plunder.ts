@@ -27,7 +27,9 @@ export function setPlunderNavigationGuards(router: Router) {
 
             await until(currentGroupId).toMatch((id) => typeof id === 'number', { timeout: 3000, throwOnTimeout: true });
             if (plunderGroupId.value !== currentGroupId.value) {
-                nextTick(() => ipcInvoke('navigate-to-plunder-group'));
+                await nextTick();
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                ipcInvoke('navigate-to-plunder-group');
                 return false;
             };
 
@@ -50,7 +52,9 @@ export function setPlunderNavigationGuards(router: Router) {
             // Isso é um problema, pois a nova aldeia deveria começar a atacar a partir da primeira página.
             const villageInfo = await ipcInvoke('get-plunder-pages-info');
             if (villageInfo && plunderPage.value !== 0 && currentVillageId.value !== villageInfo.id) {
-                nextTick(() => ipcInvoke('navigate-to-first-plunder-page'));
+                await nextTick();
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                ipcInvoke('navigate-to-first-plunder-page');
                 return false;
             };
 

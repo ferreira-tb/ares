@@ -173,7 +173,7 @@ async function filterTemplates(info: PlunderTargetInfo, config: ReturnType<typeo
     for (const template of allTemplates.values()) {
         if (
             template.carry.value === 0 ||
-            template.ok.value !== true ||
+            !template.ok.value ||
             template.type === 'c' ||
             (template.type === 'a' && !info.button.a) ||
             (template.type === 'b' && !info.button.b)
@@ -205,7 +205,7 @@ export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnTy
     if (config.useC) {
         const templateC = await getTemplateC(info);
         if (templateC) return templateC;
-        if (!templateC && config.useCPattern === 'only') return null;
+        if (config.useCPattern === 'only') return null;
     };
 
     const templates = await filterTemplates(info, config);

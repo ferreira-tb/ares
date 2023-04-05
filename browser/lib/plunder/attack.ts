@@ -50,7 +50,7 @@ export function prepareAttack(plunderAttack: PlunderAttack, button: HTMLAnchorEl
  * @param button Botão usado para atacar com o modelo.
  */
 function sendAttack(button: HTMLAnchorElement) {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
         const selector = '#farm_units #units_home tr:has(td#spear):has(td#sword)';
         const unitsRow = document.queryAndAssert<HTMLTableRowElement>(selector);
 
@@ -62,7 +62,9 @@ function sendAttack(button: HTMLAnchorElement) {
         button.click();
 
         // Se não perceber mudanças mesmo após três segundos, rejeita a Promise.
-        wait(3000).then(() => observer.stop()).then(() => reject());
+        await wait(3000);
+        observer.stop();
+        reject();
     });
 };
 
@@ -98,7 +100,7 @@ export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<bool
         for (const unit of unitsBeingSent) {
             const elClass = unit.getAttributeStrict('class');
             const unitName = elClass.match(unitsRegex)?.[0] as keyof PlaceUnitsAmount | undefined;
-            assertString(unitName, `Could not determine unit name from class \"${elClass}\".`);
+            assertString(unitName, `Could not determine unit name from class "${elClass}".`);
             const unitAmount = unit.parseIntStrict(10, false);
             assertInteger(unitAmount, `Could not determine ${unitName} amount.`);
             assert(unitAmount === units[unitName], `${unitName} amount is not equal to the required amount.`);
@@ -141,6 +143,8 @@ function submitAndWaitConfirmationPopup(commandForm: Element) {
         submitButton.click();
 
         // Se não perceber mudanças mesmo após três segundos, rejeita a Promise.
-        wait(3000).then(() => observer.stop()).then(() => reject());
+        await wait(3000);
+        observer.stop();
+        reject();
     });
 };

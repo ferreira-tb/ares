@@ -34,8 +34,13 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="minutesUntilReload" :min="1" :max="60" :step="1"
-                    :validator="(v) => isPositiveInteger(v) && v >= 1 && v <= 60" />
+                <InputNumber
+                    v-model:value="minutesUntilReload"
+                    :min="1"
+                    :max="60"
+                    :step="1"
+                    :validator="(v) => isPositiveInteger(v) && v >= 1 && v <= 60"
+                />
             </NGridItem>
 
             <NGridItem>
@@ -48,8 +53,13 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="plunderedResourcesRatio" :min="0.2" :max="1" :step="0.05"
-                    :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1" />
+                <InputNumber
+                    v-model:value="plunderedResourcesRatio"
+                    :min="0.2"
+                    :max="1"
+                    :step="0.05"
+                    :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1"
+                />
             </NGridItem>
 
             <NGridItem>
@@ -62,8 +72,13 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="pageDelay" :min="100" :max="60000" :step="100"
-                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
+                <InputNumber
+                    v-model:value="pageDelay"
+                    :min="100"
+                    :max="60000"
+                    :step="100"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000"
+                />
             </NGridItem>
         </NGrid>
     </div>

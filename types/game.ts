@@ -1,37 +1,27 @@
 import type { IntRange, IntRangeToStrings } from '$types/utils';
 
-//////// MUNDO
+// MUNDO
 export type WorldLocale = 'br';
 export type World =
+    // eslint-disable-next-line @typescript-eslint/sort-type-constituents
     | `${WorldLocale}${string}` // Mundo padrão.
     | `${WorldLocale}s${string}` // Rodada speed.
     | `${WorldLocale}p${string}`; // Mundo casual.
 
 
-//////// RECURSOS
-export type Resources = 'wood' | 'stone' | 'iron';
-export type ResourcesPTBR = 'Madeira' | 'Argila' | 'Ferro';
+// RECURSOS
+export type Resources = 'iron' | 'stone' | 'wood';
+export type ResourcesPTBR = 'Argila' | 'Ferro' | 'Madeira';
 export type ResourceAmount = { [key in Resources]: number };
 
-//////// UNIDADES
+// UNIDADES
 /** Unidades que podem ser usadas no assistente de saque. */
 export type FarmUnits =
-    | 'spear'
-    | 'sword'
-    | 'axe'
-    | 'spy'
-    | 'light'
-    | 'heavy'
-    | 'knight'
-    | 'archer'
-    | 'marcher';
+    'archer' | 'axe' | 'heavy' | 'knight' | 'light' | 'marcher' | 'spear' | 'spy' | 'sword';
 
 /** Unidades que não podem saquear. */
 export type OtherUnits =
-    | 'ram'
-    | 'catapult'
-    | 'snob'
-    | 'militia';
+    'catapult' | 'militia' | 'ram' | 'snob';
 
 /** Todas as unidades do jogo. */
 export type AllUnits =
@@ -43,22 +33,16 @@ export type UnitAmount = { [key in AllUnits]: number };
 export type UnitsAmountAsStrings = { [key in AllUnits]: string };
 export type PlaceUnitsAmount = Partial<Omit<UnitAmount, 'militia'>>;
 
-//////// CONSTRUÇÕES
+// CONSTRUÇÕES
 export type WallLevel = IntRange<0, 21>;
 export type StringWallLevel = IntRangeToStrings<0, 21>;
 
-//////// OUTROS
-export type DemolitionTroops = Omit<UnitAmount, 'snob' | 'militia' | 'knight'>;
+// OUTROS
+export type DemolitionTroops = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
 export type UnitsToDestroyWall = Record<StringWallLevel, DemolitionTroops>;
 
 export type GameScreen =
-    | 'am_farm'
-    | 'info_player'
-    | 'market'
-    | 'overview'
-    | 'overview_villages'
-    | 'place'
-    | 'report';
+    'am_farm' | 'info_player' | 'market' | 'overview_villages' | 'overview' | 'place' | 'report';
 
 export type Coords = {
     x: number;

@@ -17,7 +17,7 @@ interface NumberCellProps {
     bordered?: boolean;
     clearable?: boolean;
     disabled?: boolean;
-    size?: 'tiny' | 'small' | 'medium' | 'large';
+    size?: 'large' | 'medium' | 'small' | 'tiny';
     step?: number;
     showButton?: boolean;
     readonly?: boolean;
@@ -40,7 +40,7 @@ const props = withDefaults(defineProps<NumberCellProps>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'cell-updated', newValue: number): void
+    (e: 'cell-updated', newValue: number): void
 }>();
 
 const isEdit = ref<boolean>(false);
@@ -53,7 +53,7 @@ const keyboardOptions: Keyboard = reactive({
 });
 
 async function handleClick() {
-    isEdit.value = true
+    isEdit.value = true;
     await nextTick();
     inputRef.value?.focus();
 };
@@ -72,8 +72,6 @@ function endEditMode() {
             v-if="isEdit"
             ref="inputRef"
             v-model:value="inputValue"
-            @blur="endEditMode"
-            @keydown.enter="endEditMode"
             :min="props.min"
             :max="props.max"
             :keyboard="keyboardOptions"
@@ -85,6 +83,8 @@ function endEditMode() {
             :show-button="props.showButton"
             :readonly="props.readonly"
             :validator="props.validator"
+            @blur="endEditMode"
+            @keydown.enter="endEditMode"
         />
         
         <span v-else>{{ props.value }}</span>

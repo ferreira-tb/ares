@@ -2,30 +2,33 @@
 import { ref, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { NTabs, NTab } from 'naive-ui';
-import { router } from '$modules/router/router';
+import { router } from '$modules/router';
+import { ModuleRouterError } from '$modules/error';
 import type { ErrorModuleRoutes } from '$types/modules';
 
 const route = ref<ErrorModuleRoutes>('error-general');
-watchEffect(() => router.push({ name: route.value }));
+watchEffect(() => {
+    router.push({ name: route.value }).catch(ModuleRouterError.catch);
+});
 </script>
 
 <template>
     <nav class="module-nav-bar">
-        <NTabs animated defaultValue="error-general" v-model:value="route" justifyContent="start" tab-style="margin-right: 2em;">
-            <NTab name="error-general" tab="Geral"></NTab>
-            <NTab name="error-electron" tab="Electron"></NTab>
+        <NTabs v-model:value="route" animated default-value="error-general" justify-content="start" tab-style="margin-right: 2em;">
+            <NTab name="error-general" tab="Geral" />
+            <NTab name="error-electron" tab="Electron" />
         </NTabs>
     </nav>
 
     <div class="module-content">
-        <RouterView class="module-view tb-scrollbar" v-slot="{ Component }">
+        <RouterView #default="{ Component }" class="module-view tb-scrollbar">
             <template v-if="Component">
                 <Transition name="tb-fade" mode="out-in">
                     <KeepAlive>
                         <Suspense>
                             <component :is="Component" />
                             <template #fallback>
-                                <span class="to-center bold-green">Carregando...</span>
+                                <span class="bold-green to-center">Carregando...</span>
                             </template>
                         </Suspense>
                     </KeepAlive>

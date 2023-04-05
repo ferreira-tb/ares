@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { shell } from 'electron';
 import { computed, ref } from 'vue';
-import { useElementSize } from '@vueuse/core';
+import { useElementSize, useMediaQuery } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
-import { NIcon, NTag } from 'naive-ui';
+import { NIcon } from 'naive-ui';
 import { DiscordSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$global/ipc';
 import { discordURL } from '$global/utils/constants';
+import TheResponseTime from '$main/components/TheResponseTime.vue';
+import TheUpdateNotification from '$main/components/TheUpdateNotification.vue';
 import type { BackForwardStatus } from '$types/view';
 
 import {
@@ -22,29 +24,14 @@ import {
 
 const mainWindowMenu = ref<HTMLElement | null>(null);
 const { width } = useElementSize(mainWindowMenu);
-const menuWidth = computed(() => `${width.value - 80}px`);
-
-const responseTime = ref<number | null>(null);
-responseTime.value = await ipcInvoke('get-response-time');
-
-const responseTimeTagType = computed(() => {
-    if (responseTime.value) {
-        if (responseTime.value <= 250) return 'success';
-        if (responseTime.value <= 1000) return 'warning';
-    };
-
-    return 'error';
-});
+const menuWidth = computed(() => `${width.value - 300}px`);
+const isSmallScreen = useMediaQuery('(max-width: 600px)');
 
 const canGoBack = ref<boolean>(await ipcInvoke('current-view-can-go-back'));
 const canGoForward = ref<boolean>(await ipcInvoke('current-view-can-go-forward'));
 
 const goBackDepth = computed(() => canGoBack.value ? 3 : 5);
 const goForwardDepth = computed(() => canGoForward.value ? 3 : 5);
-
-useIpcRendererOn('response-time-did-update', (_e, time: number) => {
-    responseTime.value = time;
-});
 
 useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardStatus) => {
     canGoBack.value = status.canGoBack;
@@ -53,7 +40,7 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
 </script>
 
 <template>
-    <div class="main-window-menu" ref="mainWindowMenu">
+    <div ref="mainWindowMenu" class="main-window-menu">
         <div class="menu-icon-area">
             <div class="menu-icon" @click="ipcSend('current-view-go-back')">
                 <NIcon :size="22" :depth="goBackDepth" :component="ArrowBackSharp" />
@@ -84,14 +71,9 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
             </div>
         </div>
 
-        <div class="response-time-tag">
-            <Transition name="tb-fade" mode="out-in">
-                <div v-if="responseTime" class="tag-wrapper" :key="responseTimeTagType">
-                    <NTag round :type="responseTimeTagType" size="small">
-                        {{ `${responseTime}ms` }}
-                    </NTag>
-                </div>
-            </Transition>
+        <div v-show="!isSmallScreen" class="menu-tag-area">
+            <TheUpdateNotification />
+            <TheResponseTime />
         </div>
     </div>
 </template>
@@ -131,18 +113,9 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
     }
 }
 
-.response-time-tag {
-    width: 80px;
-    height: 100%;
-
-    .tag-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: end;
-        
-        width: inherit;
-        height: inherit;
-        padding-right: 0.5rem;
-    }
+.menu-tag-area {
+    @include main.display-flex-center;
+    justify-content: end;
+    width: 300px;
 }
 </style>

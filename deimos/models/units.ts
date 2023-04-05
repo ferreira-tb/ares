@@ -1,5 +1,10 @@
-import { assertString, toCustom, isString } from '@tb-dev/ts-guard';
+import { assertString, isString } from '@tb-dev/ts-guard';
 import type { UnitAmount, UnitsAmountAsStrings } from '$types/game';
+
+interface MaybeNotArcherWorld extends Omit<UnitsAmountAsStrings, 'archer' | 'marcher'> {
+    archer?: string;
+    marcher?: string;
+};
 
 export class Units implements UnitAmount {
     public readonly spear: number;
@@ -17,8 +22,8 @@ export class Units implements UnitAmount {
     public readonly archer: number;
     public readonly marcher: number;
 
-    constructor(units: UnitsAmountAsStrings) {
-        for (const unit in units) {
+    constructor(units: MaybeNotArcherWorld) {
+        for (const unit of Object.keys(units)) {
             assertString(unit);
         };
 
@@ -35,7 +40,7 @@ export class Units implements UnitAmount {
         this.militia = units.militia.toIntegerStrict();
 
         // Serão undefined em mundos sem arqueiros.
-        this.archer = toCustom(units.archer, '0', isString).toIntegerStrict();
-        this.marcher = toCustom(units.marcher, '0', isString).toIntegerStrict();
+        this.archer = isString(units.archer) ? units.archer.toIntegerStrict() : 0;
+        this.marcher = isString(units.marcher) ? units.marcher.toIntegerStrict() : 0;
     };
 };

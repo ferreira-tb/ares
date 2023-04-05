@@ -8,6 +8,8 @@ import App from '$main/App.vue';
 const app = createApp(App);
 
 // Error handler.
-app.config.errorHandler = MainWindowError.catch;
+app.config.errorHandler = (err: unknown) => {
+    MainWindowError.catch(err);
+};
 
 app.mount('#app');

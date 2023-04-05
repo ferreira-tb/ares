@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-ref-object-destructure */
 import { ref } from 'vue';
 import { until, useStyleTag, useMutationObserver } from '@vueuse/core';
 import { isInstanceOf, assertPositiveInteger } from '@tb-dev/ts-guard';
@@ -10,7 +11,7 @@ import type { PlunderGroupType, PlunderGroupVillageType } from '$types/plunder';
 
 class PlunderGroup implements PlunderGroupType {
     readonly id: number;
-    readonly villages: Map<number, PlunderGroupVillageType> = new Map();
+    readonly villages = new Map<number, PlunderGroupVillageType>();
 
     constructor(plunderGroupId: number) {
         this.id = plunderGroupId;
@@ -66,6 +67,7 @@ export async function queryPlunderGroupInfo(): Promise<PlunderGroupType | null> 
         return null;
 
     } finally {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         ipcInvoke('update-plunder-group-info', groupInfo);
     };
 };
@@ -76,14 +78,16 @@ async function queryVillagesFromPopup(config: ReturnType<typeof usePlunderConfig
     assertPositiveInteger(groupId, `${groupId} is not a valid plunder group id.`);
     const groupInfo = new PlunderGroup(groupId);
 
-    const selectedGroup = popup.queryAndAssert(`#group_id option[selected]`);
+    const selectedGroup = popup.queryAndAssert('#group_id option[selected]');
     const selectedGroupId = selectedGroup.getAttributeAsIntStrict('value');
     if (selectedGroupId !== groupId) {
         throw new PlunderError(`Selected plunder group id ${selectedGroupId} does not match plunder group id ${groupId}.`);
     };
 
     const villages = await getVillagesIdFromPopup(popup);
-    villages.forEach((id) => groupInfo.villages.set(id, new PlunderGroupVillage(config.fieldsPerWave)));
+    villages.forEach((id) => {
+        groupInfo.villages.set(id, new PlunderGroupVillage(config.fieldsPerWave));
+    });
 
     if (cleanup) cleanup();
     return groupInfo;
@@ -162,8 +166,9 @@ async function getVillagesIdFromPopup(popup: HTMLElement): Promise<Set<number>> 
         PlunderError.catch(err);
     } finally {
         observer.stop();
-        infoBox = popup.querySelector('#group_list_content .info_box');
-        if (!infoBox && villages.value.size === 0) throw new PlunderError('Could not get villages from group popup.');
-        return villages.value;
     };
+
+    infoBox = popup.querySelector('#group_list_content .info_box');
+    if (!infoBox && villages.value.size === 0) throw new PlunderError('Could not get villages from group popup.');
+    return villages.value;
 };

@@ -4,15 +4,15 @@ import { setErrorEvents } from '$electron/events/error';
 import { setPanelEvents } from '$electron/events/panel';
 import { setDeimosEvents } from '$electron/events/deimos';
 import { setModuleEvents } from '$electron/events/modules';
-import { setMainWindowEvents } from '$electron/events/window';
+import { setMainWindowEvents } from '$electron/events/main';
 import { setBrowserViewEvents } from '$electron/events/view';
 import { setGroupsEvents } from '$electron/events/groups';
 import { setMenuEvents } from '$electron/events/menu';
 import { setBrowserEvents } from '$electron/events/browser';
 import { setConfigEvents } from '$electron/events/config';
 import { isUserAlias } from '$electron/utils/guards';
-import { openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
-import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$interface/index';
+import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
+import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$electron/interface';
 import { getPlayerNameFromAlias, extractWorldUnitsFromMap } from '$electron/utils/helpers';
 import type { UserAlias } from '$types/electron';
 
@@ -29,6 +29,7 @@ export function setEvents() {
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
 
     // Website.
+    ipcMain.on('open-any-allowed-website', (_e, url: string) => openAnyAllowedWebsite(url));
     ipcMain.on('open-ares-website', () => openAresWebsite());
     ipcMain.on('open-github-repo', () => openRepoWebsite());
     ipcMain.on('open-github-issues', () => openIssuesWebsite());

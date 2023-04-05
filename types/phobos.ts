@@ -20,6 +20,6 @@ export type PhobosNames =
 
 export type PhobosChannel = PhobosNames;
 
-export interface PhobosPortMessage extends Record<string, any> {
+export interface PhobosPortMessage extends Record<string, unknown> {
     channel: PhobosChannel;
 };

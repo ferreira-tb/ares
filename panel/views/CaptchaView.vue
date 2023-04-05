@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia';
 import { usePlunderConfigStore } from '$global/stores/plunder';
 import { useAresStore } from '$global/stores/ares';
 import { pushRoute, togglePlunder } from '$panel/utils/helpers';
+import { PanelRouterError } from '$panel/error';
 
 const aresStore = useAresStore();
 const plunderConfigStore = usePlunderConfigStore();
@@ -13,10 +14,10 @@ const { captcha, screen: screenName } = storeToRefs(aresStore);
 watch(() => plunderConfigStore.active, togglePlunder);
 
 watchEffect(() => {
-    if (captcha.value === true) {
+    if (captcha.value) {
         plunderConfigStore.active = false;
     } else {
-        pushRoute(screenName.value);
+        pushRoute(screenName.value).catch(PanelRouterError.catch);
     };
 });
 </script>

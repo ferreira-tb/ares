@@ -7,8 +7,8 @@ import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/app/modules';
 import { getMainWindow } from '$electron/utils/helpers';
 import type { ElectronErrorLogBase } from '$types/error';
-import type { useAresStore, useAppNotificationsStore } from '$interface/index';
-import type { ElectronErrorLog as ElectronErrorLogTable } from '$interface/index';
+import type { useAresStore, useAppNotificationsStore } from '$electron/interface';
+import type { ElectronErrorLog as ElectronErrorLogTable } from '$electron/interface';
 
 export function catchError(
     aresStore: ReturnType<typeof useAresStore>,
@@ -16,7 +16,7 @@ export function catchError(
     ElectronErrorLog: typeof ElectronErrorLogTable
 ) {
     const { notifyOnError } = storeToRefs(appNotificationsStore);
-    return async function (err: unknown) {
+    return async function(err: unknown) {
         try {
             if (err instanceof Error) {
                 const errorLog: ElectronErrorLogBase = {
@@ -56,7 +56,7 @@ export function catchError(
 
                 } catch {
                     // Se não for possível gerar o log, emite um alerta.
-                    const errorMessage = `Contact the Ares team with the following error message:\n\n${(anotherErr as Error).message}`;
+                    const errorMessage = `Contact the Ares team with the following error message:\n\n${anotherErr.message}`;
                     dialog.showErrorBox('CRITICAL ERROR', errorMessage);
                 };
             };

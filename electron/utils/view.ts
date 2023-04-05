@@ -2,7 +2,7 @@ import { webContents } from 'electron';
 import { getMainWindow } from '$electron/utils/helpers';
 import { browserCss, gameURL } from '$electron/utils/constants';
 import { BrowserViewError } from '$electron/error';
-import type { WebContents, BrowserView, BrowserWindow } from 'electron';
+import type { WebContents, BrowserView, BrowserWindow, IpcMainEvent } from 'electron';
 import type { BackForwardStatus } from '$types/view';
 
 export const getMainViewWebContents = () => {
@@ -22,8 +22,8 @@ export function setBrowserViewBounds(view: BrowserView, mainWindow: BrowserWindo
  * @returns Função para remover o evento de redimensionamento.
  */
 export function setBrowserViewAutoResize(view: BrowserView, mainWindow: BrowserWindow = getMainWindow()): () => void {
-    let timeout: NodeJS.Immediate;
-    function resize(e: Electron.Event) {
+    let timeout: ReturnType<typeof setImmediate> | null = null;
+    function resize(e: IpcMainEvent) {
         e.preventDefault();
         timeout = setImmediate(() => {
             if (timeout) clearImmediate(timeout);
@@ -56,7 +56,7 @@ export function contentsGoForward(contents: WebContents) {
 };
 
 export function contentsGoHome(contents: WebContents) {
-    contents.loadURL(gameURL);
+    contents.loadURL(gameURL).catch(BrowserViewError.catch);
 };
 
 /**

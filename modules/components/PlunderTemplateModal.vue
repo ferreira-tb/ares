@@ -19,13 +19,11 @@ import type { FormRules, FormItemRule } from 'naive-ui';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
 
-const dialog = useDialog();
-const message = useMessage();
-
 interface Props {
     show: boolean;
     userAlias: UserAlias;
     isArcherWorld: boolean;
+    // eslint-disable-next-line vue/no-unused-properties
     templates: CustomPlunderTemplateType[];
 
     spear: number;
@@ -54,6 +52,9 @@ const emit = defineEmits<{
     (e: 'update:show', value: boolean): void;
     (e: 'update:templates', value: CustomPlunderTemplateType): void;
 }>();
+
+const dialog = useDialog();
+const message = useMessage();
 
 const { show, templates } = useVModels(props, emit);
 
@@ -140,16 +141,17 @@ const numberInputProps = {
 async function save() {
     try {
         const rawTemplateUnits = { ...toRaw(templateUnits) };
-        const status = await ipcInvoke('save-custom-plunder-template', rawTemplateUnits);
-        if (status !== true) throw status;
-
-        message.success('Modelo salvo com sucesso!');
-        templates.value.push(rawTemplateUnits);
-        if (!keepModalOpen.value) show.value = false;
-        await resetTemplate();
+        const saved = await ipcInvoke('save-custom-plunder-template', rawTemplateUnits);
+        if (saved) {
+            message.success('Modelo salvo com sucesso!');
+            templates.value.push(rawTemplateUnits);
+            if (!keepModalOpen.value) show.value = false;
+            await resetTemplate();
+        } else {
+            message.error('Ocorreu algum erro :(');
+        };
 
     } catch (err) {
-        message.error('Ocorreu algum erro :(');
         ModuleError.catch(err);
     };
 };
@@ -229,7 +231,7 @@ async function resetTemplate() {
                         <InputNumber v-model:value="templateUnits.units.axe" v-bind="numberInputProps" />
                     </NFormItemGi>
 
-                    <NFormItemGi path="units.archer" v-if="props.isArcherWorld">
+                    <NFormItemGi v-if="props.isArcherWorld" path="units.archer">
                         <template #label>
                             <ArcherIcon />
                         </template>
@@ -250,7 +252,7 @@ async function resetTemplate() {
                         <InputNumber v-model:value="templateUnits.units.light" v-bind="numberInputProps" />
                     </NFormItemGi>
 
-                    <NFormItemGi path="units.marcher" v-if="props.isArcherWorld">
+                    <NFormItemGi v-if="props.isArcherWorld" path="units.marcher">
                         <template #label>
                             <MarcherIcon />
                         </template>
@@ -274,7 +276,7 @@ async function resetTemplate() {
                     <NButtonGroup>
                         <NButton @click="cancel">Cancelar</NButton>
                         <NButton @click="reset">Limpar</NButton>
-                        <NButton @click="save" type="primary" :disabled="saveDisabled">Salvar</NButton>
+                        <NButton :disabled="saveDisabled" type="primary" @click="save">Salvar</NButton>
                     </NButtonGroup>
                 </div>
             </NForm>

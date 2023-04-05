@@ -4,18 +4,18 @@ import { app, ipcMain, BrowserWindow } from 'electron';
 import { MainProcessEventError } from '$electron/error';
 import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/app/modules';
-import { ErrorLog, ElectronErrorLog, useAresStore } from '$interface/index';
+import { ErrorLog, ElectronErrorLog, useAresStore } from '$electron/interface';
 import type { ErrorLogBase, ErrorLogType } from '$types/error';
 
 export function setErrorEvents() {
     const aresStore = useAresStore();
 
-    ipcMain.on('set-error-log', async (e, err: ErrorLogBase) => {
+    ipcMain.on('set-error-log', async (e, error: ErrorLogBase) => {
         try {
             const errorLog: Omit<ErrorLogType, 'id' | 'pending'> = {
-                name: err.name,
-                message: err.message,
-                stack: err.stack,
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
                 world: aresStore.world,
                 time: Date.now(),
                 url: new URL(e.sender.getURL()).href,
@@ -27,7 +27,8 @@ export function setErrorEvents() {
             };
 
             const newRow = await sequelize.transaction(async (transaction) => {
-                return await ErrorLog.create(errorLog, { transaction });
+                const row = await ErrorLog.create(errorLog, { transaction });
+                return row;
             });
 
             const errorModule = getActiveModule('error-log');

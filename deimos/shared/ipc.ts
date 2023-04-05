@@ -11,21 +11,21 @@ import type { TribalWarsTiming } from '$deimos/models/timing';
 // IMPORTANTE: Não é possível utilizar o Deimos a partir do painel.
 // A função dele é apenas prover uma forma de comunicação entre o browser e o jogo.
 
+type UIMessageType = 'show-ui-error-message' | 'show-ui-info-message' | 'show-ui-success-message';
+
 export class Deimos {
     readonly channel: string;
     readonly message: unknown[];
 
     constructor(channel: string, ...args: unknown[]) {
         this.channel = channel;
-        this.message = args ?? [];
+        this.message = args;
     };
 
     static #uuid: number = 0;
-    static #generateUUID = (type: 'send' | 'invoke') => `${type}${(++this.#uuid).toString(10)}`;
+    static #generateUUID = (type: 'invoke' | 'send') => `${type}${(++this.#uuid).toString(10)}`;
 
-    public static send(channel: 'show-ui-error-message', message: string): void;
-    public static send(channel: 'show-ui-info-message', message: string): void;
-    public static send(channel: 'show-ui-success-message', message: string): void;
+    public static send(channel: UIMessageType, message: string): void;
     public static send(channel: string, ...args: unknown[]) {
         channel = this.#handleKey(channel);
         const uuid = this.#generateUUID('send');
@@ -65,7 +65,7 @@ export class Deimos {
     public static handle(channel: 'get-game-data', listener: () => TribalWarsGameData | null): void;
     public static handle(channel: 'get-current-village-units', listener: () => Units | null): void;
     public static handle(channel: 'get-plunder-info', listener: () => PlunderInfo | null): void;
-    public static handle(channel: string, listener: (...args: any[]) => unknown): void {
+    public static handle(channel: string, listener: (...args: unknown[]) => unknown): void {
         channel = this.#handleKey(channel);
         window.addEventListener('message', async (e: MessageEvent<Deimos>) => {
             if (e.data.channel === channel) {
@@ -91,9 +91,7 @@ export class Deimos {
         });
     };
 
-    public static on(channel: 'show-ui-error-message', listener: (message: string) => void): void;
-    public static on(channel: 'show-ui-info-message', listener: (message: string) => void): void;
-    public static on(channel: 'show-ui-success-message', listener: (message: string) => void): void;
+    public static on(channel: UIMessageType, listener: (message: string) => void): void;
     public static on(channel: string, listener: (...args: any[]) => void) {
         channel = this.#handleKey(channel);
         window.addEventListener('message', async (e: MessageEvent<Deimos>) => {

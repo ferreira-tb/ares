@@ -7,6 +7,13 @@ export class PanelError extends AresError {
     };
 };
 
+export class PanelRouterError extends PanelError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'PanelRouterError';
+    };
+};
+
 export class PanelPlunderError extends PanelError {
     constructor(message: string) {
         super(message);

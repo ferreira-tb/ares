@@ -47,14 +47,14 @@ const columns: DataTableBaseColumn[] = [
     { title: () => h(SwordIcon), key: 'sword' },
     { title: () => h(AxeIcon), key: 'axe' },
     { title: () => h(SpyIcon), key: 'spy' },
-    { title: () => h(LightIcon), key: 'light'},
+    { title: () => h(LightIcon), key: 'light' },
     { title: () => h(HeavyIcon), key: 'heavy' },
     { title: () => h(RamIcon), key: 'ram' },
     { title: () => h(CatapultIcon), key: 'catapult' }
 ];
 
 // Se o mundo possui arqueiros, adiciona as colunas de arqueiros e arqueiros a cavalo.
-if (isArcherWorld === true) {
+if (isArcherWorld) {
     columns.splice(4, 0, { title: () => h(ArcherIcon), key: 'archer' });
     columns.splice(7, 0, { title: () => h(MarcherIcon), key: 'marcher' });
 };
@@ -96,12 +96,14 @@ watch(demolitionData, async (newData) => {
             template.units[key] = units;
         };
 
-        const status = await ipcInvoke('save-demolition-troops-config', template);
-        if (status !== true) throw status;
-        message.success('Tudo certo!');
+        const saved = await ipcInvoke('save-demolition-troops-config', template);
+        if (saved) {
+            message.success('Tudo certo!');
+        } else {
+            message.error('Ocorreu algum erro :(');
+        };
 
     } catch (err) {
-        message.error('Ocorreu algum erro :(');
         ModuleConfigError.catch(err);
     };
 });

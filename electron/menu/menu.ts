@@ -5,7 +5,7 @@ import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/util
 import { appendDevMenu } from '$electron/menu/dev';
 import { getMainViewWebContents, contentsGoBack, contentsGoForward, contentsGoHome } from '$electron/utils/view';
 import type { MenuItemConstructorOptions, WebContents } from 'electron';
-import type { useBrowserViewStore } from '$interface/index';
+import type { useBrowserViewStore } from '$electron/interface';
 
 export function setAppMenu(browserViewStore: ReturnType<typeof useBrowserViewStore>) {
     const mainWindow = getMainWindow();
@@ -29,7 +29,9 @@ export function setAppMenu(browserViewStore: ReturnType<typeof useBrowserViewSto
         { label: 'Sair', accelerator: 'Esc', role: 'quit' }
     ];
 
-    sharedOptions.forEach((option) => option.visible = false);
+    sharedOptions.forEach((option) => {
+        option.visible = false;
+    });
 
     const mainMenu = Menu.buildFromTemplate([...sharedOptions]);
     const panelMenu = Menu.buildFromTemplate([...sharedOptions]);

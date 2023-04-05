@@ -52,7 +52,7 @@ export class PlunderTargetInfo {
 const eventTarget = new EventTarget();
 
 /** Mapa com as informações sobre cada aldeia da tabela. */
-export const targets: Map<string, PlunderTargetInfo> = new Map();
+export const targets = new Map<string, PlunderTargetInfo>();
 
 /** Retorna uma versão somente leitura do mapa com as informações sobre as aldeias-alvo. */
 export function getPlunderTargets() {

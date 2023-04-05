@@ -17,15 +17,20 @@ app.use(pinia);
 app.use(router);
 
 // Error handler.
-app.config.errorHandler = BrowserError.catch;
-router.onError(BrowserError.catch);
+app.config.errorHandler = (err: unknown) => {
+    BrowserError.catch(err);
+};
 
 // Eventos.
 setBrowserEvents(pinia);
 setNavigationGuards(router);
 
-window.addEventListener('DOMContentLoaded', () => {
-    router.push('/');
-    const ares = document.createElement('ares');
-    app.mount(ares);
+window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await router.push('/');
+        const ares = document.createElement('ares');
+        app.mount(ares);
+    } catch (err) {
+        BrowserError.catch(err);
+    };
 }, { once: true });

@@ -6,7 +6,7 @@ import { DatabaseError } from '$electron/error';
 import { unitsToDestroyWall } from '$electron/utils/constants';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import type { UserAlias } from '$types/electron';
-import type { useCacheStore } from '$interface/index';
+import type { useCacheStore } from '$electron/interface';
 import type { WallLevel, UnitsToDestroyWall } from '$types/game';
 
 import type {

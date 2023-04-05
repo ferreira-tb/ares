@@ -62,10 +62,10 @@ const aliasArgs = [
     useGroupsStore
 ] as const;
 
-////// ERROS
+// ERROS
 MainProcessError.catch = catchError(useAresStore(), useAppNotificationsStore(), ElectronErrorLog);
 
-////// WATCHERS
+// WATCHERS
 const { name: playerName } = storeToRefs(usePlayerStore());
 watch(playerName, (name) => User.savePlayerAsUser(name));
 
@@ -76,9 +76,9 @@ watch(userAlias, patchAliasRelatedStores(...aliasArgs));
 
 const { screen } = storeToRefs(useAresStore());
 const { pages: plunderPages, plunderGroup } = storeToRefs(usePlunderCacheStore());
-watch(screen, (screen) => {
+watch(screen, (newScreen) => {
     try {
-        if (screen !== 'am_farm') {
+        if (newScreen !== 'am_farm') {
             if (plunderPages.value) plunderPages.value = null;
             if (plunderGroup.value) plunderGroup.value = null;
         };

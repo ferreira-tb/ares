@@ -1,62 +1,18 @@
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
+import { showCustomPlunderTemplate } from '$electron/app/modules';
 import { isUserAlias } from '$electron/utils/guards';
-import { showErrorLog, showDemolitionConfig, showCustomPlunderTemplate } from '$electron/app/modules';
+import { useCacheStore, useBrowserViewStore, CustomPlunderTemplate } from '$electron/interface';
 import type { UserAlias } from '$types/electron';
-import type { CustomPlunderTemplateType, DemolitionTemplateType } from '$types/plunder';
+import type { CustomPlunderTemplateType } from '$types/plunder';
 
-import {
-    useCacheStore,
-    usePlunderCacheStore,
-    useBrowserViewStore,
-    DemolitionTemplate,
-    CustomPlunderTemplate
-} from '$interface/index';
-
-export function setModuleEvents() {
+export function setPlunderTemplatesModuleEvents() {
     const cacheStore = useCacheStore();
-    const plunderCacheStore = usePlunderCacheStore();
     const browserViewStore = useBrowserViewStore();
-
-    const { demolitionTroops } = storeToRefs(plunderCacheStore);
     const { allWebContents } = storeToRefs(browserViewStore);
 
-    //////// INICIALIZAÇÃO
-    ipcMain.on('open-error-log-window', () => showErrorLog());
-    ipcMain.on('open-demolition-troops-config-window', () => showDemolitionConfig());
     ipcMain.on('open-custom-plunder-template-window', () => showCustomPlunderTemplate());
 
-    //////// OUTROS
-    // Demolição.
-    ipcMain.handle('get-demolition-troops-config', async (_e, alias: UserAlias | null): Promise<DemolitionTemplateType | null> => {
-        alias ??= cacheStore.userAlias;
-        if (!isUserAlias(alias)) return null;
-
-        let troops = demolitionTroops.value;
-        if (!troops || troops.alias !== alias) {
-            troops = await DemolitionTemplate.getDemolitionTroopsConfig(alias);
-            if (alias === cacheStore.userAlias) demolitionTroops.value = troops;
-        };
-        return troops;
-    });
-
-    ipcMain.handle('save-demolition-troops-config', async (_e, template: DemolitionTemplateType): Promise<boolean> => {
-        const saved = await DemolitionTemplate.saveDemolitionTroopsConfig(template);
-        if (saved && template.alias === cacheStore.userAlias) {
-            demolitionTroops.value = template;
-        };
-        return saved;
-    });
-
-    ipcMain.handle('destroy-demolition-troops-config', async (_e, alias: UserAlias): Promise<boolean> => {
-        const destroyed = await DemolitionTemplate.destroyDemolitionTroopsConfig(alias);
-        if (destroyed && alias === cacheStore.userAlias) {
-            demolitionTroops.value = null;
-        };
-        return destroyed;
-    });
-
-    // Modelos do Plunder.
     ipcMain.handle('get-custom-plunder-templates', async (_e, alias: UserAlias | null): Promise<CustomPlunderTemplateType[] | null> => {
         alias ??= cacheStore.userAlias;
         if (!isUserAlias(alias)) return null;

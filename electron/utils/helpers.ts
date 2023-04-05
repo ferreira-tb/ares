@@ -87,8 +87,8 @@ export function getPlayerNameFromAlias(alias: UserAlias): string {
  * @param worldUnitsMap Mapa contendo as stores de cada unidade.
  */
 export function extractWorldUnitsFromMap(worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>): WorldUnitType {
-    type UnitsMapEntries = [AllUnits, () => MechanusStore<UnitDetails>];
-    return Object.entries(worldUnitsMap).reduce((acc, [key, useStore]: UnitsMapEntries) => {
+    const entries = Object.entries(worldUnitsMap) as [AllUnits, () => MechanusStore<UnitDetails>][];
+    return entries.reduce((acc, [key, useStore]) => {
         const unitStore = useStore();
         acc[key] = { ...unitStore };
         return acc;
@@ -97,7 +97,7 @@ export function extractWorldUnitsFromMap(worldUnitsMap: ReturnType<typeof create
 
 /** Gera um número inteiro entre dois outros. */
 export function generateIntegerBetween(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min) + min);
+    return Math.floor((Math.random() * (max - min)) + min);
 };
 
 /**

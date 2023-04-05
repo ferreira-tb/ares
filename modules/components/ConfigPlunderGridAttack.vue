@@ -37,7 +37,7 @@ const blindAttackOptions = [
 
 const useCOptions = [
     { label: 'Normal', value: 'normal' },
-    { label: 'Somente C', value: 'only'}
+    { label: 'Somente C', value: 'only' }
 ] satisfies NSelectPatternOption<UseCPattern>;
 </script>
 
@@ -65,8 +65,13 @@ const useCOptions = [
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="ignoreOlderThan" :min="1" :max="9999" :step="1"
-                    :validator="(v) => isPositiveInteger(v) && v >= 1" />
+                <InputNumber
+                    v-model:value="ignoreOlderThan"
+                    :min="1"
+                    :max="9999"
+                    :step="1"
+                    :validator="(v) => isPositiveInteger(v) && v >= 1"
+                />
             </NGridItem>
 
             <NGridItem>
@@ -78,8 +83,13 @@ const useCOptions = [
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="attackDelay" :min="100" :max="60000" :step="10"
-                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000" />
+                <InputNumber
+                    v-model:value="attackDelay"
+                    :min="100"
+                    :max="60000"
+                    :step="10"
+                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000"
+                />
             </NGridItem>
 
             <NGridItem>
@@ -93,8 +103,13 @@ const useCOptions = [
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="resourceRatio" :min="0.2" :max="1" :step="0.05"
-                    :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1" />
+                <InputNumber
+                    v-model:value="resourceRatio"
+                    :min="0.2"
+                    :max="1"
+                    :step="0.05"
+                    :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1"
+                />
             </NGridItem>
 
             <NGridItem>

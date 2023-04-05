@@ -12,10 +12,10 @@ export function setBrowserEvents() {
         panelWindow.webContents.send('captcha-status-did-update', status);
     });
 
+    ipcMain.handle('get-response-time', () => aresStore.responseTime);
+
     ipcMain.on('update-response-time', (_e, time: number) => {
         aresStore.responseTime = time;
         mainWindow.webContents.send('response-time-did-update', time);
     });
-
-    ipcMain.handle('get-response-time', () => aresStore.responseTime);
 };

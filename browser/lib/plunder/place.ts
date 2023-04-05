@@ -4,7 +4,7 @@ import { wait } from '$browser/utils/helpers';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 export function openPlace(placeButton: PlunderTargetInfo['button']['place']) {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
         const observer = useMutationObserver(document.body, (mutations) => {
             const found = mutations.some((mutation) => {
                 return Array.from(mutation.addedNodes).some((node) => {
@@ -22,6 +22,8 @@ export function openPlace(placeButton: PlunderTargetInfo['button']['place']) {
         placeButton.click();
 
         // Se não perceber mudanças mesmo após três segundos, rejeita a Promise.
-        wait(3000).then(() => observer.stop()).then(() => reject());
+        await wait(3000);
+        observer.stop();
+        reject();
     });
 };

@@ -1,8 +1,8 @@
 import { URL } from 'url';
 import { ipcMain, BrowserView } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
-import { useBrowserViewStore } from '$interface/index';
-import { isAllowedURL } from '$electron/utils/guards';
+import { useBrowserViewStore } from '$electron/interface';
+import { isAllowedOrigin } from '$electron/utils/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
 import type { WebContents, BrowserWindow } from 'electron';
@@ -112,10 +112,10 @@ function setViewSharedEvents(
 
         // Impede que o usuário navegue para fora da página do jogo.
         contents.on('will-navigate', (e, url) => {
-            if (!isAllowedURL(url)) e.preventDefault();
+            if (!isAllowedOrigin(url)) e.preventDefault();
         });
 
-        contents.on('page-title-updated', (_e) => {
+        contents.on('page-title-updated', () => {
             if (contents === mainViewWebContents) return;
             const title = contents.getTitle();
             mainWindow.webContents.send('browser-view-title-updated', contents.id, title);
@@ -143,7 +143,7 @@ function setCurrentViewEvents(view: WebContents, mainWindow: BrowserWindow = get
     });
 
     view.on('did-navigate', () => {
-        insertViewCSS(view);
+        insertViewCSS(view).catch(BrowserViewError.catch);
         updateCurrentViewBackForwardStatus(view);
     });
 
@@ -196,7 +196,7 @@ async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = get
 
         // Cria uma instância de URL para verificar se a URL passada à função é válida.
         const url = new URL(rawUrl);
-        if (!isAllowedURL(url.href)) return null;
+        if (!isAllowedOrigin(url.href)) return null;
 
         mainWindow.addBrowserView(browserView);
 

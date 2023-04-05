@@ -5,10 +5,12 @@ import { useMutationObserver } from '@vueuse/core';
 import { isInstanceOf } from '@tb-dev/ts-guard';
 import { useAresStore } from '$global/stores/ares';
 import { ipcSend, ipcInvoke } from '$global/ipc';
+import { PlunderError } from '$browser/error';
 import type { UseMutationObserverOptions } from '@vueuse/core';
 
 const aresStore = useAresStore();
 const { captcha } = storeToRefs(aresStore);
+
 captcha.value = thereIsBotCheck();
 watchSyncEffect(() => ipcSend('update-captcha-status', captcha.value));
 
@@ -26,7 +28,7 @@ useMutationObserver(content, (mutations) => {
             captcha.value = true;
         } else if (thereIsBotCheckAmongNodes(mutation.removedNodes)) {
             captcha.value = false;
-            reloadMainView();
+            reloadMainView().catch(PlunderError.catch);
         };
     });
 }, options);
@@ -48,7 +50,10 @@ function isBotCheck(node: Node) {
 
 async function reloadMainView() {
     const shouldReload = await ipcInvoke('should-reload-after-captcha');
-    if (shouldReload) nextTick(() => ipcSend('reload-main-view'));
+    if (shouldReload) {
+        await nextTick();
+        ipcSend('reload-main-view');
+    };
 };
 </script>
 
