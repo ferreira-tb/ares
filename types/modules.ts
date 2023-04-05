@@ -20,7 +20,7 @@ export type ModuleRouteRecordRawStrict<T> = Omit<ModuleRouteRecordRaw, 'children
     children?: ModuleRouteRecordRawStrict<T>[];
 };
 
-export type SingleModules = 'default' | 'demolition' | 'plunder-template';
+export type SingleModules = 'app-update' | 'default' | 'demolition' | 'plunder-template';
 export type NestedModules = 'app-config' | 'error-log';
 export type ModuleNames = NestedModules | SingleModules;
 
@@ -36,4 +36,4 @@ export type ModuleRoutes = ConfigModuleRoutes | ErrorModuleRoutes | ModuleNames;
 
 
 // WEBSITE
-export type WebsiteModuleNames = 'ares' | 'issues' | 'repo';
+export type WebsiteModuleNames = 'any-allowed' | 'ares' | 'issues' | 'repo';

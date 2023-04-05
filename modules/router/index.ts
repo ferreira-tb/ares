@@ -3,6 +3,7 @@ import { getRouteNames, getChildrenRoutes } from '$global/utils/router';
 import { errorRoutes } from '$modules/router/error';
 import { configRoutes } from '$modules/router/config';
 import DefaultView from '$global/views/DefaultView.vue';
+import AppUpdateView from '$modules/views/AppUpdateView.vue';
 import DemolitionView from '$modules/views/DemolitionView.vue';
 import PlunderTemplateView from '$modules/views/PlunderTemplateView.vue';
 import type { ModuleRouteRecordRaw, ModuleRoutes, ConfigModuleRoutes } from '$types/modules';
@@ -15,6 +16,11 @@ const singleRoutes: ModuleRouteRecordRaw[] = [
         path: '/',
         name: 'default',
         component: DefaultView
+    },
+    {
+        path: '/app-update',
+        name: 'app-update',
+        component: AppUpdateView
     },
     {
         path: '/demolition',

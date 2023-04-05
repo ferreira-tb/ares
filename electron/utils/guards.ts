@@ -44,7 +44,7 @@ export function assertWallLevel(level: unknown, SomeError: typeof MainProcessErr
     if (!isWallLevel(level)) throw new SomeError(message);
 };
 
-export function isAllowedURL(url: string): boolean {
+export function isAllowedOrigin(url: string): boolean {
     const { origin } = new URL(url);
     return allowedOriginRegexList.some((regex) => regex.test(origin));
 };

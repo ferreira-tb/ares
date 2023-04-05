@@ -61,3 +61,10 @@ export class BrowserViewError extends MainProcessError {
         this.name = 'BrowserViewError';
     };
 };
+
+export class DownloadError extends MainProcessError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'DownloadError';
+    };
+};

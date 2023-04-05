@@ -2,7 +2,7 @@ import { URL } from 'url';
 import { ipcMain, BrowserView } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { useBrowserViewStore } from '$electron/interface';
-import { isAllowedURL } from '$electron/utils/guards';
+import { isAllowedOrigin } from '$electron/utils/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
 import type { WebContents, BrowserWindow } from 'electron';
@@ -112,7 +112,7 @@ function setViewSharedEvents(
 
         // Impede que o usuário navegue para fora da página do jogo.
         contents.on('will-navigate', (e, url) => {
-            if (!isAllowedURL(url)) e.preventDefault();
+            if (!isAllowedOrigin(url)) e.preventDefault();
         });
 
         contents.on('page-title-updated', () => {
@@ -196,7 +196,7 @@ async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = get
 
         // Cria uma instância de URL para verificar se a URL passada à função é válida.
         const url = new URL(rawUrl);
-        if (!isAllowedURL(url.href)) return null;
+        if (!isAllowedOrigin(url.href)) return null;
 
         mainWindow.addBrowserView(browserView);
 

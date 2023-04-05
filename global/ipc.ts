@@ -31,7 +31,6 @@ export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
-export async function ipcInvoke(channel: 'show-update-available-dialog', newVersion: string): Promise<boolean>;
 export async function ipcInvoke(channel: 'is-ignored-app-version', version: string): Promise<boolean>;
 
 // Configurações
@@ -100,9 +99,13 @@ export function ipcSend(channel: 'minimize-main-window'): void;
 export function ipcSend(channel: 'close-main-window'): void;
 
 // Geral
+export function ipcSend(channel: 'open-any-allowed-website', url: string): void;
 export function ipcSend(channel: 'open-ares-website'): void;
 export function ipcSend(channel: 'open-github-repo'): void;
 export function ipcSend(channel: 'open-github-issues'): void;
+export function ipcSend(channel: 'open-app-update-window'): void;
+export function ipcSend(channel: 'download-from-url', url: string): void;
+export function ipcSend(channel: 'show-update-available-dialog', newVersion: string): void;
 export function ipcSend(channel: 'update-captcha-status', status: boolean): void;
 export function ipcSend(channel: 'update-response-time', time: number | null): void;
 

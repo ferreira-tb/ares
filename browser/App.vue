@@ -9,7 +9,7 @@ import { routeNames, router } from '$browser/router/router';
 import { useAresStore } from '$global/stores/ares';
 import { useBrowserStore } from '$browser/stores/browser';
 import { ipcSend } from '$global/ipc';
-import { gameURLRegex } from '$global/utils/constants';
+import { gameOriginRegex } from '$global/utils/constants';
 import { BrowserRouterError } from '$browser/error';
 import TheDeimosTag from '$browser/components/TheDeimosTag.vue';
 import TheCaptchaObserver from '$browser/components/TheCaptchaObserver.vue';
@@ -36,7 +36,7 @@ watchEffect(async () => {
 });
 
 whenever(isDeimosReady, async () => {
-    if (gameURLRegex.test(location.href)) {
+    if (gameOriginRegex.test(location.origin)) {
         const responseTime = await Deimos.invoke('get-response-time');
         ipcSend('update-response-time', responseTime);
         aresStore.responseTime = responseTime;
