@@ -15,7 +15,7 @@ jobs:
     - name: Atualização da versão do Ares
       uses: actions/setup-node@v3
       with:
-        node-version: '18.x'
+        node-version: latest
     - run: npm install @octokit/core
     - run: |
         git checkout -b update-to-latest

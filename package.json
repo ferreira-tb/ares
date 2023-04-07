@@ -45,6 +45,7 @@
         "@tb-dev/ts-guard-dom": "^1.0.0",
         "@vueuse/core": "^9.13.0",
         "@vueuse/electron": "^9.13.0",
+        "discord.js": "^14.9.0",
         "mechanus": "^1.0.5",
         "pinia": "^2.0.33",
         "semver": "^7.3.8",
