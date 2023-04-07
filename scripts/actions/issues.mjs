@@ -32,6 +32,10 @@ const data = {
 };
 
 const validLabels = ['bug', 'enhancement', 'question'];
+
+console.log(data);
+console.log(data.labels.some((label) => validLabels.includes(label.name)));
+
 if (!data.isPR && data.labels.length > 0 && data.labels.some((label) => validLabels.includes(label.name))) {
     const embed = new EmbedBuilder()
         .setTitle(data.title)
