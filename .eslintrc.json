@@ -8,7 +8,7 @@
         "tsconfigRootDir": ".",
         "extraFileExtensions": [".vue"]
     },
-    "ignorePatterns": ["docs/**/*", "dist/**/*", "out/**/*", "**/*.config.js"],
+    "ignorePatterns": ["docs/**/*", "dist/**/*", "out/**/*", "scripts/**/*", "**/*.config.js"],
     "root": true,
     "env": {
         "browser": true,
