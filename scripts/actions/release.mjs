@@ -63,9 +63,7 @@ const webhookClient = new WebhookClient({
     token: process.env.DISCORD_WEBHOOK_RELEASE_TOKEN
 });
 
-webhookClient.send({
-	embeds: [embed]
-});
+await webhookClient.send({ embeds: [embed] });
 
 // Atualiza o arquivo latest.json
 const docsDir = path.resolve(__dirname, '../../docs');
