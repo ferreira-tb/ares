@@ -29,7 +29,7 @@ try {
         download: assets.data.browser_download_url
     };
 
-    const docsDir = path.resolve(__dirname, '../docs');
+    const docsDir = path.resolve(__dirname, '../../docs');
     const latestJson = path.resolve(docsDir, 'latest.json');
     await fs.writeFile(latestJson, JSON.stringify(latest, null, 4), 'utf-8');
 
