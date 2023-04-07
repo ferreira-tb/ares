@@ -6,20 +6,23 @@ on:
     
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  DISCORD_CHANNEL_URL_BUGS: ${{ secrets.DISCORD_CHANNEL_URL_BUGS }}
+  DISCORD_WEBHOOK_MERGE_ID: ${{ secrets.DISCORD_WEBHOOK_RELEASE_ID }}
+  DISCORD_WEBHOOK_MERGE_TOKEN: ${{ secrets.DISCORD_WEBHOOK_RELEASE_TOKEN }}
 
 jobs:
   update-to-latest:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Atualização da versão do Ares
+    - name: Procedimentos pós-release
       uses: actions/setup-node@v3
       with:
-        node-version: latest
-    - run: npm install @octokit/core
+        node-version: '18.x'
+    - run: npm install @octokit/core discord.js
     - run: |
         git checkout -b update-to-latest
-    - run: node scripts/actions/latest.mjs
+    - run: node scripts/actions/release.mjs
     - run: |
         git config user.name ${{ github.actor }}
         git add ./docs
