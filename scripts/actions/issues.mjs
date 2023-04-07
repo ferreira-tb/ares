@@ -10,11 +10,9 @@ const requestInfo = {
     }
 };
 
-console.log('issue_number:', process.env.GITHUB_EVENT_ISSUE_NUMBER);
-console.log('action:', process.env.GITHUB_EVENT_ACTION);
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const issue = await octokit.request('GET /repos/{owner}/{repo}/issues/{issue_number}', {
-    ...requestInfo, issue_number: process.env.GITHUB_EVENT_ISSUE_NUMBER
+    ...requestInfo, issue_number: Number.parseInt(process.env.GITHUB_EVENT_ISSUE_NUMBER, 10)
 });
 
 const data = {
