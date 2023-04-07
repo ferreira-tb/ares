@@ -1,0 +1,29 @@
+name: Issue opened
+
+on:
+  issues:
+    types: [opened, reopened, closed]
+
+env:
+  DISCORD_WEBHOOK_BUG_ID: ${{ secrets.DISCORD_WEBHOOK_BUG_ID }}
+  DISCORD_WEBHOOK_BUG_TOKEN: ${{ secrets.DISCORD_WEBHOOK_BUG_TOKEN }}
+  DISCORD_WEBHOOK_ENHANCEMENT_ID: ${{ secrets.DISCORD_WEBHOOK_ENHANCEMENT_ID }}
+  DISCORD_WEBHOOK_ENHANCEMENT_TOKEN: ${{ secrets.DISCORD_WEBHOOK_ENHANCEMENT_TOKEN }}
+  DISCORD_WEBHOOK_QUESTION_ID: ${{ secrets.DISCORD_WEBHOOK_QUESTION_ID }}
+  DISCORD_WEBHOOK_QUESTION_TOKEN: ${{ secrets.DISCORD_WEBHOOK_QUESTION_TOKEN }}
+  DISCORD_WEBHOOK_TEST_ID: ${{ secrets.DISCORD_WEBHOOK_TEST_ID }}
+  DISCORD_WEBHOOK_TEST_TOKEN: ${{ secrets.DISCORD_WEBHOOK_TEST_TOKEN }}
+  GITHUB_EVENT_ACTION: ${{ github.event.action }}
+  GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  issue-opened:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+    - run: npm install @octokit/core discord.js
+    - run: node scripts/actions/issue-opened.mjs
