@@ -31,11 +31,7 @@ const data = {
     isPR: Boolean(issue.data.pull_request)
 };
 
-const validLabels = ['bug', 'enhancement', 'question'];
-
-console.log(data);
-console.log(data.labels.some((label) => validLabels.includes(label.name)));
-
+const validLabels = ['bug', 'enhancement', 'question', 'panel'];
 if (!data.isPR && data.labels.length > 0 && data.labels.some((label) => validLabels.includes(label.name))) {
     const embed = new EmbedBuilder()
         .setTitle(data.title)
