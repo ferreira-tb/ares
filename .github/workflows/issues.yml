@@ -1,4 +1,4 @@
-name: Issue opened
+name: Issues
 
 on:
   issues:
@@ -18,7 +18,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  issue-opened:
+  issues:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -26,4 +26,4 @@ jobs:
       with:
         node-version: '18.x'
     - run: npm install @octokit/core discord.js
-    - run: node scripts/actions/issue-opened.mjs
+    - run: node scripts/actions/issues.mjs
