@@ -31,7 +31,7 @@ const data = {
     isPR: Boolean(issue.data.pull_request)
 };
 
-const validLabels = ['bug', 'enhancement', 'question', 'panel'];
+const validLabels = ['bug', 'enhancement', 'question'];
 if (!data.isPR && data.labels.length > 0 && data.labels.some((label) => validLabels.includes(label.name))) {
     const embed = new EmbedBuilder()
         .setTitle(data.title)
@@ -47,16 +47,15 @@ if (!data.isPR && data.labels.length > 0 && data.labels.some((label) => validLab
     };
 
     if (data.state === 'open') {
+        embed.setColor('#6cc644');
         if (process.env.GITHUB_EVENT_ACTION === 'reopened') {
-            embed.setColor('#F1C40F');
             embed.addFields({ name: 'Status', value: 'Reaberto', inline: true });
         } else {
-            embed.setColor('#2ECC71');
-            embed.addFields({ name: 'Status', value: 'Aberto', inline: true });
+            embed.addFields({ name: 'Status', value: 'Em aberto', inline: true });
         };
 
     } else if (data.state === 'closed') {
-        embed.setColor('#E74C3C');
+        embed.setColor('#6e5494');
         embed.addFields({ name: 'Status', value: 'Fechado', inline: true });
     };
 
