@@ -32,3 +32,5 @@ website
 
 out
 *.env
+
+secrets.json
