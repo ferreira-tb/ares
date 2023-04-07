@@ -6,7 +6,6 @@ import { Octokit } from '@octokit/core';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const lightUrl = 'https://i.imgur.com/cy7iQpX.png';
 
 const requestInfo = {
     owner: 'ferreira-tb',
@@ -41,8 +40,8 @@ const previous = {
 const embed = new EmbedBuilder()
     .setTitle(latest.version)
     .setURL(latest.notes)
-    .setAuthor({ name: 'Nova versão disponível', iconURL: lightUrl })
-    .setThumbnail(lightUrl)
+    .setAuthor({ name: 'Nova versão disponível', iconURL: process.env.ICON_URL_LIGHT })
+    .setThumbnail(process.env.ICON_URL_LIGHT)
     .addFields(
         { name: 'Download', value: `[Clique aqui](${latest.download})`, inline: true },
         { name: 'Notas de atualização', value: `[Clique aqui](${latest.notes})`, inline: true },
