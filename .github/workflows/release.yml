@@ -3,7 +3,9 @@ name: Release
 on:
   release:
     types: [published]
-    
+  label:
+    types: [edited]
+  
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   DISCORD_CHANNEL_URL_BUGS: ${{ secrets.DISCORD_CHANNEL_URL_BUGS }}
@@ -11,21 +13,20 @@ env:
   DISCORD_WEBHOOK_MERGE_TOKEN: ${{ secrets.DISCORD_WEBHOOK_RELEASE_TOKEN }}
 
 jobs:
-  update-to-latest:
+  new-release:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Procedimentos pós-release
-      uses: actions/setup-node@v3
+    - uses: actions/setup-node@v3
       with:
         node-version: '18.x'
     - run: npm install @octokit/core discord.js
     - run: |
-        git checkout -b update-to-latest
+        git checkout -B new-release
     - run: node scripts/actions/release.mjs
     - run: |
         git config user.name ${{ github.actor }}
         git add ./docs
         git commit -m "chore: atualiza versão do Ares"
-        git push origin update-to-latest 
-    - run: 'gh pr create -f -t "chore: atualiza versão do Ares" -H update-to-latest -B master -l auto'
+        git push origin new-release
+    - run: 'gh pr create --fill --label auto'
