@@ -49,7 +49,7 @@ const embed = new EmbedBuilder()
     )
     .addFields({ name: 'Encontrou algum bug?', value: `Por favor, reporte-o [aqui](${process.env.DISCORD_CHANNEL_URL_BUGS}).` })
     .setTimestamp(latest.date)
-    .setFooter({ text: 'Essa mensagem foi enviada automaticamente.' });
+    .setFooter({ text: 'Essa mensagem foi gerada automaticamente.' });
 
 if (latest.isAlpha) {
     embed.setDescription(
