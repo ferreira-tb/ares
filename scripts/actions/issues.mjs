@@ -56,7 +56,7 @@ if (!data.isPR && data.labels.length > 0 && data.labels.some((label) => validLab
 
     } else if (data.state === 'closed') {
         embed.setColor('#6e5494');
-        embed.addFields({ name: 'Status', value: 'Fechado', inline: true });
+        embed.addFields({ name: 'Status', value: 'Concluído', inline: true });
     };
 
     embed.addFields({ name: 'Autor', value: data.author, inline: true });
