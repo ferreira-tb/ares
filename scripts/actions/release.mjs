@@ -29,7 +29,7 @@ const latest = {
     download: assets.data.browser_download_url,
 
     isAlpha: releases.data[0].tag_name.includes('alpha'),
-    date: Date.parse(releases.data[0].published_at)
+    date: Date.parse(releases.data[0].created_at)
 };
 
 const previous = {
