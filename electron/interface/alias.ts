@@ -1,6 +1,6 @@
 import { storeToRefs } from 'mechanus';
 import { getPanelWindow } from '$electron/utils/helpers';
-import { isUserAlias } from '$electron/utils/guards';
+import { isUserAlias } from '$global/guards';
 import { fetchVillageGroups, patchVillageGroups } from '$electron/utils/groups';
 import { AliasPatchError } from '$electron/error';
 import { sequelize } from '$electron/database';

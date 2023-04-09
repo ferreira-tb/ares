@@ -3,30 +3,33 @@
     "include": [
         "env.d.ts",
         "global.d.ts",
-        "types/**/*",
-        "panel/**/*",
-        "panel/**/*.vue",
         "browser/**/*",
         "browser/**/*.vue",
+        "global/**/*",
         "modules/**/*",
         "modules/**/*.vue",
-        "global/**/*",
-        "dev/**/*",
-        "main/**/*"
+        "panel/**/*",
+        "panel/**/*.vue",
+        "renderer/**/*",
+        "renderer/**/*.vue",
+        "types/**/*",
+        "ui/**/*",
+        "ui/**/*.vue"
     ],
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "$types/*": ["./types/*"],
+            "$assets/*": ["./renderer/assets/*"],
             "$browser/*": ["./browser/*"],
-            "$lib/*": ["./browser/lib/*"],
+            "$deimos/*": ["./deimos/*"],
             "$global/*": ["./global/*"],
-            "$styles/*": ["./global/assets/*"],
+            "$icons/*": ["./renderer/components/icons/*"],
+            "$lib/*": ["./browser/lib/*"],
             "$modules/*": ["./modules/*"],
             "$panel/*": ["./panel/*"],
-            "$deimos/*": ["./deimos/*"],
-            "$icons/*": ["./global/components/icons/*"],
-            "$main/*": ["./main/*"]
+            "$renderer/*": ["./renderer/*"],
+            "$types/*": ["./types/*"],
+            "$ui/*": ["./ui/*"]
         },
 
         "target": "esnext",

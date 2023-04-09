@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { usePlunderConfigStore } from '$global/stores/plunder';
+import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import type { Pinia } from 'pinia';
 
 export function setPlunderEvents(pinia: Pinia) {

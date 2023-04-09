@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NButton, NButtonGroup, useDialog, useMessage } from 'naive-ui';
-import { assertUserAlias, isDistance } from '$global/utils/guards';
-import { ipcInvoke, ipcSend } from '$global/ipc';
+import { assertUserAlias, isDistance } from '$global/guards';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { ModuleConfigError } from '$modules/error';
-import InputWall from '$global/components/InputWall.vue';
-import InputNumber from '$global/components/InputNumber.vue';
-import LabelPopover from '$global/components/LabelPopover.vue';
+import InputWall from '$renderer/components/InputWall.vue';
+import InputNumber from '$renderer/components/InputNumber.vue';
+import LabelPopover from '$renderer/components/LabelPopover.vue';
 import type { PlunderConfigType } from '$types/plunder';
 
 const props = defineProps<{

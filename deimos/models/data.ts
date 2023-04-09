@@ -1,5 +1,5 @@
 import { isBoolean, isString, isInteger, toNull } from '@tb-dev/ts-guard';
-import { isWorld } from '$global/utils/guards';
+import { isWorld } from '$global/guards';
 import type { RawTribalWarsGameData } from '$types/deimos';
 import type { TribalWarsGameDataType } from '$types/game';
 

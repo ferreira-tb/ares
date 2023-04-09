@@ -2,11 +2,11 @@
 import { reactive, watchEffect } from 'vue';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { NCard } from 'naive-ui';
-import { ipcInvoke, ipcSend } from '$global/ipc';
-import { getLocaleDateString } from '$global/utils/helpers';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { getLocaleDateString } from '$global/helpers';
 import { ModuleError } from '$modules/error';
 import type { ErrorLogType } from '$types/error';
-import ResultSucess from '$global/components/ResultSucess.vue';
+import ResultSucess from '$renderer/components/ResultSucess.vue';
 
 const raw = await ipcInvoke('get-error-log');
 if (!Array.isArray(raw)) throw new ModuleError('Database connection error.');

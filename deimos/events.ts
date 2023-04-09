@@ -1,6 +1,6 @@
 import { assertInteger } from '@tb-dev/ts-guard';
-import { Deimos } from '$deimos/shared/ipc';
-import { DeimosError } from '$deimos/shared/error';
+import { Deimos } from '$deimos/interface/ipc';
+import { DeimosError } from '$deimos/interface/error';
 import { TribalWarsGameData } from '$deimos/models/data';
 import { PlunderInfo } from '$deimos/models/plunder';
 import { Units } from '$deimos/models/units';

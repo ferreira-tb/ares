@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
-import { ipcInvoke } from '$global/ipc';
-import { isUserAlias } from '$global/utils/guards';
+import { ipcInvoke } from '$renderer/ipc';
+import { isUserAlias } from '$global/guards';
 import PlunderTemplateModal from '$modules/components/PlunderTemplateModal.vue';
-import ResultError from '$global/components/ResultError.vue';
-import ResultInfo from '$global/components/ResultInfo.vue';
+import ResultError from '$renderer/components/ResultError.vue';
+import ResultInfo from '$renderer/components/ResultInfo.vue';
 import PlunderTemplateCard from '$modules/components/PlunderTemplateCard.vue';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 

@@ -1,12 +1,13 @@
+import { storeToRefs } from 'pinia';
 import { useMutationObserver, useEventListener } from '@vueuse/core';
 import { assertInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
-import { calcDistance } from '$global/utils/helpers';
-import { assertCoordsFromTextContent, parseGameDate } from '$global/utils/parser';
+import { calcDistance } from '$global/helpers';
+import { parseCoordsFromTextContentStrict, parseGameDate } from '$renderer/utils/parser';
 import { PlunderError } from '$browser/error';
-import { resources as resourceList } from '$global/utils/constants';
-import { useCurrentVillageStore } from '$global/stores/village';
-import { assertWallLevel } from '$global/utils/guards';
+import { Kronos, resources as resourceList } from '$global/constants';
+import { useCurrentVillageStore } from '$renderer/stores/village';
+import { assertWallLevel } from '$global/guards';
 import type { Coords, WallLevel } from '$types/game';
 import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder';
 
@@ -63,20 +64,23 @@ export function queryTargetsInfo() {
     // Desconecta qualquer observer que esteja ativo.
     eventTarget.dispatchEvent(new Event('stop'));
 
+    const currentVillageStore = useCurrentVillageStore();
+    const { x, y } = storeToRefs(currentVillageStore);
+
     const plunderListRows = document.queryAsArray('#plunder_list tbody tr[id^="village_"]');
     for (const row of plunderListRows) {
         if (row.hasAttribute('data-tb-village')) continue;
  
         // Registra o ID da aldeia.
         const villageId = row.getAttributeStrict('id').replace(/\D/g, '');
-        row.setAttribute('data-tb-village', villageId);
         if (targets.has(villageId)) continue;
+        row.setAttribute('data-tb-village', villageId);
 
         // Objeto onde serão armazenadas as informações sobre a aldeia.
         const info = new PlunderTargetInfo();
 
         // Campo de relatório. É usado para calcular a distância até a aldeia-alvo.
-        queryReport(row, info);
+        queryReport(row, info, x.value, y.value);
         // Data do último ataque.
         queryLastAttack(row, info);
         // Quantidade de recursos.
@@ -101,15 +105,14 @@ export function queryTargetsInfo() {
     useEventListener(eventTarget, 'stop', () => observer.stop(), { once: true });
 };
 
-function queryReport(row: Element, info: PlunderTargetInfo) {
-    const { x, y } = useCurrentVillageStore();
+function queryReport(row: Element, info: PlunderTargetInfo, currentX: number | null, currentY: number | null) {
+    assertInteger(currentX);
+    assertInteger(currentY);
+
     const report = row.queryAndAssert('td a[href*="screen=report"]');
-    const coords = assertCoordsFromTextContent(report.textContent);
+    const coords = parseCoordsFromTextContentStrict(report.textContent);
 
-    assertInteger(x);
-    assertInteger(y);
-
-    info.distance = calcDistance(x, y, coords[0], coords[1]);
+    info.distance = calcDistance(currentX, currentY, coords[0], coords[1]);
     info.coords.x = coords[0];
     info.coords.y = coords[1];
 };
@@ -124,7 +127,7 @@ function queryLastAttack(row: Element, info: PlunderTargetInfo) {
         const date = parseGameDate(field.textContent);
         if (date) {
             info.lastAttack = date;
-            info.minutesSince = Math.ceil((Date.now() - date) / 60000);
+            info.minutesSince = Math.ceil((Date.now() - date) / Kronos.MINUTE);
             return;
         };
     };

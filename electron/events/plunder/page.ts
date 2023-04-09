@@ -2,8 +2,8 @@ import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { MainProcessEventError } from '$electron/error';
 import { usePlunderStore, usePlunderConfigStore, usePlunderCacheStore } from '$electron/interface';
-import { plunderSearchParams } from '$electron/utils/constants';
-import { generateRandomDelay } from '$electron/utils/helpers';
+import { GameSearchParams } from '$global/constants';
+import { generateRandomDelay } from '$global/helpers';
 import type { PlunderPageListType } from '$types/plunder';
 
 export function setPlunderPageEvents() {
@@ -32,7 +32,7 @@ export function setPlunderPageEvents() {
     ipcMain.handle('navigate-to-first-plunder-page', (e) => {
         try {
             const url = new URL(e.sender.getURL());
-            url.search = plunderSearchParams;
+            url.search = GameSearchParams.Farm;
             queueMicrotask(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch));
             return true;
         } catch (err) {

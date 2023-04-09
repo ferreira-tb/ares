@@ -1,8 +1,8 @@
 import { createRouter, createMemoryHistory } from 'vue-router';
-import { getRouteNames, getChildrenRoutes } from '$global/utils/router';
+import { getRouteNames, getChildrenRoutes } from '$renderer/utils/router';
 import { errorRoutes } from '$modules/router/error';
 import { configRoutes } from '$modules/router/config';
-import DefaultView from '$global/views/DefaultView.vue';
+import DefaultView from '$renderer/views/DefaultView.vue';
 import AppUpdateView from '$modules/views/AppUpdateView.vue';
 import DemolitionView from '$modules/views/DemolitionView.vue';
 import PlunderTemplateView from '$modules/views/PlunderTemplateView.vue';

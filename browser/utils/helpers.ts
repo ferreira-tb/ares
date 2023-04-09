@@ -1,10 +1,10 @@
-import { ipcSend } from '$global/ipc';
-import { Deimos } from '$deimos/shared/ipc';
-import { useAresStore } from '$global/stores/ares';
-import { useFeaturesStore } from '$global/stores/features';
-import { useGroupsStore } from '$global/stores/groups';
-import { usePlayerStore } from '$global/stores/player';
-import { useCurrentVillageStore } from '$global/stores/village';
+import { ipcSend } from '$renderer/ipc';
+import { Deimos } from '$deimos/interface/ipc';
+import { useAresStore } from '$renderer/stores/ares';
+import { useFeaturesStore } from '$renderer/stores/features';
+import { useGroupsStore } from '$renderer/stores/groups';
+import { usePlayerStore } from '$renderer/stores/player';
+import { useCurrentVillageStore } from '$renderer/stores/village';
 import { BrowserError } from '$browser/error';
 
 export async function updateGameData() {

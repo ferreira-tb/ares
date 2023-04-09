@@ -1,6 +1,6 @@
-@use '$styles/variables.scss';
-@use '$styles/transitions.scss';
-@use '$styles/scrollbar.scss';
+@use '$assets/variables.scss';
+@use '$assets/transitions.scss';
+@use '$assets/scrollbar.scss';
 
 body {
     @include scrollbar.scrollbar();

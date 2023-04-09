@@ -1,6 +1,6 @@
-import { useCurrentVillageStore } from '$global/stores/village';
-import { usePlunderStore } from '$global/stores/plunder';
-import { ipcSend } from '$global/ipc';
+import { useCurrentVillageStore } from '$renderer/stores/village';
+import { usePlunderStore } from '$renderer/stores/plunder';
+import { ipcSend } from '$renderer/ipc';
 import type { PlunderPageListType, PlunderPageType } from '$types/plunder';
 
 class PlunderPageList implements PlunderPageListType {

@@ -2,11 +2,11 @@ import { computed, nextTick, ref } from 'vue';
 import { ipcRenderer } from 'electron';
 import { assert, isKeyOf, assertInteger, isInteger } from '@tb-dev/ts-guard';
 import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
-import { useUnitsStore } from '$global/stores/units';
-import { assertFarmUnit } from '$global/utils/guards';
+import { useUnitsStore } from '$renderer/stores/units';
+import { assertFarmUnit } from '$global/guards';
 import { PlunderError } from '$browser/error';
-import { ipcInvoke } from '$global/ipc';
-import type { usePlunderConfigStore } from '$global/stores/plunder';
+import { ipcInvoke } from '$renderer/ipc';
+import type { usePlunderConfigStore } from '$renderer/stores/plunder';
 import type { FarmUnits, FarmUnitsAmount, UnitAmount } from '$types/game';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 import type { CustomPlunderTemplateType } from '$types/plunder';
@@ -97,7 +97,7 @@ export async function queryTemplateData() {
     // Campos do modelo A.
     const aRow = table.queryAndAssert('tr:nth-of-type(2):has(td input[type="text"][name^="spear" i])');
     const aFields = aRow.queryAsArray('td input[type="text"][name]');
-    assert(aFields.length >= 7, 'Could not find all text fields for template A.');
+    assert(aFields.length >= 7, `Could not find all text fields for template A: ${aFields.length} found.`);
     parseUnitAmount('a', aFields);
 
     const aCarryField = aRow.queryAndAssert('td:not(:has(input[data-tb-template-a])):not(:has(input[type*="hidden"]))');
@@ -106,7 +106,7 @@ export async function queryTemplateData() {
     // Campos do modelo B.
     const bRow = table.queryAndAssert('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
     const bFields = bRow.queryAsArray('td input[type="text"][name]');
-    assert(bFields.length >= 7, 'Could not find all text fields for template B.');
+    assert(bFields.length >= 7, `Could not find all text fields for template B: ${bFields.length} found.`);
     parseUnitAmount('b', bFields);
 
     const bCarryField = bRow.queryAndAssert('td:not(:has(input[data-tb-template-b])):not(:has(input[type*="hidden"]))');
@@ -133,8 +133,7 @@ export async function queryTemplateData() {
  * @param fields Campos da linha.
  */
 function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
-    const template = row === 'a' ? allTemplates.getStrict('a') : allTemplates.getStrict('b');
-
+    const template = allTemplates.getStrict(row);
     for (const field of fields) {
         /** O atributo `name` é usado para determinar a unidade referente ao campo. */
         const fieldName = field.getAttributeStrict('name');
@@ -271,5 +270,6 @@ async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType): 
     assertInteger(carry, `Expected carry capacity of template ${template.type} to be an integer, but got ${carry}.`);
     plunderTemplate.carry.value = carry;
 
+    await nextTick();
     return plunderTemplate;
 };

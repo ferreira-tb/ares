@@ -2,9 +2,9 @@
 import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
 import { isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
-import { isDistance } from '$global/utils/guards';
-import InputNumber from '$global/components/InputNumber.vue';
-import LabelPopover from '$global/components/LabelPopover.vue';
+import { isDistance } from '$global/guards';
+import InputNumber from '$renderer/components/InputNumber.vue';
+import LabelPopover from '$renderer/components/LabelPopover.vue';
 import type { PlunderConfigType, BlindAttackPattern, UseCPattern } from '$types/plunder';
 import type { NSelectPatternOption } from '$types/utils';
 

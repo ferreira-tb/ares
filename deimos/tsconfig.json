@@ -1,25 +1,24 @@
 {
     "include": [
         "./**/*",
-        "../types/**/*",
-        "../global/**/*"
-    ],
-    "exclude": [
-        "../global/test/*"
+        "../global/**/*",
+        "../renderer/**/*",
+        "../types/**/*"
     ],
 
     "compilerOptions": {
         "target": "esnext",
         "lib": ["esnext", "DOM"],
         "paths": {
-            "$types/*": ["../types/*"],
-            "$global/*": ["../global/*"],
-            "$phobos/*": ["../phobos/*"],
             "$browser/*": ["../browser/*"],
+            "$deimos/*": ["./*"],
+            "$global/*": ["../global/*"],
             "$lib/*": ["../browser/lib/*"],
             "$modules/*": ["../modules/*"],
             "$panel/*": ["../panel/*"],
-            "$deimos/*": ["./*"]
+            "$phobos/*": ["../phobos/*"],
+            "$renderer/*": ["../renderer/*"],
+            "$types/*": ["../types/*"]    
         },
         
         // Modo estrito

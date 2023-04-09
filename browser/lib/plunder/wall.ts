@@ -1,6 +1,6 @@
 import { assertInteger } from '@tb-dev/ts-guard';
-import { useUnitsStore } from '$global/stores/units';
-import { ipcInvoke, ipcSend } from '$global/ipc';
+import { useUnitsStore } from '$renderer/stores/units';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { openPlace } from '$lib/plunder/place';
 import { sendAttackFromPlace } from '$lib/plunder/attack';
 import { PlunderError } from '$browser/error';

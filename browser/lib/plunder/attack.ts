@@ -1,10 +1,10 @@
 import { useEventListener, useMutationObserver } from '@vueuse/core';
 import { assertInteger, isInstanceOf, assertString, assert } from '@tb-dev/ts-guard';
-import { usePlunderConfigStore } from '$global/stores/plunder';
-import { generateRandomDelay } from '$global/utils/helpers';
+import { usePlunderConfigStore } from '$renderer/stores/plunder';
+import { generateRandomDelay } from '$global/helpers';
 import { wait } from '$browser/utils/helpers';
-import { unitsRegex } from '$global/utils/constants';
-import { ipcSend, ipcInvoke } from '$global/ipc';
+import { unitsRegex } from '$global/regex';
+import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
 import type { PlaceUnitsAmount } from '$types/game';
 import type { PlunderAttackDetails } from '$types/plunder';

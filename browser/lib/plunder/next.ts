@@ -1,11 +1,11 @@
 import { toRaw } from 'vue';
-import { ipcInvoke } from '$global/ipc';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
 import { queryAvailableUnits } from '$lib/plunder/units';
 import { getPlunderTargets } from '$lib/plunder/targets';
 import { PlunderError } from '$browser/error';
-import { usePlunderConfigStore } from '$global/stores/plunder';
-import { useCurrentVillageStore } from '$global/stores/village';
+import { usePlunderConfigStore } from '$renderer/stores/plunder';
+import { useCurrentVillageStore } from '$renderer/stores/village';
 import type { PlunderGroupType } from '$types/plunder';
 import type { PlunderTargetInfo } from '$lib/plunder/targets';
 
@@ -15,7 +15,7 @@ export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
         const config = usePlunderConfigStore();
         const wentToNextPage = await navigateToNextPage(config, groupInfo);
         if (wentToNextPage || !config.groupAttack || !groupInfo) return;
-        await navigateToNextVillage(config, groupInfo);
+        navigateToNextVillage(config, groupInfo);
     } catch (err) {
         PlunderError.catch(err);
     };
@@ -46,7 +46,7 @@ async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStor
     };
 };
 
-async function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>, groupInfo: PlunderGroupType) {
+function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>, groupInfo: PlunderGroupType) {
     try {
         const currentVillageId = useCurrentVillageStore().getId();
         const groupVillage = groupInfo.villages.getStrict(currentVillageId);
@@ -58,10 +58,8 @@ async function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigS
             groupVillage.waveMaxDistance += config.fieldsPerWave;
         };
 
-        const updated = await ipcInvoke('update-plunder-group-info', toRaw(groupInfo));
-        if (!updated) throw new PlunderError('Failed to update group info.');
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        ipcInvoke('navigate-to-next-plunder-village', currentVillageId);
+        ipcSend('update-plunder-group-info', toRaw(groupInfo));
+        ipcSend('navigate-to-next-plunder-village', currentVillageId);
         
     } catch (err) {
         PlunderError.catch(err);

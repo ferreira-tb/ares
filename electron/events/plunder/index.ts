@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { isInteger } from '@tb-dev/ts-guard';
-import { isWorld } from '$electron/utils/guards';
+import { isWorld } from '$global/guards';
 import { MainProcessEventError } from '$electron/error';
 import { extractWorldUnitsFromMap } from '$electron/utils/helpers';
 import { useCacheStore, WorldUnit, worldUnitsMap } from '$electron/interface';

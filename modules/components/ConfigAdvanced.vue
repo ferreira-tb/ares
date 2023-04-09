@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NDivider, NGrid, NGridItem, NButton, useDialog, useMessage } from 'naive-ui';
-import { ipcInvoke } from '$global/ipc';
+import { ipcInvoke } from '$renderer/ipc';
 import { ModuleConfigError } from '$modules/error';
 
 const dialog = useDialog();

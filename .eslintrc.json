@@ -8,7 +8,14 @@
         "tsconfigRootDir": ".",
         "extraFileExtensions": [".vue"]
     },
-    "ignorePatterns": ["docs/**/*", "dist/**/*", "out/**/*", "scripts/**/*", "**/*.config.js"],
+    "ignorePatterns": [
+        "dist/**/*",
+        "docs/**/*",
+        "out/**/*",
+        "scripts/**/*",
+        "**/*.config.js",
+        "**/*.config.ts"
+    ],
     "root": true,
     "env": {
         "browser": true,
@@ -53,6 +60,7 @@
         "no-invalid-regexp": "error",
         "no-irregular-whitespace": "error",
         "no-loss-of-precision": "off",
+        "no-magic-numbers": "off",
         "no-misleading-character-class": "error",
         "no-new-native-nonconstructor": "error",
         "no-new-symbol": "error",

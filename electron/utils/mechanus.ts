@@ -1,4 +1,4 @@
-import { isWorld, isWorldOrNull, isWallLevel } from '$electron/utils/guards';
+import { isWorld, isWorldOrNull, isWallLevel } from '$global/guards';
 import { MechanusStoreError } from '$electron/error';
 import type { MechanusRefOptions } from 'mechanus';
 import type { World, WallLevel } from '$types/game';

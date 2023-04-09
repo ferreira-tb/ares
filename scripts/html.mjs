@@ -17,8 +17,8 @@ try {
     const modulesHtml = path.join(distDir, 'modules.html');
     await fixHtmlFile(modulesHtml);
 
-    const mainHtml = path.join(distDir, 'main.html');
-    await fixHtmlFile(mainHtml);
+    const uiHtml = path.join(distDir, 'ui.html');
+    await fixHtmlFile(uiHtml);
 
     console.log(`Fim dos trabalhos. Tempo total: ${Date.now() - startTime}ms.`);
 

@@ -1,10 +1,10 @@
 @charset 'utf-8';
 
-@use '$styles/variables.scss';
-@use '$styles/base.scss';
-@use '$styles/transitions.scss';
-@forward '$styles/scrollbar.scss';
-@forward '$styles/utils.scss';
+@use '$assets/variables.scss';
+@use '$assets/base.scss';
+@use '$assets/transitions.scss';
+@forward '$assets/scrollbar.scss';
+@forward '$assets/utils.scss';
 
 html {
     overflow: hidden;

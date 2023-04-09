@@ -4,7 +4,8 @@ import { storeToRefs } from 'mechanus';
 import { setAppMenu } from '$electron/menu/menu';
 import { sequelize } from '$electron/database';
 import { setEvents } from '$electron/events/index';
-import { gameURL, favicon, panelHtml, mainHtml, browserJs } from '$electron/utils/constants';
+import { WebsiteUrl } from '$global/constants';
+import { favicon, panelHtml, uiHtml, browserJs } from '$electron/utils/files';
 import { setBrowserViewAutoResize } from '$electron/utils/view';
 import { MainProcessError } from '$electron/error';
 
@@ -76,8 +77,8 @@ function createWindow() {
     process.env.PANEL_WINDOW_ID = panelWindow.id.toString(10);
 
     Promise.all([
-        mainView.webContents.loadURL(gameURL),
-        mainWindow.loadFile(mainHtml),
+        mainView.webContents.loadURL(WebsiteUrl.Game),
+        mainWindow.loadFile(uiHtml),
         panelWindow.loadFile(panelHtml)
     ]).catch(MainProcessError.catch);
 

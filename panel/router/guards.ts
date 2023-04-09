@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia';
-import { useAresStore } from '$global/stores/ares';
+import { useAresStore } from '$renderer/stores/ares';
 import type { Router } from 'vue-router';
 
 export function setNavigationGuards(router: Router) {

@@ -1,9 +1,9 @@
 import { nextTick } from 'vue';
 import { assert } from '@tb-dev/ts-guard';
-import { Deimos } from '$deimos/shared/ipc';
-import { useUnitsStore } from '$global/stores/units';
-import { assertUnit } from '$global/utils/guards';
-import { ipcInvoke } from '$global/ipc';
+import { Deimos } from '$deimos/interface/ipc';
+import { useUnitsStore } from '$renderer/stores/units';
+import { assertUnit } from '$global/guards';
+import { ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
 import type { AllUnits } from '$types/game';
 

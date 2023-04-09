@@ -1,6 +1,6 @@
-import { AresError } from '$global/error';
+import { RendererProcessError } from '$renderer/error';
 
-export class ModuleError extends AresError {
+export class ModuleError extends RendererProcessError {
     constructor(message: string) {
         super(message);
         this.name = 'ModuleError';

@@ -2,9 +2,9 @@
 import { ref, watch, watchEffect } from 'vue';
 import { computedEager } from '@vueuse/core';
 import { assertElement } from '@tb-dev/ts-guard-dom';
-import { useAresStore } from '$global/stores/ares';
-import { usePlunderConfigStore } from '$global/stores/plunder';
-import { useCurrentVillageStore } from '$global/stores/village';
+import { useAresStore } from '$renderer/stores/ares';
+import { usePlunderConfigStore } from '$renderer/stores/plunder';
+import { useCurrentVillageStore } from '$renderer/stores/village';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
 import { queryTargetsInfo, targets } from '$browser/lib/plunder/targets';
 import { queryAvailableUnits } from '$lib/plunder/units';
@@ -16,7 +16,7 @@ import { openPlace } from '$lib/plunder/place';
 import { handleLackOfTargets } from '$lib/plunder/next';
 import { queryPlunderGroupInfo, updateGroupInfo } from '$lib/plunder/group';
 import { PlunderError } from '$browser/error';
-import { ipcInvoke, ipcSend } from '$global/ipc';
+import { ipcSend } from '$renderer/ipc';
 import PlunderReload from '$browser/components/PlunderReload.vue';
 import type { PlunderGroupType } from '$types/plunder';
 
@@ -28,16 +28,15 @@ const currentVillage = useCurrentVillageStore();
 const plunderList = document.querySelector('#plunder_list:has(tr[id^="village"]) tbody');
 /** Informações sobre o grupo de saque. */
 const groupInfo = ref<PlunderGroupType | null>(null);
-groupInfo.value = await queryPlunderGroupInfo();
 
 /** Indica se a aldeia atual pertence ao grupo de saque. */
-const belongsToPlunderGroup = computedEager<boolean>(() => {
+const belongsToPlunderGroup = computedEager(() => {
     if (!groupInfo.value || !currentVillage.id) return false;
     return groupInfo.value.villages.has(currentVillage.id);
 });
 
 /** Indica se ataques devem ser enviados. */
-const shouldAttack = computedEager<boolean>(() => {
+const shouldAttack = computedEager(() => {
     if (ares.captcha || !config.active || !plunderList) return false;
     if (config.groupAttack && !belongsToPlunderGroup.value) return false;
     return true;
@@ -51,22 +50,21 @@ queryCurrentVillageInfo();
 watch(() => config.groupAttack, (newValue) => updateGroupInfo(newValue, groupInfo));
 watch(() => config.plunderGroupId, (newValue) => {
     if (!newValue) return;
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    ipcInvoke('navigate-to-plunder-group');
+    ipcSend('navigate-to-plunder-group');
 });
 
-watchEffect(() => {
+watchEffect(async () => {
     // Interrompe qualquer ataque em andamento.
     attackEventTarget.dispatchEvent(new Event('stop'));
     // Começa a atacar se o Plunder estiver ativado.
     if (config.active) {
         // Se a aldeia atual não pertencer ao grupo de saque, navega para alguma aldeia do grupo.
         if (config.groupAttack && !belongsToPlunderGroup.value) {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            ipcInvoke('navigate-to-next-plunder-village');
+            ipcSend('navigate-to-next-plunder-village');
             return;
         };
         
+        groupInfo.value = await queryPlunderGroupInfo();
         handleAttack().catch(PlunderError.catch);
     };
 });

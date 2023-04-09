@@ -67,5 +67,5 @@ await webhookClient.send({ embeds: [embed] });
 
 // Atualiza o arquivo latest.json
 const docsDir = path.resolve(__dirname, '../../docs');
-const latestJson = path.join(docsDir, 'latest.json');
+const latestJson = path.join(docsDir, 'api/latest.json');
 await fs.writeFile(latestJson, JSON.stringify(latest, null, 4), 'utf-8');

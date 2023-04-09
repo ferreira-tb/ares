@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { assertKeyOf, assertInteger } from '@tb-dev/ts-guard';
-import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$global/stores/plunder';
+import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$renderer/stores/plunder';
 import { PanelPlunderError } from '$panel/error';
 import type { PlunderConfigType, PlunderAttackDetails, PlunderInfoType } from '$types/plunder';
 

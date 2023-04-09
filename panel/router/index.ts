@@ -1,5 +1,5 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
-import { getRouteNames } from '$global/utils/router';
+import { getRouteNames } from '$renderer/utils/router';
 import HomeView from '$panel/views/HomeView.vue';
 import CaptchaView from '$panel/views/CaptchaView.vue';
 import PlunderView from '$panel/views/PlunderView.vue';
