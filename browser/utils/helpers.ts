@@ -1,34 +1,4 @@
-import { ipcSend } from '$renderer/ipc';
-import { Deimos } from '$deimos/interface/ipc';
 import { useAresStore } from '$renderer/stores/ares';
-import { useFeaturesStore } from '$renderer/stores/features';
-import { useGroupsStore } from '$renderer/stores/groups';
-import { usePlayerStore } from '$renderer/stores/player';
-import { useCurrentVillageStore } from '$renderer/stores/village';
-import { BrowserError } from '$browser/error';
-
-export async function updateGameData() {
-    try {
-        const aresStore = useAresStore();
-        const featuresStore = useFeaturesStore();
-        const groupsStore = useGroupsStore();
-        const playerStore = usePlayerStore();
-        const currentVillageStore = useCurrentVillageStore();
-
-        const gameData = await Deimos.invoke('get-game-data');
-        if (!gameData) return;
-
-        ipcSend('update-game-data', gameData);
-        aresStore.$patch(gameData.ares);
-        featuresStore.$patch(gameData.features);
-        groupsStore.$patch(gameData.groups);
-        playerStore.$patch(gameData.player);
-        currentVillageStore.$patch(gameData.currentVillage);
-        
-    } catch (err) {
-        BrowserError.catch(err);
-    };
-};
 
 /**
  * Cria um breve atraso tendo como base o tempo de resposta do servidor.

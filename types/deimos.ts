@@ -1,5 +1,7 @@
 import type { Resources, ResourcesPTBR, UnitsAmountAsStrings } from '$types/game';
 
+export type UIMessageType = 'show-ui-error-message' | 'show-ui-info-message' | 'show-ui-success-message';
+
 export type ActivePossible = {
     readonly active: boolean;
     readonly possible: boolean;

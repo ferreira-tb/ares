@@ -1,9 +1,8 @@
 import { ipcRenderer } from 'electron';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
-import type { Pinia } from 'pinia';
 
-export function setPlunderEvents(pinia: Pinia) {
-    const plunderConfigStore = usePlunderConfigStore(pinia);
+export function setPlunderEvents() {
+    const plunderConfigStore = usePlunderConfigStore();
 
     // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
     ipcRenderer.on('plunder-config-updated', <T extends keyof typeof plunderConfigStore>(

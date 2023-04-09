@@ -10,6 +10,7 @@ import { setGroupsEvents } from '$electron/events/groups';
 import { setMenuEvents } from '$electron/events/menu';
 import { setBrowserEvents } from '$electron/events/browser';
 import { setConfigEvents } from '$electron/events/config';
+import { setDevEvents } from '$electron/events/dev';
 import { isUserAlias } from '$global/guards';
 import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$electron/interface';
@@ -46,6 +47,7 @@ export function setEvents() {
     });
 
     // Outros eventos.
+    setDevEvents();
     setConfigEvents();
     setMainWindowEvents();
     setBrowserEvents();

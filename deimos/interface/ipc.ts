@@ -4,14 +4,13 @@ import type { TribalWarsGameData } from '$deimos/models/data';
 import type { PlunderInfo } from '$deimos/models/plunder';
 import type { Units } from '$deimos/models/units';
 import type { TribalWarsTiming } from '$deimos/models/timing';
+import type { UIMessageType } from '$types/deimos';
 
 // Arquivos no diretório "interface" não podem importar de outras partes do Deimos.
 // Isso é para evitar que a importações dos protótipos feitas no index vazem para o resto do código.
 
 // IMPORTANTE: Não é possível utilizar o Deimos a partir do painel.
 // A função dele é apenas prover uma forma de comunicação entre o browser e o jogo.
-
-type UIMessageType = 'show-ui-error-message' | 'show-ui-info-message' | 'show-ui-success-message';
 
 export class Deimos {
     readonly channel: string;

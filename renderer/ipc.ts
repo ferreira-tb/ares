@@ -106,6 +106,12 @@ export function ipcSend(channel: 'show-update-available-dialog', newVersion: str
 export function ipcSend(channel: 'update-captcha-status', status: boolean): void;
 export function ipcSend(channel: 'update-response-time', time: number | null): void;
 
+// Desenvolvedor
+export function ipcSend(channel: 'dev:open-main-window-dev-tools'): void;
+export function ipcSend(channel: 'dev:open-panel-window-dev-tools'): void;
+export function ipcSend(channel: 'dev:open-current-view-dev-tools'): void;
+export function ipcSend(channel: 'dev:open-main-view-dev-tools'): void;
+
 // Configurações
 export function ipcSend(channel: 'update-app-general-config', config: GeneralAppConfigType): void;
 export function ipcSend(channel: 'update-app-notifications-config', config: AppNotificationsConfigType): void;

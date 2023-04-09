@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, watchEffect } from 'vue';
-import { computedEager } from '@vueuse/core';
+import { ref, watch, toRaw } from 'vue';
+import { computedEager, whenever } from '@vueuse/core';
 import { assertElement } from '@tb-dev/ts-guard-dom';
 import { useAresStore } from '$renderer/stores/ares';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
@@ -14,7 +14,7 @@ import { prepareAttack, eventTarget as attackEventTarget, sendAttackFromPlace } 
 import { destroyWall } from '$lib/plunder/wall';
 import { openPlace } from '$lib/plunder/place';
 import { handleLackOfTargets } from '$lib/plunder/next';
-import { queryPlunderGroupInfo, updateGroupInfo } from '$lib/plunder/group';
+import { queryPlunderGroupInfo } from '$lib/plunder/group';
 import { PlunderError } from '$browser/error';
 import { ipcSend } from '$renderer/ipc';
 import { Kronos } from '$global/constants';
@@ -48,27 +48,39 @@ await queryTemplateData();
 queryTargetsInfo();
 queryCurrentVillageInfo();
 
-watch(() => config.groupAttack, (newValue) => updateGroupInfo(newValue, groupInfo));
-watch(() => config.plunderGroupId, (newValue) => {
-    if (!newValue) return;
+watch(groupInfo, (newValue) => {
+    ipcSend('update-plunder-group-info', toRaw(newValue));
+});
+
+whenever(() => config.plunderGroupId, () => {
     ipcSend('navigate-to-plunder-group');
 });
 
-watchEffect(async () => {
+watch(() => config.groupAttack, async (isGroupAttackActive) => {
+    if (isGroupAttackActive) {
+        groupInfo.value = await queryPlunderGroupInfo();
+    } else {
+        groupInfo.value = null;
+    };
+});
+
+watch(() => config.active, async () => {
     // Interrompe qualquer ataque em andamento.
     attackEventTarget.dispatchEvent(new Event('stop'));
+
     // Começa a atacar se o Plunder estiver ativado.
     if (config.active) {
+        groupInfo.value = await queryPlunderGroupInfo();
+
         // Se a aldeia atual não pertencer ao grupo de saque, navega para alguma aldeia do grupo.
-        if (config.groupAttack && !belongsToPlunderGroup.value) {
+        if (config.groupAttack && groupInfo.value && !belongsToPlunderGroup.value) {
             ipcSend('navigate-to-next-plunder-village');
             return;
         };
-        
-        groupInfo.value = await queryPlunderGroupInfo();
+
         handleAttack().catch(PlunderError.catch);
     };
-});
+}, { immediate: true });
 
 async function handleAttack(): Promise<void> {
     if (!shouldAttack.value) return;
