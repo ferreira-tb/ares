@@ -1,7 +1,7 @@
 import { assertInteger } from '@tb-dev/ts-guard';
-import { resources } from '$global/utils/constants';
+import { resources } from '$global/constants';
 import { PlunderAttack } from '$lib/plunder/attack';
-import { usePlunderConfigStore } from '$global/stores/plunder';
+import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 export class PlunderAttackWithLoot extends PlunderAttack {

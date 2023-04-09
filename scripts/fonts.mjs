@@ -15,7 +15,7 @@ try {
     const replacement = 'url(../fonts';
 
     const files = await fs.readdir(assetsDir);
-    const cssFiles = files.filter((file) => path.extname(file) === '.css' && file.startsWith('main'));
+    const cssFiles = files.filter((file) => path.extname(file) === '.css' && file.startsWith('ui'));
 
     for (const file of cssFiles) {
         const cssFile = path.join(assetsDir, file);

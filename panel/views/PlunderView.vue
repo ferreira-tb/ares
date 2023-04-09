@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, watch, watchEffect } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
-import { usePlunderConfigStore } from '$global/stores/plunder';
-import { useFeaturesStore } from '$global/stores/features';
-import { useGroupsStore } from '$global/stores/groups';
-import { ipcSend } from '$global/ipc';
+import { usePlunderConfigStore } from '$renderer/stores/plunder';
+import { useFeaturesStore } from '$renderer/stores/features';
+import { useGroupsStore } from '$renderer/stores/groups';
+import { ipcSend } from '$renderer/ipc';
 import { togglePlunder } from '$panel/utils/helpers';
 import PlunderResources from '$panel/components/PlunderResources.vue';
-import SwitchPopover from '$global/components/SwitchPopover.vue';
+import SwitchPopover from '$renderer/components/SwitchPopover.vue';
 
 const config = usePlunderConfigStore();
 const features = useFeaturesStore();

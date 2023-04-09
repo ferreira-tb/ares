@@ -29,7 +29,7 @@ const latest = {
     download: assets.data.browser_download_url,
 
     isAlpha: releases.data[0].tag_name.includes('alpha'),
-    date: Date.parse(releases.data[0].published_at)
+    date: Date.parse(releases.data[0].created_at)
 };
 
 const previous = {
@@ -67,5 +67,5 @@ await webhookClient.send({ embeds: [embed] });
 
 // Atualiza o arquivo latest.json
 const docsDir = path.resolve(__dirname, '../../docs');
-const latestJson = path.join(docsDir, 'latest.json');
+const latestJson = path.join(docsDir, 'api/latest.json');
 await fs.writeFile(latestJson, JSON.stringify(latest, null, 4), 'utf-8');

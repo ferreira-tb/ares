@@ -5,13 +5,13 @@ import { computed, ref, watch } from 'vue';
 import { computedEager, useFetch, useWindowSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { NButton, NButtonGroup, NSpin, NProgress } from 'naive-ui';
-import { ipcInvoke, ipcSend } from '$global/ipc';
-import { discordURL, latestJson } from '$global/utils/constants';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { WebsiteUrl, AresAPI } from '$global/constants';
 import { ModuleAppUpdateError } from '$modules/error';
 import type { LatestVersion, DownloadProgressType } from '$types/ares';
 
 const appVersion = await ipcInvoke('app-version');
-const { isFetching, error, data } = useFetch(latestJson).json<LatestVersion>();
+const { isFetching, error, data } = useFetch(AresAPI.Latest).json<LatestVersion>();
 
 const { width: windowWidth, height: windowHeight } = useWindowSize();
 const wentWrong = ref(false);
@@ -96,7 +96,7 @@ function openChangelog() {
                 <NButton round :disabled="!data?.notes" @click="openChangelog">
                     Changelog
                 </NButton>
-                <NButton round @click="shell.openExternal(discordURL)">
+                <NButton round @click="shell.openExternal(WebsiteUrl.Discord)">
                     Discord
                 </NButton>
             </NButtonGroup>

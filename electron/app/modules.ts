@@ -1,8 +1,9 @@
 import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
 import { isInstanceOf, isString } from '@tb-dev/ts-guard';
-import { aresURL, favicon, moduleHtml, repoURL, issuesURL } from '$electron/utils/constants';
+import { WebsiteUrl } from '$global/constants';
+import { favicon, moduleHtml } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
-import { isAllowedOrigin } from '$electron/utils/guards';
+import { isAllowedOrigin } from '$global/guards';
 import { ModuleCreationError } from '$electron/error';
 import { setModuleDevMenu } from '$electron/menu/dev';
 import type { ModuleNames, ModuleRoutes, ModuleConstructorOptions, WebsiteModuleNames } from '$types/modules';
@@ -182,6 +183,6 @@ function createWebsiteModule(name: WebsiteModuleNames, url: string) {
 };
 
 export const openAnyAllowedWebsite = createWebsiteModule('any-allowed', '');
-export const openAresWebsite = createWebsiteModule('ares', aresURL);
-export const openRepoWebsite = createWebsiteModule('repo', repoURL);
-export const openIssuesWebsite = createWebsiteModule('issues', issuesURL);
+export const openAresWebsite = createWebsiteModule('ares', WebsiteUrl.Ares);
+export const openRepoWebsite = createWebsiteModule('repo', WebsiteUrl.Repository);
+export const openIssuesWebsite = createWebsiteModule('issues', WebsiteUrl.Issues);

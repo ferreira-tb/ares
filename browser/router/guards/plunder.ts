@@ -2,10 +2,10 @@ import { nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { until } from '@vueuse/core';
 import { getPlunderInfo, updatePlunderConfig } from '$browser/lib/plunder/data';
-import { useCurrentVillageStore } from '$global/stores/village';
-import { usePlunderStore, usePlunderConfigStore } from '$global/stores/plunder';
-import { useGroupsStore } from '$global/stores/groups';
-import { ipcInvoke } from '$global/ipc';
+import { useCurrentVillageStore } from '$renderer/stores/village';
+import { usePlunderStore, usePlunderConfigStore } from '$renderer/stores/plunder';
+import { useGroupsStore } from '$renderer/stores/groups';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { BrowserRouterError } from '$browser/error';
 import type { Router } from 'vue-router';
 
@@ -28,8 +28,7 @@ export function setPlunderNavigationGuards(router: Router) {
             await until(currentGroupId).toMatch((id) => typeof id === 'number', { timeout: 3000, throwOnTimeout: true });
             if (plunderGroupId.value !== currentGroupId.value) {
                 await nextTick();
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                ipcInvoke('navigate-to-plunder-group');
+                ipcSend('navigate-to-plunder-group');
                 return false;
             };
 

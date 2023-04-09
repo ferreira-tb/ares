@@ -3,7 +3,7 @@ import { isKeyOf } from '@tb-dev/ts-guard';
 import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
 import { useCacheStore, usePlunderConfigStore, PlunderConfig } from '$electron/interface';
-import { isUserAlias, assertUserAlias } from '$electron/utils/guards';
+import { isUserAlias, assertUserAlias } from '$global/guards';
 import type { IpcMainEvent } from 'electron';
 
 export function setPlunderConfigEvents() {

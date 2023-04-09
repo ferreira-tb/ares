@@ -2,11 +2,11 @@
 import { computed, ref, watch, watchEffect } from 'vue';
 import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
 import { isPositiveInteger } from '@tb-dev/ts-guard';
-import { isDistance } from '$global/utils/guards';
-import { ipcInvoke } from '$global/ipc';
-import InputNumber from '$global/components/InputNumber.vue';
-import LabelPopover from '$global/components/LabelPopover.vue';
-import ButtonUpdateGroups from '$global/components/ButtonUpdateGroups.vue';
+import { isDistance } from '$global/guards';
+import { ipcInvoke } from '$renderer/ipc';
+import InputNumber from '$renderer/components/InputNumber.vue';
+import LabelPopover from '$renderer/components/LabelPopover.vue';
+import ButtonUpdateGroups from '$renderer/components/ButtonUpdateGroups.vue';
 import type { PlunderConfigType } from '$types/plunder';
 
 const props = defineProps<{

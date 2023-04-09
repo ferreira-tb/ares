@@ -1,6 +1,7 @@
 {
     "include": [
         "./**/*",
+        "../global/**/*",
         "../types/**/*",
         "../global.d.ts"
     ],
@@ -9,14 +10,15 @@
         "target": "esnext",
         "lib": ["esnext", "dom"],
         "paths": {
-            "$types/*": ["../types/*"],
-            "$global/*": ["../global/*"],
-            "$phobos/*": ["./*"],
             "$browser/*": ["../browser/*"],
+            "$global/*": ["../global/*"],
             "$lib/*": ["../browser/lib/*"],
             "$modules/*": ["../modules/*"],
+            "$deimos/*": ["../deimos/*"],
             "$panel/*": ["../panel/*"],
-            "$deimos/*": ["../deimos/*"]
+            "$phobos/*": ["./*"],
+            "$renderer/*": ["../renderer/*"],
+            "$types/*": ["../types/*"]
         },
         
         // Modo estrito

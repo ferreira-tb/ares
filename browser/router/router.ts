@@ -1,6 +1,6 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
-import { getRouteNames } from '$global/utils/router';
-import DefaultView from '$global/views/DefaultView.vue';
+import { getRouteNames } from '$renderer/utils/router';
+import DefaultView from '$renderer/views/DefaultView.vue';
 import PlunderView from '$browser/views/PlunderView.vue';
 
 const routes: RouteRecordRaw[] = [

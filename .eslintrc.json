@@ -8,7 +8,14 @@
         "tsconfigRootDir": ".",
         "extraFileExtensions": [".vue"]
     },
-    "ignorePatterns": ["docs/**/*", "dist/**/*", "out/**/*", "scripts/**/*", "**/*.config.js"],
+    "ignorePatterns": [
+        "dist/**/*",
+        "docs/**/*",
+        "out/**/*",
+        "scripts/**/*",
+        "**/*.config.js",
+        "**/*.config.ts"
+    ],
     "root": true,
     "env": {
         "browser": true,
@@ -18,7 +25,8 @@
     "globals": {
         "Accountmanager": "readonly",
         "Timing": "readonly",
-        "TribalWars": "readonly"
+        "TribalWars": "readonly",
+        "UI": "readonly"
     },
     "rules": {
         "array-callback-return": ["error", { "checkForEach": true }],
@@ -53,6 +61,7 @@
         "no-invalid-regexp": "error",
         "no-irregular-whitespace": "error",
         "no-loss-of-precision": "off",
+        "no-magic-numbers": "off",
         "no-misleading-character-class": "error",
         "no-new-native-nonconstructor": "error",
         "no-new-symbol": "error",
@@ -99,7 +108,7 @@
         "max-lines": ["error", { "max": 1000 }],
         "max-lines-per-function": ["error", { "max": 100, "skipBlankLines": true, "skipComments": true }],
         "max-nested-callbacks": ["error", { "max": 5 }],
-        "new-cap": "error",
+        "new-cap": "off",
         "no-alert": "error",
         "no-array-constructor": "off",
         "no-caller": "error",
@@ -306,7 +315,7 @@
         "@typescript-eslint/no-shadow": "error",
         "@typescript-eslint/no-throw-literal": ["error", { "allowThrowingAny": false, "allowThrowingUnknown": false }],
         "@typescript-eslint/no-unused-expressions": "error",
-        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-useless-constructor": "error",
         "@typescript-eslint/require-await": "error",
         "@typescript-eslint/return-await": "error",

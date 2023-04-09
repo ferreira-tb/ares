@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useIpcRendererOn } from '@vueuse/electron';
-import { ipcInvoke, ipcSend } from '$global/ipc';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { ModuleConfigError } from '$modules/error';
-import ResultInfo from '$global/components/ResultInfo.vue';
+import ResultInfo from '$renderer/components/ResultInfo.vue';
 import ConfigPlunderGridAttack from '$modules/components/ConfigPlunderGridAttack.vue';
 import ConfigPlunderGridGroups from '$modules/components/ConfigPlunderGridGroups.vue';
 import ConfigPlunderGridWall from '$modules/components/ConfigPlunderGridWall.vue';

@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia';
 import { whenever } from '@vueuse/core';
 import { assertString } from '@tb-dev/ts-guard';
 import { useBrowserStore } from '$browser/stores/browser';
-import { ipcInvoke, ipcSend } from '$global/ipc';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
 
 const browserStore = useBrowserStore();
 const { isDeimosReady } = storeToRefs(browserStore);

@@ -1,6 +1,8 @@
+import { readFile } from 'node:fs/promises';
 import { webContents } from 'electron';
+import { browserCss } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
-import { browserCss, gameURL } from '$electron/utils/constants';
+import { WebsiteUrl } from '$global/constants';
 import { BrowserViewError } from '$electron/error';
 import type { WebContents, BrowserView, BrowserWindow, IpcMainEvent } from 'electron';
 import type { BackForwardStatus } from '$types/view';
@@ -56,7 +58,7 @@ export function contentsGoForward(contents: WebContents) {
 };
 
 export function contentsGoHome(contents: WebContents) {
-    contents.loadURL(gameURL).catch(BrowserViewError.catch);
+    contents.loadURL(WebsiteUrl.Game).catch(BrowserViewError.catch);
 };
 
 /**
@@ -64,9 +66,10 @@ export function contentsGoHome(contents: WebContents) {
  * @param contents WebContents da BrowserView.
  * @param css CSS a ser inserido. Se omitido, será usado o CSS padrão do browser.
  */
-export async function insertViewCSS(contents?: WebContents, css: string = browserCss) {
+export async function insertViewCSS(contents?: WebContents, css?: string) {
     try {
         contents ??= getMainViewWebContents();
+        css ??= await readFile(browserCss, { encoding: 'utf8' });
         await contents.insertCSS(css);
     } catch (err) {
         BrowserViewError.catch(err);

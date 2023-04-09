@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
-import { ipcSend, ipcInvoke } from '$global/ipc';
+import { ipcSend } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
+import { Kronos } from '$global/constants';
 import PlunderReloadMessage from '$browser/components/PlunderReloadMessage.vue';
 
 const props = defineProps<{
@@ -17,11 +18,11 @@ const eventTarget = new EventTarget();
 /** Título da tabela. */
 const plunderListTitle = document.queryAndAssert('div[id="am_widget_Farm" i] > h4:has(a)');
 /** Milisegundos entre cada recarregamento automático da página. */
-const plunderTimeout = ref<number>(props.minutesUntilReload * 60000);
+const plunderTimeout = ref<number>(props.minutesUntilReload * Kronos.Minute);
 
 watchEffect(() => {
     eventTarget.dispatchEvent(new Event('cancelreload'));
-    plunderTimeout.value = props.minutesUntilReload * 60000;
+    plunderTimeout.value = props.minutesUntilReload * Kronos.Minute;
     if (props.active) setPlunderTimeout().catch(PlunderError.catch);
 });
 
@@ -36,11 +37,10 @@ function setPlunderTimeout() {
     });
 };
 
-async function reloadMainView() {
+function reloadMainView() {
     try {
         ipcSend('update-plunder-pages-info', null);
-        const updated = await ipcInvoke('update-plunder-group-info', null);
-        if (!updated) throw new PlunderError('Failed to update group info.');
+        ipcSend('update-plunder-group-info', null);
     } catch (err) {
         PlunderError.catch(err);
     } finally {

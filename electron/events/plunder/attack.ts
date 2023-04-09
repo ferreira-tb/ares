@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { assertInteger } from '@tb-dev/ts-guard';
 import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
-import { assertUserAlias } from '$electron/utils/guards';
+import { assertUserAlias } from '$global/guards';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { useLastPlunderHistoryStore, useTotalPlunderHistoryStore, PlunderHistory, useCacheStore } from '$electron/interface';
 import type { PlunderAttackDetails } from '$types/plunder';

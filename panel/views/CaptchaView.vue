@@ -2,8 +2,8 @@
 import { watch, watchEffect } from 'vue';
 import { NResult } from 'naive-ui';
 import { storeToRefs } from 'pinia';
-import { usePlunderConfigStore } from '$global/stores/plunder';
-import { useAresStore } from '$global/stores/ares';
+import { usePlunderConfigStore } from '$renderer/stores/plunder';
+import { useAresStore } from '$renderer/stores/ares';
 import { pushRoute, togglePlunder } from '$panel/utils/helpers';
 import { PanelRouterError } from '$panel/error';
 

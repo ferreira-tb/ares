@@ -3,8 +3,8 @@
     "include": [
         "browser.config.*",
         "modules.config.*",
-        "main.config.*",
-        "panel.config.ts"
+        "panel.config.*",
+        "ui.config.*"
     ],
     "compilerOptions": {
         "composite": true

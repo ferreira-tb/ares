@@ -1,10 +1,10 @@
-export class MainProcessError extends Error {
+import { AresError } from '$global/error';
+
+export class MainProcessError extends AresError {
     constructor(message: string) {
         super(message);
         this.name = 'MainProcessError';
     };
-
-    declare public static catch: (err: unknown) => Promise<void>;
 
     /** Emite um erro falso no processo principal para fins de teste. */
     public static mock() {

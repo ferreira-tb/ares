@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue';
-import { usePlunderHistoryStore } from '$global/stores/plunder';
-import { ipcInvoke } from '$global/ipc';
+import { usePlunderHistoryStore } from '$renderer/stores/plunder';
+import { ipcInvoke } from '$renderer/ipc';
 import WoodIcon from '$icons/resources/WoodIcon.vue';
 import StoneIcon from '$icons/resources/StoneIcon.vue';
 import IronIcon from '$icons/resources/IronIcon.vue';

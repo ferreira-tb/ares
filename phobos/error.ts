@@ -1,6 +1,6 @@
-import { AresError } from '$global/error';
+import { RendererProcessError } from '$renderer/error';
 
-export class PhobosError extends AresError {
+export class PhobosError extends RendererProcessError {
     constructor(message: string) {
         super(message);
         this.name = 'PhobosError';

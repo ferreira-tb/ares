@@ -6,7 +6,7 @@ import { NConfigProvider, darkTheme } from 'naive-ui';
 import { computedEager } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { router } from '$panel/router';
-import { useAresStore } from '$global/stores/ares';
+import { useAresStore } from '$renderer/stores/ares';
 import { usePanelStore } from '$panel/stores/panel';
 import { pushRoute } from '$panel/utils/helpers';
 import { PanelError } from '$panel/error';

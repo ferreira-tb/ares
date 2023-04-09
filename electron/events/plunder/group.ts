@@ -2,8 +2,8 @@ import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { isPositiveInteger } from '@tb-dev/ts-guard';
 import { MainProcessEventError } from '$electron/error';
-import { plunderSearchParams } from '$electron/utils/constants';
-import { generateRandomDelay } from '$electron/utils/helpers';
+import { GameSearchParams } from '$global/constants';
+import { generateRandomDelay } from '$global/helpers';
 import { usePlunderConfigStore, usePlunderCacheStore } from '$electron/interface';
 import type { PlunderGroupType, PlunderGroupVillageType } from '$types/plunder';
 
@@ -14,7 +14,7 @@ export function setPlunderGroupEvents() {
 
     ipcMain.handle('get-plunder-group-info', () => plunderGroup.value);
 
-    ipcMain.handle('update-plunder-group-info', (_e, groupInfo: PlunderGroupType | null) => {
+    ipcMain.on('update-plunder-group-info', (_e, groupInfo: PlunderGroupType | null) => {
         try {
             plunderGroup.value = groupInfo;
             return true;
@@ -24,15 +24,15 @@ export function setPlunderGroupEvents() {
         };
     });
 
-    ipcMain.handle('navigate-to-next-plunder-village', (e, currentVillageId?: number | null) => {
+    ipcMain.on('navigate-to-next-plunder-village', (e, currentVillageId?: number | null) => {
         try {
-            if (!plunderGroup.value) return false;
+            if (!plunderGroup.value) return;
             let villages = Array.from(plunderGroup.value.villages.entries());
 
             // Se todas as aldeias do grupo já foram atacadas, avisa a view.
             if (villages.length > 0 && villages.every(([, { done }]) => done)) {
                 e.sender.send('plunder-group-is-exhausted');
-                return false;
+                return;
             };
 
             // Do contrário, remove as aldeias que já atacaram, além da aldeia atual se houver um id válido.
@@ -41,7 +41,7 @@ export function setPlunderGroupEvents() {
                 villages = villages.filter(([id]) => id !== currentVillageId);
             };
             
-            if (villages.length === 0) return false;
+            if (villages.length === 0) return;
 
             const nextVillage = villages.reduce((prev, curr) => {
                 if (!prev) return curr;
@@ -49,36 +49,32 @@ export function setPlunderGroupEvents() {
                 return prev;
             }, null as [number, PlunderGroupVillageType] | null);
 
-            if (!nextVillage) return false;
+            if (!nextVillage) return;
 
             const url = new URL(e.sender.getURL());
-            url.search = plunderSearchParams;
+            url.search = GameSearchParams.Farm;
             url.searchParams.set('village', nextVillage[0].toString(10));
             url.searchParams.set('group', plunderGroup.value.id.toString(10));
             
             const delay = generateRandomDelay(plunderConfigStore.villageDelay, 200);
             setTimeout(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch), delay);
-            return true;
 
         } catch (err) {
             MainProcessEventError.catch(err);
-            return false;
         };
     });
 
-    ipcMain.handle('navigate-to-plunder-group', (e) => {
+    ipcMain.on('navigate-to-plunder-group', (e) => {
         try {
-            if (!plunderConfigStore.plunderGroupId) return false;
+            if (!plunderConfigStore.plunderGroupId) return;
 
             const url = new URL(e.sender.getURL());
-            url.search = plunderSearchParams;
+            url.search = GameSearchParams.Farm;
             url.searchParams.set('group', plunderConfigStore.plunderGroupId.toString(10));
-            queueMicrotask(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch));
-            return true;
+            e.sender.loadURL(url.href).catch(MainProcessEventError.catch);
 
         } catch (err) {
             MainProcessEventError.catch(err);
-            return false;
         };
     });
 };

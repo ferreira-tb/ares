@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRaw } from 'vue';
 import { NCard, NSpace, useDialog, useMessage } from 'naive-ui';
-import { ipcInvoke } from '$global/ipc';
+import { ipcInvoke } from '$renderer/ipc';
 import { ModuleError } from '$modules/error';
 import ArcherIcon from '$icons/units/ArcherIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';

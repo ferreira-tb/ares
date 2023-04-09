@@ -2,11 +2,11 @@
 import { h, computed, ref, reactive, watch } from 'vue';
 import { NDataTable, useMessage } from 'naive-ui';
 import { isObject, assertObject, assertKeyOf, toIntegerStrict, isInteger, assertSameType } from '@tb-dev/ts-guard';
-import { ipcInvoke } from '$global/ipc';
-import { assertUserAlias } from '$global/utils/guards';
+import { ipcInvoke } from '$renderer/ipc';
+import { assertUserAlias } from '$global/guards';
 import { ModuleConfigError } from '$modules/error';
-import ResultError from '$global/components/ResultError.vue';
-import TableCellNumber from '$global/components/TableCellNumber.vue';
+import ResultError from '$renderer/components/ResultError.vue';
+import TableCellNumber from '$renderer/components/TableCellNumber.vue';
 import SpearIcon from '$icons/units/SpearIcon.vue';
 import SwordIcon from '$icons/units/SwordIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';

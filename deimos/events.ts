@@ -1,12 +1,16 @@
 import { assertInteger } from '@tb-dev/ts-guard';
-import { Deimos } from '$deimos/shared/ipc';
-import { DeimosError } from '$deimos/shared/error';
+import { Deimos } from '$deimos/interface/ipc';
+import { DeimosError } from '$deimos/interface/error';
 import { TribalWarsGameData } from '$deimos/models/data';
 import { PlunderInfo } from '$deimos/models/plunder';
 import { Units } from '$deimos/models/units';
 import { TribalWarsTiming } from '$deimos/models/timing';
 
 export function setDeimosEvents() {
+    Deimos.on('show-ui-error-message', (message: string) => UI.ErrorMessage(message));
+    Deimos.on('show-ui-info-message', (message: string) => UI.InfoMessage(message));
+    Deimos.on('show-ui-success-message', (message: string) => UI.SuccessMessage(message));
+
     Deimos.handle('get-timing', () => {
         try {
             return new TribalWarsTiming(Timing);

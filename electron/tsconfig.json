@@ -8,12 +8,13 @@
         "target": "esnext",
         "lib": ["esnext", "dom"],
         "paths": {
+            "$database/*": ["./database/*"],
             "$electron/*": ["./*"],
-            "$types/*": ["../types/*"],
             "$global/*": ["../global/*"],
-            "$stores/*": ["./stores/*"],
             "$interface/*": ["./interface/*"],
-            "$database/*": ["./database/*"]
+            "$renderer/*": ["../renderer/*"],
+            "$stores/*": ["./stores/*"],
+            "$types/*": ["../types/*"]
         },
         
         // Modo estrito

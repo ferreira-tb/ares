@@ -1,9 +1,9 @@
 import { DataTypes, Model } from 'sequelize';
 import { isObject, assertInteger } from '@tb-dev/ts-guard';
 import { sequelize } from '$electron/database';
-import { isUserAlias, assertUserAlias, assertWallLevel } from '$electron/utils/guards';
+import { isUserAlias, assertUserAlias, assertWallLevel } from '$global/guards';
 import { DatabaseError } from '$electron/error';
-import { unitsToDestroyWall } from '$electron/utils/constants';
+import { unitsToDestroyWall } from '$global/constants';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import type { UserAlias } from '$types/electron';
 import type { useCacheStore } from '$electron/interface';

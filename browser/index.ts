@@ -22,7 +22,7 @@ app.config.errorHandler = (err: unknown) => {
 };
 
 // Eventos.
-setBrowserEvents(pinia);
+setBrowserEvents();
 setNavigationGuards(router);
 
 window.addEventListener('DOMContentLoaded', async () => {

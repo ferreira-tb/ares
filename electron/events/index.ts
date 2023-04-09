@@ -4,13 +4,14 @@ import { setErrorEvents } from '$electron/events/error';
 import { setPanelEvents } from '$electron/events/panel';
 import { setDeimosEvents } from '$electron/events/deimos';
 import { setModuleEvents } from '$electron/events/modules';
-import { setMainWindowEvents } from '$electron/events/main';
+import { setMainWindowEvents } from '$electron/events/ui';
 import { setBrowserViewEvents } from '$electron/events/view';
 import { setGroupsEvents } from '$electron/events/groups';
 import { setMenuEvents } from '$electron/events/menu';
 import { setBrowserEvents } from '$electron/events/browser';
 import { setConfigEvents } from '$electron/events/config';
-import { isUserAlias } from '$electron/utils/guards';
+import { setDevEvents } from '$electron/events/dev';
+import { isUserAlias } from '$global/guards';
 import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$electron/interface';
 import { getPlayerNameFromAlias, extractWorldUnitsFromMap } from '$electron/utils/helpers';
@@ -46,6 +47,7 @@ export function setEvents() {
     });
 
     // Outros eventos.
+    setDevEvents();
     setConfigEvents();
     setMainWindowEvents();
     setBrowserEvents();

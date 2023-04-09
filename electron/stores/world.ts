@@ -1,6 +1,6 @@
 import { ref } from 'mechanus';
 import { finiteNumberRef, integerRef, booleanRef } from '$electron/utils/mechanus';
-import { allUnits } from '$electron/utils/constants';
+import { allUnits } from '$global/constants';
 import type { AllUnits } from '$types/game';
 import type { UnitDetails } from '$types/world';
 import type { Mechanus, MechanusStore } from 'mechanus';

@@ -1,6 +1,6 @@
-import { AresError } from '$global/error';
+import { RendererProcessError } from '$renderer/error';
 
-export class BrowserError extends AresError {
+export class BrowserError extends RendererProcessError {
     constructor(message: string) {
         super(message);
         this.name = 'BrowserError';

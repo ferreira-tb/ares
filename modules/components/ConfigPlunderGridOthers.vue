@@ -2,8 +2,8 @@
 import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem } from 'naive-ui';
 import { isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
-import InputNumber from '$global/components/InputNumber.vue';
-import LabelPopover from '$global/components/LabelPopover.vue';
+import InputNumber from '$renderer/components/InputNumber.vue';
+import LabelPopover from '$renderer/components/LabelPopover.vue';
 import type { PlunderConfigType } from '$types/plunder';
 
 const props = defineProps<{

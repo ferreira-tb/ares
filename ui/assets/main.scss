@@ -1,0 +1,16 @@
+@charset 'utf-8';
+
+@use '$assets/variables.scss';
+@use '$assets/base.scss';
+@use '$assets/transitions.scss';
+@use '$assets/fonts.scss';
+@forward '$assets/scrollbar.scss';
+@forward '$assets/utils.scss';
+
+$tab-height: 40px;
+
+@mixin display-flex-center {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
