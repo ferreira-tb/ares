@@ -15,11 +15,11 @@ export enum GameSearchParams {
     Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0'
 };
 
-export enum Kronos {
-    SECOND = 1000,
-    MINUTE = 60 * SECOND,
-    HOUR = 60 * MINUTE,
-    DAY = 24 * HOUR
+export const enum Kronos {
+    Second = 1000,
+    Minute = 60 * Second,
+    Hour = 60 * Minute,
+    Day = 24 * Hour
 };
 
 // Jogo.

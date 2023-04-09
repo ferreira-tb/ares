@@ -3,6 +3,7 @@ import { ref, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { ipcSend } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
+import { Kronos } from '$global/constants';
 import PlunderReloadMessage from '$browser/components/PlunderReloadMessage.vue';
 
 const props = defineProps<{
@@ -17,11 +18,11 @@ const eventTarget = new EventTarget();
 /** Título da tabela. */
 const plunderListTitle = document.queryAndAssert('div[id="am_widget_Farm" i] > h4:has(a)');
 /** Milisegundos entre cada recarregamento automático da página. */
-const plunderTimeout = ref<number>(props.minutesUntilReload * 60000);
+const plunderTimeout = ref<number>(props.minutesUntilReload * Kronos.Minute);
 
 watchEffect(() => {
     eventTarget.dispatchEvent(new Event('cancelreload'));
-    plunderTimeout.value = props.minutesUntilReload * 60000;
+    plunderTimeout.value = props.minutesUntilReload * Kronos.Minute;
     if (props.active) setPlunderTimeout().catch(PlunderError.catch);
 });
 

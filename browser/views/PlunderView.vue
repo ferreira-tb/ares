@@ -17,6 +17,7 @@ import { handleLackOfTargets } from '$lib/plunder/next';
 import { queryPlunderGroupInfo, updateGroupInfo } from '$lib/plunder/group';
 import { PlunderError } from '$browser/error';
 import { ipcSend } from '$renderer/ipc';
+import { Kronos } from '$global/constants';
 import PlunderReload from '$browser/components/PlunderReload.vue';
 import type { PlunderGroupType } from '$types/plunder';
 
@@ -98,7 +99,7 @@ async function handleAttack(): Promise<void> {
         // Ignora caso a aldeia esteja longe demais.
         if (info.distance > config.maxDistance) continue;
         // Ignora caso o relatório seja muito antigo.
-        if ((Date.now() - info.lastAttack) > config.ignoreOlderThan * 3600000) continue;
+        if ((Date.now() - info.lastAttack) > config.ignoreOlderThan * Kronos.Hour) continue;
 
         if (config.groupAttack && groupInfo.value) {
             const villageStatus = groupInfo.value.villages.getStrict(currentVillage.getId());

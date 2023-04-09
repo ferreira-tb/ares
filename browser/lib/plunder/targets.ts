@@ -127,7 +127,7 @@ function queryLastAttack(row: Element, info: PlunderTargetInfo) {
         const date = parseGameDate(field.textContent);
         if (date) {
             info.lastAttack = date;
-            info.minutesSince = Math.ceil((Date.now() - date) / Kronos.MINUTE);
+            info.minutesSince = Math.ceil((Date.now() - date) / Kronos.Minute);
             return;
         };
     };
