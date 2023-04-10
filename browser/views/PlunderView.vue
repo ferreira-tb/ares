@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, toRaw } from 'vue';
 import { computedEager, whenever } from '@vueuse/core';
-import { assertElement } from '@tb-dev/ts-guard-dom';
 import { useAresStore } from '$renderer/stores/ares';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import { useCurrentVillageStore } from '$renderer/stores/village';
@@ -143,7 +142,9 @@ async function handleAttack(): Promise<void> {
 
         if (best.type === 'a' || best.type === 'b' || best.type === 'c') {
             const attackButton = info.button[best.type];
-            assertElement(attackButton, `Could not find attack button for template ${best.type.toUpperCase()}.`);
+            if (!attackButton) {
+                throw new PlunderError(`Could not find attack button for template ${best.type.toUpperCase()}.`);
+            };
 
             prepareAttack(plunderAttack, attackButton)
                 .then(() => best.reset())

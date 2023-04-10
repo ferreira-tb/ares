@@ -43,7 +43,7 @@ export function togglePanelWindow() {
         panelWindow.show();
     };
 
-    panelWindow.webContents.send('panel-visibility-did-change', panelWindow.isVisible());
+    panelWindow.webContents.send('panel:visibility-did-change', panelWindow.isVisible());
 };
 
 /**

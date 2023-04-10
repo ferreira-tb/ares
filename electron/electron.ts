@@ -104,7 +104,7 @@ function createWindow() {
     panelWindow.once('ready-to-show', async () => {
         await AppConfig.setPanelBounds();
         panelWindow.show();
-        panelWindow.webContents.send('panel-visibility-did-change', panelWindow.isVisible());
+        panelWindow.webContents.send('panel:visibility-did-change', panelWindow.isVisible());
     });
 };
 

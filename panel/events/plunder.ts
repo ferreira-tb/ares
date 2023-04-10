@@ -10,7 +10,7 @@ export function setPlunderEvents() {
     const plunderHistoryStore = usePlunderHistoryStore();
 
     // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
-    ipcRenderer.on('plunder-config-updated', <T extends keyof typeof plunderConfigStore>(
+    ipcRenderer.on('plunder:config-updated', <T extends keyof typeof plunderConfigStore>(
         _e: unknown, key: T, value: typeof plunderConfigStore[T]
     ) => {
         plunderConfigStore[key] = value;
@@ -34,7 +34,7 @@ export function setPlunderEvents() {
         };
     });
 
-    ipcRenderer.on('patch-panel-plunder-info', (_e, info: PlunderInfoType) => plunderStore.$patch(info));
-    ipcRenderer.on('patch-panel-plunder-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
-    ipcRenderer.on('patch-panel-plunder-history', (_e, history: PlunderAttackDetails) => plunderHistoryStore.$patch(history));
+    ipcRenderer.on('panel:patch-plunder-info', (_e, info: PlunderInfoType) => plunderStore.$patch(info));
+    ipcRenderer.on('panel:patch-plunder-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
+    ipcRenderer.on('panel:patch-plunder-history', (_e, history: PlunderAttackDetails) => plunderHistoryStore.$patch(history));
 };

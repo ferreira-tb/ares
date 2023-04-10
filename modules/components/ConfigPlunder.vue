@@ -14,7 +14,7 @@ const previousConfig = await ipcInvoke('plunder:get-config');
 const config = ref<PlunderConfigType | null>(previousConfig);
 
 // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
-useIpcRendererOn('plunder-config-updated', <T extends keyof PlunderConfigType>(_e: unknown, name: T, value: PlunderConfigType[T]) => {
+useIpcRendererOn('plunder:config-updated', <T extends keyof PlunderConfigType>(_e: unknown, name: T, value: PlunderConfigType[T]) => {
     try {
         if (!config.value) return;
         config.value[name] = value;

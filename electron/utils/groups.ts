@@ -44,5 +44,5 @@ export function patchVillageGroups(groups: Set<VillageGroup>, all: MechanusRef<S
     });
 
     const panelWindow = getPanelWindow();
-    panelWindow.webContents.send('patch-panel-village-groups-set', all.value);
+    panelWindow.webContents.send('panel:patch-village-groups-set', all.value);
 };
