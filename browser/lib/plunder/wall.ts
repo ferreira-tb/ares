@@ -5,6 +5,7 @@ import { openPlace } from '$lib/plunder/place';
 import { sendAttackFromPlace } from '$lib/plunder/attack';
 import { PlunderError } from '$browser/error';
 import { PlunderAttackWithLoot } from '$lib/plunder/resources';
+import { queryAvailableUnits } from '$lib/plunder/units';
 import type { DemolitionTroops, StringWallLevel } from '$types/game';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
@@ -19,6 +20,7 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
         const neededUnits = demolitionTemplate.units[info.wallLevel.toString(10) as StringWallLevel];
 
         // Verifica se há unidades o suficiente para destruir a muralha.
+        await queryAvailableUnits();
         const unitStore = useUnitsStore();
         for (const [key, value] of Object.entries(neededUnits) as [keyof DemolitionTroops, number][]) {
             if (unitStore[key] < value) return false;
