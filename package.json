@@ -49,7 +49,7 @@
         "mechanus": "^1.0.5",
         "pinia": "^2.0.33",
         "semver": "^7.3.8",
-        "sequelize": "^6.30.0",
+        "sequelize": "^6.31.0",
         "sqlite3": "^5.1.6",
         "vue": "^3.2.47",
         "vue-router": "^4.1.6"
