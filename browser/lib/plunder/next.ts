@@ -37,7 +37,7 @@ async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStor
         const biggestDistance = targets.reduce((biggest, target) => Math.max(biggest, target.distance), 0);
         if (biggestDistance >= maxDistance) return false;
         
-        const navigated = await ipcInvoke('navigate-to-next-plunder-page');
+        const navigated = await ipcInvoke('plunder:navigate-to-next-page');
         return navigated;
 
     } catch (err) {
@@ -58,8 +58,8 @@ function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>,
             groupVillage.waveMaxDistance += config.fieldsPerWave;
         };
 
-        ipcSend('update-plunder-group-info', toRaw(groupInfo));
-        ipcSend('navigate-to-next-plunder-village', currentVillageId);
+        ipcSend('plunder:update-group-info', toRaw(groupInfo));
+        ipcSend('plunder:navigate-to-next-village', currentVillageId);
         
     } catch (err) {
         PlunderError.catch(err);

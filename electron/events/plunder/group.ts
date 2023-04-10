@@ -12,9 +12,9 @@ export function setPlunderGroupEvents() {
     const plunderConfigStore = usePlunderConfigStore();
     const { plunderGroup } = storeToRefs(plunderCacheStore);
 
-    ipcMain.handle('get-plunder-group-info', () => plunderGroup.value);
+    ipcMain.handle('plunder:get-group-info', () => plunderGroup.value);
 
-    ipcMain.on('update-plunder-group-info', (_e, groupInfo: PlunderGroupType | null) => {
+    ipcMain.on('plunder:update-group-info', (_e, groupInfo: PlunderGroupType | null) => {
         try {
             plunderGroup.value = groupInfo;
             return true;
@@ -24,7 +24,7 @@ export function setPlunderGroupEvents() {
         };
     });
 
-    ipcMain.on('navigate-to-next-plunder-village', (e, currentVillageId?: number | null) => {
+    ipcMain.on('plunder:navigate-to-next-village', (e, currentVillageId?: number | null) => {
         try {
             if (!plunderGroup.value) return;
             let villages = Array.from(plunderGroup.value.villages.entries());
@@ -57,22 +57,21 @@ export function setPlunderGroupEvents() {
             url.searchParams.set('group', plunderGroup.value.id.toString(10));
             
             const delay = generateRandomDelay(plunderConfigStore.villageDelay, 200);
-            setTimeout(() => e.sender.loadURL(url.href).catch(MainProcessEventError.catch), delay);
+            e.sender.send('plunder:set-navigation-timer', url.href, delay);
 
         } catch (err) {
             MainProcessEventError.catch(err);
         };
     });
 
-    ipcMain.on('navigate-to-plunder-group', (e) => {
+    ipcMain.on('plunder:navigate-to-group', async (e) => {
         try {
             if (!plunderConfigStore.plunderGroupId) return;
 
             const url = new URL(e.sender.getURL());
             url.search = GameSearchParams.Farm;
             url.searchParams.set('group', plunderConfigStore.plunderGroupId.toString(10));
-            e.sender.loadURL(url.href).catch(MainProcessEventError.catch);
-
+            await e.sender.loadURL(url.href);
         } catch (err) {
             MainProcessEventError.catch(err);
         };

@@ -11,9 +11,9 @@ export function setPlunderTemplatesModuleEvents() {
     const browserViewStore = useBrowserViewStore();
     const { allWebContents } = storeToRefs(browserViewStore);
 
-    ipcMain.on('open-custom-plunder-template-window', () => showCustomPlunderTemplate());
+    ipcMain.on('plunder:open-custom-template-window', () => showCustomPlunderTemplate());
 
-    ipcMain.handle('get-custom-plunder-templates', async (_e, alias: UserAlias | null): Promise<CustomPlunderTemplateType[] | null> => {
+    ipcMain.handle('plunder:get-custom-templates', async (_e, alias: UserAlias | null): Promise<CustomPlunderTemplateType[] | null> => {
         alias ??= cacheStore.userAlias;
         if (!isUserAlias(alias)) return null;
         const customPlunderTemplates = await CustomPlunderTemplate.getCustomPlunderTemplates(alias);
@@ -21,7 +21,7 @@ export function setPlunderTemplatesModuleEvents() {
         return customPlunderTemplates;
     });
 
-    ipcMain.handle('save-custom-plunder-template', async (e, template: CustomPlunderTemplateType): Promise<boolean> => {
+    ipcMain.handle('plunder:save-custom-template', async (e, template: CustomPlunderTemplateType): Promise<boolean> => {
         const saved = await CustomPlunderTemplate.saveCustomPlunderTemplate(template);
         
         // Se o template foi salvo com sucesso, notifica o browser.
@@ -35,7 +35,7 @@ export function setPlunderTemplatesModuleEvents() {
         return saved;
     });
 
-    ipcMain.handle('destroy-custom-plunder-template', async (e, template: CustomPlunderTemplateType): Promise<boolean> => {
+    ipcMain.handle('plunder:destroy-custom-template', async (e, template: CustomPlunderTemplateType): Promise<boolean> => {
         const destroyed = await CustomPlunderTemplate.destroyCustomPlunderTemplate(template);
 
         // Se o template foi excluído com sucesso, notifica o browser.

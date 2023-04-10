@@ -29,11 +29,11 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
 
         // Se o ataque foi enviado com sucesso, atualiza o histórico.
         if (sent) {
-            const carry = await ipcInvoke('calc-carry-capacity', neededUnits);
+            const carry = await ipcInvoke('plunder:calc-carry-capacity', neededUnits);
             assertInteger(carry, 'Could not calculate carry capacity when destroying wall.');
             const attack = new PlunderAttackWithLoot(info, carry);
             attack.destroyedWalls = info.wallLevel;
-            ipcSend('plunder-attack-sent', attack);
+            ipcSend('plunder:attack-sent', attack);
         };
 
         return sent;

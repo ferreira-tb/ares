@@ -20,6 +20,6 @@ export async function getPlunderInfo() {
 
 export async function updatePlunderConfig() {
     const plunderConfigStore = usePlunderConfigStore();
-    const previousConfig = await ipcInvoke('get-plunder-config');
+    const previousConfig = await ipcInvoke('plunder:get-config');
     if (previousConfig) plunderConfigStore.$patch(previousConfig);
 };

@@ -15,11 +15,11 @@ export function setPlunderAttackEvents() {
     const totalPlunderHistoryStore = useTotalPlunderHistoryStore();
 
     // Emitido pela view após cada ataque realizado pelo Plunder.
-    ipcMain.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
-        panelWindow.webContents.send('plunder-attack-sent', details);
+    ipcMain.on('plunder:attack-sent', (_e, details: PlunderAttackDetails) => {
+        panelWindow.webContents.send('plunder:attack-sent', details);
     });
 
-    ipcMain.handle('get-last-plunder-attack-details', async (): Promise<PlunderAttackDetails | null> => {
+    ipcMain.handle('plunder:get-last-attack-details', async (): Promise<PlunderAttackDetails | null> => {
         try {
             return (await PlunderHistory.getHistoryAsJSON(cacheStore))?.last ?? null;
         } catch (err) {
@@ -28,7 +28,7 @@ export function setPlunderAttackEvents() {
         };
     });
 
-    ipcMain.handle('get-total-plunder-attack-details', async (): Promise<PlunderAttackDetails | null> => {
+    ipcMain.handle('plunder:get-total-attack-details', async (): Promise<PlunderAttackDetails | null> => {
         try {
             return (await PlunderHistory.getHistoryAsJSON(cacheStore))?.total ?? null;
         } catch (err) {
@@ -38,7 +38,7 @@ export function setPlunderAttackEvents() {
     });
 
     // Emitido pela view quando o Plunder é desativado.
-    ipcMain.on('save-plunder-attack-details', async (_e, details: PlunderAttackDetails) => {
+    ipcMain.on('plunder:save-attack-details', async (_e, details: PlunderAttackDetails) => {
         try {
             for (const [key, value] of Object.entries(details) as [keyof PlunderAttackDetails, number][]) {
                 assertInteger(value, `Could not save plunder attack details: ${key} is not an integer.`);

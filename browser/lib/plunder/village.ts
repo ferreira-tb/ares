@@ -28,9 +28,9 @@ export function queryCurrentVillageInfo() {
     const hasPages = queryPlunderPages(pages);
 
     if (hasPages) {
-        ipcSend('update-plunder-pages-info', pages);
+        ipcSend('plunder:update-pages-info', pages);
     } else {
-        ipcSend('update-plunder-pages-info', null);
+        ipcSend('plunder:update-pages-info', null);
     };
 };
 

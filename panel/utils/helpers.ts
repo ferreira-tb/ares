@@ -13,7 +13,7 @@ export async function pushRoute(screenName: ReturnType<typeof useAresStore>['scr
 };
 
 export function togglePlunder(newStatus: boolean) {
-    ipcSend('update-plunder-config', 'active', newStatus);
+    ipcSend('plunder:update-config', 'active', newStatus);
     if (!newStatus) return;
 
     // Se o Plunder for desativado, é preciso salvar as informações do histórico e então resetá-lo.
@@ -21,7 +21,7 @@ export function togglePlunder(newStatus: boolean) {
     const history = usePlunderHistoryStore();
     const currentHistoryState = history.raw();
     if (Object.values(currentHistoryState).every((value) => value > 0)) {
-        ipcSend('save-plunder-attack-details', currentHistoryState);
+        ipcSend('plunder:save-attack-details', currentHistoryState);
     };
 
     history.reset();

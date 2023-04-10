@@ -35,7 +35,7 @@ function destroyTemplate() {
             status.loading = true;
             try {
                 const rawTemplate = toRaw(props.template);
-                const destroyed = await ipcInvoke('destroy-custom-plunder-template', rawTemplate);
+                const destroyed = await ipcInvoke('plunder:destroy-custom-template', rawTemplate);
                 if (destroyed) {
                     emit('template-destroyed', rawTemplate);
                     message.success('O modelo foi excluído');

@@ -141,7 +141,7 @@ const numberInputProps = {
 async function save() {
     try {
         const rawTemplateUnits = { ...toRaw(templateUnits) };
-        const saved = await ipcInvoke('save-custom-plunder-template', rawTemplateUnits);
+        const saved = await ipcInvoke('plunder:save-custom-template', rawTemplateUnits);
         if (saved) {
             message.success('Modelo salvo com sucesso!');
             templates.value.push(rawTemplateUnits);

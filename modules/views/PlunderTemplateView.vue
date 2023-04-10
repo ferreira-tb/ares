@@ -11,7 +11,7 @@ import type { CustomPlunderTemplateType } from '$types/plunder';
 
 const userAlias = await ipcInvoke('user-alias');
 const isArcherWorld = await ipcInvoke('is-archer-world');
-const previousTemplates = await ipcInvoke('get-custom-plunder-templates');
+const previousTemplates = await ipcInvoke('plunder:get-custom-templates');
 
 const showTemplateModal = ref<boolean>(false);
 const templates = ref<CustomPlunderTemplateType[]>(previousTemplates ?? []);

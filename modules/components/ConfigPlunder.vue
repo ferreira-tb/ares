@@ -10,7 +10,7 @@ import ConfigPlunderGridWall from '$modules/components/ConfigPlunderGridWall.vue
 import ConfigPlunderGridOthers from '$modules/components/ConfigPlunderGridOthers.vue';
 import type { PlunderConfigType } from '$types/plunder';
 
-const previousConfig = await ipcInvoke('get-plunder-config');
+const previousConfig = await ipcInvoke('plunder:get-config');
 const config = ref<PlunderConfigType | null>(previousConfig);
 
 // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
@@ -26,7 +26,7 @@ useIpcRendererOn('plunder-config-updated', <T extends keyof PlunderConfigType>(_
 function updateConfig<T extends keyof PlunderConfigType>(name: T, value: PlunderConfigType[T]) {
     if (!config.value) return;
     config.value[name] = value;
-    ipcSend('update-plunder-config', name, value);
+    ipcSend('plunder:update-config', name, value);
 };
 </script>
 

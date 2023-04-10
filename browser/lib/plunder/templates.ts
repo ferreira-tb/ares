@@ -117,7 +117,7 @@ export async function queryTemplateData() {
     allTemplates.set(templateC.type, templateC);
 
     // Obtêm os modelos personalizados.
-    const customTemplates = await ipcInvoke('get-custom-plunder-templates');
+    const customTemplates = await ipcInvoke('plunder:get-custom-templates');
     if (Array.isArray(customTemplates)) {
         for (const template of customTemplates) {
             const plunderTemplate = await parseCustomPlunderTemplate(template);
@@ -243,7 +243,7 @@ async function getTemplateC(info: PlunderTargetInfo): Promise<PlunderTemplate | 
         if (Object.values(templateC.units).every((amount) => amount === 0)) return null;
 
         // Atualiza a capacidade de carga do modelo C.
-        const carry = await ipcInvoke('calc-carry-capacity', templateC.units);
+        const carry = await ipcInvoke('plunder:calc-carry-capacity', templateC.units);
         assertInteger(carry, `Expected carry capacity of template C to be an integer, but got ${carry}.`);
         templateC.carry.value = carry;
 
@@ -266,7 +266,7 @@ async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType): 
         plunderTemplate.units[unit] = amount;
     };
 
-    const carry = await ipcInvoke('calc-carry-capacity', plunderTemplate.units);
+    const carry = await ipcInvoke('plunder:calc-carry-capacity', plunderTemplate.units);
     assertInteger(carry, `Expected carry capacity of template ${template.type} to be an integer, but got ${carry}.`);
     plunderTemplate.carry.value = carry;
 
