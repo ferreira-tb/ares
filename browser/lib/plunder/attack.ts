@@ -1,5 +1,5 @@
 import { useEventListener, useMutationObserver } from '@vueuse/core';
-import { assertInteger, isInstanceOf, assertString, assert } from '@tb-dev/ts-guard';
+import { assertInteger, isInstanceOf, assertString } from '@tb-dev/ts-guard';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import { generateRandomDelay } from '$global/helpers';
 import { wait } from '$browser/utils/helpers';
@@ -103,7 +103,10 @@ export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<bool
             assertString(unitName, `Could not determine unit name from class "${elClass}".`);
             const unitAmount = unit.parseIntStrict(10, false);
             assertInteger(unitAmount, `Could not determine ${unitName} amount.`);
-            assert(unitAmount === units[unitName], `${unitName} amount is not equal to the required amount.`);
+
+            if (unitAmount !== units[unitName]) {
+                throw new PlunderError(`${unitName} amount is not equal to the required amount.`);
+            };
         };
 
         await sendAttack(confirmationButton);
