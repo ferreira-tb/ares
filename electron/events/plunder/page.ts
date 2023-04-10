@@ -19,7 +19,7 @@ export function setPlunderPageEvents() {
 
     // Armazena informações relevantes sobre a aldeia atual no cache do Plunder.
     // Entre elas estão detalhes sobre as páginas do assistente de saque.
-    ipcMain.on('update-plunder-pages-info', (_e, pagesInfo: PlunderPageListType | null) => {
+    ipcMain.on('plunder:update-pages-info', (_e, pagesInfo: PlunderPageListType | null) => {
         try {
             if (pagesInfo && pages.value?.id === pagesInfo.id) return;
             pages.value = pagesInfo;

@@ -33,7 +33,7 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
             assertInteger(carry, 'Could not calculate carry capacity when destroying wall.');
             const attack = new PlunderAttackWithLoot(info, carry);
             attack.destroyedWalls = info.wallLevel;
-            ipcSend('plunder-attack-sent', attack);
+            ipcSend('plunder:attack-sent', attack);
         };
 
         return sent;

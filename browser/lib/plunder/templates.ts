@@ -117,7 +117,7 @@ export async function queryTemplateData() {
     allTemplates.set(templateC.type, templateC);
 
     // Obtêm os modelos personalizados.
-    const customTemplates = await ipcInvoke('get-custom-plunder-templates');
+    const customTemplates = await ipcInvoke('plunder:get-custom-templates');
     if (Array.isArray(customTemplates)) {
         for (const template of customTemplates) {
             const plunderTemplate = await parseCustomPlunderTemplate(template);

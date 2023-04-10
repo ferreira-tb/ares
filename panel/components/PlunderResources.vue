@@ -32,7 +32,7 @@ const gridSize = computed(() => {
 watchEffect(async () => {
     // Se o Plunder estiver ativado, atualiza o histórico com as informações salvas.
     if (props.plunderStatus) {
-        const lastPlundered = await ipcInvoke('get-last-plunder-attack-details');
+        const lastPlundered = await ipcInvoke('plunder:get-last-attack-details');
         if (lastPlundered) {
             history.$patch({ 
                 wood: lastPlundered.wood,

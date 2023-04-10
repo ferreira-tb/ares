@@ -11,17 +11,17 @@ export function setPlunderConfigEvents() {
     const plunderConfigStore = usePlunderConfigStore();
 
     // Verifica se o Plunder está ativo.
-    ipcMain.handle('is-plunder-active', () => plunderConfigStore.active);
+    ipcMain.handle('plunder:is-active', () => plunderConfigStore.active);
 
     // Obtém as configurações do Plunder.
-    ipcMain.handle('get-plunder-config', () => {
+    ipcMain.handle('plunder:get-config', () => {
         const alias = cacheStore.userAlias;
         if (isUserAlias(alias)) return { ...plunderConfigStore };
         return null;
     });
 
     // Recebe as configurações do Plunder do painel ou do módulo de configuração e as salva no banco de dados.
-    ipcMain.on('update-plunder-config', async <T extends keyof typeof plunderConfigStore>(
+    ipcMain.on('plunder:update-config', async <T extends keyof typeof plunderConfigStore>(
         e: IpcMainEvent, key: T, value: typeof plunderConfigStore[T]
     ) => {
         try {

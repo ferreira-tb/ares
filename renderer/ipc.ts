@@ -68,13 +68,13 @@ export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[
 export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<ElectronErrorLogType[] | null>;
 
 // Plunder
-export async function ipcInvoke(channel: 'is-plunder-active'): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-plunder-config'): Promise<PlunderConfigType | null>;
-export async function ipcInvoke(channel: 'get-last-plunder-attack-details'): Promise<PlunderAttackDetails | null>;
-export async function ipcInvoke(channel: 'get-total-plunder-attack-details'): Promise<PlunderAttackDetails | null>;
-export async function ipcInvoke(channel: 'get-custom-plunder-templates', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
-export async function ipcInvoke(channel: 'save-custom-plunder-template', template: CustomPlunderTemplateType): Promise<boolean>;
-export async function ipcInvoke(channel: 'destroy-custom-plunder-template', template: CustomPlunderTemplateType): Promise<boolean>;
+export async function ipcInvoke(channel: 'plunder:is-active'): Promise<boolean>;
+export async function ipcInvoke(channel: 'plunder:get-config'): Promise<PlunderConfigType | null>;
+export async function ipcInvoke(channel: 'plunder:get-last-attack-details'): Promise<PlunderAttackDetails | null>;
+export async function ipcInvoke(channel: 'plunder:get-total-attack-details'): Promise<PlunderAttackDetails | null>;
+export async function ipcInvoke(channel: 'plunder:get-custom-templates', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
+export async function ipcInvoke(channel: 'plunder:save-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
+export async function ipcInvoke(channel: 'plunder:destroy-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:get-pages-info'): Promise<PlunderPageListType | null>;
 export async function ipcInvoke(channel: 'plunder:get-group-info'): Promise<PlunderGroupType | null>;
 export async function ipcInvoke(channel: 'plunder:navigate-to-next-page'): Promise<boolean>;
@@ -139,11 +139,11 @@ export function ipcSend(channel: 'delete-error-log', id: number): void;
 export function ipcSend(channel: 'delete-electron-error-log', id: number): void;
 
 // Plunder
-export function ipcSend(channel: 'open-custom-plunder-template-window'): void;
-export function ipcSend<T extends keyof PlunderConfigType>(channel: 'update-plunder-config', key: T, value: PlunderConfigType[T]): void;
-export function ipcSend(channel: 'plunder-attack-sent', plunderAttack: PlunderAttack): void;
-export function ipcSend(channel: 'save-plunder-attack-details', details: PlunderAttackDetails): void;
-export function ipcSend(channel: 'update-plunder-pages-info', villageInfo: PlunderPageListType | null): void;
+export function ipcSend(channel: 'plunder:open-custom-template-window'): void;
+export function ipcSend<T extends keyof PlunderConfigType>(channel: 'plunder:update-config', key: T, value: PlunderConfigType[T]): void;
+export function ipcSend(channel: 'plunder:attack-sent', plunderAttack: PlunderAttack): void;
+export function ipcSend(channel: 'plunder:save-attack-details', details: PlunderAttackDetails): void;
+export function ipcSend(channel: 'plunder:update-pages-info', villageInfo: PlunderPageListType | null): void;
 export function ipcSend(channel: 'plunder:update-group-info', groupInfo: PlunderGroupType | null): void;
 export function ipcSend(channel: 'plunder:navigate-to-next-village', currentVillageId?: number | null): void;
 export function ipcSend(channel: 'plunder:navigate-to-group'): void;

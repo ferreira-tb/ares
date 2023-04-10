@@ -39,7 +39,7 @@ function setPlunderTimeout() {
 
 function reloadMainView() {
     try {
-        ipcSend('update-plunder-pages-info', null);
+        ipcSend('plunder:update-pages-info', null);
         ipcSend('plunder:update-group-info', null);
     } catch (err) {
         PlunderError.catch(err);

@@ -31,7 +31,7 @@ export function prepareAttack(plunderAttack: PlunderAttack, button: HTMLAnchorEl
 
         function attack() {
             sendAttack(button)
-                .then(() => ipcSend('plunder-attack-sent', plunderAttack))
+                .then(() => ipcSend('plunder:attack-sent', plunderAttack))
                 .then(() => resolve())
                 .catch((err: unknown) => reject(err))
                 .finally(() => cleanup());

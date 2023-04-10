@@ -16,7 +16,7 @@ export function setPlunderEvents() {
         plunderConfigStore[key] = value;
     });
 
-    ipcRenderer.on('plunder-attack-sent', (_e, details: PlunderAttackDetails) => {
+    ipcRenderer.on('plunder:attack-sent', (_e, details: PlunderAttackDetails) => {
         try {
             if (!plunderConfigStore.active) return;
             for (const [key, value] of Object.entries(details)) {

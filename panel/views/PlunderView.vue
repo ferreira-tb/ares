@@ -25,12 +25,12 @@ const dynamicGroupsAmount = computed<number>(() => {
 });
 
 watch(() => config.active, togglePlunder);
-watch(() => config.ignoreWall, (v) => ipcSend('update-plunder-config', 'ignoreWall', v));
-watch(() => config.destroyWall, (v) => ipcSend('update-plunder-config', 'destroyWall', v));
-watch(() => config.groupAttack, (v) => ipcSend('update-plunder-config', 'groupAttack', v));
-watch(() => config.useC, (v) => ipcSend('update-plunder-config', 'useC', v));
-watch(() => config.ignoreDelay, (v) => ipcSend('update-plunder-config', 'ignoreDelay', v));
-watch(() => config.blindAttack, (v) => ipcSend('update-plunder-config', 'blindAttack', v));
+watch(() => config.ignoreWall, (v) => ipcSend('plunder:update-config', 'ignoreWall', v));
+watch(() => config.destroyWall, (v) => ipcSend('plunder:update-config', 'destroyWall', v));
+watch(() => config.groupAttack, (v) => ipcSend('plunder:update-config', 'groupAttack', v));
+watch(() => config.useC, (v) => ipcSend('plunder:update-config', 'useC', v));
+watch(() => config.ignoreDelay, (v) => ipcSend('plunder:update-config', 'ignoreDelay', v));
+watch(() => config.blindAttack, (v) => ipcSend('plunder:update-config', 'blindAttack', v));
 
 watchEffect(() => {
     if (features.premium === false || dynamicGroupsAmount.value === 0) {
@@ -45,7 +45,7 @@ watchEffect(() => {
     <main>
         <div class="button-area">
             <NButtonGroup>
-                <NButton round @click="ipcSend('open-custom-plunder-template-window')">
+                <NButton round @click="ipcSend('plunder:open-custom-template-window')">
                     Modelos
                 </NButton>
                 <NButton round :disabled="features.farmAssistant === false" @click="config.active = !config.active">

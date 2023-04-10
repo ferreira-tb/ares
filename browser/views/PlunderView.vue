@@ -159,7 +159,7 @@ async function handleAttack(): Promise<void> {
         const sent = await sendAttackFromPlace(best.units);
         if (!sent) throw new PlunderError(`Could not use template ${best.type.toUpperCase()}.`);
 
-        ipcSend('plunder-attack-sent', plunderAttack);
+        ipcSend('plunder:attack-sent', plunderAttack);
         targets.delete(id);
         village.remove();
         
