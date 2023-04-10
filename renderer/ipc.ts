@@ -60,7 +60,6 @@ export async function ipcInvoke(channel: 'current-world-config'): Promise<WorldC
 export async function ipcInvoke(channel: 'current-world-units'): Promise<WorldUnitType>;
 export async function ipcInvoke(channel: 'player-name', alias?: UserAlias): Promise<string | null>;
 export async function ipcInvoke(channel: 'is-archer-world'): Promise<boolean>;
-export async function ipcInvoke(channel: 'calc-carry-capacity', units: Partial<UnitAmount>, world?: World): Promise<number | null>;
 export async function ipcInvoke(channel: 'fetch-village-groups'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-village-groups'): Promise<Set<VillageGroup>>;
 
@@ -76,10 +75,10 @@ export async function ipcInvoke(channel: 'get-total-plunder-attack-details'): Pr
 export async function ipcInvoke(channel: 'get-custom-plunder-templates', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
 export async function ipcInvoke(channel: 'save-custom-plunder-template', template: CustomPlunderTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'destroy-custom-plunder-template', template: CustomPlunderTemplateType): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-plunder-pages-info'): Promise<PlunderPageListType | null>;
-export async function ipcInvoke(channel: 'get-plunder-group-info'): Promise<PlunderGroupType | null>;
-export async function ipcInvoke(channel: 'navigate-to-next-plunder-page'): Promise<boolean>;
-export async function ipcInvoke(channel: 'navigate-to-first-plunder-page'): Promise<boolean>;
+export async function ipcInvoke(channel: 'plunder:get-pages-info'): Promise<PlunderPageListType | null>;
+export async function ipcInvoke(channel: 'plunder:get-group-info'): Promise<PlunderGroupType | null>;
+export async function ipcInvoke(channel: 'plunder:navigate-to-next-page'): Promise<boolean>;
+export async function ipcInvoke(channel: 'plunder:calc-carry-capacity', units: Partial<UnitAmount>, world?: World): Promise<number | null>;
 
 // Deimos
 export async function ipcInvoke(channel: 'get-deimos-file'): Promise<string | null>;
@@ -145,9 +144,10 @@ export function ipcSend<T extends keyof PlunderConfigType>(channel: 'update-plun
 export function ipcSend(channel: 'plunder-attack-sent', plunderAttack: PlunderAttack): void;
 export function ipcSend(channel: 'save-plunder-attack-details', details: PlunderAttackDetails): void;
 export function ipcSend(channel: 'update-plunder-pages-info', villageInfo: PlunderPageListType | null): void;
-export function ipcSend(channel: 'update-plunder-group-info', groupInfo: PlunderGroupType | null): void;
-export function ipcSend(channel: 'navigate-to-next-plunder-village', currentVillageId?: number | null): void;
-export function ipcSend(channel: 'navigate-to-plunder-group'): void;
+export function ipcSend(channel: 'plunder:update-group-info', groupInfo: PlunderGroupType | null): void;
+export function ipcSend(channel: 'plunder:navigate-to-next-village', currentVillageId?: number | null): void;
+export function ipcSend(channel: 'plunder:navigate-to-group'): void;
+export function ipcSend(channel: 'plunder:navigate-to-first-page'): void;
 
 // Deimos
 export function ipcSend(channel: 'deimos-tag-is-ready'): void;

@@ -28,7 +28,7 @@ export function setPlunderNavigationGuards(router: Router) {
             await until(currentGroupId).toMatch((id) => typeof id === 'number', { timeout: 3000, throwOnTimeout: true });
             if (plunderGroupId.value !== currentGroupId.value) {
                 await nextTick();
-                ipcSend('navigate-to-plunder-group');
+                ipcSend('plunder:navigate-to-group');
                 return false;
             };
 
@@ -49,11 +49,10 @@ export function setPlunderNavigationGuards(router: Router) {
 
             // Se houver navegação entre aldeias sem que o usuário deixe o AS, a página permanece a mesma.
             // Isso é um problema, pois a nova aldeia deveria começar a atacar a partir da primeira página.
-            const villageInfo = await ipcInvoke('get-plunder-pages-info');
+            const villageInfo = await ipcInvoke('plunder:get-pages-info');
             if (villageInfo && plunderPage.value !== 0 && currentVillageId.value !== villageInfo.id) {
                 await nextTick();
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                ipcInvoke('navigate-to-first-plunder-page');
+                ipcSend('plunder:navigate-to-first-page');
                 return false;
             };
 

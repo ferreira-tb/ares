@@ -41,7 +41,7 @@ export async function queryPlunderGroupInfo(): Promise<PlunderGroupType | null> 
             return null;
         };
 
-        groupInfo = await ipcInvoke('get-plunder-group-info');
+        groupInfo = await ipcInvoke('plunder:get-group-info');
         groupInfo ??= await queryVillagesFromPopup(config);
 
     } catch (err) {
@@ -49,7 +49,7 @@ export async function queryPlunderGroupInfo(): Promise<PlunderGroupType | null> 
         groupInfo = null;
 
     } finally {
-        ipcSend('update-plunder-group-info', groupInfo);
+        ipcSend('plunder:update-group-info', groupInfo);
     };
 
     return groupInfo;
@@ -67,7 +67,7 @@ async function queryVillagesFromPopup(config: ReturnType<typeof usePlunderConfig
         const selectedGroup = popup.queryAndAssert('#group_id option[selected]');
         const selectedGroupId = selectedGroup.getAttributeAsIntStrict('value');
         if (selectedGroupId !== groupId) {
-            queueMicrotask(() => ipcSend('navigate-to-plunder-group'));
+            queueMicrotask(() => ipcSend('plunder:navigate-to-group'));
             return null;
         };
 

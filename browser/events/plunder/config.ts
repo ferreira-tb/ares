@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
 
-export function setPlunderEvents() {
+export function setPlunderConfigEvents() {
     const plunderConfigStore = usePlunderConfigStore();
 
     // Atualiza o estado local do Plunder sempre que ocorre uma mudança.

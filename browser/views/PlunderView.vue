@@ -49,11 +49,11 @@ queryTargetsInfo();
 queryCurrentVillageInfo();
 
 watch(groupInfo, (newValue) => {
-    ipcSend('update-plunder-group-info', toRaw(newValue));
+    ipcSend('plunder:update-group-info', toRaw(newValue));
 });
 
 whenever(() => config.plunderGroupId, () => {
-    ipcSend('navigate-to-plunder-group');
+    ipcSend('plunder:navigate-to-group');
 });
 
 watch(() => config.groupAttack, async (isGroupAttackActive) => {
@@ -74,7 +74,7 @@ watch(() => config.active, async () => {
 
         // Se a aldeia atual não pertencer ao grupo de saque, navega para alguma aldeia do grupo.
         if (config.groupAttack && groupInfo.value && !belongsToPlunderGroup.value) {
-            ipcSend('navigate-to-next-plunder-village');
+            ipcSend('plunder:navigate-to-next-village');
             return;
         };
 

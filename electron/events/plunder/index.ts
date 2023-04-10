@@ -15,7 +15,7 @@ export function setPlunderEvents() {
     const cacheStore = useCacheStore();
     
     // Calcula a capacidade de carga de um determinado conjunto de unidades.
-    ipcMain.handle('calc-carry-capacity', async (_e, units: Partial<UnitAmount>, world?: World | null) => {
+    ipcMain.handle('plunder:calc-carry-capacity', async (_e, units: Partial<UnitAmount>, world?: World | null) => {
         try {
             world ??= cacheStore.world;
             if (!isWorld(world)) return null;
