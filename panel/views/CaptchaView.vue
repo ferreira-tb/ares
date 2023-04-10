@@ -1,24 +1,21 @@
 <script setup lang="ts">
-import { watch, watchEffect } from 'vue';
-import { NResult } from 'naive-ui';
+import { watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import { usePlunderConfigStore } from '$renderer/stores/plunder';
+import { NResult } from 'naive-ui';
+import { watchImmediate } from '@vueuse/core';
 import { useAresStore } from '$renderer/stores/ares';
-import { pushRoute, togglePlunder } from '$panel/utils/helpers';
-import { PanelRouterError } from '$panel/error';
+import { usePlunderConfigStore } from '$renderer/stores/plunder';
+import { togglePlunder } from '$panel/utils/helpers';
 
 const aresStore = useAresStore();
 const plunderConfigStore = usePlunderConfigStore();
-const { captcha, screen: screenName } = storeToRefs(aresStore);
+
+const { captcha } = storeToRefs(aresStore);
 
 watch(() => plunderConfigStore.active, togglePlunder);
 
-watchEffect(() => {
-    if (captcha.value) {
-        plunderConfigStore.active = false;
-    } else {
-        pushRoute(screenName.value).catch(PanelRouterError.catch);
-    };
+watchImmediate(captcha, () => {
+    plunderConfigStore.active = false;
 });
 </script>
 

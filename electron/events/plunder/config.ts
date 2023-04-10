@@ -35,7 +35,7 @@ export function setPlunderConfigEvents() {
             // Comunica a mudança aos processos diferentes daquele que enviou os dados.
             for (const contents of webContents.getAllWebContents()) {
                 if (contents !== e.sender) {
-                    contents.send('plunder-config-updated', key, value);
+                    contents.send('plunder:config-updated', key, value);
                 };
             };
 

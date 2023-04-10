@@ -67,7 +67,7 @@ export function setDeimosEvents() {
             };
 
             const panelWindow = getPanelWindow();
-            panelWindow.webContents.send('patch-panel-game-data', gameData);
+            panelWindow.webContents.send('panel:patch-game-data', gameData);
 
         } catch (err) {
             MainProcessEventError.catch(err);
@@ -84,7 +84,7 @@ export function setDeimosEvents() {
             };
     
             const panelWindow = getPanelWindow();
-            panelWindow.webContents.send('patch-panel-plunder-info', plunderInfo);
+            panelWindow.webContents.send('panel:patch-plunder-info', plunderInfo);
             return true;
 
         } catch (err) {
@@ -103,7 +103,7 @@ export function setDeimosEvents() {
             };
     
             const panelWindow = getPanelWindow();
-            panelWindow.webContents.send('patch-panel-current-village-units', units);
+            panelWindow.webContents.send('panel:patch-current-village-units', units);
             return true;
 
         } catch (err) {

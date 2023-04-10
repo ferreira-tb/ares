@@ -14,6 +14,13 @@ export class BrowserRouterError extends BrowserError {
     };
 };
 
+export class BrowserEventError extends BrowserError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'BrowserEventError';
+    };
+};
+
 export class PlunderError extends BrowserError {
     constructor(message: string) {
         super(message);

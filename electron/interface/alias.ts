@@ -78,7 +78,7 @@ async function patchAllPlunderStoresState(
         };
 
         // Atualiza o painel com as configurações para o alias atual.
-        panelWindow.webContents.send('patch-panel-plunder-config', plunderConfig);
+        panelWindow.webContents.send('panel:patch-plunder-config', plunderConfig);
     };
 
     // Histórico do assistente de saque.
@@ -95,7 +95,7 @@ async function patchAllPlunderStoresState(
         // Se o Plunder estiver ativo para o alias atual, atualiza o painel com o histórico de recursos.
         // Isso permite que ele continue de onde parou.
         if (plunderConfig?.active) {
-            panelWindow.webContents.send('patch-panel-plunder-history', plunderHistory);
+            panelWindow.webContents.send('panel:patch-plunder-history', plunderHistory);
         };
     };
 };
