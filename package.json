@@ -65,7 +65,7 @@
         "@types/node": "^18.15.11",
         "@types/semver": "^7.3.13",
         "@typescript-eslint/eslint-plugin": "^5.58.0",
-        "@typescript-eslint/parser": "^5.57.1",
+        "@typescript-eslint/parser": "^5.58.0",
         "@vicons/carbon": "^0.12.0",
         "@vicons/fa": "^0.12.0",
         "@vicons/ionicons5": "^0.12.0",
