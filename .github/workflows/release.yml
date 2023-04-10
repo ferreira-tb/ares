@@ -25,6 +25,7 @@ jobs:
     - run: node scripts/actions/release.mjs
     - run: |
         git config user.name ${{ github.actor }}
+        git config user.email ${{ secrets.ACTOR_EMAIL }}
         git add ./docs
         git commit -m "chore: atualiza versão do Ares"
         git push origin new-release
