@@ -47,7 +47,7 @@
         "@vueuse/electron": "^9.13.0",
         "discord.js": "^14.9.0",
         "mechanus": "^1.0.5",
-        "pinia": "^2.0.33",
+        "pinia": "^2.0.34",
         "semver": "^7.3.8",
         "sequelize": "^6.30.0",
         "sqlite3": "^5.1.6",
