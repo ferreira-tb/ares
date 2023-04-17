@@ -43,7 +43,7 @@
         "@tb-dev/prototype-dom": "^3.1.1",
         "@tb-dev/ts-guard": "^2.0.0",
         "@tb-dev/ts-guard-dom": "^1.0.0",
-        "@vueuse/core": "^10.0.0-beta.2",
+        "@vueuse/core": "^10.0.2",
         "@vueuse/electron": "^9.13.0",
         "discord.js": "^14.9.0",
         "mechanus": "^1.0.5",
