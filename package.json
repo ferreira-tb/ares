@@ -72,7 +72,7 @@
         "@vicons/material": "^0.12.0",
         "@vitejs/plugin-vue": "^4.1.0",
         "@vue/tsconfig": "^0.1.3",
-        "electron": "^24.0.0",
+        "electron": "^24.1.2",
         "eslint": "^8.38.0",
         "eslint-plugin-vue": "^9.10.0",
         "naive-ui": "^2.34.3",
