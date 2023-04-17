@@ -42,7 +42,7 @@ if (!data.isPR && data.labels.length > 0 && data.labels.some((label) => validLab
 
     if (data.body) {
         let description = data.body.substring(0, 500);
-        if (data.body.length > 500) description += '...';
+        if (data.body.length > 2000) description += '...';
         embed.setDescription(description);
     };
 
