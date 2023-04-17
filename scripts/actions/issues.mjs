@@ -28,11 +28,11 @@ const data = {
     author_url: issue.data.user.html_url,
     avatar: issue.data.user.avatar_url,
 
-    isPR: Boolean(issue.data.pull_request)
+    isPullRequest: Boolean(issue.data.pull_request)
 };
 
 const validLabels = ['bug', 'enhancement', 'question'];
-if (!data.isPR && data.labels.length > 0 && data.labels.some((label) => validLabels.includes(label.name))) {
+if (!data.isPullRequest && data.labels.length > 0 && data.labels.some((label) => validLabels.includes(label.name))) {
     const embed = new EmbedBuilder()
         .setTitle(data.title)
         .setURL(data.url)
