@@ -6,7 +6,7 @@ import { getPlunderTargets } from '$lib/plunder/targets';
 import { PlunderError } from '$browser/error';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import { useCurrentVillageStore } from '$renderer/stores/village';
-import type { PlunderGroupType } from '$types/plunder';
+import type { PlunderGroupType, PlunderGroupVillageType } from '$types/plunder';
 import type { PlunderTargetInfo } from '$lib/plunder/targets';
 
 export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
@@ -52,7 +52,11 @@ function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>,
         const groupVillage = groupInfo.villages.getStrict(currentVillageId);
         if (groupVillage.done) return;
 
-        if (!canSomeTemplateAttack(config) || (groupVillage.waveMaxDistance >= config.maxDistance)) {
+        if (
+            !canSomeTemplateAttack(config) ||
+            isOverWaveMaxDistance(config, groupVillage) ||
+            isOverTemplateCMaxDistance(config, groupVillage)
+        ) {
             groupVillage.done = true;
         } else {
             groupVillage.waveMaxDistance += config.fieldsPerWave;
@@ -76,4 +80,13 @@ function canSomeTemplateAttack(config: ReturnType<typeof usePlunderConfigStore>)
 
     const status = allTemplates.map((template) => template.ok.value);
     return status.some((ok) => ok);
+};
+
+function isOverWaveMaxDistance(config: ReturnType<typeof usePlunderConfigStore>, groupVillage: PlunderGroupVillageType) {
+    return groupVillage.waveMaxDistance >= config.maxDistance;
+};
+
+function isOverTemplateCMaxDistance(config: ReturnType<typeof usePlunderConfigStore>, groupVillage: PlunderGroupVillageType) {
+    if (!config.useC || config.useCPattern !== 'only') return false;
+    return groupVillage.waveMaxDistance >= config.maxDistanceC;
 };
