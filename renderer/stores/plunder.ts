@@ -39,7 +39,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const plunderedResourcesRatio = ref<number>(1);
     const pageDelay = ref<number>(2000);
     const villageDelay = ref<number>(2000);
-    const maxDistanceC = ref<number>(20);
+    const maxDistanceC = ref<number>(10);
 
     const plunderGroupId = ref<number | null>(null);
     const fieldsPerWave = ref<number>(10);

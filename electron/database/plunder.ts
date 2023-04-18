@@ -211,7 +211,7 @@ PlunderConfig.init({
     maxDistanceC: {
         type: DataTypes.FLOAT,
         allowNull: false,
-        defaultValue: 20,
+        defaultValue: 10,
         validate: {
             min: 1,
             isFloat: true

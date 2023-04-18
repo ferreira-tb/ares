@@ -95,7 +95,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const plunderedResourcesRatio = ref<number>(1, ratioValidator());
     const pageDelay = ref<number>(2000, delayValidator());
     const villageDelay = ref<number>(2000, delayValidator());
-    const maxDistanceC = ref<number>(20, maxDistanceValidator());
+    const maxDistanceC = ref<number>(10, maxDistanceValidator());
 
     const plunderGroupId = ref<number | null>(null, positiveIntegerOrNullRef);
     const fieldsPerWave = ref<number>(10, maxDistanceValidator(5));
