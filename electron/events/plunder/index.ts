@@ -21,7 +21,7 @@ export function setPlunderEvents() {
             if (!isWorld(world)) return null;
 
             let worldUnits: WorldUnitType;
-            if (world === cacheStore.world) {       
+            if (world === cacheStore.world) {
                 worldUnits = extractWorldUnitsFromMap(worldUnitsMap);
             } else {
                 const worldUnitsRow = await WorldUnit.findByPk(world);
