@@ -1,4 +1,4 @@
-import { isString } from '@tb-dev/ts-guard';
+import { isString } from '$global/guards';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { AresError } from '$global/error';
 

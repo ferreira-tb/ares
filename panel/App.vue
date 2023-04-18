@@ -12,14 +12,14 @@ import CaptchaView from '$panel/views/CaptchaView.vue';
 const aresStore = useAresStore();
 const panelStore = usePanelStore();
 
-const { captcha, screen: screenName } = storeToRefs(aresStore);
+const { captcha, screen: currentScreen } = storeToRefs(aresStore);
 const { isVisible } = storeToRefs(panelStore);
 
 // Define a janela de acordo com a página atual no jogo.
-const isValidRoute = useArrayIncludes(routeNames, screenName);
-watchImmediate(screenName, async (currentScreen) => {
-    if (isValidRoute.value) {
-        await router.push({ name: currentScreen });
+const isValidRoute = useArrayIncludes(routeNames, currentScreen);
+watchImmediate(currentScreen, async (name) => {
+    if (name && isValidRoute.value) {
+        await router.push({ name });
     } else {
         await router.push('/');
     };
@@ -31,20 +31,29 @@ watchImmediate(screenName, async (currentScreen) => {
         <template v-if="isVisible">
             <CaptchaView v-if="captcha" />
 
-            <RouterView v-else #default="{ Component }">
-                <template v-if="Component">
-                    <Transition name="tb-fade" mode="out-in">
-                        <Suspense>
-                            <component :is="Component" />
-                            <template #fallback>
-                                <span class="bold-green to-center">Carregando...</span>
-                            </template>
-                        </Suspense>
-                    </Transition>
-                </template>
-            </RouterView>
+            <div v-else class="router-container">
+                <RouterView #default="{ Component }">
+                    <template v-if="Component">
+                        <Transition name="tb-fade" mode="out-in">
+                            <Suspense>
+                                <component :is="Component" />
+                                <template #fallback>
+                                    <span class="bold-green to-center">Carregando...</span>
+                                </template>
+                            </Suspense>
+                        </Transition>
+                    </template>
+                </RouterView>
+            </div>
         </template>
 
         <HomeView v-else />
     </NConfigProvider>
 </template>
+
+<style scoped>
+.router-container {
+    width: 100%;
+    height: 100%;
+}
+</style>

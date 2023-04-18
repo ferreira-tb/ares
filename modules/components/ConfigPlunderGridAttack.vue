@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
-import { isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
+import { isInteger, isFiniteNumber } from '$global/guards';
 import { isDistance } from '$global/guards';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';
@@ -70,7 +70,7 @@ const useCOptions = [
                     :min="1"
                     :max="9999"
                     :step="1"
-                    :validator="(v) => isPositiveInteger(v) && v >= 1"
+                    :validator="(v) => isInteger(v) && v >= 1"
                 />
             </NGridItem>
 
@@ -88,7 +88,7 @@ const useCOptions = [
                     :min="100"
                     :max="60000"
                     :step="10"
-                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000"
+                    :validator="(v) => isInteger(v) && v >= 100 && v <= 60000"
                 />
             </NGridItem>
 
@@ -108,7 +108,7 @@ const useCOptions = [
                     :min="0.2"
                     :max="1"
                     :step="0.05"
-                    :validator="(v) => isPositiveNumber(v) && v >= 0.2 && v <= 1"
+                    :validator="(v) => isFiniteNumber(v) && v >= 0.2 && v <= 1"
                 />
             </NGridItem>
 

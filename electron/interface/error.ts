@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { app, dialog, BrowserWindow } from 'electron';
 import { storeToRefs } from 'mechanus';
-import { isString } from '@tb-dev/ts-guard';
+import { isString } from '$global/guards';
 import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/app/modules';
 import { getMainWindow } from '$electron/utils/helpers';

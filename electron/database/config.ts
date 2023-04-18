@@ -1,5 +1,4 @@
 import { DataTypes, Model } from 'sequelize';
-import { isObject } from '@tb-dev/ts-guard';
 import { sequelize } from '$electron/database';
 import { DatabaseError } from '$electron/error';
 import { getPanelWindow } from '$electron/utils/helpers';
@@ -47,8 +46,8 @@ export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAt
         try {
             if (!json) {
                 const previous = (await AppConfig.findByPk(name))?.toJSON();
-                if (!previous || !isObject<U>(previous.json)) return;
-                json = previous.json;
+                if (!previous?.json) return;
+                json = previous.json as U;
             };
             
             for (const [key, value] of Object.entries(json) as [V, U[V]][]) {
@@ -77,8 +76,8 @@ export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAt
         try {
             const panelWindow = getPanelWindow();
             const bounds = (await AppConfig.findByPk('panel_bounds'))?.toJSON();
-            if (!bounds || !isObject<Rectangle>(bounds.json)) return;
-            panelWindow.setBounds(bounds.json);
+            if (!bounds?.json) return;
+            panelWindow.setBounds(bounds.json as Rectangle);
 
         } catch (err) {
             DatabaseError.catch(err);

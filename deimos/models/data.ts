@@ -1,4 +1,4 @@
-import { isBoolean, isString, isInteger, toNull } from '@tb-dev/ts-guard';
+import { isString, isInteger } from '$global/guards';
 import { isWorld } from '$global/guards';
 import type { RawTribalWarsGameData } from '$types/deimos';
 import type { TribalWarsGameDataType } from '$types/game';
@@ -13,19 +13,23 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
 
     constructor(rawGameData: RawTribalWarsGameData) {
         this.ares = {
-            locale: toNull(rawGameData.locale, isString),
+            locale: isString(rawGameData.locale) ? rawGameData.locale : null,
             world: isWorld(rawGameData.world) ? rawGameData.world : null,
-            majorVersion: toNull(rawGameData.majorVersion, isString),
-            screen: toNull(rawGameData.screen, isString),
-            screenMode: toNull(rawGameData.mode, isString),
-            pregame: toNull(rawGameData.pregame, isBoolean)
+            majorVersion: isString(rawGameData.majorVersion) ? rawGameData.majorVersion : null,
+            screen: isString(rawGameData.screen) ? rawGameData.screen : null,
+            screenMode: isString(rawGameData.mode) ? rawGameData.mode : null,
+            pregame: typeof rawGameData.pregame === 'boolean' ? rawGameData.pregame : null
         };
 
+        const premium = rawGameData.features.Premium.active;
+        const accountManager = rawGameData.features.AccountManager.active;
+        const farmAssistant = rawGameData.features.FarmAssistent.active;
+
         this.features = {
-            premium: toNull(rawGameData.features.Premium.active, isBoolean),
-            accountManager: toNull(rawGameData.features.AccountManager.active, isBoolean),
+            premium: typeof premium === 'boolean' ? premium : null,
+            accountManager: typeof accountManager === 'boolean' ? accountManager : null,
             // No jogo consta como FarmAssistent, mas no Deimos está como FarmAssistant.
-            farmAssistant: toNull(rawGameData.features.FarmAssistent.active, isBoolean)
+            farmAssistant: typeof farmAssistant === 'boolean' ? farmAssistant : null
         };
 
         // O valor de group_id pode ser uma string ou um número.
@@ -34,25 +38,52 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
 
         this.groups = { groupId };
 
+        const playerPoints = isInteger(rawGameData.player.points) ? rawGameData.player.points :
+            isString(rawGameData.player.points) ? Number.parseIntStrict(rawGameData.player.points) : null;
+
+        const villageAmount = isInteger(rawGameData.player.villages) ? rawGameData.player.villages :
+            isString(rawGameData.player.villages) ? Number.parseIntStrict(rawGameData.player.villages) : null;
+
         this.player = {
-            name: toNull(rawGameData.player.name, isString),
-            id: toNull(rawGameData.player.id, isInteger),
-            points: isString(rawGameData.player.points) ? Number.parseIntStrict(rawGameData.player.points) : null,
-            villageAmount: isString(rawGameData.player.villages) ? Number.parseIntStrict(rawGameData.player.villages) : null
+            name: isString(rawGameData.player.name) ? rawGameData.player.name : null,
+            id: isInteger(rawGameData.player.id) ? rawGameData.player.id : null,
+            points: playerPoints,
+            villageAmount
         };
 
+        const currentVillagePoints = isInteger(rawGameData.village.points) ? rawGameData.village.points :
+            isString(rawGameData.village.points) ? Number.parseIntStrict(rawGameData.village.points) : null;
+
+        const population = isInteger(rawGameData.village.pop) ? rawGameData.village.pop :
+            isString(rawGameData.village.pop) ? Number.parseIntStrict(rawGameData.village.pop) : null;
+
+        const maxPopulation = isInteger(rawGameData.village.pop_max) ? rawGameData.village.pop_max :
+            isString(rawGameData.village.pop_max) ? Number.parseIntStrict(rawGameData.village.pop_max) : null;
+
+        const wood = isInteger(rawGameData.village.wood) ? rawGameData.village.wood :
+            isString(rawGameData.village.wood) ? Number.parseIntStrict(rawGameData.village.wood) : null;
+
+        const stone = isInteger(rawGameData.village.stone) ? rawGameData.village.stone :
+            isString(rawGameData.village.stone) ? Number.parseIntStrict(rawGameData.village.stone) : null;
+
+        const iron = isInteger(rawGameData.village.iron) ? rawGameData.village.iron :
+            isString(rawGameData.village.iron) ? Number.parseIntStrict(rawGameData.village.iron) : null;
+
+        const maxStorage = isInteger(rawGameData.village.storage_max) ? rawGameData.village.storage_max :
+            isString(rawGameData.village.storage_max) ? Number.parseIntStrict(rawGameData.village.storage_max) : null;
+
         this.currentVillage = {
-            x: toNull(rawGameData.village.x, isInteger),
-            y: toNull(rawGameData.village.y, isInteger),
-            id: toNull(rawGameData.village.id, isInteger),
-            name: toNull(rawGameData.village.name, isString),
-            points: isString(rawGameData.village.points) ? Number.parseIntStrict(rawGameData.village.points) : null,
-            population: isString(rawGameData.village.pop) ? Number.parseIntStrict(rawGameData.village.pop) : null,
-            maxPopulation: isString(rawGameData.village.pop_max) ? Number.parseIntStrict(rawGameData.village.pop_max) : null,
-            wood: isString(rawGameData.village.wood) ? Number.parseIntStrict(rawGameData.village.wood) : null,
-            stone: isString(rawGameData.village.stone) ? Number.parseIntStrict(rawGameData.village.stone) : null,
-            iron: isString(rawGameData.village.iron) ? Number.parseIntStrict(rawGameData.village.iron) : null,
-            maxStorage: isString(rawGameData.village.storage_max) ? Number.parseIntStrict(rawGameData.village.storage_max) : null
+            x: isInteger(rawGameData.village.x) ? rawGameData.village.x : null,
+            y: isInteger(rawGameData.village.y) ? rawGameData.village.y : null,
+            id: isInteger(rawGameData.village.id) ? rawGameData.village.id : null,
+            name: isString(rawGameData.village.name) ? rawGameData.village.name : null,
+            points: currentVillagePoints,
+            population,
+            maxPopulation,
+            wood,
+            stone,
+            iron,
+            maxStorage
         };
     };
 };

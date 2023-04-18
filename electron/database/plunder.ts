@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { isObject, assertInteger } from '@tb-dev/ts-guard';
+import { assertInteger } from '$global/guards';
 import { sequelize } from '$electron/database';
 import { isUserAlias, assertUserAlias, assertWallLevel } from '$global/guards';
 import { DatabaseError } from '$electron/error';
@@ -307,7 +307,7 @@ implements CustomPlunderTemplateType {
     public static async saveCustomPlunderTemplate(template: CustomPlunderTemplateType): Promise<boolean> {
         try {
             for (const [unit, amount] of Object.entries(template.units)) {
-                assertInteger(amount);
+                assertInteger(amount, `Invalid ${unit} amount: ${amount}`);
                 if (amount < 0) throw new DatabaseError(`${unit} amount cannot be negative`);
             };
 
@@ -380,9 +380,10 @@ implements DemolitionTemplateType {
         try {
             assertUserAlias(alias, DatabaseError);
             const demolitionTemplate = await DemolitionTemplate.findOne({ where: { alias } });
-            if (!demolitionTemplate || !isObject(demolitionTemplate.units)) {
+            if (!demolitionTemplate) {
                 return { alias, units: unitsToDestroyWall };
             };
+            
             return demolitionTemplate.toJSON();
 
         } catch (err) {

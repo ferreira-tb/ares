@@ -1,5 +1,5 @@
 import { useEventListener, useMutationObserver } from '@vueuse/core';
-import { assertInteger, isInstanceOf, assertString } from '@tb-dev/ts-guard';
+import { assertInteger, isInstanceOf, assertString } from '$global/guards';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import { generateRandomDelay } from '$global/helpers';
 import { wait } from '$browser/utils/helpers';

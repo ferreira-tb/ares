@@ -24,6 +24,7 @@ export default [
                 if (warning.message.includes('node_modules/conf/node_modules')) return;
                 if (warning.message.includes('node_modules/wkx/lib')) return;
                 if (warning.message.includes('node_modules/sequelize')) return;
+                if (warning.message.includes('node_modules/semver')) return;
             };
 
             show(warning);

@@ -1,5 +1,4 @@
 import { nextTick } from 'vue';
-import { assert } from '@tb-dev/ts-guard';
 import { Deimos } from '$deimos/interface/ipc';
 import { useUnitsStore } from '$renderer/stores/units';
 import { assertUnit } from '$global/guards';
@@ -29,7 +28,7 @@ function queryUnitsRow(unitStore: ReturnType<typeof useUnitsStore>) {
     const unitsRow = document.queryAndAssert<HTMLTableRowElement>(selector);
 
     const unitFields = unitsRow.queryAsArray('td[id][class*="unit" i]');
-    assert(unitFields.length >= 7, 'Could not find all unit fields.');
+    if (unitFields.length < 7) throw new PlunderError('Could not find all unit fields.');
 
     for (const field of unitFields) {
         const unitType = field.getAttributeStrict<AllUnits>('id');

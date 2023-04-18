@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import { MessageChannelMain } from 'electron';
-import { assertInstanceOf } from '@tb-dev/ts-guard';
+import { assertInstanceOf } from '$global/guards';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { getMainViewWebContents } from '$electron/utils/view';
 import { getPanelWindow } from '$electron/utils/helpers';
@@ -23,7 +23,7 @@ export function fetchVillageGroups() {
 
         port1.on('message', (e) => {
             try {
-                assertInstanceOf<Set<VillageGroup>>(e.data, Set);
+                assertInstanceOf<Set<VillageGroup>>(e.data, Set, 'Village groups must be a Set');
                 resolve(e.data);
             } catch (err) {
                 reject(err);

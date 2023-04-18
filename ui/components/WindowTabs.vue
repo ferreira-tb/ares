@@ -3,7 +3,7 @@ import { h, computed, ref, reactive, watch } from 'vue';
 import { NTabs, NTab } from 'naive-ui';
 import { useElementSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
-import { assertInteger } from '@tb-dev/ts-guard';
+import { assertInteger } from '$global/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import WindowTabsButtons from '$ui/components/WindowTabsButtons.vue';
 import LightIcon from '$icons/units/LightIcon.vue';
@@ -39,7 +39,7 @@ useIpcRendererOn('browser-view-title-updated', (_e, webContentsId: number, viewT
 });
 
 function destroyBrowserView(webContentsId: WebContents['id']) {
-    assertInteger(webContentsId);
+    assertInteger(webContentsId, `Invalid webContentsId: ${webContentsId}`);
     ipcSend('destroy-browser-view', webContentsId);
 };
 

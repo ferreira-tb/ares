@@ -1,6 +1,6 @@
 import '$ui/assets/main.scss';
-import '@tb-dev/prototype';
-import '@tb-dev/prototype-dom';
+import '$global/prototype';
+import '$renderer/prototype';
 import { createApp } from 'vue';
 import { MainWindowError } from '$ui/error';
 import App from '$ui/App.vue';

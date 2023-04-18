@@ -5,6 +5,7 @@ import { NResult } from 'naive-ui';
 import { watchImmediate } from '@vueuse/core';
 import { useAresStore } from '$renderer/stores/ares';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
+import { router } from '$panel/router';
 import { togglePlunder } from '$panel/utils/helpers';
 
 const aresStore = useAresStore();
@@ -14,8 +15,10 @@ const { captcha } = storeToRefs(aresStore);
 
 watch(() => plunderConfigStore.active, togglePlunder);
 
-watchImmediate(captcha, () => {
-    plunderConfigStore.active = false;
+watchImmediate(captcha, (isActive) => {
+    if (isActive && router.currentRoute.value.name === 'am_farm') {
+        plunderConfigStore.active = false;
+    };
 });
 </script>
 

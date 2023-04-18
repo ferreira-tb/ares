@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { assertPositiveInteger } from '@tb-dev/ts-guard';
+import { isInteger } from '$global/guards';
 import type { PiniaCurrentVillageStoreType } from '$types/stores';
 
 export const useCurrentVillageStore = defineStore('current-village', () => {
@@ -25,7 +25,10 @@ export const useCurrentVillageStore = defineStore('current-village', () => {
     });
 
     function getId() {
-        assertPositiveInteger(id.value, `${id.value} is not a valid village id.`);
+        if (!isInteger(id.value) || id.value < 1) {
+            throw new TypeError(`${id.value} is not a valid village id.`);
+        };
+
         return id.value;
     };
 

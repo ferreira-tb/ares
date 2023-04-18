@@ -1,5 +1,5 @@
 import { useMutationObserver } from '@vueuse/core';
-import { isInstanceOf, assertInstanceOf } from '@tb-dev/ts-guard';
+import { isInstanceOf, assertInstanceOf } from '$global/guards';
 import { wait } from '$browser/utils/helpers';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
@@ -18,7 +18,7 @@ export function openPlace(placeButton: PlunderTargetInfo['button']['place']) {
             resolve();
         }, { subtree: true, childList: true });
 
-        assertInstanceOf(placeButton, HTMLElement, 'O botão da praça de reunião não existe.');
+        assertInstanceOf(placeButton, HTMLElement, 'Place button does not exist.');
         placeButton.click();
 
         // Se não perceber mudanças mesmo após três segundos, rejeita a Promise.

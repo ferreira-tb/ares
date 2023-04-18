@@ -56,11 +56,7 @@
         "forceConsistentCasingInFileNames": true,
         "noEmitOnError": true,
 
-        "types": [
-            "node",
-            "@tb-dev/prototype/dist/index",
-            "@tb-dev/prototype-dom/dist/index"
-        ]
+        "types": ["node"]
     },
 
     "references": [

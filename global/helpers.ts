@@ -1,4 +1,4 @@
-import { isInteger } from '@tb-dev/ts-guard';
+import { isInteger } from '$global/guards';
 import type { World } from '$types/game';
 import type { UserAlias } from '$types/electron';
 

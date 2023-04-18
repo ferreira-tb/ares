@@ -3,7 +3,7 @@ import { computed, nextTick, reactive, ref, toRaw } from 'vue';
 import { useVModels } from '@vueuse/core';
 import { NModal, NForm, NFormItem, NFormItemGi, NGrid, NInput, NButton, NButtonGroup, NCheckbox } from 'naive-ui';
 import { useDialog, useMessage } from 'naive-ui';
-import { isString, isInteger } from '@tb-dev/ts-guard';
+import { isString, isInteger } from '$global/guards';
 import { ipcInvoke } from '$renderer/ipc';
 import { ModuleError } from '$modules/error';
 import InputNumber from '$renderer/components/InputNumber.vue';

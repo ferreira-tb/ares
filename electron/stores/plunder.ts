@@ -1,5 +1,5 @@
 import { ref } from 'mechanus';
-import { isPositiveInteger, isPositiveNumber } from '@tb-dev/ts-guard';
+import { isInteger, isFiniteNumber } from '$global/guards';
 import type { WallLevel } from '$types/game';
 import type { Mechanus, MechanusRefOptions } from 'mechanus';
 
@@ -11,7 +11,6 @@ import {
     arrayIncludesRef,
     wallLevelRef,
     positiveIntegerOrNullRef,
-    objectOrNullRef,
     integerOrNullRef
 } from '$electron/utils/mechanus';
 
@@ -47,7 +46,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const delayValidator = (): MechanusRefOptions<number> => {
         const refOptions = { ...positiveIntegerRef };
         refOptions.validator = (value: unknown): value is number => {
-            return isPositiveInteger(value) && value >= 100 && value <= 60000;
+            return isInteger(value) && value >= 100 && value <= 60000;
         };
         return refOptions;
     };
@@ -55,7 +54,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const ratioValidator = (): MechanusRefOptions<number> => {
         const refOptions = { ...positiveNumberRef };
         refOptions.validator = (value: unknown): value is number => {
-            return isPositiveNumber(value) && value >= 0.2 && value <= 1;
+            return isFiniteNumber(value) && value >= 0.2 && value <= 1;
         };
         return refOptions;
     };
@@ -63,7 +62,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const minutesUntilReloadValidator = (): MechanusRefOptions<number> => {
         const refOptions = { ...positiveIntegerRef };
         refOptions.validator = (value: unknown): value is number => {
-            return isPositiveInteger(value) && value >= 1 && value <= 60;
+            return isInteger(value) && value >= 1 && value <= 60;
         };
         return refOptions;
     };
@@ -71,7 +70,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const maxDistanceValidator = (min: number = 1): MechanusRefOptions<number> => {
         const refOptions = { ...positiveNumberRef };
         refOptions.validator = (value: unknown): value is number => {
-            return isPositiveNumber(value) && value >= min;
+            return isFiniteNumber(value) && value >= min;
         };
         return refOptions;
     };
@@ -159,8 +158,8 @@ export function setPlunderHistoryStores(mechanus: Mechanus) {
 
 export function definePlunderCacheStore(mechanus: Mechanus) {
     return mechanus.define('plunderCache', {
-        pages: ref<PlunderPageListType | null>(null, objectOrNullRef<PlunderPageListType>()),
-        plunderGroup: ref<PlunderGroupType | null>(null, objectOrNullRef<PlunderGroupType>()),
-        demolitionTroops: ref<DemolitionTemplateType | null>(null, objectOrNullRef<DemolitionTemplateType>())
+        pages: ref<PlunderPageListType | null>(null),
+        plunderGroup: ref<PlunderGroupType | null>(null),
+        demolitionTroops: ref<DemolitionTemplateType | null>(null)
     } satisfies MechanusPlunderCacheStoreType);
 };

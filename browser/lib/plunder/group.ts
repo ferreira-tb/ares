@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import { until, useStyleTag, useMutationObserver } from '@vueuse/core';
-import { isInstanceOf, assertPositiveInteger } from '@tb-dev/ts-guard';
+import { isInstanceOf, isInteger } from '$global/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useFeaturesStore } from '$renderer/stores/features';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
@@ -61,7 +61,10 @@ async function queryVillagesFromPopup(config: ReturnType<typeof usePlunderConfig
 
     try {
         const groupId = config.plunderGroupId;
-        assertPositiveInteger(groupId, `${groupId} is not a valid plunder group id.`);
+        if (!isInteger(groupId) || groupId <= 0) {
+            throw new PlunderError(`${groupId} is not a valid plunder group id.`);
+        };
+        
         groupInfo = new PlunderGroup(groupId);
 
         const selectedGroup = popup.queryAndAssert('#group_id option[selected]');
