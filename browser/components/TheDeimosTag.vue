@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { onBeforeUnmount } from 'vue';
 import { storeToRefs } from 'pinia';
-import { whenever } from '@vueuse/core';
-import { assertString } from '@tb-dev/ts-guard';
+import { tryOnUnmounted, whenever } from '@vueuse/core';
+import { assertString } from '$global/guards';
 import { useBrowserStore } from '$browser/stores/browser';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 
@@ -22,7 +21,7 @@ scriptTag.setAttribute('src', objectURL);
 scriptTag.onload = () => (isDeimosReady.value = true);
 document.head.appendChild(scriptTag);
 
-onBeforeUnmount(() => {
+tryOnUnmounted(() => {
     document.head.removeChild(scriptTag);
     URL.revokeObjectURL(objectURL);
 });

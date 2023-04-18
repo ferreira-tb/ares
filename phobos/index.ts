@@ -1,5 +1,5 @@
-import '@tb-dev/prototype';
-import '@tb-dev/prototype-dom';
+import '$global/prototype';
+import '$renderer/prototype';
 import { setPhobosEvents } from '$phobos/events';
 
 setPhobosEvents();

@@ -1,7 +1,6 @@
 import { ipcMain, dialog } from 'electron';
 import semverLte from 'semver/functions/lte';
 import semverValid from 'semver/functions/valid';
-import { isObject } from '@tb-dev/ts-guard';
 import { MainProcessEventError } from '$electron/error';
 import { AppConfig } from '$electron/interface';
 import { showAppUpdate } from '$electron/app/modules';
@@ -13,9 +12,9 @@ export function setAppUpdateModuleEvents() {
     ipcMain.handle('is-ignored-app-version', async (_e, version: string): Promise<boolean> => {
         try {
             const row = (await AppConfig.findByPk('app_update'))?.toJSON();
-            if (!row || !isObject<AppUpdateConfigType>(row.json)) return false;
+            if (!row?.json) return false;
             
-            const versionToIgnore = row.json.versionToIgnore;
+            const versionToIgnore = (row.json as AppUpdateConfigType).versionToIgnore;
             if (!semverValid(versionToIgnore)) return false;
             return semverLte(version, versionToIgnore);
             
@@ -46,7 +45,7 @@ export function setAppUpdateModuleEvents() {
             } else if (response === 2) {
                 let updateConfig: AppUpdateConfigType | null = null;
                 const row = (await AppConfig.findByPk('app_update'))?.toJSON();
-                if (row && isObject<AppUpdateConfigType>(row.json)) {
+                if (row?.json) {
                     updateConfig = { ...row.json, versionToIgnore: newVersion };
                 };
 

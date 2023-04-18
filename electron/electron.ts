@@ -1,4 +1,4 @@
-import '@tb-dev/prototype';
+import '$global/prototype';
 import { app, BrowserWindow, BrowserView } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { setAppMenu } from '$electron/menu/menu';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { h, computed, ref, reactive, watch } from 'vue';
 import { NDataTable, useMessage } from 'naive-ui';
-import { isObject, assertObject, assertKeyOf, toIntegerStrict, isInteger, assertSameType } from '@tb-dev/ts-guard';
+import { assertKeyOf } from '$global/guards';
 import { ipcInvoke } from '$renderer/ipc';
 import { assertUserAlias } from '$global/guards';
 import { ModuleConfigError } from '$modules/error';
@@ -20,18 +20,18 @@ import CatapultIcon from '$icons/units/CatapultIcon.vue';
 import type { PaginationProps, DataTableBaseColumn } from 'naive-ui';
 import type { DemolitionTroops } from '$types/game';
 
-const message = useMessage();
-
 interface DemolitionData extends DemolitionTroops {
     level: number;
 };
+
+const message = useMessage();
 
 const isArcherWorld = await ipcInvoke('is-archer-world');
 const userAlias = await ipcInvoke('user-alias');
 const template = await ipcInvoke('get-demolition-troops-config');
 const demolitionData = reactive<DemolitionData[]>([]);
 
-if (isObject(template)) {
+if (template) {
     for (const [wallLevel, units] of Object.entries(template.units)) {
         const level = Number.parseIntStrict(wallLevel);
         if (level === 0) continue;
@@ -67,13 +67,17 @@ for (const column of columns) {
     
     if (column.key !== 'level') {
         column.render = (row) => h(TableCellNumber, {
-            value: toIntegerStrict(row[column.key], isInteger, 10) as number,
+            value: Number.parseIntStrict(row[column.key] as string),
             onCellUpdated(newValue: number) {
                 const dataItem = demolitionData.find((data) => data.level === row.level);
-                assertObject(dataItem, 'Não foi possível encontrar a linha correta na tabela.');
-                assertKeyOf(column.key, dataItem, 'Não foi possível encontrar a coluna correta na tabela.');
-                assertSameType(newValue, dataItem[column.key], 'O novo valor não é do mesmo tipo do valor antigo.');
-                Reflect.set(dataItem, column.key, newValue);
+                if (!dataItem) throw new Error('Could not find the correct row in the table.');
+                assertKeyOf(column.key, dataItem, 'Could not find the correct column in the table.');
+
+                if (typeof newValue !== typeof dataItem[column.key]) {
+                    throw new TypeError('Old and new values are not of the same type.');
+                };
+
+                dataItem[column.key] = newValue;
             }
         });
     };
@@ -87,12 +91,12 @@ const pagination = computed<PaginationProps>(() => ({
 
 watch(demolitionData, async (newData) => {
     try {
-        assertObject(template);
+        if (!template) throw new Error('There is no demolition troops template.');
         assertUserAlias(userAlias, ModuleConfigError);
         for (const data of newData) {
             const { level, ...units } = data;
             const key = level.toString(10);
-            assertKeyOf(key, template.units);
+            assertKeyOf(key, template.units, `There is no wall level ${key} in the demolition troops template.`);
             template.units[key] = units;
         };
 

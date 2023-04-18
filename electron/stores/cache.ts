@@ -1,5 +1,5 @@
 import { computed, ref, type Mechanus } from 'mechanus';
-import { isString } from '@tb-dev/ts-guard';
+import { isString } from '$global/guards';
 import { generateUserAlias } from '$electron/utils/helpers';
 import { worldRef, stringRef } from '$electron/utils/mechanus';
 import type { UserAlias } from '$types/electron';

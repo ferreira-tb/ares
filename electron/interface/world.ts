@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import { MessageChannelMain } from 'electron';
-import { isKeyOf, assertObject } from '@tb-dev/ts-guard';
+import { isKeyOf } from '$global/guards';
 import { WorldPatchError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { worldConfigURL, worldUnitURL } from '$global/helpers';
@@ -61,7 +61,7 @@ async function patchWorldConfigStoreState(
     
                 port1.on('message', (e) => {
                     try {
-                        assertObject<WorldConfigType>(e.data);
+                        if (!e.data) throw new WorldPatchError('No data received');
                         resolve(e.data);
                     } catch (err) {
                         reject(err);
@@ -112,7 +112,7 @@ async function patchWorldUnitStoresState(
     
                 port1.on('message', (e) => {
                     try {
-                        assertObject<WorldUnitType>(e.data);
+                        if (!e.data) throw new WorldPatchError('No data received');
                         resolve(e.data);             
                     } catch (err) {
                         reject(err);

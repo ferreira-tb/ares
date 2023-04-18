@@ -1,4 +1,4 @@
-import { assertString, isString } from '@tb-dev/ts-guard';
+import { assertString, isString } from '$global/guards';
 import { DeimosError } from '$deimos/interface/error';
 import type { TribalWarsGameData } from '$deimos/models/data';
 import type { PlunderInfo } from '$deimos/models/plunder';

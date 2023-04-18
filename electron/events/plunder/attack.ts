@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { assertInteger } from '@tb-dev/ts-guard';
+import { assertInteger } from '$global/guards';
 import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
 import { assertUserAlias } from '$global/guards';

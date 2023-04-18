@@ -1,7 +1,6 @@
 import { storeToRefs } from 'pinia';
 import { useMutationObserver, useEventListener } from '@vueuse/core';
-import { assertInteger } from '@tb-dev/ts-guard';
-import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
+import { assertInteger } from '$global/guards';
 import { calcDistance } from '$global/helpers';
 import { parseCoordsFromTextContentStrict, parseGameDate } from '$renderer/utils/parser';
 import { PlunderError } from '$browser/error';
@@ -106,8 +105,8 @@ export function queryTargetsInfo() {
 };
 
 function queryReport(row: Element, info: PlunderTargetInfo, currentX: number | null, currentY: number | null) {
-    assertInteger(currentX);
-    assertInteger(currentY);
+    assertInteger(currentX, `Current village X coordinate is invalid: ${currentX}.`);
+    assertInteger(currentY, `Current village Y coordinate is invalid: ${currentY}.`);
 
     const report = row.queryAndAssert('td a[href*="screen=report"]');
     const coords = parseCoordsFromTextContentStrict(report.textContent);
@@ -120,7 +119,9 @@ function queryReport(row: Element, info: PlunderTargetInfo, currentX: number | n
 function queryLastAttack(row: Element, info: PlunderTargetInfo) {
     const selector = 'td:not(:has(a)):not(:has(img)):not(:has(span.icon))';
     const fields = row.queryAsArray(selector);
-    if (fields.length === 0) throw new DOMAssertionError(selector);
+    if (fields.length === 0) {
+        throw new PlunderError(`Invalid CSS selector: ${selector}.`);
+    };
 
     for (const field of fields) {
         if (!field.textContent) continue;
@@ -180,7 +181,7 @@ function queryWallLevel(resourcesField: Element | null, info: PlunderTargetInfo)
     if (!resourcesField) return;
 
     const wallLevelField = resourcesField.nextElementSibling;
-    assertElement(wallLevelField, 'Wall level not found.');
+    if (!wallLevelField) throw new PlunderError('Could not find wall level field.');
 
     const wallLevel = wallLevelField.parseIntStrict();
     assertWallLevel(wallLevel, PlunderError, 'Found invalid wall level.');

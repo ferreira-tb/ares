@@ -1,4 +1,4 @@
-import { assertInteger } from '@tb-dev/ts-guard';
+import { assertInteger } from '$global/guards';
 import { useUnitsStore } from '$renderer/stores/units';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { openPlace } from '$lib/plunder/place';

@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
-import { isPositiveInteger } from '@tb-dev/ts-guard';
+import { isInteger } from '$global/guards';
 import { MainProcessEventError } from '$electron/error';
 import { GameSearchParams } from '$global/constants';
 import { generateRandomDelay } from '$global/helpers';
@@ -37,7 +37,7 @@ export function setPlunderGroupEvents() {
 
             // Do contrário, remove as aldeias que já atacaram, além da aldeia atual se houver um id válido.
             villages = villages.filter(([, { done }]) => !done);
-            if (isPositiveInteger(currentVillageId)) {
+            if (isInteger(currentVillageId) && currentVillageId > 0) {
                 villages = villages.filter(([id]) => id !== currentVillageId);
             };
             

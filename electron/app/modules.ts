@@ -1,5 +1,5 @@
 import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
-import { isInstanceOf, isString } from '@tb-dev/ts-guard';
+import { isInstanceOf, isString } from '$global/guards';
 import { WebsiteUrl } from '$global/constants';
 import { favicon, moduleHtml } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';

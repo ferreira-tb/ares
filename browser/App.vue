@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import { watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 import { RouterView } from 'vue-router';
-import { whenever } from '@vueuse/core';
-import { arrayIncludes } from '@tb-dev/ts-guard';
+import { useArrayIncludes, watchImmediate, whenever } from '@vueuse/core';
 import { Deimos } from '$deimos/interface/ipc';
 import { routeNames, router } from '$browser/router/router';
 import { useAresStore } from '$renderer/stores/ares';
 import { useBrowserStore } from '$browser/stores/browser';
 import { ipcSend } from '$renderer/ipc';
 import { gameOriginRegex } from '$global/regex';
-import { BrowserRouterError } from '$browser/error';
 import TheDeimosTag from '$browser/components/TheDeimosTag.vue';
 import TheCaptchaObserver from '$browser/components/TheCaptchaObserver.vue';
 
@@ -21,17 +18,12 @@ const { screen: currentScreen } = storeToRefs(aresStore);
 const { isDeimosReady } = storeToRefs(browserStore);
 
 // Define a janela de acordo com a página atual no jogo.
-watchEffect(async () => {
-    try {
-        const screen = currentScreen.value;
-        if (screen && arrayIncludes(routeNames, screen)) {
-            await router.push({ name: screen });
-        } else {
-            await router.push('/');
-        };
-        
-    } catch (err) {
-        BrowserRouterError.catch(err);
+const isValidRoute = useArrayIncludes(routeNames, currentScreen);
+watchImmediate(currentScreen, async (name) => {
+    if (name && isValidRoute.value) {
+        await router.push({ name });
+    } else {
+        await router.push('/');
     };
 });
 

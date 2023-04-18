@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { assertString } from '@tb-dev/ts-guard';
+import { assertString } from '$global/guards';
 import { PhobosError } from '$phobos/error';
 import { fetchWorldConfig } from '$phobos/world/config';
 import { fetchWorldUnit } from '$phobos/world/unit';

@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from 'electron';
-import { assertInstanceOf } from '@tb-dev/ts-guard';
+import { assertInstanceOf } from '$global/guards';
 import { assertWorld } from '$global/guards';
 import { MainProcessError } from '$electron/error';
 import type { MechanusStore } from 'mechanus';

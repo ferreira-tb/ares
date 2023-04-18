@@ -1,25 +1,10 @@
-import { isWorld, isWorldOrNull, isWallLevel } from '$global/guards';
+import { isFiniteNumber, isInteger, isString, isWorld, isWorldOrNull, isWallLevel } from '$global/guards';
 import { MechanusStoreError } from '$electron/error';
 import type { MechanusRefOptions } from 'mechanus';
 import type { World, WallLevel } from '$types/game';
 
-import {
-    arrayIncludes,
-    isStringOrNull,
-    isIntegerOrNull,
-    isBoolean,
-    isBooleanOrNull,
-    isString,
-    isInteger,
-    isPositiveInteger,
-    isPositiveNumber,
-    isObjectOrNull,
-    isFiniteNumber,
-    isPositiveIntegerOrNull
-} from '@tb-dev/ts-guard';
-
 export const arrayIncludesRef = <T>(array: T[]): MechanusRefOptions<T> => ({
-    validator: (value: unknown): value is T => arrayIncludes(array, value),
+    validator: (value: unknown): value is T => array.includes(value as T),
     throwOnInvalid: true,
     errorClass: MechanusStoreError
 });
@@ -31,7 +16,7 @@ export const stringRef: MechanusRefOptions<string> = {
 };
 
 export const stringOrNullRef: MechanusRefOptions<string | null> = {
-    validator: isStringOrNull,
+    validator: (value: unknown): value is string | null => isString(value) || value === null,
     throwOnInvalid: true,
     errorClass: MechanusStoreError
 };
@@ -55,31 +40,31 @@ export const integerRef: MechanusRefOptions<number> = {
 };
 
 export const integerOrNullRef: MechanusRefOptions<number | null> = {
-    validator: isIntegerOrNull,
+    validator: (value: unknown): value is number | null => isInteger(value) || value === null,
     throwOnInvalid: true,
     errorClass: MechanusStoreError
 };
 
 export const positiveIntegerRef: MechanusRefOptions<number> = {
-    validator: isPositiveInteger,
+    validator: (value: unknown): value is number => isInteger(value) && Math.sign(value) === 1,
     throwOnInvalid: true,
     errorClass: MechanusStoreError
 };
 
 export const positiveIntegerOrNullRef: MechanusRefOptions<number | null> = {
-    validator: isPositiveIntegerOrNull,
-    throwOnInvalid: true,
-    errorClass: MechanusStoreError
-};
-
-export const positiveNumberRef: MechanusRefOptions<number> = {
-    validator: isPositiveNumber,
+    validator: (value: unknown): value is number | null => (isInteger(value) && Math.sign(value) === 1) || value === null,
     throwOnInvalid: true,
     errorClass: MechanusStoreError
 };
 
 export const finiteNumberRef: MechanusRefOptions<number> = {
     validator: isFiniteNumber,
+    throwOnInvalid: true,
+    errorClass: MechanusStoreError
+};
+
+export const positiveNumberRef: MechanusRefOptions<number> = {
+    validator: (value: unknown): value is number => isFiniteNumber(value) && Math.sign(value) === 1,
     throwOnInvalid: true,
     errorClass: MechanusStoreError
 };
@@ -91,19 +76,13 @@ export const wallLevelRef: MechanusRefOptions<WallLevel> = {
 };
 
 export const booleanRef: MechanusRefOptions<boolean> = {
-    validator: isBoolean,
+    validator: (value: unknown): value is boolean => typeof value === 'boolean',
     throwOnInvalid: true,
     errorClass: MechanusStoreError
 };
 
 export const booleanOrNullRef: MechanusRefOptions<boolean | null> = {
-    validator: isBooleanOrNull,
+    validator: (value: unknown): value is boolean | null => typeof value === 'boolean' || value === null,
     throwOnInvalid: true,
     errorClass: MechanusStoreError
 };
-
-export const objectOrNullRef = <T extends object>() => ({
-    validator: isObjectOrNull,
-    throwOnInvalid: true,
-    errorClass: MechanusStoreError
-} as MechanusRefOptions<T | null>);

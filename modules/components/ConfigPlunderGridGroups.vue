@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch, watchEffect } from 'vue';
 import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
-import { isPositiveInteger } from '@tb-dev/ts-guard';
+import { isInteger } from '$global/guards';
 import { isDistance } from '$global/guards';
 import { ipcInvoke } from '$renderer/ipc';
 import InputNumber from '$renderer/components/InputNumber.vue';
@@ -93,7 +93,7 @@ watchEffect(() => {
                     :min="100"
                     :max="60000"
                     :step="100"
-                    :validator="(v) => isPositiveInteger(v) && v >= 100 && v <= 60000"
+                    :validator="(v) => isInteger(v) && v >= 100 && v <= 60000"
                 />
             </NGridItem>
 

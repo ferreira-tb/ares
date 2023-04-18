@@ -1,5 +1,5 @@
 import { ipcMain, webContents } from 'electron';
-import { isKeyOf } from '@tb-dev/ts-guard';
+import { isKeyOf } from '$global/guards';
 import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
 import { useCacheStore, usePlunderConfigStore, PlunderConfig } from '$electron/interface';

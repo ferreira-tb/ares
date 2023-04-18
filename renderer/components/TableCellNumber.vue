@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, reactive, ref } from 'vue';
 import { NInputNumber } from 'naive-ui';
-import { isInteger } from '@tb-dev/ts-guard';
+import { isInteger } from '$global/guards';
 
 type Keyboard = {
     ArrowUp?: boolean | undefined;

@@ -1,5 +1,6 @@
-import { assert, assertInteger, assertString, assertArrayIncludes, assertArray } from '@tb-dev/ts-guard';
 import { months } from '$global/constants';
+import { assertInteger, assertString } from '$global/guards';
+import { RendererProcessError } from '$renderer/error';
 
 /**
  * Analisa o texto contido num elemento a procura de coordenadas válidas.
@@ -13,13 +14,17 @@ export function parseCoordsFromTextContent(text: string | null): [number, number
     if (!targetCoords) return null;
 
     const coords = targetCoords[0].splitAsIntegerListStrict('|');
-    assert(coords.length === 2, 'Expected a XY tuple, but got a different length.');
+    if (coords.length !== 2) {
+        throw new RendererProcessError('Expected a XY tuple, but got a different length.');
+    };
     return coords as [number, number];
 };
 
 export function parseCoordsFromTextContentStrict(text: string | null): [number, number] {
     const coords = parseCoordsFromTextContent(text);
-    assertArray(coords, 'Could not parse coords from text content.');
+    if (!Array.isArray(coords)) {
+        throw new RendererProcessError('Could not parse coords from text content.');
+    };
     return coords;
 };
 
@@ -27,7 +32,6 @@ export function parseCoordsFromTextContentStrict(text: string | null): [number, 
  * Converte uma data para milisegundos.
  * Exemplos de data: `hoje às 00:05:26`, `ontem às 16:29:50`, `em 21.09. às 12:36:38`.
  * 
- * @see https://github.com/ferreira-tb/insidious/issues/2
  * @param date - Texto do campo a analisar.
  * @returns Data do último ataque em milisegundos.
  */
@@ -90,11 +94,14 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
     const dateFields = rawDateFields.map((field, index) => {
         if (index === 0) {
             const rawMonth: string = field.replace(/\W/g, '').slice(0, 3);
-            assertString(rawMonth, 'Invalid month.');
-            assertArrayIncludes((months as unknown) as string[], rawMonth, 'Invalid month.');
-            
+            assertString(rawMonth, `Invalid month: ${rawMonth}.`);
+
             // Date.prototype.setFullYear() usa índice zero para os meses.
-            return ((months as unknown) as string[]).indexOf(rawMonth);
+            const monthIndex = months.findIndex((month) => month === rawMonth);
+            if (monthIndex === -1) {
+                throw new RendererProcessError(`Invalid month: ${rawMonth}.`);
+            };
+            return monthIndex;
 
         } else if (index === 3) {
             return field.split(':').map((value) => getDigits(value));
@@ -110,7 +117,7 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
 
     const [hour, minute, second, millisec] = dateFields[3] as number[];
     const date = new Date(fullYear).setHours(hour, minute, second, millisec);
-    assertInteger(date, 'Invalid report date.');
+    assertInteger(date, `Invalid report date: ${date}.`);
 
     if (!ms) return Math.ceil(date / 1000);
     return date;

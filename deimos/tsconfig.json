@@ -47,11 +47,6 @@
         "removeComments": true,
         "moduleResolution": "node",
         "esModuleInterop": true,
-        "noEmitOnError": true,
-
-        "types": [
-            "@tb-dev/prototype/dist/index",
-            "@tb-dev/prototype-dom/dist/index"
-        ]
+        "noEmitOnError": true
     }
 }

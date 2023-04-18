@@ -1,4 +1,4 @@
-import { assertString, isString } from '@tb-dev/ts-guard';
+import { assertString, isString } from '$global/guards';
 import type { UnitAmount, UnitsAmountAsStrings } from '$types/game';
 
 interface MaybeNotArcherWorld extends Omit<UnitsAmountAsStrings, 'archer' | 'marcher'> {
@@ -24,7 +24,7 @@ export class Units implements UnitAmount {
 
     constructor(units: MaybeNotArcherWorld) {
         for (const unit of Object.keys(units)) {
-            assertString(unit);
+            assertString(unit, 'Invalid unit name');
         };
 
         this.spear = units.spear.toIntegerStrict();

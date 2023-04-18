@@ -1,4 +1,4 @@
-import { assertInteger } from '@tb-dev/ts-guard';
+import { assertInteger } from '$global/guards';
 import { Deimos } from '$deimos/interface/ipc';
 import { DeimosError } from '$deimos/interface/error';
 import { TribalWarsGameData } from '$deimos/models/data';
@@ -23,7 +23,7 @@ export function setDeimosEvents() {
     Deimos.handle('get-response-time', () => {
         try {
             const responseTime = Timing.offset_to_server;
-            assertInteger(responseTime);
+            assertInteger(responseTime, 'Failed to get response time');
             return responseTime;
         } catch (err) {
             DeimosError.catch(err);

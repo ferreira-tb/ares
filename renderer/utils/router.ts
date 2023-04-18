@@ -1,4 +1,4 @@
-import { isArray, isString } from '@tb-dev/ts-guard';
+import { isString } from '$global/guards';
 import type { RouteRecordRaw } from 'vue-router';
 
 // As funções aqui presentes dependem do Vue em algum grau.
@@ -11,7 +11,7 @@ export function getRouteNames<T extends string>(routes: RouteRecordRaw[]): T[] {
             names.push(route.name);
         };
         
-        if (isArray(route.children)) {
+        if (Array.isArray(route.children)) {
             names.push(...getRouteNames(route.children));
         };
     };
@@ -28,7 +28,7 @@ export function getChildrenRoutes<T extends string>(routes: RouteRecordRaw[], na
     const children: string[] = [];
 
     for (const route of routes) {
-        if (isArray(route.children)) {
+        if (Array.isArray(route.children)) {
             if (isString(name) && route.name !== name) continue;
             children.push(...getRouteNames(route.children));
         };

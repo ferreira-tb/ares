@@ -1,7 +1,6 @@
 import { computed, nextTick, ref } from 'vue';
 import { ipcRenderer } from 'electron';
-import { assert, isKeyOf, assertInteger, isInteger } from '@tb-dev/ts-guard';
-import { assertElement, DOMAssertionError } from '@tb-dev/ts-guard-dom';
+import { isKeyOf, assertInteger, isInteger } from '$global/guards';
 import { useUnitsStore } from '$renderer/stores/units';
 import { assertFarmUnit } from '$global/guards';
 import { PlunderError } from '$browser/error';
@@ -97,7 +96,9 @@ export async function queryTemplateData() {
     // Campos do modelo A.
     const aRow = table.queryAndAssert('tr:nth-of-type(2):has(td input[type="text"][name^="spear" i])');
     const aFields = aRow.queryAsArray('td input[type="text"][name]');
-    assert(aFields.length >= 7, `Could not find all text fields for template A: ${aFields.length} found.`);
+    if (aFields.length < 7) {
+        throw new PlunderError(`Could not find all text fields for template A: ${aFields.length} found.`);
+    };
     parseUnitAmount('a', aFields);
 
     const aCarryField = aRow.queryAndAssert('td:not(:has(input[data-tb-template-a])):not(:has(input[type*="hidden"]))');
@@ -106,7 +107,9 @@ export async function queryTemplateData() {
     // Campos do modelo B.
     const bRow = table.queryAndAssert('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
     const bFields = bRow.queryAsArray('td input[type="text"][name]');
-    assert(bFields.length >= 7, `Could not find all text fields for template B: ${bFields.length} found.`);
+    if (bFields.length < 7) {
+        throw new PlunderError(`Could not find all text fields for template B: ${bFields.length} found.`);
+    }; 
     parseUnitAmount('b', bFields);
 
     const bCarryField = bRow.queryAndAssert('td:not(:has(input[data-tb-template-b])):not(:has(input[type*="hidden"]))');
@@ -226,8 +229,10 @@ export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnTy
 
 async function getTemplateC(info: PlunderTargetInfo): Promise<PlunderTemplate | null> {
     try {
-        assertElement(info.button.c, 'Could not find template C button.');
-        const json = info.button.c.getAttributeStrict('data-units-forecast');
+        const button = info.button.c;
+        if (!button) throw new PlunderError('C template button not found.');
+
+        const json = button.getAttributeStrict('data-units-forecast');
         const cUnits = JSON.parse(json) as UnitAmount;
         const templateC = allTemplates.getStrict('c');
 
@@ -251,7 +256,6 @@ async function getTemplateC(info: PlunderTargetInfo): Promise<PlunderTemplate | 
         return templateC.ok.value ? templateC : null;
 
     } catch (err) {
-        if (err instanceof DOMAssertionError) throw err;
         PlunderError.catch(err);
         return null;
     };
