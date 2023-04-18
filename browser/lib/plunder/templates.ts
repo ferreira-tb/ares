@@ -3,6 +3,7 @@ import { ipcRenderer } from 'electron';
 import { isKeyOf, assertInteger, isInteger } from '$global/guards';
 import { useUnitsStore } from '$renderer/stores/units';
 import { assertFarmUnit } from '$global/guards';
+import { Kronos } from '$global/constants';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke } from '$renderer/ipc';
 import type { usePlunderConfigStore } from '$renderer/stores/plunder';
@@ -153,6 +154,15 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
 };
 
 /**
+ * Calcula a razão entre a quantidade de recursos na aldeia-alvo e a capacidade de carga do modelo.
+ * @param resources Recursos na aldeia-alvo.
+ * @param template Modelo atacante.
+ */
+function calcResourceRatio(resources: number, template: PlunderTemplate) {
+    return resources / template.carry.value;
+};
+
+/**
  * Filtra todos os modelos de saque disponíveis de acordo com a quantidade de recursos na aldeia-alvo.
  * Caso a função retorne uma lista vazia, o ataque não deve ser enviado.
  * 
@@ -200,12 +210,12 @@ async function filterTemplates(info: PlunderTargetInfo, config: ReturnType<typeo
     // Isso impede que sejam enviadas tropas em excesso para a aldeia-alvo.
     // Quanto menor for a razão, maior a quantidade de tropas sendo enviada desnecessariamente.
     // Não é necessário filtrar os modelos com capacidade de carga menor que a quantidade de recursos, pois eles sempre são válidos.
-    bigger = bigger.filter((template) => resources / template.carry.value >= config.resourceRatio);
+    bigger = bigger.filter((template) => calcResourceRatio(resources, template) >= config.resourceRatio);
     return [...smaller, ...bigger];
 };
 
 export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnType<typeof usePlunderConfigStore>) {
-    if (config.useC) {
+    if (config.useC && config.useCPattern !== 'excess') {
         const templateC = await getTemplateC(info, config);
         if (templateC) return templateC;
 
@@ -221,13 +231,24 @@ export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnTy
         config.blindAttack &&
         config.blindAttackPattern === 'smaller'
     ) {
-        // Se a opção `blindAttack` estiver ativada e o padrão de seleção for `smaller`,
-        // seleciona o modelo com menor capacidade de carga.
+        // Se não houver informações sobre os recursos, a opção `blindAttack` estiver ativada
+        // e o padrão de seleção for `smaller`, seleciona o modelo com menor capacidade de carga.
         return templates.reduce((prev, curr) => prev.carry < curr.carry ? prev : curr);
     };
 
     // Do contrário, apenas seleciona o modelo com maior capacidade de carga.
-    return templates.reduce((prev, curr) => prev.carry > curr.carry ? prev : curr);
+    const best = templates.reduce((prev, curr) => prev.carry > curr.carry ? prev : curr);
+
+    if (
+        config.useC &&
+        config.useCPattern === 'excess' &&
+        calcResourceRatio(info.res.total, best) > config.useCWhenResourceRatioIsBiggerThan
+    ) {
+        const templateC = await getTemplateC(info, config);
+        if (templateC) return templateC;
+    };
+
+    return best;
 };
 
 async function getTemplateC(info: PlunderTargetInfo, config: ReturnType<typeof usePlunderConfigStore>) {
@@ -236,6 +257,7 @@ async function getTemplateC(info: PlunderTargetInfo, config: ReturnType<typeof u
         if (!button) return null;
 
         if (info.distance > config.maxDistanceC) return null;
+        if ((Date.now() - info.lastAttack) > config.ignoreOlderThanC * Kronos.Hour) return null;
 
         const json = button.getAttributeStrict('data-units-forecast');
         const cUnits = JSON.parse(json) as UnitAmount;
