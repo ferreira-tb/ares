@@ -2,10 +2,9 @@ import { app, BrowserWindow } from 'electron';
 import { assertInstanceOf } from '$global/guards';
 import { assertWorld } from '$global/guards';
 import { MainProcessError } from '$electron/error';
-import type { MechanusStore } from 'mechanus';
 import type { UserAlias } from '$types/electron';
-import type { AllUnits, World } from '$types/game';
-import type { UnitDetails, WorldUnitType } from '$types/world';
+import type { World } from '$types/game';
+import type { WorldUnitType } from '$types/world';
 import type { createWorldUnitStoresMap } from '$stores/world';
 
 export function restartAres() {
@@ -87,7 +86,7 @@ export function getPlayerNameFromAlias(alias: UserAlias): string {
  * @param worldUnitsMap Mapa contendo as stores de cada unidade.
  */
 export function extractWorldUnitsFromMap(worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>): WorldUnitType {
-    const entries = Object.entries(worldUnitsMap) as [AllUnits, () => MechanusStore<UnitDetails>][];
+    const entries = Array.from(worldUnitsMap.entries());
     return entries.reduce((acc, [key, useStore]) => {
         const unitStore = useStore();
         acc[key] = { ...unitStore };
