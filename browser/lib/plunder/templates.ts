@@ -27,14 +27,13 @@ class TemplateUnits implements FarmUnitsAmount {
 export class PlunderTemplate {
     /** Tipo do modelo. */
     readonly type: string;
-    /** Quantidade de tropas no modelo. */
-    readonly units: TemplateUnits;
     /** Alias do criador do modelo. Somente válido para modelos personalizados. */
     readonly alias: UserAlias | null;
+    /** Quantidade de tropas no modelo. */
+    readonly units = new TemplateUnits();
 
     constructor(type: string, alias: UserAlias | null = null) {
         this.type = type;
-        this.units = new TemplateUnits();
         this.alias = alias;
     };
 
@@ -274,18 +273,34 @@ async function getTemplateC(info: PlunderTargetInfo, config: ReturnType<typeof u
 
         if (Object.values(templateC.units).every((amount) => amount === 0)) return null;
 
-        // Atualiza a capacidade de carga do modelo C.
-        const carry = await ipcInvoke('plunder:calc-carry-capacity', templateC.units);
-        assertInteger(carry, `Expected carry capacity of template C to be an integer, but got ${carry}.`);
-        templateC.carry.value = carry;
-
         await nextTick();
-        return templateC.ok.value ? templateC : null;
+        templateC.carry.value = await calcTemplateCCarryCapacity(templateC.ok.value, { ...templateC.units });
+        return templateC;
 
     } catch (err) {
         PlunderError.catch(err);
         return null;
     };
+};
+
+async function calcCarryCapacity(units: TemplateUnits) {
+    const carry = await ipcInvoke('plunder:calc-carry-capacity', units);
+    assertInteger(carry, `Expected carry capacity to be an integer, but got ${carry}.`);
+    return carry;
+};
+
+async function calcTemplateCCarryCapacity(ok: boolean, units: TemplateUnits) {
+    if (ok) return calcCarryCapacity(units);
+
+    const unitStore = useUnitsStore();
+    const availableUnits = new TemplateUnits();
+
+    for (const [unit, amount] of Object.entries(units) as [FarmUnits, number][]) {
+        if (amount === 0 || unit === 'spy') continue;
+        availableUnits[unit] = unitStore[unit];
+    };
+    
+    return calcCarryCapacity(availableUnits);
 };
 
 async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType) {
@@ -297,9 +312,7 @@ async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType) {
         plunderTemplate.units[unit] = amount;
     };
 
-    const carry = await ipcInvoke('plunder:calc-carry-capacity', plunderTemplate.units);
-    assertInteger(carry, `Expected carry capacity of template ${template.type} to be an integer, but got ${carry}.`);
-    plunderTemplate.carry.value = carry;
+    plunderTemplate.carry.value = await calcCarryCapacity(plunderTemplate.units);
 
     await nextTick();
     return plunderTemplate;
