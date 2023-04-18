@@ -50,7 +50,7 @@ const blindAttackOptions = [
 
             <NGridItem>
                 <LabelPopover>
-                    <template #trigger>Evitar relatórios mais antigos que</template>
+                    <template #trigger>Evitar mais antigos que</template>
                     <span>
                         Se o último ataque ocorreu a uma quantidade de horas superior a indicada, o Ares não atacará a
                         aldeia.

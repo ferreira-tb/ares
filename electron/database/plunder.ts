@@ -31,25 +31,33 @@ export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCr
     declare readonly ignoreDelay: boolean;
     declare readonly blindAttack: boolean;
 
-    // Configurações
+    // Ataque
+    declare readonly maxDistance: number;
+    declare readonly ignoreOlderThan: number;
+    declare readonly attackDelay: number;
+    declare readonly resourceRatio: number;
+    declare readonly blindAttackPattern: BlindAttackPattern;
+
+    // Modelo C
+    declare readonly useCPattern: UseCPattern;
+    declare readonly maxDistanceC: number;
+    declare readonly ignoreOlderThanC: number;
+    declare readonly useCWhenResourceRatioIsBiggerThan: number;
+
+    // Grupo
+    declare readonly plunderGroupId: number | null;
+    declare readonly fieldsPerWave: number;
+    declare readonly villageDelay: number;
+
+    // Muralha
     declare readonly wallLevelToIgnore: WallLevel;
     declare readonly wallLevelToDestroy: WallLevel;
     declare readonly destroyWallMaxDistance: number;
-    declare readonly attackDelay: number;
-    declare readonly resourceRatio: number;
+    
+    // Outros
     declare readonly minutesUntilReload: number;
-    declare readonly maxDistance: number;
-    declare readonly ignoreOlderThan: number;
     declare readonly plunderedResourcesRatio: number;
     declare readonly pageDelay: number;
-    declare readonly villageDelay: number;
-    declare readonly maxDistanceC: number;
-
-    declare readonly plunderGroupId: number | null;
-    declare readonly fieldsPerWave: number;
-
-    declare readonly blindAttackPattern: BlindAttackPattern;
-    declare readonly useCPattern: UseCPattern;
 };
 
 PlunderConfig.init({
@@ -65,6 +73,7 @@ PlunderConfig.init({
         }
     },
 
+    // Painel
     active: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -101,6 +110,115 @@ PlunderConfig.init({
         defaultValue: false
     },
 
+    // Ataque
+    maxDistance: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 20,
+        validate: {
+            min: 1,
+            isFloat: true
+        }
+    },
+    ignoreOlderThan: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 10,
+        validate: {
+            isInt: true
+        }
+    },
+    attackDelay: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 200,
+        validate: {
+            min: 100,
+            max: 60000,
+            isInt: true
+        }
+    },
+    resourceRatio: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 0.8,
+        validate: {
+            min: 0.2,
+            max: 1,
+            isFloat: true
+        }
+    },
+    blindAttackPattern: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'smaller' satisfies BlindAttackPattern,
+        validate: {
+            isIn: [['smaller', 'bigger'] satisfies BlindAttackPattern[]]
+        }
+    },
+
+    // Modelo C
+    useCPattern: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'normal' satisfies UseCPattern,
+        validate: {
+            isIn: [['excess', 'normal', 'only'] satisfies UseCPattern[]]
+        }
+    },
+    maxDistanceC: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 10,
+        validate: {
+            min: 1,
+            isFloat: true
+        }
+    },
+    ignoreOlderThanC: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 5,
+        validate: {
+            isInt: true
+        }
+    },
+    useCWhenResourceRatioIsBiggerThan: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 3,
+        validate: {
+            min: 1,
+            isFloat: true
+        }
+    },
+
+    // Grupo
+    plunderGroupId: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    fieldsPerWave: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 10,
+        validate: {
+            min: 5,
+            isFloat: true
+        }
+    },
+    villageDelay: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 2000,
+        validate: {
+            min: 100,
+            max: 60000,
+            isInt: true
+        }
+    },
+
+    // Muralha
     wallLevelToIgnore: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -131,26 +249,8 @@ PlunderConfig.init({
             isFloat: true
         }
     },
-    attackDelay: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 200,
-        validate: {
-            min: 100,
-            max: 60000,
-            isInt: true
-        }
-    },
-    resourceRatio: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        defaultValue: 0.8,
-        validate: {
-            min: 0.2,
-            max: 1,
-            isFloat: true
-        }
-    },
+
+    // Outros
     minutesUntilReload: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -158,23 +258,6 @@ PlunderConfig.init({
         validate: {
             min: 1,
             max: 60,
-            isInt: true
-        }
-    },
-    maxDistance: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        defaultValue: 20,
-        validate: {
-            min: 1,
-            isFloat: true
-        }
-    },
-    ignoreOlderThan: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 10,
-        validate: {
             isInt: true
         }
     },
@@ -197,57 +280,7 @@ PlunderConfig.init({
             max: 60000,
             isInt: true
         }
-    },
-    villageDelay: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 2000,
-        validate: {
-            min: 100,
-            max: 60000,
-            isInt: true
-        }
-    },
-    maxDistanceC: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        defaultValue: 20,
-        validate: {
-            min: 1,
-            isFloat: true
-        }
-    },
-
-    plunderGroupId: {
-        type: DataTypes.INTEGER,
-        allowNull: true
-    },
-    fieldsPerWave: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        defaultValue: 10,
-        validate: {
-            min: 5,
-            isFloat: true
-        }
-    },
-
-    blindAttackPattern: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: 'smaller' satisfies BlindAttackPattern,
-        validate: {
-            isIn: [['smaller', 'bigger'] satisfies BlindAttackPattern[]]
-        }
-    },
-    useCPattern: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: 'normal' satisfies UseCPattern,
-        validate: {
-            isIn: [['normal', 'only'] satisfies UseCPattern[]]
-        }
-    }
+    }  
 }, { sequelize, tableName: 'plunder_config', timestamps: true });
 
 export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, InferCreationAttributes<PlunderHistory>> implements PlunderHistoryType {
