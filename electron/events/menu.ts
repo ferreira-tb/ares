@@ -8,8 +8,7 @@ export function setMenuEvents() {
 
     ipcMain.on('open-region-select-menu', () => {
         const template: MenuItemConstructorOptions[] = [
-            { label: 'Brasil', type: 'radio' },
-            { label: 'Portugal', type: 'radio', enabled: false }
+            { label: 'Brasil', type: 'radio', checked: true }
         ];
 
         const menu = Menu.buildFromTemplate(template);
