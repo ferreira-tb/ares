@@ -22,8 +22,6 @@ export class PlunderTargetInfo {
     wallLevel: WallLevel = 0;
     /** Distância até à aldeia. */
     distance: number = Infinity;
-    /** Indica se o botão C está ativo ou não. */
-    cStatus: boolean = true;
 
     /** Coordenadas da aldeia. */
     coords: Coords = {
@@ -203,7 +201,7 @@ function queryTemplateButtons(row: Element, info: PlunderTargetInfo) {
     if (info.button.c) {
         // Verifica se o botão C está desativado.
         const cButtonStatus = info.button.c.getAttributeStrict('class');
-        if (/disabled/.test(cButtonStatus)) info.cStatus = false;
+        if (cButtonStatus.includes('disabled')) info.button.c = null;
     };
 };
 

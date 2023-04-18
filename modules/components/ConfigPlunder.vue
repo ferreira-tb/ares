@@ -6,6 +6,7 @@ import { ModuleConfigError } from '$modules/error';
 import ResultInfo from '$renderer/components/ResultInfo.vue';
 import ConfigPlunderGridAttack from '$modules/components/ConfigPlunderGridAttack.vue';
 import ConfigPlunderGridGroups from '$modules/components/ConfigPlunderGridGroups.vue';
+import ConfigPlunderGridTemplateC from '$modules/components/ConfigPlunderGridTemplateC.vue';
 import ConfigPlunderGridWall from '$modules/components/ConfigPlunderGridWall.vue';
 import ConfigPlunderGridOthers from '$modules/components/ConfigPlunderGridOthers.vue';
 import type { PlunderConfigType } from '$types/plunder';
@@ -33,6 +34,7 @@ function updateConfig<T extends keyof PlunderConfigType>(name: T, value: Plunder
 <template>
     <section v-if="config" class="plunder-config">
         <ConfigPlunderGridAttack :config="config" @update:config="updateConfig" />
+        <ConfigPlunderGridTemplateC :config="config" @update:config="updateConfig" />
         <ConfigPlunderGridGroups :config="config" @update:config="updateConfig" />
         <ConfigPlunderGridWall :config="config" @update:config="updateConfig" />
         <ConfigPlunderGridOthers :config="config" @update:config="updateConfig" />

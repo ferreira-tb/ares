@@ -60,7 +60,7 @@ function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>,
 
         ipcSend('plunder:update-group-info', toRaw(groupInfo));
         ipcSend('plunder:navigate-to-next-village', currentVillageId);
-        
+
     } catch (err) {
         PlunderError.catch(err);
     };
