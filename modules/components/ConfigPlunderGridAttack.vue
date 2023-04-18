@@ -5,7 +5,7 @@ import { isInteger, isFiniteNumber } from '$global/guards';
 import { isDistance } from '$global/guards';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';
-import type { PlunderConfigType, BlindAttackPattern, UseCPattern } from '$types/plunder';
+import type { PlunderConfigType, BlindAttackPattern } from '$types/plunder';
 import type { NSelectPatternOption } from '$types/utils';
 
 const props = defineProps<{
@@ -21,24 +21,17 @@ const ignoreOlderThan = ref<number>(props.config.ignoreOlderThan);
 const attackDelay = ref<number>(props.config.attackDelay);
 const resourceRatio = ref<number>(props.config.resourceRatio);
 const blindAttackPattern = ref<BlindAttackPattern>(props.config.blindAttackPattern);
-const useCPattern = ref<UseCPattern>(props.config.useCPattern);
 
 watch(maxDistance, (v) => emit('update:config', 'maxDistance', v));
 watch(ignoreOlderThan, (v) => emit('update:config', 'ignoreOlderThan', v));
 watch(attackDelay, (v) => emit('update:config', 'attackDelay', v));
 watch(resourceRatio, (v) => emit('update:config', 'resourceRatio', v));
 watch(blindAttackPattern, (v) => emit('update:config', 'blindAttackPattern', v));
-watch(useCPattern, (v) => emit('update:config', 'useCPattern', v));
 
 const blindAttackOptions = [
     { label: 'Menor capacidade', value: 'smaller' },
     { label: 'Maior capacidade', value: 'bigger' }
 ] satisfies NSelectPatternOption<BlindAttackPattern>;
-
-const useCOptions = [
-    { label: 'Normal', value: 'normal' },
-    { label: 'Somente C', value: 'only' }
-] satisfies NSelectPatternOption<UseCPattern>;
 </script>
 
 <template>
@@ -123,23 +116,6 @@ const useCOptions = [
             <NGridItem>
                 <div class="plunder-config-select">
                     <NSelect v-model:value="blindAttackPattern" :options="blindAttackOptions" />
-                </div>
-            </NGridItem>
-
-            <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Padrão do modelo C</template>
-                    <span>
-                        Quanto o uso do modelo C está ativado, o Ares tentará enviar ataques usando-o.
-                        Se não conseguir, tentará com algum outro modelo.
-
-                        Você pode alterar esse comportamento de maneira a forçá-lo a usar somente o modelo C.
-                    </span>
-                </LabelPopover>
-            </NGridItem>
-            <NGridItem>
-                <div class="plunder-config-select">
-                    <NSelect v-model:value="useCPattern" :options="useCOptions" />
                 </div>
             </NGridItem>
         </NGrid>

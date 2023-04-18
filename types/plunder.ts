@@ -82,6 +82,8 @@ export type PlunderConfigType = {
     plunderGroupId: number | null;
     /** Máximo de campos por onda. */
     fieldsPerWave: number;
+    /** Distância máxima para ataques usando o modelo C. */
+    maxDistanceC: number;
 
     /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
     blindAttackPattern: BlindAttackPattern;

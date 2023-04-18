@@ -12,6 +12,8 @@ import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder'
 
 /** Informações sobre a aldeia-alvo. */
 export class PlunderTargetInfo {
+    /** ID da aldeia. */
+    readonly id: number;
     /** Data do último ataque contra a aldeia (em milisegundos). */
     lastAttack: number = 0;
     /** Minutos desde o último ataque. */
@@ -22,8 +24,6 @@ export class PlunderTargetInfo {
     wallLevel: WallLevel = 0;
     /** Distância até à aldeia. */
     distance: number = Infinity;
-    /** Indica se o botão C está ativo ou não. */
-    cStatus: boolean = true;
 
     /** Coordenadas da aldeia. */
     coords: Coords = {
@@ -45,6 +45,10 @@ export class PlunderTargetInfo {
         b: null,
         c: null,
         place: null
+    };
+
+    constructor(villageId: number) {
+        this.id = villageId;
     };
 };
 
@@ -76,7 +80,7 @@ export function queryTargetsInfo() {
         row.setAttribute('data-tb-village', villageId);
 
         // Objeto onde serão armazenadas as informações sobre a aldeia.
-        const info = new PlunderTargetInfo();
+        const info = new PlunderTargetInfo(villageId.toIntegerStrict());
 
         // Campo de relatório. É usado para calcular a distância até a aldeia-alvo.
         queryReport(row, info, x.value, y.value);
@@ -203,7 +207,7 @@ function queryTemplateButtons(row: Element, info: PlunderTargetInfo) {
     if (info.button.c) {
         // Verifica se o botão C está desativado.
         const cButtonStatus = info.button.c.getAttributeStrict('class');
-        if (/disabled/.test(cButtonStatus)) info.cStatus = false;
+        if (cButtonStatus.includes('disabled')) info.button.c = null;
     };
 };
 

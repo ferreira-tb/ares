@@ -65,6 +65,7 @@ export class PlunderTemplate {
 
 /** Representa todos os modelos de saque. */
 const allTemplates = new Map<string, PlunderTemplate>();
+
 ipcRenderer.on('custom-plunder-template-saved', async (_e, template: CustomPlunderTemplateType) => {
     const plunderTemplate = await parseCustomPlunderTemplate(template);
     allTemplates.set(plunderTemplate.type, plunderTemplate);
@@ -205,8 +206,10 @@ async function filterTemplates(info: PlunderTargetInfo, config: ReturnType<typeo
 
 export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnType<typeof usePlunderConfigStore>) {
     if (config.useC) {
-        const templateC = await getTemplateC(info);
+        const templateC = await getTemplateC(info, config);
         if (templateC) return templateC;
+
+        // Se não for possível usar o modelo C, retorna sem enviar o ataque se o padrão de uso for `only`.
         if (config.useCPattern === 'only') return null;
     };
 
@@ -227,10 +230,12 @@ export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnTy
     return templates.reduce((prev, curr) => prev.carry > curr.carry ? prev : curr);
 };
 
-async function getTemplateC(info: PlunderTargetInfo): Promise<PlunderTemplate | null> {
+async function getTemplateC(info: PlunderTargetInfo, config: ReturnType<typeof usePlunderConfigStore>) {
     try {
         const button = info.button.c;
-        if (!button) throw new PlunderError('C template button not found.');
+        if (!button) return null;
+
+        if (info.distance > config.maxDistanceC) return null;
 
         const json = button.getAttributeStrict('data-units-forecast');
         const cUnits = JSON.parse(json) as UnitAmount;
@@ -261,7 +266,7 @@ async function getTemplateC(info: PlunderTargetInfo): Promise<PlunderTemplate | 
     };
 };
 
-async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType): Promise<PlunderTemplate> {
+async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType) {
     const plunderTemplate = new PlunderTemplate(template.type, template.alias);
 
     for (const [unit, amount] of Object.entries(template.units) as [FarmUnits, number][]) {

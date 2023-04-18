@@ -60,7 +60,7 @@ function resetDemolitionConfig() {
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
                 <LabelPopover>
-                    <template #trigger>Ignorar muralhas a partir de</template>
+                    <template #trigger>Ignorar a partir de</template>
                     <span>Determina a partir de qual nível de muralha o Ares deve ignorar aldeias.</span>
                 </LabelPopover>
             </NGridItem>
@@ -70,7 +70,7 @@ function resetDemolitionConfig() {
 
             <NGridItem>
                 <LabelPopover>
-                    <template #trigger>Demolir muralhas a partir de</template>
+                    <template #trigger>Demolir a partir de</template>
                     <span>O Ares não demolirá muralhas cujo nível seja menor que o indicado.</span>
                 </LabelPopover>
             </NGridItem>
@@ -80,7 +80,7 @@ function resetDemolitionConfig() {
 
             <NGridItem>
                 <LabelPopover>
-                    <template #trigger>Distância máxima para demolição</template>
+                    <template #trigger>Distância máxima</template>
                     <span>O Ares não demolirá muralhas de aldeias cuja distância (em campos) é maior do que a
                         indicada.</span>
                 </LabelPopover>

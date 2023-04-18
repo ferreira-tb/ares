@@ -43,6 +43,7 @@ export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCr
     declare readonly plunderedResourcesRatio: number;
     declare readonly pageDelay: number;
     declare readonly villageDelay: number;
+    declare readonly maxDistanceC: number;
 
     declare readonly plunderGroupId: number | null;
     declare readonly fieldsPerWave: number;
@@ -205,6 +206,15 @@ PlunderConfig.init({
             min: 100,
             max: 60000,
             isInt: true
+        }
+    },
+    maxDistanceC: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 20,
+        validate: {
+            min: 1,
+            isFloat: true
         }
     },
 
