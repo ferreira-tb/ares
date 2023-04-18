@@ -82,7 +82,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const useCPattern = ref<UseCPattern>('normal', arrayIncludesRef(useCPatterns));
     const maxDistanceC = ref<number>(10, finiteValidator(1));
     const ignoreOlderThanC = ref<number>(5, positiveIntegerRef);
-    const useCWhenResourceRatioIsBiggerThan = ref<number>(1.5, finiteValidator(1));
+    const useCWhenResourceRatioIsBiggerThan = ref<number>(3, finiteValidator(1));
 
     // Grupo
     const plunderGroupId = ref<number | null>(null, positiveIntegerOrNullRef);

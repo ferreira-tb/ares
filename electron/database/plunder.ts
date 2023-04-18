@@ -186,7 +186,7 @@ PlunderConfig.init({
     useCWhenResourceRatioIsBiggerThan: {
         type: DataTypes.FLOAT,
         allowNull: false,
-        defaultValue: 1.5,
+        defaultValue: 3,
         validate: {
             min: 1,
             isFloat: true

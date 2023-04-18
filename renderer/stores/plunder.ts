@@ -38,7 +38,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const useCPattern = ref<UseCPattern>('normal');
     const maxDistanceC = ref<number>(10);
     const ignoreOlderThanC = ref<number>(5);
-    const useCWhenResourceRatioIsBiggerThan = ref<number>(1.5);
+    const useCWhenResourceRatioIsBiggerThan = ref<number>(3);
 
     // Grupo
     const plunderGroupId = ref<number | null>(null);
