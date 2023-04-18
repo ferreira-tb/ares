@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
-import { isDistance } from '$global/guards';
+import { isDistance, isFiniteNumber, isInteger } from '$global/guards';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';
 import type { PlunderConfigType, UseCPattern } from '$types/plunder';
@@ -17,12 +17,17 @@ const emit = defineEmits<{
 
 const useCPattern = ref<UseCPattern>(props.config.useCPattern);
 const maxDistanceC = ref<number>(props.config.maxDistanceC);
+const ignoreOlderThanC = ref<number>(props.config.ignoreOlderThanC);
+const useCWhenResourceRatioIsBiggerThan = ref<number>(props.config.useCWhenResourceRatioIsBiggerThan);
 
 watch(useCPattern, (v) => emit('update:config', 'useCPattern', v));
 watch(maxDistanceC, (v) => emit('update:config', 'maxDistanceC', v));
+watch(ignoreOlderThanC, (v) => emit('update:config', 'ignoreOlderThanC', v));
+watch(useCWhenResourceRatioIsBiggerThan, (v) => emit('update:config', 'useCWhenResourceRatioIsBiggerThan', v));
 
 const useCOptions = [
     { label: 'Normal', value: 'normal' },
+    { label: 'Quando em excesso', value: 'excess' },
     { label: 'Somente C', value: 'only' }
 ] satisfies NSelectPatternOption<UseCPattern>;
 </script>
@@ -55,7 +60,51 @@ const useCOptions = [
                 </LabelPopover>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="maxDistanceC" :min="1" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
+                <InputNumber
+                    v-model:value="maxDistanceC"
+                    :min="1"
+                    :max="9999"
+                    :step="1"
+                    :validator="(v) => isDistance(v)"
+                />
+            </NGridItem>
+
+            <NGridItem>
+                <LabelPopover>
+                    <template #trigger>Evitar mais antigos que</template>
+                    <span>
+                        O Ares não atacará usando o modelo C se o último ataque ocorreu a uma quantidade de horas superior a indicada.
+                    </span>
+                </LabelPopover>
+            </NGridItem>
+            <NGridItem>
+                <InputNumber
+                    v-model:value="ignoreOlderThanC"
+                    :min="1"
+                    :max="9999"
+                    :step="1"
+                    :validator="(v) => isInteger(v) && v >= 1"
+                />
+            </NGridItem>
+
+            <NGridItem>
+                <LabelPopover>
+                    <template #trigger>Usar C se a razão for maior que</template>
+                    <span>
+                        Uma razão de saque alta indica que a aldeia tem recursos além do que os modelos podem saquear.
+                        Através dessa opção, é possível atacar essas aldeias com recursos em excesso usando o modelo C.
+                    </span>
+                </LabelPopover>
+            </NGridItem>
+            <NGridItem>
+                <InputNumber
+                    v-model:value="useCWhenResourceRatioIsBiggerThan"
+                    :disabled="useCPattern !== 'excess'"
+                    :min="1"
+                    :max="9999"
+                    :step="1"
+                    :validator="(v) => isFiniteNumber(v) && v >= 1"
+                />
             </NGridItem>
         </NGrid>
     </div>

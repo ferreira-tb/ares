@@ -27,25 +27,33 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
     const ignoreDelay = ref<boolean>(false);
     const blindAttack = ref<boolean>(false);
 
-    // Configurações
+    // Ataque
+    const maxDistance = ref<number>(20);
+    const ignoreOlderThan = ref<number>(10);
+    const attackDelay = ref<number>(200);
+    const resourceRatio = ref<number>(0.8);
+    const blindAttackPattern = ref<BlindAttackPattern>('smaller');
+
+    // Modelo C
+    const useCPattern = ref<UseCPattern>('normal');
+    const maxDistanceC = ref<number>(10);
+    const ignoreOlderThanC = ref<number>(5);
+    const useCWhenResourceRatioIsBiggerThan = ref<number>(1.5);
+
+    // Grupo
+    const plunderGroupId = ref<number | null>(null);
+    const fieldsPerWave = ref<number>(10);
+    const villageDelay = ref<number>(2000);
+
+    // Muralha
     const wallLevelToIgnore = ref<number>(1);
     const wallLevelToDestroy = ref<number>(1);
     const destroyWallMaxDistance = ref<number>(20);
-    const attackDelay = ref<number>(200);
-    const resourceRatio = ref<number>(0.8);
+    
+    // Outros
     const minutesUntilReload = ref<number>(10);
-    const maxDistance = ref<number>(20);
-    const ignoreOlderThan = ref<number>(10);
     const plunderedResourcesRatio = ref<number>(1);
     const pageDelay = ref<number>(2000);
-    const villageDelay = ref<number>(2000);
-    const maxDistanceC = ref<number>(10);
-
-    const plunderGroupId = ref<number | null>(null);
-    const fieldsPerWave = ref<number>(10);
-
-    const blindAttackPattern = ref<BlindAttackPattern>('smaller');
-    const useCPattern = ref<UseCPattern>('normal');
     
     function raw(): PlunderConfigType {
         return {
@@ -57,28 +65,33 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
             ignoreDelay: ignoreDelay.value,
             blindAttack: blindAttack.value,
 
-            wallLevelToIgnore: wallLevelToIgnore.value,
-            wallLevelToDestroy: wallLevelToDestroy.value,
-            destroyWallMaxDistance: destroyWallMaxDistance.value,
-            attackDelay: attackDelay.value,
-            resourceRatio: resourceRatio.value,
-            minutesUntilReload: minutesUntilReload.value,
             maxDistance: maxDistance.value,
             ignoreOlderThan: ignoreOlderThan.value,
-            plunderedResourcesRatio: plunderedResourcesRatio.value,
-            pageDelay: pageDelay.value,
-            villageDelay: villageDelay.value,
+            attackDelay: attackDelay.value,
+            resourceRatio: resourceRatio.value,
+            blindAttackPattern: blindAttackPattern.value,
+
+            useCPattern: useCPattern.value,
             maxDistanceC: maxDistanceC.value,
+            ignoreOlderThanC: ignoreOlderThanC.value,
+            useCWhenResourceRatioIsBiggerThan: useCWhenResourceRatioIsBiggerThan.value,
 
             plunderGroupId: plunderGroupId.value,
             fieldsPerWave: fieldsPerWave.value,
+            villageDelay: villageDelay.value,
 
-            blindAttackPattern: blindAttackPattern.value,
-            useCPattern: useCPattern.value
+            wallLevelToIgnore: wallLevelToIgnore.value,
+            wallLevelToDestroy: wallLevelToDestroy.value,
+            destroyWallMaxDistance: destroyWallMaxDistance.value,
+            
+            minutesUntilReload: minutesUntilReload.value,
+            plunderedResourcesRatio: plunderedResourcesRatio.value,
+            pageDelay: pageDelay.value  
         };
     };
 
     return {
+        // Painel
         active,
         ignoreWall,
         destroyWall,
@@ -87,25 +100,35 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
         ignoreDelay,
         blindAttack,
 
+        // Ataque
+        maxDistance,
+        ignoreOlderThan,
+        attackDelay,
+        resourceRatio,
+        blindAttackPattern,
+
+        // Modelo C
+        useCPattern,
+        maxDistanceC,
+        ignoreOlderThanC,
+        useCWhenResourceRatioIsBiggerThan,
+
+        // Grupo
+        plunderGroupId,
+        fieldsPerWave,
+        villageDelay,
+
+        // Muralha
         wallLevelToIgnore,
         wallLevelToDestroy,
         destroyWallMaxDistance,
-        attackDelay,
-        resourceRatio,
+        
+        // Outros
         minutesUntilReload,
-        maxDistance,
-        ignoreOlderThan,
         plunderedResourcesRatio,
         pageDelay,
-        villageDelay,
-        maxDistanceC,
-
-        plunderGroupId,
-        fieldsPerWave,
-
-        blindAttackPattern,
-        useCPattern,
-
+        
+        // Funções
         raw
     } satisfies PiniaPlunderConfigStoreType;
 });
