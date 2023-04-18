@@ -12,6 +12,8 @@ import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder'
 
 /** Informações sobre a aldeia-alvo. */
 export class PlunderTargetInfo {
+    /** ID da aldeia. */
+    readonly id: number;
     /** Data do último ataque contra a aldeia (em milisegundos). */
     lastAttack: number = 0;
     /** Minutos desde o último ataque. */
@@ -44,6 +46,10 @@ export class PlunderTargetInfo {
         c: null,
         place: null
     };
+
+    constructor(villageId: number) {
+        this.id = villageId;
+    };
 };
 
 /** Ajuda a controlar o MutationObserver. */
@@ -74,7 +80,7 @@ export function queryTargetsInfo() {
         row.setAttribute('data-tb-village', villageId);
 
         // Objeto onde serão armazenadas as informações sobre a aldeia.
-        const info = new PlunderTargetInfo();
+        const info = new PlunderTargetInfo(villageId.toIntegerStrict());
 
         // Campo de relatório. É usado para calcular a distância até a aldeia-alvo.
         queryReport(row, info, x.value, y.value);
