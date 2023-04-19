@@ -21,12 +21,12 @@ jobs:
         node-version: '18.x'
     - run: npm install @octokit/core discord.js
     - run: |
-        git checkout -B new-release
+        git checkout -B ${{ format('release-{0}', github.event.release.tag_name) }}
     - run: node scripts/actions/release.mjs
     - run: |
         git config user.name ${{ github.actor }}
         git config user.email ${{ secrets.ACTOR_EMAIL }}
         git add ./docs
-        git commit -m "chore: atualiza versão do Ares"
-        git push origin new-release
-    - run: 'gh pr create --fill --label auto'
+        git commit -m ${{ format('chore: atualiza para versão `{0}`', github.event.release.tag_name) }}
+        git push origin ${{ format('release-{0}', github.event.release.tag_name) }}
+    - run: 'gh pr create --title ${{ github.event.release.tag_name }} --body ${{ github.event.release.tag_name }} --label auto'
