@@ -1,4 +1,4 @@
-import { toRaw } from 'vue';
+import { nextTick, toRaw } from 'vue';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
 import { queryAvailableUnits } from '$lib/plunder/units';
@@ -12,6 +12,7 @@ import type { PlunderTargetInfo } from '$lib/plunder/targets';
 export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
     try {
         await queryAvailableUnits();
+        await nextTick();
         const config = usePlunderConfigStore();
         const wentToNextPage = await navigateToNextPage(config, groupInfo);
         if (wentToNextPage || !config.groupAttack || !groupInfo) return;
@@ -23,8 +24,7 @@ export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
 
 async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStore>, groupInfo: PlunderGroupType | null) {
     try {
-        // Verifica se há tropas disponíveis em algum dos modelos.
-        if (!canSomeTemplateAttack(config)) return false;
+        if (!canSomeTemplateAttack()) return false;
         
         let maxDistance = config.maxDistance;
         if (config.groupAttack && groupInfo) {
@@ -53,7 +53,7 @@ function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>,
         if (groupVillage.done) return;
 
         if (
-            !canSomeTemplateAttack(config) ||
+            !canSomeTemplateAttack() ||
             isOverWaveMaxDistance(config, groupVillage) ||
             isOverTemplateCMaxDistance(config, groupVillage)
         ) {
@@ -71,13 +71,9 @@ function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>,
 };
 
 /** Verifica se algum dos modelos pode ser usado para atacar. */
-function canSomeTemplateAttack(config: ReturnType<typeof usePlunderConfigStore>) {
+function canSomeTemplateAttack() {
     const templatesMap = getAllTemplates();
-
-    // Se os ataques com o modelo C não estiverem habilitados, remove-o da lista.
-    let allTemplates = Array.from(templatesMap.values());
-    if (!config.useC) allTemplates = allTemplates.filter((template) => template.type !== 'c');
-
+    const allTemplates = Array.from(templatesMap.values()).filter((template) => template.type !== 'c');
     const status = allTemplates.map((template) => template.ok.value);
     return status.some((ok) => ok);
 };
