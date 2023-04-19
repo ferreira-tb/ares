@@ -5,7 +5,7 @@ import { AppConfig, useAppGeneralConfigStore, useAppNotificationsStore } from '$
 import { MainProcessEventError } from '$electron/error';
 import { restartAres } from '$electron/utils/helpers';
 import type { ConfigModuleRoutes } from '$types/modules';
-import type { GeneralAppConfigType, AppNotificationsConfigType } from '$types/config';
+import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
 
 export function setConfigEvents() {
     const appGeneralConfigStore = useAppGeneralConfigStore();
@@ -28,7 +28,7 @@ export function setConfigEvents() {
         };
     });
 
-    ipcMain.on('update-app-general-config', async (_e, config: GeneralAppConfigType) => {
+    ipcMain.on('update-app-general-config', async (_e, config: GeneralConfigType) => {
         try {
             await AppConfig.setConfig('config_general', appGeneralConfigStore, config);
             await AppConfig.saveConfig('config_general', appGeneralConfigStore);
@@ -37,7 +37,7 @@ export function setConfigEvents() {
         };
     });
 
-    ipcMain.on('update-app-notifications-config', async (_e, config: AppNotificationsConfigType) => {
+    ipcMain.on('update-app-notifications-config', async (_e, config: NotificationsConfigType) => {
         try {
             await AppConfig.setConfig('config_notifications', appNotificationsStore, config);
             await AppConfig.saveConfig('config_notifications', appNotificationsStore);

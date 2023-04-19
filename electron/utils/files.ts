@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-export const favicon = join(__dirname, 'favicon.ico');
+export const appIcon = join(__dirname, 'favicon.ico');
 
 export const browserJs = join(__dirname, 'browser.js');
 export const deimosJs = join(__dirname, 'deimos.js');

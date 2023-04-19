@@ -3,7 +3,7 @@ import { MessageChannelMain } from 'electron';
 import { isKeyOf } from '$global/guards';
 import { WorldPatchError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
-import { worldConfigURL, worldUnitURL } from '$global/helpers';
+import { worldConfigUrl, worldUnitUrl } from '$global/helpers';
 import { isWorld } from '$global/guards';
 import { sequelize } from '$electron/database';
 import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world';
@@ -52,7 +52,7 @@ async function patchWorldConfigStoreState(
         if (!worldConfig) {
             // Se não houver configurações para o mundo atual, cria um novo registro.
             const state = await new Promise<WorldConfigType>(async (resolve, reject) => {
-                const url = new URL(worldConfigURL(world));
+                const url = new URL(worldConfigUrl(world));
                 const phobos = await createPhobos('fetch-world-config', url, { override: true });
                 
                 const { port1, port2 } = new MessageChannelMain();
@@ -103,7 +103,7 @@ async function patchWorldUnitStoresState(
         if (!worldUnit) {
             // Se não houver informações sobre as unidades do mundo atual, cria um novo registro.
             const state = await new Promise<WorldUnitType>(async (resolve, reject) => {
-                const url = new URL(worldUnitURL(world));
+                const url = new URL(worldUnitUrl(world));
                 const phobos = await createPhobos('fetch-world-unit', url, { override: true });
                 
                 const { port1, port2 } = new MessageChannelMain();

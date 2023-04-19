@@ -2,10 +2,11 @@ import { readFile } from 'node:fs/promises';
 import { webContents } from 'electron';
 import { browserCss } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
-import { Dimensions, WebsiteUrl } from '$global/constants';
+import { Dimensions, GameUrl } from '$global/constants';
 import { BrowserViewError } from '$electron/error';
 import type { WebContents, BrowserView, BrowserWindow, IpcMainEvent } from 'electron';
 import type { BackForwardStatus } from '$types/view';
+import type { GameRegion } from '$types/game';
 
 export const getMainViewWebContents = () => {
     const id = Number.parseIntStrict(process.env.MAIN_VIEW_WEB_CONTENTS_ID ?? '');
@@ -57,8 +58,32 @@ export function contentsGoForward(contents: WebContents) {
     if (contents.canGoForward()) contents.goForward();
 };
 
-export function contentsGoHome(contents: WebContents) {
-    contents.loadURL(WebsiteUrl.Game).catch(BrowserViewError.catch);
+export function contentsGoHome(contents: WebContents, region: GameRegion) {
+    let homeUrl: GameUrl;
+    switch (region) {
+        case 'br':
+            homeUrl = GameUrl.Brazil;
+            break;
+        case 'en':
+            homeUrl = GameUrl.Global;
+            break;
+        case 'nl':
+            homeUrl = GameUrl.Netherlands;
+            break;
+        case 'pt':
+            homeUrl = GameUrl.Portugal;
+            break;
+        case 'uk':
+            homeUrl = GameUrl.UnitedKingdom;
+            break;
+        case 'us':
+            homeUrl = GameUrl.UnitedStates;
+            break;
+        default:
+            homeUrl = GameUrl.Brazil;
+    };
+
+    contents.loadURL(homeUrl).catch(BrowserViewError.catch);
 };
 
 /**

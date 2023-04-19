@@ -1,7 +1,7 @@
 import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
 import { isInstanceOf, isString } from '$global/guards';
 import { WebsiteUrl } from '$global/constants';
-import { favicon, moduleHtml } from '$electron/utils/files';
+import { appIcon, moduleHtml } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
 import { isAllowedOrigin } from '$global/guards';
 import { ModuleCreationError } from '$electron/error';
@@ -49,7 +49,7 @@ function createModule<T extends keyof ModuleConstructorOptions>(
                 resizable: false,
                 fullscreenable: false,
                 title: 'Ares',
-                icon: favicon,
+                icon: appIcon,
                 autoHideMenuBar: true,
                 webPreferences: {
                     spellcheck: false,
@@ -152,7 +152,7 @@ function createWebsiteModule(name: WebsiteModuleNames, url: string) {
                 resizable: true,
                 fullscreenable: false,
                 title: 'Ares',
-                icon: favicon,
+                icon: appIcon,
                 autoHideMenuBar: true,
                 webPreferences: {
                     spellcheck: false,

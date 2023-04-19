@@ -1,9 +1,22 @@
 import { isInteger } from '$global/guards';
+import { GameUrl } from '$global/constants';
 import type { World } from '$types/game';
 import type { UserAlias } from '$types/electron';
 
-export const worldConfigURL = (world: World) => `https://${world}.tribalwars.com.br/interface.php?func=get_config`;
-export const worldUnitURL = (world: World) => `https://${world}.tribalwars.com.br/interface.php?func=get_unit_info`;
+export const worldConfigUrl = (world: World) => `https://${world}.tribalwars.com.br/interface.php?func=get_config`;
+export const worldUnitUrl = (world: World) => `https://${world}.tribalwars.com.br/interface.php?func=get_unit_info`;
+
+export function getGameRegionUrl(region: unknown) {
+    switch (region) {
+        case 'br': return GameUrl.Brazil;
+        case 'en': return GameUrl.Global;
+        case 'nl': return GameUrl.Netherlands;
+        case 'pt': return GameUrl.Portugal;
+        case 'uk': return GameUrl.UnitedKingdom;
+        case 'us': return GameUrl.UnitedStates;
+        default: return GameUrl.Brazil;
+    };
+};
 
 /** Calcula distância em campos entre duas coordenadas. */
 export function calcDistance(originX: number, originY: number, destX: number, destY: number) {

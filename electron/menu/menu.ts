@@ -5,9 +5,12 @@ import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/util
 import { appendDevMenu } from '$electron/menu/dev';
 import { getMainViewWebContents, contentsGoBack, contentsGoForward, contentsGoHome } from '$electron/utils/view';
 import type { MenuItemConstructorOptions, WebContents } from 'electron';
-import type { useBrowserViewStore } from '$electron/interface';
+import type { useBrowserViewStore, useCacheStore } from '$electron/interface';
 
-export function setAppMenu(browserViewStore: ReturnType<typeof useBrowserViewStore>) {
+export function setAppMenu(
+    browserViewStore: ReturnType<typeof useBrowserViewStore>,
+    cacheStore: ReturnType<typeof useCacheStore>
+) {
     const mainWindow = getMainWindow();
     const panelWindow = getPanelWindow();
     const { currentWebContents: currentWebContentsMaybeNull } = storeToRefs(browserViewStore);
@@ -17,7 +20,7 @@ export function setAppMenu(browserViewStore: ReturnType<typeof useBrowserViewSto
     });
 
     const sharedOptions: MenuItemConstructorOptions[] = [
-        { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => contentsGoHome(currentWebContents.value) },
+        { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => contentsGoHome(currentWebContents.value, cacheStore.region) },
         { label: 'Atualizar', accelerator: 'F5', click: () => currentWebContents.value.reload() },
         { label: 'Voltar', accelerator: 'CmdOrCtrl+Left', click: () => contentsGoBack(currentWebContents.value) },
         { label: 'Avançar', accelerator: 'CmdOrCtrl+Right', click: () => contentsGoForward(currentWebContents.value) },

@@ -4,7 +4,7 @@ import semverValid from 'semver/functions/valid';
 import { MainProcessEventError } from '$electron/error';
 import { AppConfig } from '$electron/interface';
 import { showAppUpdate } from '$electron/app/modules';
-import type { AppUpdateConfigType } from '$types/config';
+import type { UpdateConfigType } from '$types/config';
 
 export function setAppUpdateModuleEvents() {
     ipcMain.on('open-app-update-window', () => showAppUpdate());
@@ -14,7 +14,7 @@ export function setAppUpdateModuleEvents() {
             const row = (await AppConfig.findByPk('app_update'))?.toJSON();
             if (!row?.json) return false;
             
-            const versionToIgnore = (row.json as AppUpdateConfigType).versionToIgnore;
+            const versionToIgnore = (row.json as UpdateConfigType).versionToIgnore;
             if (!semverValid(versionToIgnore)) return false;
             return semverLte(version, versionToIgnore);
             
@@ -43,7 +43,7 @@ export function setAppUpdateModuleEvents() {
             if (response === 0) {
                 showAppUpdate();
             } else if (response === 2) {
-                let updateConfig: AppUpdateConfigType | null = null;
+                let updateConfig: UpdateConfigType | null = null;
                 const row = (await AppConfig.findByPk('app_update'))?.toJSON();
                 if (row?.json) {
                     updateConfig = { ...row.json, versionToIgnore: newVersion };

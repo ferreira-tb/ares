@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 import { setMainWindowDownloadEvents } from '$electron/events/ui/download';
+import { setMenuEvents } from '$electron/events/ui/menu';
 import { getMainWindow, maximizeOrRestoreWindow } from '$electron/utils/helpers';
 
 export function setMainWindowEvents() {
@@ -12,5 +13,6 @@ export function setMainWindowEvents() {
     ipcMain.handle('is-main-window-minimized', () => mainWindow.isMinimized());
     ipcMain.handle('is-main-window-maximized', () => mainWindow.isMaximized());
 
+    setMenuEvents();
     setMainWindowDownloadEvents();
 };

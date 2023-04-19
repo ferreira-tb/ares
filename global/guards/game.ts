@@ -1,8 +1,8 @@
 import { isFiniteNumber, isInteger, isString } from '$global/guards/base';
 import { farmUnits, allUnits } from '$global/constants';
-import { worldRegex } from '$global/regex';
+import { regionRegex, worldRegex } from '$global/regex';
 import type { AresError } from '$global/error';
-import type { FarmUnits, World, WallLevel, AllUnits } from '$types/game';
+import type { FarmUnits, GameRegion, World, WallLevel, AllUnits } from '$types/game';
 
 /** Verifica se o valor passado é um nome válido de unidade. */
 export const isUnit = (unit: unknown): unit is AllUnits => allUnits.includes(unit as AllUnits);
@@ -18,16 +18,16 @@ export function assertFarmUnit<T extends typeof AresError>(unit: unknown, SomeEr
     if (!isFarmUnit(unit)) throw new SomeError(message);
 };
 
+export const isGameRegion = (region: unknown): region is GameRegion => (isString(region) && regionRegex.test(region));
+export function assertGameRegion<T extends typeof AresError>(region: unknown, SomeError: T, message?: string): asserts region is GameRegion {
+    if (!isString(message)) message = 'Invalid game region.';
+    if (!isGameRegion(region)) throw new SomeError(message);
+};
+
 export const isWorld = (world: unknown): world is World => (isString(world) && worldRegex.test(world));
 export function assertWorld<T extends typeof AresError>(world: unknown, SomeError: T, message?: string): asserts world is World {
     if (!isString(message)) message = 'Invalid world.';
     if (!isWorld(world)) throw new SomeError(message);
-};
-
-export const isWorldOrNull = (world: unknown): world is World | null => (world === null || isWorld(world));
-export function assertWorldOrNull<T extends typeof AresError>(world: unknown, SomeError: T, message?: string): asserts world is World | null {
-    if (!isString(message)) message = 'Invalid world.';
-    if (!isWorldOrNull(world)) throw new SomeError(message);
 };
 
 export const isWallLevel = (level: unknown): level is WallLevel => (isInteger(level) && level >= 0 && level <= 20);

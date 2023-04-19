@@ -7,7 +7,6 @@ import { setModuleEvents } from '$electron/events/modules';
 import { setMainWindowEvents } from '$electron/events/ui';
 import { setBrowserViewEvents } from '$electron/events/view';
 import { setGroupsEvents } from '$electron/events/groups';
-import { setMenuEvents } from '$electron/events/menu';
 import { setBrowserEvents } from '$electron/events/browser';
 import { setConfigEvents } from '$electron/events/config';
 import { setDevEvents } from '$electron/events/dev';
@@ -53,7 +52,6 @@ export function setEvents() {
     setBrowserEvents();
     setBrowserViewEvents();
     setPanelEvents();
-    setMenuEvents();
     setPlunderEvents();
     setErrorEvents();
     setDeimosEvents();

@@ -6,7 +6,7 @@ import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType } from '$types/er
 import type { WorldConfigType, WorldUnitType } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
-import type { GeneralAppConfigType, AppNotificationsConfigType } from '$types/config';
+import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
 
 import type {
     PlunderAttackDetails,
@@ -35,8 +35,8 @@ export async function ipcInvoke(channel: 'is-ignored-app-version', version: stri
 
 // Configurações
 export async function ipcInvoke(channel: 'drop-database'): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-app-general-config'): Promise<GeneralAppConfigType>;
-export async function ipcInvoke(channel: 'get-app-notifications-config'): Promise<AppNotificationsConfigType>;
+export async function ipcInvoke(channel: 'get-app-general-config'): Promise<GeneralConfigType>;
+export async function ipcInvoke(channel: 'get-app-notifications-config'): Promise<NotificationsConfigType>;
 export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise<boolean>;
 export async function ipcInvoke(channel: 'should-notify-on-error'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
@@ -112,8 +112,8 @@ export function ipcSend(channel: 'dev:open-current-view-dev-tools'): void;
 export function ipcSend(channel: 'dev:open-main-view-dev-tools'): void;
 
 // Configurações
-export function ipcSend(channel: 'update-app-general-config', config: GeneralAppConfigType): void;
-export function ipcSend(channel: 'update-app-notifications-config', config: AppNotificationsConfigType): void;
+export function ipcSend(channel: 'update-app-general-config', config: GeneralConfigType): void;
+export function ipcSend(channel: 'update-app-notifications-config', config: NotificationsConfigType): void;
 export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
 export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
 
