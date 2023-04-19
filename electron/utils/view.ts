@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { webContents } from 'electron';
 import { browserCss } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
-import { WebsiteUrl } from '$global/constants';
+import { Dimensions, WebsiteUrl } from '$global/constants';
 import { BrowserViewError } from '$electron/error';
 import type { WebContents, BrowserView, BrowserWindow, IpcMainEvent } from 'electron';
 import type { BackForwardStatus } from '$types/view';
@@ -15,7 +15,7 @@ export const getMainViewWebContents = () => {
 
 export function setBrowserViewBounds(view: BrowserView, mainWindow: BrowserWindow = getMainWindow()) {
     const { width, height } = mainWindow.getContentBounds();
-    view.setBounds({ x: 0, y: 80, width, height: height - 80 });
+    view.setBounds({ x: 0, y: Dimensions.TopContainerHeight, width, height: height - Dimensions.TopContainerHeight });
 };
 
 /**
@@ -30,7 +30,7 @@ export function setBrowserViewAutoResize(view: BrowserView, mainWindow: BrowserW
         timeout = setImmediate(() => {
             if (timeout) clearImmediate(timeout);
             const { width, height } = mainWindow.getContentBounds();
-            view.setBounds({ x: 0, y: 80, width, height: height - 80 });
+            view.setBounds({ x: 0, y: Dimensions.TopContainerHeight, width, height: height - Dimensions.TopContainerHeight });
         });
     };
 

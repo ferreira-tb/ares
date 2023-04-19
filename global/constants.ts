@@ -15,6 +15,10 @@ export enum GameSearchParams {
     Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0'
 };
 
+export const enum Dimensions {
+    TopContainerHeight = 80
+};
+
 export const enum Kronos {
     Second = 1000,
     Minute = 60 * Second,

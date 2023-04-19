@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Dimensions } from '$global/constants';
 import WindowTabs from '$ui/components/WindowTabs.vue';
 import WindowMenu from '$ui/components/WindowMenu.vue';
 </script>
@@ -17,7 +18,7 @@ import WindowMenu from '$ui/components/WindowMenu.vue';
     left: 0;
     right: 0;
 
-    height: 80px;
+    height: v-bind("`${Dimensions.TopContainerHeight}px`");
     user-select: none;
     -webkit-app-region: drag;
 }
