@@ -47,6 +47,7 @@ export const useBrowserViewStore = defineBrowserViewStore(mechanus);
 const worldArgs = [
     WorldConfig,
     WorldUnit,
+    useCacheStore,
     useWorldConfigStore,
     worldUnitsMap
 ] as const;

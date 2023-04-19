@@ -5,18 +5,18 @@ import type { RemoveMethods } from '$types/utils';
 import type { WorldConfigType } from '$types/world';
 import type { UnitDetails } from '$types/world';
 import type { UserAlias } from '$types/electron';
-import type { GeneralAppConfigType, AppNotificationsConfigType } from '$types/config';
+import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
 import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails, PlunderCacheType } from '$types/plunder';
-import type { AllUnits, TribalWarsGameDataType, UnitAmount, VillageGroup, World } from '$types/game';
+import type { AllUnits, GameRegion, TribalWarsGameDataType, UnitAmount, VillageGroup, World } from '$types/game';
 
 // APP GENERAL CONFIG
-export type AppGeneralConfigStore = GeneralAppConfigType;
+export type AppGeneralConfigStore = GeneralConfigType;
 export type MechanusAppGeneralConfigStoreType = {
     [K in keyof AppGeneralConfigStore]: MechanusRef<AppGeneralConfigStore[K]>;
 };
 
 // APP NOTIFICATIONS CONFIG
-export type AppNotificationsConfigStore = AppNotificationsConfigType;
+export type AppNotificationsConfigStore = NotificationsConfigType;
 export type MechanusAppNotificationsConfigStoreType = {
     [K in keyof AppNotificationsConfigStore]: MechanusRef<AppNotificationsConfigStore[K]>;
 };
@@ -178,6 +178,7 @@ export type MechanusWorldUnitStoreType = {
 
 // CACHE
 export interface CacheStore {
+    readonly region: GameRegion;
     readonly world: World | null;
     readonly player: string | null;
     readonly userAlias: UserAlias | null;

@@ -1,7 +1,7 @@
 import { URL } from 'url';
 import { ipcMain, BrowserView } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
-import { useBrowserViewStore } from '$electron/interface';
+import { useBrowserViewStore, useCacheStore } from '$electron/interface';
 import { isAllowedOrigin } from '$global/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
@@ -21,6 +21,7 @@ import {
 
 export function setBrowserViewEvents() {
     const mainWindow = getMainWindow();
+    const cacheStore = useCacheStore();
     const browserViewStore = useBrowserViewStore();
     const {
         allWebContents,
@@ -64,7 +65,7 @@ export function setBrowserViewEvents() {
 
     ipcMain.on('reload-current-view', () => currentView.value.webContents.reload());
     ipcMain.on('force-reload-current-view', () => currentView.value.webContents.reloadIgnoringCache());
-    ipcMain.on('current-view-go-home', () => contentsGoHome(currentView.value.webContents));
+    ipcMain.on('current-view-go-home', () => contentsGoHome(currentView.value.webContents, cacheStore.region));
     ipcMain.on('current-view-go-back', () => contentsGoBack(currentView.value.webContents));
     ipcMain.on('current-view-go-forward', () => contentsGoForward(currentView.value.webContents));
 

@@ -4,14 +4,15 @@ import { storeToRefs } from 'mechanus';
 import { setAppMenu } from '$electron/menu/menu';
 import { sequelize } from '$electron/database';
 import { setEvents } from '$electron/events/index';
-import { WebsiteUrl } from '$global/constants';
-import { favicon, panelHtml, uiHtml, browserJs } from '$electron/utils/files';
+import { Dimensions } from '$global/constants';
+import { appIcon, panelHtml, uiHtml, browserJs } from '$electron/utils/files';
 import { setBrowserViewAutoResize } from '$electron/utils/view';
 import { MainProcessError } from '$electron/error';
 
 import {
     AppConfig,
     useBrowserViewStore,
+    useCacheStore,
     useAppGeneralConfigStore,
     useAppNotificationsStore
 } from '$electron/interface';
@@ -25,7 +26,7 @@ function createWindow() {
         minHeight: 100,
         show: false,
         title: `Ares ${app.getVersion()}`,
-        icon: favicon,
+        icon: appIcon,
         frame: false,
         resizable: true,
         movable: true,
@@ -73,28 +74,31 @@ function createWindow() {
     });
 
     process.env.MAIN_WINDOW_ID = mainWindow.id.toString(10);
-    process.env.MAIN_VIEW_WEB_CONTENTS_ID = mainView.webContents.id.toString(10);
     process.env.PANEL_WINDOW_ID = panelWindow.id.toString(10);
+    process.env.MAIN_VIEW_WEB_CONTENTS_ID = mainView.webContents.id.toString(10);
 
     Promise.all([
-        mainView.webContents.loadURL(WebsiteUrl.Game),
         mainWindow.loadFile(uiHtml),
         panelWindow.loadFile(panelHtml)
     ]).catch(MainProcessError.catch);
+
+    AppConfig.getLastRegionGameUrl()
+        .then((url) => mainView.webContents.loadURL(url))
+        .catch(MainProcessError.catch);
 
     mainWindow.maximize();
     mainWindow.addBrowserView(mainView);
     mainWindow.setTopBrowserView(mainView);
 
     const { width, height } = mainWindow.getContentBounds();
-    mainView.setBounds({ x: 0, y: 80, width, height: height - 80 });
+    mainView.setBounds({ x: 0, y: Dimensions.TopContainerHeight, width, height: height - Dimensions.TopContainerHeight });
 
     const browserViewStore = useBrowserViewStore();
     const { currentAutoResize } = storeToRefs(browserViewStore);
     currentAutoResize.value = setBrowserViewAutoResize(mainView);
 
     setEvents();
-    setAppMenu(browserViewStore);
+    setAppMenu(browserViewStore, useCacheStore());
 
     // https://github.com/ferreira-tb/ares/issues/77
     mainWindow.on('system-context-menu', (e) => e.preventDefault());

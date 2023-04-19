@@ -1,7 +1,7 @@
-import { isFiniteNumber, isInteger, isString, isWorld, isWorldOrNull, isWallLevel } from '$global/guards';
+import { isFiniteNumber, isInteger, isString, isGameRegion, isWorld, isWallLevel } from '$global/guards';
 import { MechanusStoreError } from '$electron/error';
 import type { MechanusRefOptions } from 'mechanus';
-import type { World, WallLevel } from '$types/game';
+import type { GameRegion, World, WallLevel } from '$types/game';
 
 export const arrayIncludesRef = <T>(array: T[]): MechanusRefOptions<T> => ({
     validator: (value: unknown): value is T => array.includes(value as T),
@@ -21,6 +21,12 @@ export const stringOrNullRef: MechanusRefOptions<string | null> = {
     errorClass: MechanusStoreError
 };
 
+export const gameRegionRef: MechanusRefOptions<GameRegion> = {
+    validator: isGameRegion,
+    throwOnInvalid: true,
+    errorClass: MechanusStoreError
+};
+
 export const worldRef: MechanusRefOptions<World> = {
     validator: isWorld,
     throwOnInvalid: true,
@@ -28,7 +34,7 @@ export const worldRef: MechanusRefOptions<World> = {
 };
 
 export const worldOrNullRef: MechanusRefOptions<World | null> = {
-    validator: isWorldOrNull,
+    validator: (value: unknown): value is World | null => isWorld(value) || value === null,
     throwOnInvalid: true,
     errorClass: MechanusStoreError
 };

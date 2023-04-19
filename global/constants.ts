@@ -1,18 +1,30 @@
-export enum WebsiteUrl {
+export const enum AresAPI {
+    Latest = 'https://tb.dev.br/ares/api/latest.json'
+};
+
+export const enum GameUrl {
+    Brazil = 'https://www.tribalwars.com.br',
+    Global = 'https://www.tribalwars.net',
+    Netherlands = 'https://www.tribalwars.nl',
+    Portugal = 'https://www.tribalwars.com.pt',
+    UnitedKingdom = 'https://www.tribalwars.co.uk',
+    UnitedStates = 'https://www.tribalwars.us'
+};
+
+export const enum GameSearchParams {
+    Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0'
+};
+
+export const enum WebsiteUrl {
     Ares = 'https://tb.dev.br/ares',
     Author = 'https://github.com/ferreira-tb',
     Discord = 'https://discord.gg/tNQbrqbmdK',
-    Game = 'https://www.tribalwars.com.br/',
     Issues = 'https://github.com/ferreira-tb/ares/issues',
     Repository = 'https://github.com/ferreira-tb/ares'
 };
 
-export enum AresAPI {
-    Latest = 'https://tb.dev.br/ares/api/latest.json'
-};
-
-export enum GameSearchParams {
-    Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0'
+export const enum Dimensions {
+    TopContainerHeight = 80
 };
 
 export const enum Kronos {

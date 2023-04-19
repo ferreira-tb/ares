@@ -1,13 +1,12 @@
 import type { IntRange, IntRangeToStrings } from '$types/utils';
 
 // MUNDO
-export type WorldLocale = 'br';
+export type GameRegion = 'br' | 'en' | 'nl' | 'pt' | 'uk' | 'us';
 export type World =
     // eslint-disable-next-line @typescript-eslint/sort-type-constituents
-    | `${WorldLocale}${string}` // Mundo padrão.
-    | `${WorldLocale}s${string}` // Rodada speed.
-    | `${WorldLocale}p${string}`; // Mundo casual.
-
+    | `${GameRegion}${string}` // Mundo padrão.
+    | `${GameRegion}s${string}` // Rodada speed.
+    | `${GameRegion}p${string}`; // Mundo casual.
 
 // RECURSOS
 export type Resources = 'iron' | 'stone' | 'wood';

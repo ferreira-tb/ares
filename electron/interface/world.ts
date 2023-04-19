@@ -1,9 +1,8 @@
-import { URL } from 'url';
 import { MessageChannelMain } from 'electron';
 import { isKeyOf } from '$global/guards';
 import { WorldPatchError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
-import { worldConfigURL, worldUnitURL } from '$global/helpers';
+import { getWorldConfigUrl, getWorldUnitUrl } from '$global/helpers';
 import { isWorld } from '$global/guards';
 import { sequelize } from '$electron/database';
 import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world';
@@ -11,6 +10,7 @@ import type { PhobosPortMessage } from '$types/phobos';
 import type { World } from '$types/game';
 import type { WorldConfig as WorldConfigTable, WorldUnit as WorldUnitTable } from '$electron/database/world';
 import type { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/world';
+import type { defineCacheStore } from '$stores/cache';
 
 /**
  * Define o estado das stores de acordo com o mundo atual.
@@ -23,6 +23,7 @@ import type { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/w
 export function patchWorldRelatedStores(
     WorldConfig: typeof WorldConfigTable,
     WorldUnit: typeof WorldUnitTable,
+    useCacheStore: ReturnType<typeof defineCacheStore>,
     useWorldConfigStore: ReturnType<typeof defineWorldConfigStore>,
     worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>
 ) {
@@ -30,10 +31,10 @@ export function patchWorldRelatedStores(
         try {
             if (!isWorld(world)) return;
             await Promise.all([
-                patchWorldConfigStoreState(world, WorldConfig, useWorldConfigStore),
-                patchWorldUnitStoresState(world, WorldUnit, worldUnitsMap)
-            ]);
-            
+                patchWorldConfigStoreState(world, WorldConfig, useCacheStore, useWorldConfigStore),
+                patchWorldUnitStoresState(world, WorldUnit, useCacheStore, worldUnitsMap)
+            ]);   
+
         } catch (err) {
             WorldPatchError.catch(err);
         };
@@ -43,16 +44,18 @@ export function patchWorldRelatedStores(
 async function patchWorldConfigStoreState(
     world: World,
     WorldConfig: typeof WorldConfigTable,
+    useCacheStore: ReturnType<typeof defineCacheStore>,
     useWorldConfigStore: ReturnType<typeof defineWorldConfigStore>
 ) {
     try {
+        const cacheStore = useCacheStore();
         const worldConfigStore = useWorldConfigStore();
 
         let worldConfig = (await WorldConfig.findByPk(world))?.toJSON();
         if (!worldConfig) {
             // Se não houver configurações para o mundo atual, cria um novo registro.
             const state = await new Promise<WorldConfigType>(async (resolve, reject) => {
-                const url = new URL(worldConfigURL(world));
+                const url = getWorldConfigUrl(world, cacheStore.region);
                 const phobos = await createPhobos('fetch-world-config', url, { override: true });
                 
                 const { port1, port2 } = new MessageChannelMain();
@@ -96,14 +99,17 @@ async function patchWorldConfigStoreState(
 async function patchWorldUnitStoresState(
     world: World,
     WorldUnit: typeof WorldUnitTable,
+    useCacheStore: ReturnType<typeof defineCacheStore>,
     worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>
 ) {
     try {
+        const cacheStore = useCacheStore();
+
         let worldUnit = (await WorldUnit.findByPk(world))?.toJSON();
         if (!worldUnit) {
             // Se não houver informações sobre as unidades do mundo atual, cria um novo registro.
             const state = await new Promise<WorldUnitType>(async (resolve, reject) => {
-                const url = new URL(worldUnitURL(world));
+                const url = getWorldUnitUrl(world, cacheStore.region);
                 const phobos = await createPhobos('fetch-world-unit', url, { override: true });
                 
                 const { port1, port2 } = new MessageChannelMain();
