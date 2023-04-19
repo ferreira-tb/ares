@@ -1,10 +1,17 @@
 import { isInteger } from '$global/guards';
 import { GameUrl } from '$global/constants';
-import type { World } from '$types/game';
+import type { GameRegion, World } from '$types/game';
 import type { UserAlias } from '$types/electron';
 
-export const worldConfigUrl = (world: World) => `https://${world}.tribalwars.com.br/interface.php?func=get_config`;
-export const worldUnitUrl = (world: World) => `https://${world}.tribalwars.com.br/interface.php?func=get_unit_info`;
+export function getWorldConfigUrl(world: World, region: GameRegion) {
+    const origin = getGameRegionUrl(region).replace('www', world);
+    return new URL(`${origin}/interface.php?func=get_config`);
+};
+
+export function getWorldUnitUrl(world: World, region: GameRegion) {
+    const origin = getGameRegionUrl(region).replace('www', world);
+    return new URL(`${origin}/interface.php?func=get_unit_info`);
+};
 
 export function getGameRegionUrl(region: unknown) {
     switch (region) {
