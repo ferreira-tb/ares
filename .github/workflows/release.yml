@@ -3,6 +3,8 @@ name: Release
 on:
   release:
     types: [published]
+  label:
+    types: [edited]
   
 env:
   DISCORD_CHANNEL_URL_BUGS: ${{ vars.DISCORD_CHANNEL_URL_BUGS }}
