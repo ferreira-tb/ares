@@ -76,7 +76,7 @@ export function parseGameDate(date: string): number | null {
 };
 
 /**
- * Analisa um relatório e retorna a data de quando ele foi gerado.
+ * Analisa um relatório aberto e retorna a data de quando ele foi gerado.
  * @param report Elemento HTML onde o relatório está contido.
  * @param ms Indica se o resultado deve ser retornado em milisegundos.
  * Se `false`, o resultado será retornado em segundos.
