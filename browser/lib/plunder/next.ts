@@ -1,4 +1,4 @@
-import { nextTick, toRaw } from 'vue';
+import { toRaw } from 'vue';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { getAllTemplates } from '$lib/plunder/templates';
 import { queryAvailableUnits } from '$lib/plunder/units';
@@ -12,7 +12,6 @@ import type { PlunderTargetInfo } from '$lib/plunder/targets';
 export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
     try {
         await queryAvailableUnits();
-        await nextTick();
         const config = usePlunderConfigStore();
         const wentToNextPage = await navigateToNextPage(config, groupInfo);
         if (wentToNextPage || !config.groupAttack || !groupInfo) return;
