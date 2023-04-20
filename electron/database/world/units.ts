@@ -1,70 +1,10 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world';
+import type { WorldUnitsType, UnitDetails } from '$types/world';
 import type { World } from '$types/game';
 
-export class WorldConfig extends Model<InferAttributes<WorldConfig>, InferCreationAttributes<WorldConfig>> implements WorldConfigType {
-    declare readonly id: World;
-    declare readonly speed: number;
-    declare readonly unitSpeed: number;
-    declare readonly tradeCancelTime: number;
-    declare readonly commandCancelTime: number;
-    declare readonly archer: boolean;
-    declare readonly church: boolean;
-    declare readonly watchtower: boolean;
-};
-
-WorldConfig.init({
-    id: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-        allowNull: false,
-        unique: true
-    },
-    speed: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        validate: {
-            isFloat: true
-        }
-    },
-    unitSpeed: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        validate: {
-            isFloat: true
-        }
-    },
-    tradeCancelTime: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            isInt: true
-        }
-    },
-    commandCancelTime: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            isInt: true
-        }
-    },
-    archer: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-    },
-    church: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-    },
-    watchtower: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-    }
-}, { sequelize, tableName: 'world_config', timestamps: true });
-
-export class WorldUnit extends Model<InferAttributes<WorldUnit>, InferCreationAttributes<WorldUnit>> implements WorldUnitType {
+export class WorldUnits extends Model<InferAttributes<WorldUnits>, InferCreationAttributes<WorldUnits>> implements WorldUnitsType {
     declare readonly id: World;
     declare readonly archer: UnitDetails | null;
     declare readonly spear: UnitDetails;
@@ -81,7 +21,7 @@ export class WorldUnit extends Model<InferAttributes<WorldUnit>, InferCreationAt
     declare readonly militia: UnitDetails;
 };
 
-WorldUnit.init({
+WorldUnits.init({
     id: {
         type: DataTypes.STRING,
         primaryKey: true,
@@ -140,4 +80,4 @@ WorldUnit.init({
         type: DataTypes.JSON,
         allowNull: false
     }
-}, { sequelize, tableName: 'world_unit', timestamps: true });
+}, { sequelize, tableName: 'world_units', timestamps: true });

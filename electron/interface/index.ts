@@ -4,7 +4,7 @@ import { AppConfig } from '$database/config';
 import { ErrorLog, ElectronErrorLog } from '$database/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
 import { User } from '$database/user';
-import { WorldConfig, WorldUnit } from '$database/world';
+import { WorldConfig, WorldUnits, WorldFetchHistory } from '$database/world';
 import { VillageGroups } from '$database/groups';
 
 import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores, definePlunderCacheStore } from '$stores/plunder';
@@ -46,7 +46,7 @@ export const useBrowserViewStore = defineBrowserViewStore(mechanus);
 
 const worldArgs = [
     WorldConfig,
-    WorldUnit,
+    WorldUnits,
     useCacheStore,
     useWorldConfigStore,
     worldUnitsMap
@@ -98,6 +98,7 @@ export {
     DemolitionTemplate,
     User,
     WorldConfig,
-    WorldUnit,
+    WorldUnits,
+    WorldFetchHistory,
     VillageGroups
 };

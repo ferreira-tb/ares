@@ -5,10 +5,10 @@ import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { getWorldConfigUrl, getWorldUnitUrl } from '$global/helpers';
 import { isWorld } from '$global/guards';
 import { sequelize } from '$electron/database';
-import type { WorldConfigType, WorldUnitType, UnitDetails } from '$types/world';
+import type { WorldConfigType, WorldUnitsType, UnitDetails } from '$types/world';
 import type { PhobosPortMessage } from '$types/phobos';
 import type { World } from '$types/game';
-import type { WorldConfig as WorldConfigTable, WorldUnit as WorldUnitTable } from '$electron/database/world';
+import type { WorldConfig as WorldConfigTable, WorldUnits as WorldUnitsTable } from '$electron/database/world';
 import type { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/world';
 import type { defineCacheStore } from '$stores/cache';
 
@@ -22,7 +22,7 @@ import type { defineCacheStore } from '$stores/cache';
  */
 export function patchWorldRelatedStores(
     WorldConfig: typeof WorldConfigTable,
-    WorldUnit: typeof WorldUnitTable,
+    WorldUnits: typeof WorldUnitsTable,
     useCacheStore: ReturnType<typeof defineCacheStore>,
     useWorldConfigStore: ReturnType<typeof defineWorldConfigStore>,
     worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>
@@ -32,7 +32,7 @@ export function patchWorldRelatedStores(
             if (!isWorld(world)) return;
             await Promise.all([
                 patchWorldConfigStoreState(world, WorldConfig, useCacheStore, useWorldConfigStore),
-                patchWorldUnitStoresState(world, WorldUnit, useCacheStore, worldUnitsMap)
+                patchWorldUnitStoresState(world, WorldUnits, useCacheStore, worldUnitsMap)
             ]);   
 
         } catch (err) {
@@ -98,17 +98,17 @@ async function patchWorldConfigStoreState(
 
 async function patchWorldUnitStoresState(
     world: World,
-    WorldUnit: typeof WorldUnitTable,
+    WorldUnits: typeof WorldUnitsTable,
     useCacheStore: ReturnType<typeof defineCacheStore>,
     worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>
 ) {
     try {
         const cacheStore = useCacheStore();
 
-        let worldUnit = (await WorldUnit.findByPk(world))?.toJSON();
+        let worldUnit = (await WorldUnits.findByPk(world))?.toJSON();
         if (!worldUnit) {
             // Se não houver informações sobre as unidades do mundo atual, cria um novo registro.
-            const state = await new Promise<WorldUnitType>(async (resolve, reject) => {
+            const state = await new Promise<WorldUnitsType>(async (resolve, reject) => {
                 const url = getWorldUnitUrl(world, cacheStore.region);
                 const phobos = await createPhobos('fetch-world-unit', url, { override: true });
                 
@@ -133,11 +133,11 @@ async function patchWorldUnitStoresState(
 
             // Salva o registro no banco de dados.
             worldUnit = await sequelize.transaction(async (transaction) => {
-                return (await WorldUnit.create({ id: world, ...state }, { transaction })).toJSON();
+                return (await WorldUnits.create({ id: world, ...state }, { transaction })).toJSON();
             });
         };
 
-        for (const [key, value] of Object.entries(worldUnit) as [keyof WorldUnitType, UnitDetails | null][]) {
+        for (const [key, value] of Object.entries(worldUnit) as [keyof WorldUnitsType, UnitDetails | null][]) {
             // Em mundos sem arqueiros, as propriedades `archer` e `marcher` são `null`.
             if (!value) continue;
             // A propriedade `id` existe no banco de dados, mas não na store.
