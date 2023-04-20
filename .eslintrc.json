@@ -15,7 +15,8 @@
         "scripts/**/*",
         "**/*.config.js",
         "**/*.config.ts",
-        "**/*.mjs"
+        "**/*.mjs",
+        "**/*.mts"
     ],
     "root": true,
     "env": {
