@@ -11,6 +11,11 @@ export const enum GameUrl {
     UnitedStates = 'https://www.tribalwars.us'
 };
 
+export const enum GameEndpoints {
+    GetConfig = 'interface.php?func=get_config',
+    GetUnitInfo = 'interface.php?func=get_unit_info'
+};
+
 export const enum GameSearchParams {
     Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0'
 };

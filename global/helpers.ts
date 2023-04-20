@@ -1,16 +1,21 @@
 import { isInteger } from '$global/guards';
-import { GameUrl } from '$global/constants';
+import { GameUrl, GameEndpoints } from '$global/constants';
 import type { GameRegion, World } from '$types/game';
 import type { UserAlias } from '$types/electron';
 
+export function getWorldUrl(world: World, region: GameRegion) {
+    const url = getGameRegionUrl(region).replace('www', world);
+    return new URL(url);
+};
+
 export function getWorldConfigUrl(world: World, region: GameRegion) {
-    const origin = getGameRegionUrl(region).replace('www', world);
-    return new URL(`${origin}/interface.php?func=get_config`);
+    const { origin } = getWorldUrl(world, region);
+    return new URL(`${origin}/${GameEndpoints.GetConfig}`);
 };
 
 export function getWorldUnitUrl(world: World, region: GameRegion) {
-    const origin = getGameRegionUrl(region).replace('www', world);
-    return new URL(`${origin}/interface.php?func=get_unit_info`);
+    const { origin } = getWorldUrl(world, region);
+    return new URL(`${origin}/${GameEndpoints.GetUnitInfo}`);
 };
 
 export function getGameRegionUrl(region: unknown) {
