@@ -4,7 +4,7 @@ import { AppConfig } from '$database/config';
 import { ErrorLog, ElectronErrorLog } from '$database/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
 import { User } from '$database/user';
-import { WorldConfig, WorldUnits, WorldFetchHistory } from '$database/world';
+import { getWorldVillagesTable, WorldConfig, WorldUnits, WorldFetchHistory } from '$database/world';
 import { VillageGroups } from '$database/groups';
 
 import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores, definePlunderCacheStore } from '$stores/plunder';
@@ -100,5 +100,7 @@ export {
     WorldConfig,
     WorldUnits,
     WorldFetchHistory,
-    VillageGroups
+    VillageGroups,
+
+    getWorldVillagesTable
 };

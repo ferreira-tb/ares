@@ -1,21 +1,19 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
-import { assertWorld } from '$global/guards';
-import { DatabaseError } from '$electron/error';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { World } from '$types/game';
 import type { WorldVillagesModel } from '$types/world';
 
-export const worldVillagesTablesMap = new Proxy(new Map<World, ReturnType<typeof createWorldVillagesTable>>(), {
-    get(target, key) {
-        assertWorld(key, DatabaseError, `${String(key)} is not a valid world`);
-        if (target.has(key)) return target.get(key);
+const worldVillagesTableMap = new Map<World, ReturnType<typeof createWorldVillagesTable>>();
 
-        const table = createWorldVillagesTable(key);
-        target.set(key, table);
-        return table;
-    }
-});
+export function getWorldVillagesTable(world: World) {
+    const table = worldVillagesTableMap.get(world);
+    if (table) return table;
+
+    const newTable = createWorldVillagesTable(world);
+    worldVillagesTableMap.set(world, newTable);
+    return newTable;
+};
 
 function createWorldVillagesTable(world: World) {
     const VillagesTable = class extends Model<InferAttributes<WorldVillagesModel>, InferCreationAttributes<WorldVillagesModel>> {};
