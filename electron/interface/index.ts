@@ -19,8 +19,8 @@ import { defineGroupsStore } from '$stores/groups';
 import { defineBrowserViewStore } from '$stores/view';
 import { defineAppGeneralConfigStore, defineAppNotificationsStore } from '$stores/config';
 
-import { patchAliasRelatedStores } from '$interface/alias';
-import { patchWorldRelatedStores } from '$interface/world';
+import { onAliasChange } from '$interface/alias';
+import { onWorldChange } from '$interface/world';
 import { catchError } from '$interface/error';
 
 import { MainProcessError } from '$electron/error';
@@ -72,8 +72,8 @@ watch(playerName, (name) => User.savePlayerAsUser(name));
 
 // Essas funções retornam outras funções, que, por sua vez, serão usadas como callbacks.
 const { world, userAlias } = storeToRefs(useCacheStore());
-watch(world, patchWorldRelatedStores(...worldArgs));
-watch(userAlias, patchAliasRelatedStores(...aliasArgs));
+watch(world, onWorldChange(...worldArgs));
+watch(userAlias, onAliasChange(...aliasArgs));
 
 const { screen } = storeToRefs(useAresStore());
 const { pages: plunderPages, plunderGroup } = storeToRefs(usePlunderCacheStore());

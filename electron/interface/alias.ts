@@ -16,15 +16,8 @@ import type {
     useTotalPlunderHistoryStore as useTotalPlunderHistoryStoreType
 } from '$electron/interface';
 
-/**
- * Define o estado das stores de acordo com o alias atual.
- * 
- * Essa função deve ser chamada sempre que o alias for alterado.
- * A responsabilidade de chamar essa função é do Proxy `cacheProxy`.
- * 
- * Entende-se como "alias" o padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`.
- */
-export function patchAliasRelatedStores(
+/** Entende-se como "alias" o padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`. */
+export function onAliasChange(
     PlunderConfig: typeof PlunderConfigTable,
     PlunderHistory: typeof PlunderHistoryTable,
     usePlunderConfigStore: typeof usePlunderConfigStoreType,
