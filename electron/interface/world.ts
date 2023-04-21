@@ -17,8 +17,6 @@ import type { defineCacheStore } from '$stores/cache';
  * 
  * Essa função deve ser chamada sempre que o mundo for alterado.
  * A responsabilidade de chamar essa função é do watch no index da interface.
- * 
- * Ao contrário da função `setProxyState`, essa função não é chamada quando o jogador muda.
  */
 export function patchWorldRelatedStores(
     WorldConfig: typeof WorldConfigTable,
