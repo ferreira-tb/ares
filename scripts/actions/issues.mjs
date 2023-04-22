@@ -55,8 +55,13 @@ if (!data.isPullRequest && data.labels.length > 0 && data.labels.some((label) =>
         };
 
     } else if (data.state === 'closed') {
-        embed.setColor('#6e5494');
-        embed.addFields({ name: 'Status', value: 'Concluído', inline: true });
+        if (data.labels.some((label) => label.name === 'wontfix')) {
+            embed.setColor('#bd2c00');
+            embed.addFields({ name: 'Status', value: 'Descontinuado', inline: true });
+        } else {
+            embed.setColor('#6e5494');
+            embed.addFields({ name: 'Status', value: 'Concluído', inline: true });
+        };
     };
 
     embed.addFields({ name: 'Autor', value: data.author, inline: true });
