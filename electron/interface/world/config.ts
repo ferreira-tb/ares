@@ -1,5 +1,4 @@
 import { MessageChannelMain } from 'electron';
-import { isKeyOf } from '$global/guards';
 import { WorldInterfaceError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { getWorldConfigUrl } from '$global/helpers';
@@ -11,7 +10,8 @@ import type { WorldConfig as WorldConfigTable } from '$electron/database/world';
 import type { defineWorldConfigStore } from '$stores/world';
 import type { defineCacheStore } from '$stores/cache';
 
-export async function patchWorldConfigStoreState(
+type WorldConfigStore = ReturnType<ReturnType<typeof defineWorldConfigStore>>;
+export async function patchWorldConfigStoreState<T extends keyof WorldConfigStore>(
     world: World,
     WorldConfig: typeof WorldConfigTable,
     useCacheStore: ReturnType<typeof defineCacheStore>,
@@ -53,12 +53,10 @@ export async function patchWorldConfigStoreState(
             });
         };
     
-        for (const [key, value] of Object.entries(worldConfig)) {
+        for (const [key, value] of Object.entries(worldConfig) as [T | 'id', WorldConfigStore[T]][]) {
             // A propriedade `id` existe no banco de dados, mas não na store.
-            if (!isKeyOf(key, worldConfigStore)) continue;
-            
-            // A confirmação dos tipos é feita na store.
-            Reflect.set(worldConfigStore, key, value);
+            if (key === 'id') continue;
+            worldConfigStore[key] = value;
         };
 
     } catch (err) {

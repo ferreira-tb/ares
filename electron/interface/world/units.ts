@@ -60,9 +60,8 @@ export async function patchWorldUnitsStoresState(
             const useUnit = worldUnitsMap.getStrict(key);
             const unitStore = useUnit();
 
-            for (const [innerKey, innerValue] of Object.entries(value) as [keyof UnitDetails, number][]) {
-                // A confirmação dos tipos é feita na store.
-                Reflect.set(unitStore, innerKey, innerValue);
+            for (const [unit, amount] of Object.entries(value) as [keyof UnitDetails, number][]) {
+                unitStore[unit] = amount;
             };
         };
 
