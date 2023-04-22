@@ -1,8 +1,8 @@
 import { ipcRenderer } from 'electron';
-import { assertKeyOf, assertInteger } from '$global/guards';
+import { assertInteger } from '$global/guards';
 import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$renderer/stores/plunder';
 import { PanelPlunderError } from '$panel/error';
-import type { PlunderConfigType, PlunderAttackDetails, PlunderInfoType } from '$types/plunder';
+import type { PlunderConfigType, PlunderAttackLog, PlunderInfoType } from '$types/plunder';
 
 export function setPlunderEvents() {
     const plunderStore = usePlunderStore();
@@ -16,19 +16,16 @@ export function setPlunderEvents() {
         plunderConfigStore[key] = value;
     });
 
-    ipcRenderer.on('plunder:attack-sent', (_e, details: PlunderAttackDetails) => {
+    ipcRenderer.on('plunder:attack-sent', <T extends keyof PlunderAttackLog>(_e: unknown, details: PlunderAttackLog) => {
         try {
             if (!plunderConfigStore.active) return;
-            for (const [key, value] of Object.entries(details)) {
-                assertKeyOf<PlunderAttackDetails>(key, plunderHistoryStore, `${key} is not a valid plunder history key.`);
-                assertInteger(value, `${key} amount is not an integer.`);
-
-                // O valor de `total` é gerado automaticamente por um `computed` e não deve ser atualizado manualmente.
-                if (key === 'total') continue;
-
-                plunderHistoryStore[key] += value;
+            for (const [key, value] of Object.entries(details) as [T, PlunderAttackLog[T]][]) {
+                if (key in plunderHistoryStore) {
+                    assertInteger(value, `${key} amount is not an integer.`);
+                    plunderHistoryStore[key] += value;
+                };
             };
-
+            
         } catch (err) {
             PanelPlunderError.catch(err);
         };
@@ -36,5 +33,5 @@ export function setPlunderEvents() {
 
     ipcRenderer.on('panel:patch-plunder-info', (_e, info: PlunderInfoType) => plunderStore.$patch(info));
     ipcRenderer.on('panel:patch-plunder-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
-    ipcRenderer.on('panel:patch-plunder-history', (_e, history: PlunderAttackDetails) => plunderHistoryStore.$patch(history));
+    ipcRenderer.on('panel:patch-plunder-history', (_e, history: PlunderAttackLog) => plunderHistoryStore.$patch(history));
 };

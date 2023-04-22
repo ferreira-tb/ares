@@ -1,7 +1,7 @@
 import { MessageChannelMain, utilityProcess } from 'electron';
 import { sequelize } from '$electron/database';
 import { Kronos } from '$global/constants';
-import { worldDataChildProcessJs } from '$electron/utils/files';
+import { childProcess } from '$electron/utils/files';
 import { WorldInterfaceError } from '$electron/error';
 import type { World } from '$types/game';
 import type { WorldDataType } from '$types/world';
@@ -21,7 +21,7 @@ export async function fetchWorldData(
 
         const newData = await new Promise<WorldDataType | string>((resolve, reject) => {
             const { port1, port2 } = new MessageChannelMain();
-            const child = utilityProcess.fork(worldDataChildProcessJs);
+            const child = utilityProcess.fork(childProcess.worldData);
             child.postMessage(world, [port2]);
 
             port1.on('message', (e) => {

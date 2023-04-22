@@ -6,16 +6,17 @@ import { sequelize } from '$electron/database';
 import type { WorldConfigType } from '$types/world';
 import type { PhobosPortMessage } from '$types/phobos';
 import type { World } from '$types/game';
-import type { WorldConfig as WorldConfigTable } from '$electron/database/world';
-import type { defineWorldConfigStore } from '$stores/world';
-import type { defineCacheStore } from '$stores/cache';
+import type {
+    WorldConfig as WorldConfigTable,
+    useCacheStore as useCacheStoreType,
+    useWorldConfigStore as useWorldConfigStoreType
+} from '$electron/interface';
 
-type WorldConfigStore = ReturnType<ReturnType<typeof defineWorldConfigStore>>;
-export async function patchWorldConfigStoreState<T extends keyof WorldConfigStore>(
+export async function patchWorldConfigStoreState<T extends keyof WorldConfigType>(
     world: World,
     WorldConfig: typeof WorldConfigTable,
-    useCacheStore: ReturnType<typeof defineCacheStore>,
-    useWorldConfigStore: ReturnType<typeof defineWorldConfigStore>
+    useCacheStore: typeof useCacheStoreType,
+    useWorldConfigStore: typeof useWorldConfigStoreType
 ) {
     try {
         const cacheStore = useCacheStore();
@@ -53,10 +54,10 @@ export async function patchWorldConfigStoreState<T extends keyof WorldConfigStor
             });
         };
     
-        for (const [key, value] of Object.entries(worldConfig) as [T | 'id', WorldConfigStore[T]][]) {
-            // A propriedade `id` existe no banco de dados, mas não na store.
-            if (key === 'id') continue;
-            worldConfigStore[key] = value;
+        for (const [key, value] of Object.entries(worldConfig) as [T, WorldConfigType[T]][]) {
+            if (key in worldConfigStore) {
+                worldConfigStore[key] = value;
+            };
         };
 
     } catch (err) {

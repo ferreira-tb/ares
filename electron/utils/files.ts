@@ -7,7 +7,9 @@ export const browserJs = join(__dirname, 'browser.js');
 export const deimosJs = join(__dirname, 'deimos.js');
 export const phobosJs = join(__dirname, 'phobos.js');
 
-export const worldDataChildProcessJs = join(__dirname, 'child-process/world-data.js');
+export const childProcess = {
+    worldData: join(__dirname, 'child-process/world-data.js')
+} as const;
 
 // HTML
 export const moduleHtml = join(__dirname, 'modules.html');

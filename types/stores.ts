@@ -6,7 +6,7 @@ import type { WorldConfigType } from '$types/world';
 import type { UnitDetails } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
-import type { PlunderInfoType, PlunderConfigType, PlunderAttackDetails, PlunderCacheType } from '$types/plunder';
+import type { PlunderInfoType, PlunderConfigType, PlunderHistoryType, PlunderCacheType } from '$types/plunder';
 import type { AllUnits, GameRegion, TribalWarsGameDataType, UnitAmount, VillageGroup, World } from '$types/game';
 
 // APP GENERAL CONFIG
@@ -124,20 +124,17 @@ export type MechanusPlunderConfigStoreType = {
 };
 
 // PLUNDER HISTORY
-export interface PlunderHistoryStore extends PlunderAttackDetails {
-    raw(): PlunderAttackDetails;
-    reset(): void;
+export interface PlunderHistoryStore extends PlunderHistoryType {
+    useTotal(): ComputedRef<number>;
 };
-export type PiniaPlunderHistoryStoreActions =
-    | PlunderHistoryStore['raw']
-    | PlunderHistoryStore['reset'];
+export type PiniaPlunderHistoryStoreActions = PlunderHistoryStore['useTotal'];
 
 export type PiniaPlunderHistoryStoreType = {
-    [K in keyof PlunderHistoryStore]:
+    [K in Exclude<keyof PlunderHistoryStore, 'villages'>]:
         PlunderHistoryStore[K] extends PiniaPlunderHistoryStoreActions ?
         PlunderHistoryStore[K] :
         Ref<PlunderHistoryStore[K]>;
-}
+};
 export type MechanusPlunderHistoryStoreType = {
     [K in keyof RemoveMethods<PlunderHistoryStore>]: MechanusRef<RemoveMethods<PlunderHistoryStore>[K]>;
 };

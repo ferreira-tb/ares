@@ -1,30 +1,19 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
-import { isUserAlias, assertUserAlias } from '$global/guards';
+import { assertUserAlias } from '$global/guards';
 import { DatabaseError } from '$electron/error';
-import type { InferAttributes, InferCreationAttributes } from 'sequelize';
+import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { UserAlias } from '$types/electron';
-import type { useCacheStore } from '$electron/interface';
-import type { PlunderHistoryType, PlunderAttackDetails } from '$types/plunder';
+import type { PlunderHistoryType } from '$types/plunder';
 
 export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, InferCreationAttributes<PlunderHistory>> implements PlunderHistoryType {
     declare readonly id: UserAlias;
-    declare readonly last: PlunderAttackDetails;
-    declare readonly total: PlunderAttackDetails;
-
-    public static async getHistoryAsJSON(cacheStore: ReturnType<typeof useCacheStore>): Promise<PlunderHistoryType | null> {
-        try {
-            const userAlias = cacheStore.userAlias;
-            if (!isUserAlias(userAlias)) return null;
-
-            const plunderHistory = await PlunderHistory.findByPk(userAlias);
-            return plunderHistory ? plunderHistory.toJSON() : null;
-    
-        } catch (err) {
-            DatabaseError.catch(err);
-            return null;
-        };
-    }
+    declare readonly wood: number;
+    declare readonly stone: number;
+    declare readonly iron: number;
+    declare readonly attackAmount: number;
+    declare readonly destroyedWalls: number;
+    declare readonly villages: CreationOptional<PlunderHistoryType['villages']>;
 };
 
 PlunderHistory.init({
@@ -39,12 +28,33 @@ PlunderHistory.init({
             }
         }
     },
-    last: {
-        type: DataTypes.JSON,
-        allowNull: false
+    wood: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
     },
-    total: {
+    stone: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    iron: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    attackAmount: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    destroyedWalls: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    villages: {
         type: DataTypes.JSON,
-        allowNull: false
+        allowNull: true
     }
-}, { sequelize, tableName: 'plunder_history', timestamps: true });
+}, { sequelize, tableName: 'plunder_history', timestamps: false });

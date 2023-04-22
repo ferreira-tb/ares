@@ -3,7 +3,6 @@ import type { UserAlias } from '$types/electron';
 import type { PlunderGroupType } from '$types/plunder/group';
 import type { PlunderPageListType } from '$types/plunder/page';
 
-export type * from '$types/plunder/attack';
 export type * from '$types/plunder/config';
 export type * from '$types/plunder/group';
 export type * from '$types/plunder/history';

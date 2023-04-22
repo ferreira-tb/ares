@@ -7,11 +7,11 @@ import { unitsRegex } from '$global/regex';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
 import type { PlaceUnitsAmount } from '$types/game';
-import type { PlunderAttackDetails } from '$types/plunder';
+import type { PlunderAttackLog } from '$types/plunder';
 
 export const eventTarget = new EventTarget();
 
-export abstract class PlunderAttack implements Omit<PlunderAttackDetails, 'total'> {
+export abstract class PlunderAttack implements PlunderAttackLog {
     // Já incluso o ataque enviado.
     readonly attackAmount: number = 1;
     destroyedWalls: number = 0;

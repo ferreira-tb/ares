@@ -7,7 +7,7 @@ import { User } from '$database/user';
 import { getWorldVillagesTable, WorldConfig, WorldUnits, WorldDataFetchHistory } from '$database/world';
 import { VillageGroups } from '$database/groups';
 
-import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores, definePlunderCacheStore } from '$stores/plunder';
+import { definePlunderStore, definePlunderConfigStore, definePlunderHistoryStore, definePlunderCacheStore } from '$stores/plunder';
 import { defineAresStore } from '$stores/ares';
 import { defineCacheStore } from '$stores/cache';
 import { defineUnitsStore } from '$stores/units';
@@ -32,7 +32,7 @@ export const useAppNotificationsStore = defineAppNotificationsStore(mechanus);
 export const useAresStore = defineAresStore(mechanus);
 export const usePlunderStore = definePlunderStore(mechanus);
 export const usePlunderConfigStore = definePlunderConfigStore(mechanus);
-export const { useLastPlunderHistoryStore, useTotalPlunderHistoryStore } = setPlunderHistoryStores(mechanus);
+export const usePlunderHistoryStore = definePlunderHistoryStore(mechanus);
 export const usePlunderCacheStore = definePlunderCacheStore(mechanus);
 export const useFeaturesStore = defineFeaturesStore(mechanus);
 export const useUnitsStore = defineUnitsStore(mechanus);
@@ -58,8 +58,7 @@ const aliasArgs = [
     PlunderConfig,
     PlunderHistory,
     usePlunderConfigStore,
-    useLastPlunderHistoryStore,
-    useTotalPlunderHistoryStore,
+    usePlunderHistoryStore,
 
     VillageGroups,
     useGroupsStore

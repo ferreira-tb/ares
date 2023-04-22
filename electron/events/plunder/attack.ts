@@ -2,35 +2,44 @@ import { ipcMain } from 'electron';
 import { assertInteger } from '$global/guards';
 import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
-import { assertUserAlias } from '$global/guards';
+import { isUserAlias, assertUserAlias } from '$global/guards';
 import { getPanelWindow } from '$electron/utils/helpers';
-import { useLastPlunderHistoryStore, useTotalPlunderHistoryStore, PlunderHistory, useCacheStore } from '$electron/interface';
-import type { PlunderAttackDetails } from '$types/plunder';
+import { usePlunderHistoryStore, PlunderHistory, useCacheStore } from '$electron/interface';
+import type { PlunderAttackLog } from '$types/plunder';
+import type { UserAlias } from '$types/electron';
 
 export function setPlunderAttackEvents() {
     const panelWindow = getPanelWindow();
     
     const cacheStore = useCacheStore();
-    const lastPlunderHistoryStore = useLastPlunderHistoryStore();
-    const totalPlunderHistoryStore = useTotalPlunderHistoryStore();
+    const plunderHistoryStore = usePlunderHistoryStore();
 
     // Emitido pela view após cada ataque realizado pelo Plunder.
-    ipcMain.on('plunder:attack-sent', (_e, details: PlunderAttackDetails) => {
+    ipcMain.on('plunder:attack-sent', (_e, details: PlunderAttackLog) => {
+        for (const [key, value] of Object.entries(details) as [keyof PlunderAttackLog, number][]) {
+            assertInteger(value, `Could not update plunder history: ${key} is not an integer.`);
+            plunderHistoryStore[key] += value;
+        };
+
         panelWindow.webContents.send('plunder:attack-sent', details);
     });
 
-    ipcMain.handle('plunder:get-last-attack-details', async (): Promise<PlunderAttackDetails | null> => {
+    ipcMain.handle('plunder:get-history', async (_e, userAlias?: UserAlias | null) => {
         try {
-            return (await PlunderHistory.getHistoryAsJSON(cacheStore))?.last ?? null;
-        } catch (err) {
-            MainProcessEventError.catch(err);
-            return null;
-        };
-    });
+            userAlias ??= cacheStore.userAlias;
+            if (!isUserAlias(userAlias)) return null;
 
-    ipcMain.handle('plunder:get-total-attack-details', async (): Promise<PlunderAttackDetails | null> => {
-        try {
-            return (await PlunderHistory.getHistoryAsJSON(cacheStore))?.total ?? null;
+            const plunderHistory = (await PlunderHistory.findByPk(userAlias))?.toJSON();
+            if (!plunderHistory) return null;
+            
+            return {
+                wood: plunderHistory.wood,
+                stone: plunderHistory.stone,
+                iron: plunderHistory.iron,
+                attackAmount: plunderHistory.attackAmount,
+                destroyedWalls: plunderHistory.destroyedWalls
+            } satisfies PlunderAttackLog;
+
         } catch (err) {
             MainProcessEventError.catch(err);
             return null;
@@ -38,22 +47,19 @@ export function setPlunderAttackEvents() {
     });
 
     // Emitido pela view quando o Plunder é desativado.
-    ipcMain.on('plunder:save-attack-details', async (_e, details: PlunderAttackDetails) => {
+    ipcMain.on('plunder:save-history', async () => {
         try {
-            for (const [key, value] of Object.entries(details) as [keyof PlunderAttackDetails, number][]) {
-                assertInteger(value, `Could not save plunder attack details: ${key} is not an integer.`);
-                lastPlunderHistoryStore[key] = value;
-                totalPlunderHistoryStore[key] += value;
-            };
-
             const userAlias = cacheStore.userAlias;
-            assertUserAlias(userAlias, MainProcessEventError);
+            assertUserAlias(userAlias, MainProcessEventError, 'Could not save plunder history: user alias is not valid.');
 
             await sequelize.transaction(async (transaction) => {
                 await PlunderHistory.upsert({
                     id: userAlias,
-                    last: { ...lastPlunderHistoryStore },
-                    total: { ...totalPlunderHistoryStore }
+                    wood: plunderHistoryStore.wood,
+                    stone: plunderHistoryStore.stone,
+                    iron: plunderHistoryStore.iron,
+                    attackAmount: plunderHistoryStore.attackAmount,
+                    destroyedWalls: plunderHistoryStore.destroyedWalls
                 }, { transaction });
             });
 

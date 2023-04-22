@@ -1,3 +1,5 @@
+import type { WallLevel } from '$types/game';
+
 /**
  * Padrão de ataque quando o Plunder não tem informações dos exploradores.
  * 
@@ -71,12 +73,12 @@ export type PlunderConfigType = {
 
     // Muralha
     /** Nível da muralha a partir do qual ele deve ignorar. */
-    wallLevelToIgnore: number;
+    wallLevelToIgnore: WallLevel;
     /** Nível da muralha a partir do qual ele deve demolir. */
-    wallLevelToDestroy: number;
+    wallLevelToDestroy: WallLevel;
     /** Distância máxima para ataques de destruição de muralha. */
     destroyWallMaxDistance: number;
-    
+
     // Outros
     /** Minutos até que a página seja recarregada automaticamente. */
     minutesUntilReload: number;

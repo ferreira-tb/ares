@@ -61,7 +61,9 @@ export async function patchWorldUnitsStoresState(
             const unitStore = useUnit();
 
             for (const [unit, amount] of Object.entries(value) as [keyof UnitDetails, number][]) {
-                unitStore[unit] = amount;
+                if (unit in unitStore) {
+                    unitStore[unit] = amount;
+                };
             };
         };
 

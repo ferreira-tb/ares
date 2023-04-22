@@ -23,6 +23,7 @@ process.parentPort.once('message', async (e) => {
 
     } catch (err) {
         if (err instanceof Error) {
+            ChildProcessError.catch(err);
             port.postMessage(err.stack ?? err.message);
         } else {
             port.postMessage('Unknown error.');

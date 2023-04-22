@@ -9,11 +9,12 @@ const props = defineProps<{
 }>();
 
 const history = usePlunderHistoryStore();
+const total = history.useTotal();
 
 watchEffect(async () => {
     // Se o Plunder estiver ativado, atualiza o histórico com as informações salvas.
     if (props.plunderStatus) {
-        const lastPlundered = await ipcInvoke('plunder:get-last-attack-details');
+        const lastPlundered = await ipcInvoke('plunder:get-history');
         if (lastPlundered) {
             history.$patch({ 
                 wood: lastPlundered.wood,
@@ -29,7 +30,7 @@ watchEffect(async () => {
 <template>
     <div class="res-area">
         <StorageIcon />
-        <span>{{ history.total.toLocaleString('pt-br') }}</span>
+        <span>{{ total.toLocaleString('pt-br') }}</span>
     </div>
 </template>
 

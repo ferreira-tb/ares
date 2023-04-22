@@ -7,6 +7,7 @@ import { setEvents } from '$electron/events/index';
 import { Dimensions } from '$global/constants';
 import { appIcon, panelHtml, uiHtml, browserJs } from '$electron/utils/files';
 import { setBrowserViewAutoResize } from '$electron/utils/view';
+import { setEnv } from '$electron/env';
 import { MainProcessError } from '$electron/error';
 
 import {
@@ -17,7 +18,7 @@ import {
     useAppNotificationsStore
 } from '$electron/interface';
 
-process.env.ARES_MODE = 'dev';
+setEnv();
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
