@@ -4,19 +4,19 @@ import { DatabaseError } from '$electron/error';
 import { assertWorld } from '$global/guards';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { World } from '$types/game';
-import type { WorldFetchHistoryType } from '$types/world';
+import type { WorldDataFetchHistoryType } from '$types/world';
 
-export class WorldFetchHistory extends Model<
-    InferAttributes<WorldFetchHistory>,
-    InferCreationAttributes<WorldFetchHistory>
-> implements WorldFetchHistoryType {
+export class WorldDataFetchHistory extends Model<
+    InferAttributes<WorldDataFetchHistory>,
+    InferCreationAttributes<WorldDataFetchHistory>
+> implements WorldDataFetchHistoryType {
     declare readonly world: World;
     declare readonly village: number | null;
     declare readonly player: number | null;
     declare readonly ally: number | null;
 };
 
-WorldFetchHistory.init({
+WorldDataFetchHistory.init({
     world: {
         type: DataTypes.STRING,
         primaryKey: true,

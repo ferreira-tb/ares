@@ -6,11 +6,13 @@ import type { WorldVillagesModel } from '$types/world';
 
 const worldVillagesTableMap = new Map<World, ReturnType<typeof createWorldVillagesTable>>();
 
-export function getWorldVillagesTable(world: World) {
+export async function getWorldVillagesTable(world: World) {
     const table = worldVillagesTableMap.get(world);
     if (table) return table;
 
     const newTable = createWorldVillagesTable(world);
+    await newTable.sync();
+    
     worldVillagesTableMap.set(world, newTable);
     return newTable;
 };

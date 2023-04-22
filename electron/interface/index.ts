@@ -4,7 +4,7 @@ import { AppConfig } from '$database/config';
 import { ErrorLog, ElectronErrorLog } from '$database/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
 import { User } from '$database/user';
-import { getWorldVillagesTable, WorldConfig, WorldUnits, WorldFetchHistory } from '$database/world';
+import { getWorldVillagesTable, WorldConfig, WorldUnits, WorldDataFetchHistory } from '$database/world';
 import { VillageGroups } from '$database/groups';
 
 import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores, definePlunderCacheStore } from '$stores/plunder';
@@ -45,11 +45,13 @@ export const useCacheStore = defineCacheStore(mechanus);
 export const useBrowserViewStore = defineBrowserViewStore(mechanus);
 
 const worldArgs = [
+    WorldDataFetchHistory,
     WorldConfig,
     WorldUnits,
     useCacheStore,
     useWorldConfigStore,
-    worldUnitsMap
+    worldUnitsMap,
+    getWorldVillagesTable
 ] as const;
 
 const aliasArgs = [
@@ -97,9 +99,9 @@ export {
     CustomPlunderTemplate,
     DemolitionTemplate,
     User,
+    WorldDataFetchHistory,
     WorldConfig,
     WorldUnits,
-    WorldFetchHistory,
     VillageGroups,
 
     getWorldVillagesTable

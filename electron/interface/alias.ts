@@ -2,7 +2,7 @@ import { storeToRefs } from 'mechanus';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { isUserAlias } from '$global/guards';
 import { fetchVillageGroups, patchVillageGroups } from '$electron/utils/groups';
-import { AliasPatchError } from '$electron/error';
+import { AliasInterfaceError } from '$electron/error';
 import { sequelize } from '$electron/database';
 import type { PlunderAttackDetails, PlunderHistoryType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
@@ -43,7 +43,7 @@ export function onAliasChange(
                 patchGroupsStoreState(alias, VillageGroups, useGroupsStore)
             ]);
         } catch (err) {
-            AliasPatchError.catch(err);
+            AliasInterfaceError.catch(err);
         };
     };
 };
@@ -130,6 +130,6 @@ async function patchGroupsStoreState(
         });
 
     } catch (err) {
-        AliasPatchError.catch(err);
+        AliasInterfaceError.catch(err);
     };
 };

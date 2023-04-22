@@ -1,6 +1,6 @@
 import { MessageChannelMain } from 'electron';
 import { isKeyOf } from '$global/guards';
-import { WorldPatchError } from '$electron/error';
+import { WorldInterfaceError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { getWorldConfigUrl } from '$global/helpers';
 import { sequelize } from '$electron/database';
@@ -34,7 +34,7 @@ export async function patchWorldConfigStoreState(
     
                 port1.on('message', (e) => {
                     try {
-                        if (!e.data) throw new WorldPatchError(`No data received for world ${world}.`);
+                        if (!e.data) throw new WorldInterfaceError(`No data received for world ${world}.`);
                         resolve(e.data);
                     } catch (err) {
                         reject(err);
@@ -62,6 +62,6 @@ export async function patchWorldConfigStoreState(
         };
 
     } catch (err) {
-        WorldPatchError.catch(err);
+        WorldInterfaceError.catch(err);
     };
 };

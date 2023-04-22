@@ -1,7 +1,7 @@
 import { MessageChannelMain } from 'electron';
-import { WorldPatchError } from '$electron/error';
+import { WorldInterfaceError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
-import { getWorldUnitUrl } from '$global/helpers';
+import { getWorldUnitInfoUrl } from '$global/helpers';
 import { sequelize } from '$electron/database';
 import type { WorldUnitsType, UnitDetails } from '$types/world';
 import type { PhobosPortMessage } from '$types/phobos';
@@ -23,7 +23,7 @@ export async function patchWorldUnitsStoresState(
         if (!worldUnit) {
             // Se não houver informações sobre as unidades do mundo atual, cria um novo registro.
             const state = await new Promise<WorldUnitsType>(async (resolve, reject) => {
-                const url = getWorldUnitUrl(world, cacheStore.region);
+                const url = getWorldUnitInfoUrl(world, cacheStore.region);
                 const phobos = await createPhobos('fetch-world-unit', url, { override: true });
                 
                 const { port1, port2 } = new MessageChannelMain();
@@ -32,7 +32,7 @@ export async function patchWorldUnitsStoresState(
     
                 port1.on('message', (e) => {
                     try {
-                        if (!e.data) throw new WorldPatchError(`No data received for world ${world}.`);
+                        if (!e.data) throw new WorldInterfaceError(`No data received for world ${world}.`);
                         resolve(e.data);             
                     } catch (err) {
                         reject(err);
@@ -67,6 +67,6 @@ export async function patchWorldUnitsStoresState(
         };
 
     } catch (err) {
-        WorldPatchError.catch(err);
+        WorldInterfaceError.catch(err);
     };
 };
