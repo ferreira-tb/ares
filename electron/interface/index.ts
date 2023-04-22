@@ -3,7 +3,6 @@ import { Mechanus, watch, storeToRefs } from 'mechanus';
 import { AppConfig } from '$database/config';
 import { ErrorLog, ElectronErrorLog } from '$database/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
-import { User } from '$database/user';
 import { getWorldVillagesTable, WorldConfig, WorldUnits, WorldDataFetchHistory } from '$database/world';
 import { VillageGroups } from '$database/groups';
 
@@ -68,10 +67,7 @@ const aliasArgs = [
 MainProcessError.catch = catchError(useAresStore(), useAppNotificationsStore(), ElectronErrorLog);
 
 // WATCHERS
-const { name: playerName } = storeToRefs(usePlayerStore());
-watch(playerName, (name) => User.savePlayerAsUser(name));
-
-// Essas funções retornam outras funções, que, por sua vez, serão usadas como callbacks.
+// Essas funções retornam outras funções, que, por sua vez, são usadas como callbacks.
 const { world, userAlias } = storeToRefs(useCacheStore());
 watch(world, onWorldChange(...worldArgs));
 watch(userAlias, onAliasChange(...aliasArgs));
@@ -97,7 +93,6 @@ export {
     PlunderConfig,
     CustomPlunderTemplate,
     DemolitionTemplate,
-    User,
     WorldDataFetchHistory,
     WorldConfig,
     WorldUnits,
