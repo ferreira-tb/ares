@@ -41,17 +41,17 @@ export class ModuleCreationError extends MainProcessError {
     };
 };
 
-export class AliasPatchError extends MainProcessError {
+export class AliasInterfaceError extends MainProcessError {
     constructor(message: string) {
         super(message);
-        this.name = 'AliasPatchError';
+        this.name = 'AliasInterfaceError';
     };
 };
 
-export class WorldPatchError extends MainProcessError {
+export class WorldInterfaceError extends MainProcessError {
     constructor(message: string) {
         super(message);
-        this.name = 'WorldPatchError';
+        this.name = 'WorldInterfaceError';
     };
 };
 

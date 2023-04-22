@@ -24,6 +24,7 @@ export default defineConfig({
         outDir: 'dist',
         emptyOutDir: false,
         chunkSizeWarningLimit: 2000,
+        minify: true,
         rollupOptions: {
             external: ['electron'],
             input: 'panel.html',

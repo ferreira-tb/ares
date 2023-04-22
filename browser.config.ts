@@ -24,6 +24,7 @@ export default defineConfig({
         target: 'esnext',
         outDir: 'dist',
         emptyOutDir: false,
+        minify: true,
         lib: {
             entry: join(__dirname, 'browser/index.ts'),
             fileName: 'browser',

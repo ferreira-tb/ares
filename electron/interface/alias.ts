@@ -2,7 +2,7 @@ import { storeToRefs } from 'mechanus';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { isUserAlias } from '$global/guards';
 import { fetchVillageGroups, patchVillageGroups } from '$electron/utils/groups';
-import { AliasPatchError } from '$electron/error';
+import { AliasInterfaceError } from '$electron/error';
 import { sequelize } from '$electron/database';
 import type { PlunderAttackDetails, PlunderHistoryType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
@@ -16,15 +16,8 @@ import type {
     useTotalPlunderHistoryStore as useTotalPlunderHistoryStoreType
 } from '$electron/interface';
 
-/**
- * Define o estado das stores de acordo com o alias atual.
- * 
- * Essa função deve ser chamada sempre que o alias for alterado.
- * A responsabilidade de chamar essa função é do Proxy `cacheProxy`.
- * 
- * Entende-se como "alias" o padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`.
- */
-export function patchAliasRelatedStores(
+/** Entende-se como "alias" o padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`. */
+export function onAliasChange(
     PlunderConfig: typeof PlunderConfigTable,
     PlunderHistory: typeof PlunderHistoryTable,
     usePlunderConfigStore: typeof usePlunderConfigStoreType,
@@ -50,7 +43,7 @@ export function patchAliasRelatedStores(
                 patchGroupsStoreState(alias, VillageGroups, useGroupsStore)
             ]);
         } catch (err) {
-            AliasPatchError.catch(err);
+            AliasInterfaceError.catch(err);
         };
     };
 };
@@ -137,6 +130,6 @@ async function patchGroupsStoreState(
         });
 
     } catch (err) {
-        AliasPatchError.catch(err);
+        AliasInterfaceError.catch(err);
     };
 };

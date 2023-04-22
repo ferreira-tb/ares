@@ -1,17 +1,37 @@
-import { isInteger } from '$global/guards';
-import { GameUrl } from '$global/constants';
+import { isInteger, assertGameRegion } from '$global/guards';
+import { GameUrl, GameEndpoints } from '$global/constants';
 import type { GameRegion, World } from '$types/game';
 import type { UserAlias } from '$types/electron';
+import type { AresError } from '$global/error';
 
-export function getWorldConfigUrl(world: World, region: GameRegion) {
-    const origin = getGameRegionUrl(region).replace('www', world);
-    return new URL(`${origin}/interface.php?func=get_config`);
+/**
+ * Obtém a região referente a um mundo.
+ * @throws Se a região obtida não for válida.
+ */
+export function getRegionFromWorld<T extends typeof AresError>(world: World, SomeError: T, message?: string) {
+    const region = world.slice(0, 2);
+    assertGameRegion(region, SomeError, message);
+    return region;
 };
 
-export function getWorldUnitUrl(world: World, region: GameRegion) {
-    const origin = getGameRegionUrl(region).replace('www', world);
-    return new URL(`${origin}/interface.php?func=get_unit_info`);
+export function getWorldUrl(world: World, region: GameRegion) {
+    const url = getGameRegionUrl(region).replace('www', world);
+    return new URL(url);
 };
+
+function getEndPointUrl(world: World, region: GameRegion, endpoint: keyof typeof GameEndpoints) {
+    const { origin } = getWorldUrl(world, region);
+    switch (endpoint) {
+        case 'GetConfig': return new URL(`${origin}/${GameEndpoints.GetConfig}`);
+        case 'GetUnitInfo': return new URL(`${origin}/${GameEndpoints.GetUnitInfo}`);
+        case 'Village': return new URL(`${origin}/${GameEndpoints.Village}`);
+        default: throw new TypeError(`Invalid endpoint: ${endpoint}.`);
+    };
+};
+
+export const getWorldConfigUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'GetConfig');
+export const getWorldUnitInfoUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'GetUnitInfo');
+export const getVillagesDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Village');
 
 export function getGameRegionUrl(region: unknown) {
     switch (region) {

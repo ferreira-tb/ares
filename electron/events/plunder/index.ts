@@ -3,13 +3,13 @@ import { isInteger } from '$global/guards';
 import { isWorld } from '$global/guards';
 import { MainProcessEventError } from '$electron/error';
 import { extractWorldUnitsFromMap } from '$electron/utils/helpers';
-import { useCacheStore, WorldUnit, worldUnitsMap } from '$electron/interface';
+import { useCacheStore, WorldUnits, worldUnitsMap } from '$electron/interface';
 import { setPlunderGroupEvents } from '$electron/events/plunder/group';
 import { setPlunderPageEvents } from '$electron/events/plunder/page';
 import { setPlunderConfigEvents } from '$electron/events/plunder/config';
 import { setPlunderAttackEvents } from '$electron/events/plunder/attack';
 import type { UnitAmount, World } from '$types/game';
-import type { WorldUnitType } from '$types/world';
+import type { WorldUnitsType } from '$types/world';
 
 export function setPlunderEvents() {
     const cacheStore = useCacheStore();
@@ -20,11 +20,11 @@ export function setPlunderEvents() {
             world ??= cacheStore.world;
             if (!isWorld(world)) return null;
 
-            let worldUnits: WorldUnitType;
+            let worldUnits: WorldUnitsType;
             if (world === cacheStore.world) {
                 worldUnits = extractWorldUnitsFromMap(worldUnitsMap);
             } else {
-                const worldUnitsRow = await WorldUnit.findByPk(world);
+                const worldUnitsRow = await WorldUnits.findByPk(world);
                 if (!worldUnitsRow) return null;
                 worldUnits = worldUnitsRow.toJSON();
             };
