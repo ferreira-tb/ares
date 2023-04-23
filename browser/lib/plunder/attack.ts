@@ -1,28 +1,21 @@
 import { useEventListener, useMutationObserver } from '@vueuse/core';
 import { assertInteger, isInstanceOf, assertString } from '$global/guards';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
+import { useCurrentVillageStore } from '$renderer/stores/village';
 import { generateRandomDelay } from '$global/helpers';
 import { wait } from '$browser/utils/helpers';
 import { unitsRegex } from '$global/regex';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
+import type { PlunderAttack } from '$global/objects/plunder';
 import type { PlaceUnitsAmount } from '$types/game';
-import type { PlunderAttackLog } from '$types/plunder';
 
 export const eventTarget = new EventTarget();
 
-export abstract class PlunderAttack implements PlunderAttackLog {
-    // Já incluso o ataque enviado.
-    readonly attackAmount: number = 1;
-    destroyedWalls: number = 0;
-
-    abstract wood: number;
-    abstract stone: number;
-    abstract iron: number;
-};
-
 export function prepareAttack(plunderAttack: PlunderAttack, button: HTMLAnchorElement) {
     const config = usePlunderConfigStore();
+    const village = useCurrentVillageStore();
+
     return new Promise<void>((resolve, reject) => {
         // O jogo possui um limite de cinco ações por segundo.
         const delay = config.ignoreDelay ? 0 : generateRandomDelay(config.attackDelay);
@@ -31,7 +24,7 @@ export function prepareAttack(plunderAttack: PlunderAttack, button: HTMLAnchorEl
 
         function attack() {
             sendAttack(button)
-                .then(() => ipcSend('plunder:attack-sent', plunderAttack))
+                .then(() => ipcSend('plunder:attack-sent', village.id, plunderAttack))
                 .then(() => resolve())
                 .catch((err: unknown) => reject(err))
                 .finally(() => cleanup());

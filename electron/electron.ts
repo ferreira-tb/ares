@@ -121,10 +121,16 @@ app.whenReady().then(() => createWindow())
     .catch(MainProcessError.catch);
 
 app.once('will-quit', async (e) => {
-    const cacheStore = useCacheStore();
-    if (isUserAlias(cacheStore.userAlias)) {
+    if (sequelize.isClosed) return;
+    try {
         e.preventDefault();
-        await PlunderHistory.saveHistory(cacheStore.userAlias, usePlunderHistoryStore());
+        const cacheStore = useCacheStore();
+        if (isUserAlias(cacheStore.userAlias)) {
+            await PlunderHistory.saveHistory(cacheStore.userAlias, usePlunderHistoryStore());
+        };
+    } catch (err) {
+        await MainProcessError.log(err);
+    } finally {
         app.quit();
     };
 });

@@ -20,7 +20,7 @@ export function setDeimosEvents() {
             const gameData = await Deimos.invoke('get-game-data');
             if (!gameData) return;
     
-            ipcSend('update-game-data', gameData);
+            ipcSend('deimos:update-game-data', gameData);
             aresStore.$patch(gameData.ares);
             featuresStore.$patch(gameData.features);
             groupsStore.$patch(gameData.groups);

@@ -44,7 +44,7 @@ function destroyBrowserView(webContentsId: WebContents['id']) {
 };
 
 function renderMainTab() {
-    return h('div', [h(LightIcon), h('span', 'Ares')]);
+    return h('div', [h(LightIcon), h('span', { class: 'main-tab-icon', textContent: 'Ares' })]);
 };
 </script>
 
@@ -102,5 +102,9 @@ function renderMainTab() {
 .main-window-tab-area {
     width: v-bind("tabsWidth");
     height: main.$tab-height;
+}
+
+:global(.main-tab-icon) {
+    margin-left: 5px;
 }
 </style>

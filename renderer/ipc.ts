@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
 import { ipcRenderer } from 'electron';
-import type { PlunderAttack } from '$lib/plunder/attack';
+import type { PlunderAttack } from '$global/objects/plunder';
 import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$types/game';
 import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType } from '$types/error';
-import type { WorldConfigType, WorldUnitsType } from '$types/world';
+import type { WorldConfigType, WorldUnitsType, WorldVillagesType } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
 import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
 
 import type {
-    PlunderAttackLog,
     PlunderInfoType,
     CustomPlunderTemplateType,
     DemolitionTemplateType,
     PlunderConfigType,
     PlunderPageListType,
-    PlunderGroupType
+    PlunderGroupType,
+    PlunderHistoryType
 } from '$types/plunder';
 
 // Janela
@@ -34,17 +34,14 @@ export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
 export async function ipcInvoke(channel: 'is-ignored-app-version', version: string): Promise<boolean>;
 
 // Configurações
-export async function ipcInvoke(channel: 'drop-database'): Promise<boolean>;
+export async function ipcInvoke(channel: 'db:clear-database'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-app-general-config'): Promise<GeneralConfigType>;
 export async function ipcInvoke(channel: 'get-app-notifications-config'): Promise<NotificationsConfigType>;
 export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise<boolean>;
 export async function ipcInvoke(channel: 'should-notify-on-error'): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
-export async function ipcInvoke(channel: 'save-demolition-troops-config', template: DemolitionTemplateType): Promise<boolean>;
-export async function ipcInvoke(channel: 'destroy-demolition-troops-config', alias: UserAlias): Promise<boolean>;
 
 // Painel
-export async function ipcInvoke(channel: 'is-panel-visible'): Promise<boolean>;
+export async function ipcInvoke(channel: 'panel:is-visible'): Promise<boolean>;
 
 // Browser View
 export async function ipcInvoke(channel: 'main-view-url'): Promise<string>;
@@ -53,6 +50,9 @@ export async function ipcInvoke(channel: 'current-view-url'): Promise<string>;
 export async function ipcInvoke(channel: 'current-view-web-contents-id'): Promise<number>;
 export async function ipcInvoke(channel: 'current-view-can-go-back'): Promise<boolean>;
 export async function ipcInvoke(channel: 'current-view-can-go-forward'): Promise<boolean>;
+
+// World Data
+export async function ipcInvoke(channel: 'world-data:get-village', id?: number[] | number, world?: World): Promise<WorldVillagesType[]>;
 
 // Jogo
 export async function ipcInvoke(channel: 'current-world'): Promise<World | null>;
@@ -64,13 +64,13 @@ export async function ipcInvoke(channel: 'fetch-village-groups'): Promise<boolea
 export async function ipcInvoke(channel: 'get-village-groups'): Promise<Set<VillageGroup>>;
 
 // Erros
-export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
-export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<ElectronErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'error:get-log'): Promise<ErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'error:get-electron-log'): Promise<ElectronErrorLogType[] | null>;
 
 // Plunder
 export async function ipcInvoke(channel: 'plunder:is-active'): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:get-config'): Promise<PlunderConfigType | null>;
-export async function ipcInvoke(channel: 'plunder:get-history'): Promise<PlunderAttackLog>;
+export async function ipcInvoke(channel: 'plunder:get-history'): Promise<PlunderHistoryType>;
 export async function ipcInvoke(channel: 'plunder:get-custom-templates', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
 export async function ipcInvoke(channel: 'plunder:save-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:destroy-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
@@ -78,11 +78,14 @@ export async function ipcInvoke(channel: 'plunder:get-pages-info'): Promise<Plun
 export async function ipcInvoke(channel: 'plunder:get-group-info'): Promise<PlunderGroupType | null>;
 export async function ipcInvoke(channel: 'plunder:navigate-to-next-page'): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:calc-carry-capacity', units: Partial<UnitAmount>, world?: World): Promise<number | null>;
+export async function ipcInvoke(channel: 'plunder:get-demolition-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
+export async function ipcInvoke(channel: 'plunder:save-demolition-config', template: DemolitionTemplateType): Promise<boolean>;
+export async function ipcInvoke(channel: 'plunder:destroy-demolition-config', alias: UserAlias): Promise<boolean>;
 
 // Deimos
-export async function ipcInvoke(channel: 'get-deimos-file'): Promise<string | null>;
-export async function ipcInvoke(channel: 'update-plunder-info', plunderInfo: PlunderInfoType): Promise<boolean>;
-export async function ipcInvoke(channel: 'update-current-village-units', units: UnitAmount): Promise<boolean>;
+export async function ipcInvoke(channel: 'deimos:get-file'): Promise<string | null>;
+export async function ipcInvoke(channel: 'deimos:update-plunder-info', plunderInfo: PlunderInfoType): Promise<boolean>;
+export async function ipcInvoke(channel: 'deimos:update-current-village-units', units: UnitAmount): Promise<boolean>;
 
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
     const response: unknown = await ipcRenderer.invoke(channel, ...args);
@@ -114,7 +117,6 @@ export function ipcSend(channel: 'dev:open-main-view-dev-tools'): void;
 export function ipcSend(channel: 'update-app-general-config', config: GeneralConfigType): void;
 export function ipcSend(channel: 'update-app-notifications-config', config: NotificationsConfigType): void;
 export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
-export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
 
 // Menu
 export function ipcSend(channel: 'open-region-select-menu'): void;
@@ -132,25 +134,27 @@ export function ipcSend(channel: 'update-current-view', webContentsId: number): 
 export function ipcSend(channel: 'destroy-browser-view', webContentsId: number): void;
 
 // Erros
-export function ipcSend(channel: 'open-error-log-window'): void;
-export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
-export function ipcSend(channel: 'delete-error-log', id: number): void;
-export function ipcSend(channel: 'delete-electron-error-log', id: number): void;
+export function ipcSend(channel: 'error:open-log-window'): void;
+export function ipcSend(channel: 'error:create-log', err: ErrorLogBase): void;
+export function ipcSend(channel: 'error:delete-log', id: number): void;
+export function ipcSend(channel: 'error:delete-electron-log', id: number): void;
 
 // Plunder
 export function ipcSend(channel: 'plunder:open-custom-template-window'): void;
 export function ipcSend<T extends keyof PlunderConfigType>(channel: 'plunder:update-config', key: T, value: PlunderConfigType[T]): void;
-export function ipcSend(channel: 'plunder:attack-sent', plunderAttack: PlunderAttack): void;
+export function ipcSend(channel: 'plunder:attack-sent', currentVillageId: number | null, plunderAttack: PlunderAttack): void;
 export function ipcSend(channel: 'plunder:save-history'): void;
+export function ipcSend(channel: 'plunder:show-history'): void;
 export function ipcSend(channel: 'plunder:update-pages-info', villageInfo: PlunderPageListType | null): void;
 export function ipcSend(channel: 'plunder:update-group-info', groupInfo: PlunderGroupType | null): void;
 export function ipcSend(channel: 'plunder:navigate-to-next-village', currentVillageId?: number | null): void;
 export function ipcSend(channel: 'plunder:navigate-to-group'): void;
 export function ipcSend(channel: 'plunder:navigate-to-first-page'): void;
+export function ipcSend(channel: 'plunder:open-demolition-config-window'): void;
 
 // Deimos
-export function ipcSend(channel: 'deimos-tag-is-ready'): void;
-export function ipcSend(channel: 'update-game-data', gameData: TribalWarsGameDataType): void;
+export function ipcSend(channel: 'deimos:tag-is-ready'): void;
+export function ipcSend(channel: 'deimos:update-game-data', gameData: TribalWarsGameDataType): void;
 
 export function ipcSend(channel: string, ...args: any[]): void {
     ipcRenderer.send(channel, ...args);

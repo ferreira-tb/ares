@@ -1,5 +1,4 @@
 import { ipcMain, webContents } from 'electron';
-import { isKeyOf } from '$global/guards';
 import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
 import { useCacheStore, usePlunderConfigStore, PlunderConfig } from '$electron/interface';
@@ -25,12 +24,10 @@ export function setPlunderConfigEvents() {
         e: IpcMainEvent, key: T, value: typeof plunderConfigStore[T]
     ) => {
         try {
-            if (!isKeyOf(key, plunderConfigStore)) return;
+            if (!(key in plunderConfigStore)) return;
             const previousValue = plunderConfigStore[key];
             if (previousValue === value) return;
-
-            // A confirmação dos tipos é feita na store.
-            Reflect.set(plunderConfigStore, key, value);
+            plunderConfigStore[key] = value;
 
             // Comunica a mudança aos processos diferentes daquele que enviou os dados.
             for (const contents of webContents.getAllWebContents()) {

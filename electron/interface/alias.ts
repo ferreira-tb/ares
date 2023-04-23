@@ -1,11 +1,12 @@
 import { storeToRefs } from 'mechanus';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { isUserAlias } from '$global/guards';
+import { Kronos } from '$global/constants';
 import { fetchVillageGroups, patchVillageGroups } from '$electron/utils/groups';
 import { AliasInterfaceError } from '$electron/error';
 import { sequelize } from '$electron/database';
 import type { UserAlias } from '$types/electron';
-import type { PlunderConfigType, PlunderHistoryType } from '$types/plunder';
+import type { PlunderConfigType, PlunderHistoryType, PlunderHistoryVillageType } from '$types/plunder';
 import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$database/plunder';
 import type { VillageGroups as VillageGroupsTable } from '$database/groups';
 
@@ -103,9 +104,20 @@ async function patchPlunderHistory<T extends keyof PlunderHistoryType>(
     // Histórico do assistente de saque.
     const plunderHistory = (await PlunderHistory.findByPk(alias))?.toJSON();
     if (plunderHistory) {
-        for (const [key, value] of Object.entries(plunderHistory) as [T, PlunderHistoryType[T]][]) {
-            if (key in plunderHistoryStore) {
+        for (const [key, value] of Object.entries(plunderHistory) as [T, PlunderHistoryType[T] | null][]) {
+            if (!value) continue;
+
+            // A propriedade 'villages' não é atualizada, pois é um objeto Proxy.
+            if (key in plunderHistoryStore && key !== 'villages') {
                 plunderHistoryStore[key] = value;
+            } else if (key === 'villages') {
+                // Atualiza o histórico individual de cada aldeia.
+                const now = Date.now();
+                for (const [villageId, villageHistory] of Object.entries(value) as [string, PlunderHistoryVillageType[]][]) {
+                    plunderHistoryStore.villages[villageId] = villageHistory.filter((log) => {
+                        return log.addedAt >= (now - Kronos.Month);
+                    });
+                };
             };
         };
         

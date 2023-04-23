@@ -18,7 +18,7 @@ export async function queryAvailableUnits() {
         queryUnitsRow(unitStore);
     };
 
-    const updated = await ipcInvoke('update-current-village-units', unitStore.raw());
+    const updated = await ipcInvoke('deimos:update-current-village-units', unitStore.raw());
     if (!updated) throw new PlunderError('Could not update available units.');
     await nextTick();
 };

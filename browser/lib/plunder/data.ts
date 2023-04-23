@@ -11,7 +11,7 @@ export async function getPlunderInfo() {
         const plunderStore = usePlunderStore();
         plunderStore.$patch(plunderInfo);
         
-        const updated = await ipcInvoke('update-plunder-info', plunderInfo);
+        const updated = await ipcInvoke('deimos:update-plunder-info', plunderInfo);
         if (!updated) throw new PlunderError('Could not update plunder info.');
     } catch (err) {
         PlunderError.catch(err);

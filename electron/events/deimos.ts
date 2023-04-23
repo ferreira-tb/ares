@@ -31,10 +31,10 @@ export function setDeimosEvents() {
     let deimos: string | null = null;
 
     // Indica que o script `deimos.js` foi completamente carregado na view.
-    ipcMain.on('deimos-tag-is-ready', (e) => e.sender.send('get-game-data'));
+    ipcMain.on('deimos:tag-is-ready', (e) => e.sender.send('get-game-data'));
 
     // Retorna o conteúdo do arquivo `deimos.js`.
-    ipcMain.handle('get-deimos-file', async () => {
+    ipcMain.handle('deimos:get-file', async () => {
         if (deimos) return deimos;
         const deimosFile = await readDeimosFile();
         deimos ??= deimosFile;
@@ -42,7 +42,7 @@ export function setDeimosEvents() {
     });
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
-    ipcMain.on('update-game-data', <T extends keyof TribalWarsGameDataType>(_e: IpcMainEvent, gameData: TribalWarsGameDataType) => {
+    ipcMain.on('deimos:update-game-data', <T extends keyof TribalWarsGameDataType>(_e: IpcMainEvent, gameData: TribalWarsGameDataType) => {
         try {
             for (const key of Object.keys(gameData) as T[]) {
                 switch (key) {
@@ -75,7 +75,7 @@ export function setDeimosEvents() {
     });
 
     // Recebe as informações referentes ao assistente de saque, salva-as localmente e então envia-as ao painel.
-    ipcMain.handle('update-plunder-info', <T extends keyof typeof plunderStore>(
+    ipcMain.handle('deimos:update-plunder-info', <T extends keyof typeof plunderStore>(
         _e: IpcMainEvent, plunderInfo: PlunderInfoType
     ) => {
         try {
@@ -94,7 +94,7 @@ export function setDeimosEvents() {
     });
 
     // Recebe as informações referentes às unidades da aldeia atual, salva-as localmente e então envia-as ao painel.
-    ipcMain.handle('update-current-village-units', <T extends keyof typeof unitsStore>(
+    ipcMain.handle('deimos:update-current-village-units', <T extends keyof typeof unitsStore>(
         _e: IpcMainEvent, units: UnitAmount
     ) => {
         try {

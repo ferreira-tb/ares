@@ -1,6 +1,8 @@
+import { app } from 'electron';
 import { join } from 'node:path';
 
 export const appIcon = join(__dirname, 'favicon.ico');
+export const database = join(app.getPath('userData'), 'ares.db');
 
 // JavaScript
 export const browserJs = join(__dirname, 'browser.js');

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { h, computed, ref, reactive, watch } from 'vue';
 import { NDataTable, useMessage } from 'naive-ui';
-import { assertKeyOf } from '$global/guards';
 import { ipcInvoke } from '$renderer/ipc';
 import { assertUserAlias } from '$global/guards';
 import { ModuleConfigError } from '$modules/error';
@@ -18,7 +17,7 @@ import HeavyIcon from '$icons/units/HeavyIcon.vue';
 import RamIcon from '$icons/units/RamIcon.vue';
 import CatapultIcon from '$icons/units/CatapultIcon.vue';
 import type { PaginationProps, DataTableBaseColumn } from 'naive-ui';
-import type { DemolitionTroops } from '$types/game';
+import type { DemolitionTroops, StringWallLevel } from '$types/game';
 
 interface DemolitionData extends DemolitionTroops {
     level: number;
@@ -28,7 +27,7 @@ const message = useMessage();
 
 const isArcherWorld = await ipcInvoke('is-archer-world');
 const userAlias = await ipcInvoke('user-alias');
-const template = await ipcInvoke('get-demolition-troops-config');
+const template = await ipcInvoke('plunder:get-demolition-config');
 const demolitionData = reactive<DemolitionData[]>([]);
 
 if (template) {
@@ -68,16 +67,17 @@ for (const column of columns) {
     if (column.key !== 'level') {
         column.render = (row) => h(TableCellNumber, {
             value: Number.parseIntStrict(row[column.key] as string),
-            onCellUpdated(newValue: number) {
+            onCellUpdated<T extends keyof DemolitionData>(newValue: number) {
                 const dataItem = demolitionData.find((data) => data.level === row.level);
-                if (!dataItem) throw new Error('Could not find the correct row in the table.');
-                assertKeyOf(column.key, dataItem, 'Could not find the correct column in the table.');
-
-                if (typeof newValue !== typeof dataItem[column.key]) {
-                    throw new TypeError('Old and new values are not of the same type.');
+                if (!dataItem) {
+                    throw new ModuleConfigError('Could not find the correct row in the table.');
+                } else if (!(column.key in dataItem)) {
+                    throw new ModuleConfigError('Could not find the correct column in the table.');
+                } else if (typeof newValue !== typeof dataItem[column.key as T]) {
+                    throw new ModuleConfigError('Old and new values are not of the same type.');
                 };
 
-                dataItem[column.key] = newValue;
+                dataItem[column.key as T] = newValue;
             }
         });
     };
@@ -95,12 +95,15 @@ watch(demolitionData, async (newData) => {
         assertUserAlias(userAlias, ModuleConfigError);
         for (const data of newData) {
             const { level, ...units } = data;
-            const key = level.toString(10);
-            assertKeyOf(key, template.units, `There is no wall level ${key} in the demolition troops template.`);
+            const key = level.toString(10) as StringWallLevel;
+            if (!(key in template.units)) {
+                throw new ModuleConfigError(`There is no wall level ${key} in the demolition troops template.`);
+            };
+
             template.units[key] = units;
         };
 
-        const saved = await ipcInvoke('save-demolition-troops-config', template);
+        const saved = await ipcInvoke('plunder:save-demolition-config', template);
         if (saved) {
             message.success('Tudo certo!');
         } else {

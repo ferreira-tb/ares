@@ -1,5 +1,6 @@
 import { assertInteger } from '$global/guards';
 import { useUnitsStore } from '$renderer/stores/units';
+import { useCurrentVillageStore } from '$renderer/stores/village';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { openPlace } from '$lib/plunder/place';
 import { sendAttackFromPlace } from '$lib/plunder/attack';
@@ -15,7 +16,7 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
         if (info.wallLevel === 0) return true;
 
         // Obtém as unidades necessárias para destruir a muralha.
-        const demolitionTemplate = await ipcInvoke('get-demolition-troops-config');
+        const demolitionTemplate = await ipcInvoke('plunder:get-demolition-config');
         if (!demolitionTemplate) throw new PlunderError('Could not get demolition troops config.');
         const neededUnits = demolitionTemplate.units[info.wallLevel.toString(10) as StringWallLevel];
 
@@ -35,7 +36,9 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
             assertInteger(carry, 'Could not calculate carry capacity when destroying wall.');
             const attack = new PlunderAttackWithLoot(info, carry);
             attack.destroyedWalls = info.wallLevel;
-            ipcSend('plunder:attack-sent', attack);
+
+            const currentVillage = useCurrentVillageStore();
+            ipcSend('plunder:attack-sent', currentVillage.id, attack);
         };
 
         return sent;

@@ -1,13 +1,13 @@
 import { computed, nextTick, ref } from 'vue';
 import { ipcRenderer } from 'electron';
-import { isKeyOf, assertInteger, isInteger } from '$global/guards';
+import { assertInteger, isInteger } from '$global/guards';
 import { useUnitsStore } from '$renderer/stores/units';
 import { assertFarmUnit } from '$global/guards';
 import { Kronos } from '$global/constants';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke } from '$renderer/ipc';
 import type { usePlunderConfigStore } from '$renderer/stores/plunder';
-import type { FarmUnits, FarmUnitsAmount, UnitAmount } from '$types/game';
+import type { FarmUnits, FarmUnitsAmount } from '$types/game';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 import type { UserAlias } from '$types/electron';
@@ -250,7 +250,10 @@ export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnTy
     return best;
 };
 
-async function getTemplateC(info: PlunderTargetInfo, config: ReturnType<typeof usePlunderConfigStore>) {
+async function getTemplateC<T extends keyof TemplateUnits>(
+    info: PlunderTargetInfo,
+    config: ReturnType<typeof usePlunderConfigStore>
+) {
     try {
         const button = info.button.c;
         if (!button) return null;
@@ -259,16 +262,16 @@ async function getTemplateC(info: PlunderTargetInfo, config: ReturnType<typeof u
         if ((Date.now() - info.lastAttack) > config.ignoreOlderThanC * Kronos.Hour) return null;
 
         const json = button.getAttributeStrict('data-units-forecast');
-        const cUnits = JSON.parse(json) as UnitAmount;
+        const cUnits = JSON.parse(json) as TemplateUnits;
         const templateC = allTemplates.getStrict('c');
 
         // Atualiza a quantidade de tropas disponíveis no modelo C.
-        for (const [unit, amount] of Object.entries(cUnits) as [keyof UnitAmount, number | string][]) {
-            if (!isKeyOf(unit, templateC.units)) continue;
-
-            // De maneira completamente aleatória, o jogo às vezes retorna uma string em vez de um número no JSON.
-            // Por isso, é necessário garantir que o valor seja um número inteiro.
-            templateC.units[unit] = isInteger(amount) ? amount : Number.parseIntStrict(amount);
+        for (const [unit, amount] of Object.entries(cUnits) as [T, number | string][]) {
+            if (unit in templateC.units) {
+                // De maneira completamente aleatória, o jogo às vezes retorna uma string em vez de um número no JSON.
+                // Por isso, é necessário garantir que o valor seja um número inteiro.
+                templateC.units[unit] = isInteger(amount) ? amount : Number.parseIntStrict(amount);
+            };
         };
 
         if (Object.values(templateC.units).every((amount) => amount === 0)) return null;

@@ -6,14 +6,14 @@ import { useCacheStore, usePlunderCacheStore, DemolitionTemplate } from '$electr
 import type { UserAlias } from '$types/electron';
 import type { DemolitionTemplateType } from '$types/plunder';
 
-export function setDemolitionModuleEvents() {
+export function setPlunderDemolitionEvents() {
     const cacheStore = useCacheStore();
     const plunderCacheStore = usePlunderCacheStore();
     const { demolitionTroops } = storeToRefs(plunderCacheStore);
 
-    ipcMain.on('open-demolition-troops-config-window', () => showDemolitionConfig());
+    ipcMain.on('plunder:open-demolition-config-window', () => showDemolitionConfig());
 
-    ipcMain.handle('get-demolition-troops-config', async (_e, alias: UserAlias | null): Promise<DemolitionTemplateType | null> => {
+    ipcMain.handle('plunder:get-demolition-config', async (_e, alias: UserAlias | null): Promise<DemolitionTemplateType | null> => {
         alias ??= cacheStore.userAlias;
         if (!isUserAlias(alias)) return null;
 
@@ -28,7 +28,7 @@ export function setDemolitionModuleEvents() {
         return demolitionTroops.value;
     });
 
-    ipcMain.handle('save-demolition-troops-config', async (_e, template: DemolitionTemplateType): Promise<boolean> => {
+    ipcMain.handle('plunder:save-demolition-config', async (_e, template: DemolitionTemplateType): Promise<boolean> => {
         const saved = await DemolitionTemplate.saveDemolitionTroopsConfig(template);
         if (saved && template.alias === cacheStore.userAlias) {
             demolitionTroops.value = template;
@@ -36,7 +36,7 @@ export function setDemolitionModuleEvents() {
         return saved;
     });
 
-    ipcMain.handle('destroy-demolition-troops-config', async (_e, alias: UserAlias): Promise<boolean> => {
+    ipcMain.handle('plunder:destroy-demolition-config', async (_e, alias: UserAlias): Promise<boolean> => {
         const destroyed = await DemolitionTemplate.destroyDemolitionTroopsConfig(alias);
         if (destroyed && alias === cacheStore.userAlias) {
             demolitionTroops.value = null;

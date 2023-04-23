@@ -1,8 +1,10 @@
+import * as fs from 'node:fs/promises';
 import { ipcMain } from 'electron';
 import { showAppSettings } from '$electron/app/modules';
 import { sequelize } from '$electron/database';
 import { AppConfig, useAppGeneralConfigStore, useAppNotificationsStore } from '$electron/interface';
 import { MainProcessEventError } from '$electron/error';
+import { database } from '$electron/utils/files';
 import { restartAres } from '$electron/utils/helpers';
 import type { ConfigModuleRoutes } from '$types/modules';
 import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
@@ -17,9 +19,11 @@ export function setConfigEvents() {
     ipcMain.handle('should-reload-after-captcha', () => appGeneralConfigStore.reloadAfterCaptcha);
     ipcMain.handle('should-notify-on-error', () => appNotificationsStore.notifyOnError);
 
-    ipcMain.handle('drop-database', async () => {
+    ipcMain.handle('db:clear-database', async () => {
         try {
-            await sequelize.drop();
+            await sequelize.close();
+            if (!sequelize.isClosed) sequelize.isClosed = true;
+            await fs.rm(database, { recursive: true, maxRetries: 5 });
             setTimeout(() => restartAres(), 3000);
             return true;
         } catch (err) {
