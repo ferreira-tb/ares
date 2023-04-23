@@ -1,5 +1,6 @@
 import { assertInteger } from '$global/guards';
 import { useUnitsStore } from '$renderer/stores/units';
+import { useCurrentVillageStore } from '$renderer/stores/village';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { openPlace } from '$lib/plunder/place';
 import { sendAttackFromPlace } from '$lib/plunder/attack';
@@ -35,7 +36,9 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
             assertInteger(carry, 'Could not calculate carry capacity when destroying wall.');
             const attack = new PlunderAttackWithLoot(info, carry);
             attack.destroyedWalls = info.wallLevel;
-            ipcSend('plunder:attack-sent', attack);
+
+            const currentVillage = useCurrentVillageStore();
+            ipcSend('plunder:attack-sent', currentVillage.id, attack);
         };
 
         return sent;

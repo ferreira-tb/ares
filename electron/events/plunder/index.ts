@@ -7,7 +7,7 @@ import { useCacheStore, WorldUnits, worldUnitsMap } from '$electron/interface';
 import { setPlunderGroupEvents } from '$electron/events/plunder/group';
 import { setPlunderPageEvents } from '$electron/events/plunder/page';
 import { setPlunderConfigEvents } from '$electron/events/plunder/config';
-import { setPlunderAttackEvents } from '$electron/events/plunder/attack';
+import { setPlunderHistoryEvents } from '$electron/events/plunder/history';
 import type { UnitAmount, World } from '$types/game';
 import type { WorldUnitsType } from '$types/world';
 
@@ -45,5 +45,5 @@ export function setPlunderEvents() {
     setPlunderConfigEvents();
     setPlunderPageEvents();
     setPlunderGroupEvents();
-    setPlunderAttackEvents();
+    setPlunderHistoryEvents();
 };

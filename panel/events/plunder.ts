@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron';
 import { assertInteger } from '$global/guards';
 import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$renderer/stores/plunder';
 import { PanelPlunderError } from '$panel/error';
-import type { PlunderConfigType, PlunderAttackLog, PlunderInfoType } from '$types/plunder';
+import type { PlunderConfigType, PlunderAttackLog, PlunderInfoType, PlunderHistoryType } from '$types/plunder';
 
 export function setPlunderEvents() {
     const plunderStore = usePlunderStore();
@@ -33,5 +33,5 @@ export function setPlunderEvents() {
 
     ipcRenderer.on('panel:patch-plunder-info', (_e, info: PlunderInfoType) => plunderStore.$patch(info));
     ipcRenderer.on('panel:patch-plunder-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
-    ipcRenderer.on('panel:patch-plunder-history', (_e, history: PlunderAttackLog) => plunderHistoryStore.$patch(history));
+    ipcRenderer.on('panel:patch-plunder-history', (_e, history: PlunderHistoryType) => plunderHistoryStore.$patch(history));
 };
