@@ -131,7 +131,7 @@ app.once('will-quit', async (e) => {
     } catch (err) {
         await MainProcessError.log(err);
     } finally {
-        app.quit();
+        app.exit();
     };
 });
 
