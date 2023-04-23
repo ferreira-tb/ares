@@ -273,10 +273,21 @@ async function getTemplateC<T extends keyof TemplateUnits>(
             };
         };
 
+        await nextTick();
         if (Object.values(templateC.units).every((amount) => amount === 0)) return null;
 
+        if (!templateC.ok.value) {
+            const unitStore = useUnitsStore();
+            for (const [unit, amount] of Object.entries({ ...templateC.units }) as [FarmUnits, number][]) {
+                if (amount === 0 || unit === 'spy') continue;
+                templateC.units[unit] = unitStore[unit];
+            };
+        };
+
         await nextTick();
-        templateC.carry.value = await calcTemplateCCarryCapacity(templateC.ok.value, { ...templateC.units });
+        if (!templateC.ok.value) return null;
+
+        templateC.carry.value = await calcCarryCapacity({ ...templateC.units });
         return templateC;
 
     } catch (err) {
@@ -289,20 +300,6 @@ async function calcCarryCapacity(units: TemplateUnits) {
     const carry = await ipcInvoke('plunder:calc-carry-capacity', units);
     assertInteger(carry, `Expected carry capacity to be an integer, but got ${carry}.`);
     return carry;
-};
-
-async function calcTemplateCCarryCapacity(ok: boolean, units: TemplateUnits) {
-    if (ok) return calcCarryCapacity(units);
-
-    const unitStore = useUnitsStore();
-    const availableUnits = new TemplateUnits();
-
-    for (const [unit, amount] of Object.entries(units) as [FarmUnits, number][]) {
-        if (amount === 0 || unit === 'spy') continue;
-        availableUnits[unit] = unitStore[unit];
-    };
-    
-    return calcCarryCapacity(availableUnits);
 };
 
 async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType) {
