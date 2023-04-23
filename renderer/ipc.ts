@@ -39,9 +39,6 @@ export async function ipcInvoke(channel: 'get-app-general-config'): Promise<Gene
 export async function ipcInvoke(channel: 'get-app-notifications-config'): Promise<NotificationsConfigType>;
 export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise<boolean>;
 export async function ipcInvoke(channel: 'should-notify-on-error'): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-demolition-troops-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
-export async function ipcInvoke(channel: 'save-demolition-troops-config', template: DemolitionTemplateType): Promise<boolean>;
-export async function ipcInvoke(channel: 'destroy-demolition-troops-config', alias: UserAlias): Promise<boolean>;
 
 // Painel
 export async function ipcInvoke(channel: 'panel:is-visible'): Promise<boolean>;
@@ -78,6 +75,9 @@ export async function ipcInvoke(channel: 'plunder:get-pages-info'): Promise<Plun
 export async function ipcInvoke(channel: 'plunder:get-group-info'): Promise<PlunderGroupType | null>;
 export async function ipcInvoke(channel: 'plunder:navigate-to-next-page'): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:calc-carry-capacity', units: Partial<UnitAmount>, world?: World): Promise<number | null>;
+export async function ipcInvoke(channel: 'plunder:get-demolition-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
+export async function ipcInvoke(channel: 'plunder:save-demolition-config', template: DemolitionTemplateType): Promise<boolean>;
+export async function ipcInvoke(channel: 'plunder:destroy-demolition-config', alias: UserAlias): Promise<boolean>;
 
 // Deimos
 export async function ipcInvoke(channel: 'deimos:get-file'): Promise<string | null>;
@@ -114,7 +114,6 @@ export function ipcSend(channel: 'dev:open-main-view-dev-tools'): void;
 export function ipcSend(channel: 'update-app-general-config', config: GeneralConfigType): void;
 export function ipcSend(channel: 'update-app-notifications-config', config: NotificationsConfigType): void;
 export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
-export function ipcSend(channel: 'open-demolition-troops-config-window'): void;
 
 // Menu
 export function ipcSend(channel: 'open-region-select-menu'): void;
@@ -132,7 +131,7 @@ export function ipcSend(channel: 'update-current-view', webContentsId: number): 
 export function ipcSend(channel: 'destroy-browser-view', webContentsId: number): void;
 
 // Erros
-export function ipcSend(channel: 'open-error-log-window'): void;
+export function ipcSend(channel: 'error:open-log-window'): void;
 export function ipcSend(channel: 'error:create-log', err: ErrorLogBase): void;
 export function ipcSend(channel: 'error:delete-log', id: number): void;
 export function ipcSend(channel: 'error:delete-electron-log', id: number): void;
@@ -148,6 +147,7 @@ export function ipcSend(channel: 'plunder:update-group-info', groupInfo: Plunder
 export function ipcSend(channel: 'plunder:navigate-to-next-village', currentVillageId?: number | null): void;
 export function ipcSend(channel: 'plunder:navigate-to-group'): void;
 export function ipcSend(channel: 'plunder:navigate-to-first-page'): void;
+export function ipcSend(channel: 'plunder:open-demolition-config-window'): void;
 
 // Deimos
 export function ipcSend(channel: 'deimos:tag-is-ready'): void;

@@ -40,7 +40,7 @@ function resetDemolitionConfig() {
             try {
                 const userAlias = await ipcInvoke('user-alias');
                 assertUserAlias(userAlias, ModuleConfigError);
-                const destroyed = await ipcInvoke('destroy-demolition-troops-config', userAlias);
+                const destroyed = await ipcInvoke('plunder:destroy-demolition-config', userAlias);
                 if (destroyed) {
                     message.success('Resetado com sucesso!');
                 } else {
@@ -105,7 +105,7 @@ function resetDemolitionConfig() {
             </NGridItem>
             <NGridItem>
                 <NButtonGroup>
-                    <NButton @click="ipcSend('open-demolition-troops-config-window')">Configurar</NButton>
+                    <NButton @click="ipcSend('plunder:open-demolition-config-window')">Configurar</NButton>
                     <NButton @click="resetDemolitionConfig">Resetar</NButton>
                 </NButtonGroup>
             </NGridItem>

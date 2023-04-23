@@ -81,7 +81,7 @@ function openChangelog() {
                     <div>Versão atual: {{ appVersion }}</div>
                     <div v-if="isLatest" class="is-latest">Você está com a versão mais recente!</div>
                     <div v-else-if="data">Nova versão: {{ data.version }}</div>
-                    <div v-else-if="wentWrong" class="went-wrong" @click="ipcSend('open-error-log-window')">
+                    <div v-else-if="wentWrong" class="went-wrong" @click="ipcSend('error:open-log-window')">
                         Erro ao verificar a versão mais recente.
                     </div>
                 </div>

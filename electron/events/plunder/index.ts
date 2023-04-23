@@ -8,6 +8,8 @@ import { setPlunderGroupEvents } from '$electron/events/plunder/group';
 import { setPlunderPageEvents } from '$electron/events/plunder/page';
 import { setPlunderConfigEvents } from '$electron/events/plunder/config';
 import { setPlunderHistoryEvents } from '$electron/events/plunder/history';
+import { setPlunderDemolitionEvents } from '$electron/events/plunder/demolition';
+import { setPlunderTemplatesEvents } from '$electron/events/plunder/templates';
 import type { UnitAmount, World } from '$types/game';
 import type { WorldUnitsType } from '$types/world';
 
@@ -46,4 +48,6 @@ export function setPlunderEvents() {
     setPlunderPageEvents();
     setPlunderGroupEvents();
     setPlunderHistoryEvents();
+    setPlunderDemolitionEvents();
+    setPlunderTemplatesEvents();
 };

@@ -6,7 +6,7 @@ import { useCacheStore, useBrowserViewStore, CustomPlunderTemplate } from '$elec
 import type { UserAlias } from '$types/electron';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 
-export function setPlunderTemplatesModuleEvents() {
+export function setPlunderTemplatesEvents() {
     const cacheStore = useCacheStore();
     const browserViewStore = useBrowserViewStore();
     const { allWebContents } = storeToRefs(browserViewStore);

@@ -40,7 +40,7 @@ const props = withDefaults(defineProps<Props>(), {
                     <template v-if="props.showDefaultFooter">
                         <NButtonGroup>
                             <NButton round @click="ipcSend('open-github-issues')">Issues</NButton>
-                            <NButton round @click="ipcSend('open-error-log-window')">Registro de Erros</NButton>
+                            <NButton round @click="ipcSend('error:open-log-window')">Registro de Erros</NButton>
                             <NButton round @click="shell.openExternal(WebsiteUrl.Discord)">Discord</NButton>
                         </NButtonGroup>
                     </template>

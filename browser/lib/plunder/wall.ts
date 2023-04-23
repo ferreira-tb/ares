@@ -16,7 +16,7 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
         if (info.wallLevel === 0) return true;
 
         // Obtém as unidades necessárias para destruir a muralha.
-        const demolitionTemplate = await ipcInvoke('get-demolition-troops-config');
+        const demolitionTemplate = await ipcInvoke('plunder:get-demolition-config');
         if (!demolitionTemplate) throw new PlunderError('Could not get demolition troops config.');
         const neededUnits = demolitionTemplate.units[info.wallLevel.toString(10) as StringWallLevel];
 

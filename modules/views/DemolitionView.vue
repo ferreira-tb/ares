@@ -27,7 +27,7 @@ const message = useMessage();
 
 const isArcherWorld = await ipcInvoke('is-archer-world');
 const userAlias = await ipcInvoke('user-alias');
-const template = await ipcInvoke('get-demolition-troops-config');
+const template = await ipcInvoke('plunder:get-demolition-config');
 const demolitionData = reactive<DemolitionData[]>([]);
 
 if (template) {
@@ -103,7 +103,7 @@ watch(demolitionData, async (newData) => {
             template.units[key] = units;
         };
 
-        const saved = await ipcInvoke('save-demolition-troops-config', template);
+        const saved = await ipcInvoke('plunder:save-demolition-config', template);
         if (saved) {
             message.success('Tudo certo!');
         } else {
