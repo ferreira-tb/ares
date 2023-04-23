@@ -1,5 +1,7 @@
-import type { WebContents } from 'electron';
-import type { World } from '$types/game';
+import type { MessageBoxOptions, WebContents } from 'electron';
 
 export type WindowOpenHandler = ReturnType<Parameters<WebContents['setWindowOpenHandler']>[0]>;
-export type UserAlias = `${World}__USERID__${string}`;
+
+export type ElectronMessageBoxOptions = Pick<MessageBoxOptions,
+    'buttons' | 'cancelId' | 'defaultId' | 'message' | 'noLink' | 'title' | 'type'
+>;

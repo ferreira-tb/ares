@@ -1,6 +1,6 @@
 import type { IntRange, IntRangeToStrings } from '$types/utils';
 
-// MUNDO
+export type UserAlias = `${World}__USERID__${string}`;
 export type GameRegion = 'br' | 'en' | 'nl' | 'pt' | 'uk' | 'us';
 export type World =
     // eslint-disable-next-line @typescript-eslint/sort-type-constituents

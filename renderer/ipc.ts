@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
 import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$global/objects/plunder';
-import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$types/game';
+import type { UnitAmount, World, TribalWarsGameDataType, UserAlias, VillageGroup } from '$types/game';
 import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType } from '$types/error';
 import type { WorldConfigType, WorldUnitsType, WorldVillagesType } from '$types/world';
-import type { UserAlias } from '$types/electron';
+import type { ElectronMessageBoxOptions } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
 import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
 
@@ -106,6 +106,7 @@ export function ipcSend(channel: 'download-from-url', url: string): void;
 export function ipcSend(channel: 'show-update-available-dialog', newVersion: string): void;
 export function ipcSend(channel: 'update-captcha-status', status: boolean): void;
 export function ipcSend(channel: 'update-response-time', time: number | null): void;
+export function ipcSend(channel: 'electron:show-message-box', options: ElectronMessageBoxOptions): void;
 
 // Desenvolvedor
 export function ipcSend(channel: 'dev:open-main-window-dev-tools'): void;

@@ -4,10 +4,9 @@ import type { MechanusComputedRef, MechanusRef, MechanusStore } from 'mechanus';
 import type { RemoveMethods } from '$types/utils';
 import type { WorldConfigType } from '$types/world';
 import type { UnitDetails } from '$types/world';
-import type { UserAlias } from '$types/electron';
 import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
 import type { PlunderInfoType, PlunderConfigType, PlunderHistoryType, PlunderCacheType } from '$types/plunder';
-import type { AllUnits, GameRegion, TribalWarsGameDataType, UnitAmount, VillageGroup, World } from '$types/game';
+import type { AllUnits, GameRegion, TribalWarsGameDataType, UnitAmount, UserAlias, VillageGroup, World } from '$types/game';
 
 // APP GENERAL CONFIG
 export type AppGeneralConfigStore = GeneralConfigType;

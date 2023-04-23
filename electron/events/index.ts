@@ -1,4 +1,4 @@
-import { app, ipcMain } from 'electron';
+import { app, dialog, ipcMain } from 'electron';
 import { setPlunderEvents } from '$electron/events/plunder';
 import { setErrorEvents } from '$electron/events/error';
 import { setPanelEvents } from '$electron/events/panel';
@@ -14,10 +14,13 @@ import { setWorldDataEvents } from '$electron/events/world-data';
 import { isUserAlias } from '$global/guards';
 import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$electron/interface';
-import { getPlayerNameFromAlias, extractWorldUnitsFromMap } from '$electron/utils/helpers';
-import type { UserAlias } from '$types/electron';
+import { getPlayerNameFromAlias, extractWorldUnitsFromMap, getMainWindow } from '$electron/utils/helpers';
+import { MainProcessEventError } from '$electron/error';
+import type { UserAlias } from '$types/game';
+import type { ElectronMessageBoxOptions } from '$types/electron';
 
 export function setEvents() {
+    const mainWindow = getMainWindow();
     const cacheStore = useCacheStore();
     const worldConfigStore = useWorldConfigStore();
     
@@ -28,6 +31,10 @@ export function setEvents() {
     ipcMain.handle('user-data-path', () => app.getPath('userData'));
     ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
+
+    ipcMain.on('electron:show-message-box', (_e, options: ElectronMessageBoxOptions) => {
+        dialog.showMessageBox(mainWindow, options).catch(MainProcessEventError.catch);
+    });
 
     // Website.
     ipcMain.on('open-any-allowed-website', (_e, url: string) => openAnyAllowedWebsite(url));

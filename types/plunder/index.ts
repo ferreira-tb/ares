@@ -1,5 +1,4 @@
-import type { FarmUnitsAmount, UnitsToDestroyWall } from '$types/game';
-import type { UserAlias } from '$types/electron';
+import type { FarmUnitsAmount, UserAlias, UnitsToDestroyWall } from '$types/game';
 import type { PlunderGroupType } from '$types/plunder/group';
 import type { PlunderPageListType } from '$types/plunder/page';
 

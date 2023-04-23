@@ -1,7 +1,6 @@
 import { isInteger, assertGameRegion } from '$global/guards';
 import { GameUrl, GameEndpoints } from '$global/constants';
-import type { GameRegion, World } from '$types/game';
-import type { UserAlias } from '$types/electron';
+import type { GameRegion, UserAlias, World } from '$types/game';
 import type { AresError } from '$global/error';
 
 /**
