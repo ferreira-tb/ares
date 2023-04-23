@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
 import { ipcRenderer } from 'electron';
-import type { PlunderAttack } from '$lib/plunder/attack';
+import type { PlunderAttack } from '$global/objects/plunder';
 import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$types/game';
 import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType } from '$types/error';
 import type { WorldConfigType, WorldUnitsType } from '$types/world';

@@ -7,20 +7,10 @@ import { wait } from '$browser/utils/helpers';
 import { unitsRegex } from '$global/regex';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
+import type { PlunderAttack } from '$global/objects/plunder';
 import type { PlaceUnitsAmount } from '$types/game';
-import type { PlunderAttackLog } from '$types/plunder';
 
 export const eventTarget = new EventTarget();
-
-export abstract class PlunderAttack implements PlunderAttackLog {
-    // Já incluso o ataque enviado.
-    readonly attackAmount: number = 1;
-    destroyedWalls: number = 0;
-
-    abstract wood: number;
-    abstract stone: number;
-    abstract iron: number;
-};
 
 export function prepareAttack(plunderAttack: PlunderAttack, button: HTMLAnchorElement) {
     const config = usePlunderConfigStore();

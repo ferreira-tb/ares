@@ -1,6 +1,6 @@
 import { assertInteger } from '$global/guards';
 import { resources } from '$global/constants';
-import { PlunderAttack } from '$lib/plunder/attack';
+import { PlunderAttack } from '$global/objects/plunder';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
