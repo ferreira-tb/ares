@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { h } from 'vue';
+import { NButton } from 'naive-ui';
 import { storeToRefs } from 'pinia';
 import { watchImmediate } from '@vueuse/core';
 import { usePlunderConfigStore, usePlunderHistoryStore } from '$renderer/stores/plunder';
-import { ipcInvoke } from '$renderer/ipc';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import StorageIcon from '$icons/buildings/StorageIcon.vue';
 
 const config = usePlunderConfigStore();
@@ -18,18 +20,16 @@ watchImmediate(active, async () => {
 </script>
 
 <template>
-    <div class="res-area">
-        <StorageIcon />
+    <NButton
+        quaternary
+        :keyboard="false"
+        :render-icon="() => h(StorageIcon)"
+        @click="ipcSend('plunder:show-history')"
+    >
         <span>{{ total.toLocaleString('pt-br') }}</span>
-    </div>
+    </NButton>
 </template>
 
 <style scoped lang="scss">
-.res-area {
-    display: flex;
-    align-items: center;
-    justify-items: center;
-    justify-content: center;
-    width: 100%;
-}
+
 </style>
