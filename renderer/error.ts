@@ -16,7 +16,7 @@ export class RendererProcessError extends AresError {
                 stack: isString(err.stack) ? err.stack : null
             };
 
-            ipcSend('set-error-log', errorLog);
+            ipcSend('error:create-log', errorLog);
             const shouldNotify = await ipcInvoke('should-notify-on-error');
             if (shouldNotify) {
                 new Notification(err.name, { body: err.message });

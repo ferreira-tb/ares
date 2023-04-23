@@ -10,7 +10,7 @@ import type { ErrorLogBase, ErrorLogType } from '$types/error';
 export function setErrorEvents() {
     const aresStore = useAresStore();
 
-    ipcMain.on('set-error-log', async (e, error: ErrorLogBase) => {
+    ipcMain.on('error:create-log', async (e, error: ErrorLogBase) => {
         try {
             const errorLog: Omit<ErrorLogType, 'id' | 'pending'> = {
                 name: error.name,
@@ -41,7 +41,7 @@ export function setErrorEvents() {
         };
     });
 
-    ipcMain.handle('get-error-log', async () => {
+    ipcMain.handle('error:get-log', async () => {
         try {
             await sequelize.transaction(async (transaction) => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
@@ -58,7 +58,7 @@ export function setErrorEvents() {
         };
     });
 
-    ipcMain.on('delete-error-log', async (_e, id: number) => {
+    ipcMain.on('error:delete-log', async (_e, id: number) => {
         try {
             await sequelize.transaction(async (transaction) => {
                 await ErrorLog.destroy({ where: { id }, transaction });
@@ -69,7 +69,7 @@ export function setErrorEvents() {
         };
     });
 
-    ipcMain.handle('get-electron-error-log', async () => {
+    ipcMain.handle('error:get-electron-log', async () => {
         try {
             await sequelize.transaction(async (transaction) => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
@@ -86,7 +86,7 @@ export function setErrorEvents() {
         };
     });
 
-    ipcMain.on('delete-electron-error-log', async (_e, id: number) => {
+    ipcMain.on('error:delete-electron-log', async (_e, id: number) => {
         try {
             await sequelize.transaction(async (transaction) => {
                 await ElectronErrorLog.destroy({ where: { id }, transaction });

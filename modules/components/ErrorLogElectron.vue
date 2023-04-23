@@ -8,7 +8,7 @@ import { ModuleError } from '$modules/error';
 import type { ErrorLogType } from '$types/error';
 import ResultSucess from '$renderer/components/ResultSucess.vue';
 
-const raw = await ipcInvoke('get-electron-error-log');
+const raw = await ipcInvoke('error:get-electron-log');
 if (!Array.isArray(raw)) throw new ModuleError('Database connection error.');
 
 const errors = reactive(raw);
@@ -17,7 +17,7 @@ watchEffect(() => errors.sort((a, b) => b.time - a.time));
 useIpcRendererOn('electron-error-log-did-update', (_e, newError: ErrorLogType) => errors.push(newError));
 
 function deleteError(id: number) {
-    ipcSend('delete-electron-error-log', id);
+    ipcSend('error:delete-electron-log', id);
     const index = errors.findIndex((error) => error.id === id);
     if (index === -1) throw new ModuleError(`Could not find error with ID ${id}.`);
     errors.splice(index, 1);

@@ -44,7 +44,7 @@ export async function ipcInvoke(channel: 'save-demolition-troops-config', templa
 export async function ipcInvoke(channel: 'destroy-demolition-troops-config', alias: UserAlias): Promise<boolean>;
 
 // Painel
-export async function ipcInvoke(channel: 'is-panel-visible'): Promise<boolean>;
+export async function ipcInvoke(channel: 'panel:is-visible'): Promise<boolean>;
 
 // Browser View
 export async function ipcInvoke(channel: 'main-view-url'): Promise<string>;
@@ -64,8 +64,8 @@ export async function ipcInvoke(channel: 'fetch-village-groups'): Promise<boolea
 export async function ipcInvoke(channel: 'get-village-groups'): Promise<Set<VillageGroup>>;
 
 // Erros
-export async function ipcInvoke(channel: 'get-error-log'): Promise<ErrorLogType[] | null>;
-export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<ElectronErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'error:get-log'): Promise<ErrorLogType[] | null>;
+export async function ipcInvoke(channel: 'error:get-electron-log'): Promise<ElectronErrorLogType[] | null>;
 
 // Plunder
 export async function ipcInvoke(channel: 'plunder:is-active'): Promise<boolean>;
@@ -80,9 +80,9 @@ export async function ipcInvoke(channel: 'plunder:navigate-to-next-page'): Promi
 export async function ipcInvoke(channel: 'plunder:calc-carry-capacity', units: Partial<UnitAmount>, world?: World): Promise<number | null>;
 
 // Deimos
-export async function ipcInvoke(channel: 'get-deimos-file'): Promise<string | null>;
-export async function ipcInvoke(channel: 'update-plunder-info', plunderInfo: PlunderInfoType): Promise<boolean>;
-export async function ipcInvoke(channel: 'update-current-village-units', units: UnitAmount): Promise<boolean>;
+export async function ipcInvoke(channel: 'deimos:get-file'): Promise<string | null>;
+export async function ipcInvoke(channel: 'deimos:update-plunder-info', plunderInfo: PlunderInfoType): Promise<boolean>;
+export async function ipcInvoke(channel: 'deimos:update-current-village-units', units: UnitAmount): Promise<boolean>;
 
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
     const response: unknown = await ipcRenderer.invoke(channel, ...args);
@@ -133,9 +133,9 @@ export function ipcSend(channel: 'destroy-browser-view', webContentsId: number):
 
 // Erros
 export function ipcSend(channel: 'open-error-log-window'): void;
-export function ipcSend(channel: 'set-error-log', err: ErrorLogBase): void;
-export function ipcSend(channel: 'delete-error-log', id: number): void;
-export function ipcSend(channel: 'delete-electron-error-log', id: number): void;
+export function ipcSend(channel: 'error:create-log', err: ErrorLogBase): void;
+export function ipcSend(channel: 'error:delete-log', id: number): void;
+export function ipcSend(channel: 'error:delete-electron-log', id: number): void;
 
 // Plunder
 export function ipcSend(channel: 'plunder:open-custom-template-window'): void;
@@ -150,8 +150,8 @@ export function ipcSend(channel: 'plunder:navigate-to-group'): void;
 export function ipcSend(channel: 'plunder:navigate-to-first-page'): void;
 
 // Deimos
-export function ipcSend(channel: 'deimos-tag-is-ready'): void;
-export function ipcSend(channel: 'update-game-data', gameData: TribalWarsGameDataType): void;
+export function ipcSend(channel: 'deimos:tag-is-ready'): void;
+export function ipcSend(channel: 'deimos:update-game-data', gameData: TribalWarsGameDataType): void;
 
 export function ipcSend(channel: string, ...args: any[]): void {
     ipcRenderer.send(channel, ...args);

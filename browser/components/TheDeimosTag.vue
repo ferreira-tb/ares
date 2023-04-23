@@ -7,9 +7,9 @@ import { ipcInvoke, ipcSend } from '$renderer/ipc';
 
 const browserStore = useBrowserStore();
 const { isDeimosReady } = storeToRefs(browserStore);
-whenever(isDeimosReady, () => ipcSend('deimos-tag-is-ready'), { flush: 'sync' });
+whenever(isDeimosReady, () => ipcSend('deimos:tag-is-ready'), { flush: 'sync' });
 
-const deimos = await ipcInvoke('get-deimos-file');
+const deimos = await ipcInvoke('deimos:get-file');
 assertString(deimos, 'Could not get Deimos file');
 
 const deimosBlob = new Blob([deimos], { type: 'text/javascript' });

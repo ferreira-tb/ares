@@ -5,7 +5,7 @@ import { getPanelWindow } from '$electron/utils/helpers';
 export function setPanelEvents() {
     const panelWindow = getPanelWindow();
 
-    ipcMain.handle('is-panel-visible', () => panelWindow.isVisible());
+    ipcMain.handle('panel:is-visible', () => panelWindow.isVisible());
 
     panelWindow.on('moved', async () => {
         const rectangle = panelWindow.getBounds();
