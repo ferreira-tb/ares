@@ -27,32 +27,33 @@ watchImmediate(currentScreen, async (name) => {
 </script>
 
 <template>
-    <NConfigProvider :theme="darkTheme">
-        <template v-if="isVisible">
-            <CaptchaView v-if="captcha" />
-
-            <div v-else class="router-container">
-                <RouterView #default="{ Component }">
-                    <template v-if="Component">
-                        <Transition name="tb-fade" mode="out-in">
-                            <Suspense>
-                                <component :is="Component" />
-                                <template #fallback>
-                                    <span class="bold-green to-center">Carregando...</span>
-                                </template>
-                            </Suspense>
-                        </Transition>
-                    </template>
-                </RouterView>
+    <div class="app-container">
+        <NConfigProvider :theme="darkTheme">
+            <div v-if="isVisible" class="app-container">
+                <CaptchaView v-if="captcha" />
+                
+                <div v-else class="app-container">
+                    <RouterView #default="{ Component }">
+                        <template v-if="Component">
+                            <Transition name="tb-fade" mode="out-in">
+                                <Suspense>
+                                    <component :is="Component" />
+                                    <template #fallback>
+                                        <span class="bold-green to-center">Carregando...</span>
+                                    </template>
+                                </Suspense>
+                            </Transition>
+                        </template>
+                    </RouterView>
+                </div>
             </div>
-        </template>
-
-        <HomeView v-else />
-    </NConfigProvider>
+            <HomeView v-else />
+        </NConfigProvider>
+    </div>
 </template>
 
 <style scoped>
-.router-container {
+.app-container {
     width: 100%;
     height: 100%;
 }

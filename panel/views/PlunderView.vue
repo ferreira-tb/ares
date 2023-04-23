@@ -60,7 +60,7 @@ watchEffect(() => {
             </NButtonGroup>
         </div>
 
-        <PlunderResources :plunder-status="config.active" />
+        <PlunderResources />
 
         <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
             <NGridItem>

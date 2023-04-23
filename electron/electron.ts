@@ -9,13 +9,16 @@ import { appIcon, panelHtml, uiHtml, browserJs } from '$electron/utils/files';
 import { setBrowserViewAutoResize } from '$electron/utils/view';
 import { setEnv } from '$electron/env';
 import { MainProcessError } from '$electron/error';
+import { isUserAlias } from '$global/guards';
 
 import {
     AppConfig,
+    PlunderHistory,
     useBrowserViewStore,
     useCacheStore,
     useAppGeneralConfigStore,
-    useAppNotificationsStore
+    useAppNotificationsStore,
+    usePlunderHistoryStore
 } from '$electron/interface';
 
 setEnv();
@@ -116,6 +119,15 @@ function createWindow() {
 app.on('window-all-closed', () => app.quit());
 app.whenReady().then(() => createWindow())
     .catch(MainProcessError.catch);
+
+app.once('will-quit', async (e) => {
+    const cacheStore = useCacheStore();
+    if (isUserAlias(cacheStore.userAlias)) {
+        e.preventDefault();
+        await PlunderHistory.saveHistory(cacheStore.userAlias, usePlunderHistoryStore());
+        app.quit();
+    };
+});
 
 // Inicializa o banco de dados.
 (async () => {

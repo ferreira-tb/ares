@@ -70,7 +70,7 @@ export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<Elec
 // Plunder
 export async function ipcInvoke(channel: 'plunder:is-active'): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:get-config'): Promise<PlunderConfigType | null>;
-export async function ipcInvoke(channel: 'plunder:get-history', alias?: UserAlias): Promise<PlunderAttackLog | null>;
+export async function ipcInvoke(channel: 'plunder:get-history'): Promise<PlunderAttackLog>;
 export async function ipcInvoke(channel: 'plunder:get-custom-templates', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
 export async function ipcInvoke(channel: 'plunder:save-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:destroy-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
