@@ -3,7 +3,7 @@ import { storeToRefs } from 'mechanus';
 import { showDemolitionConfig } from '$electron/app/modules';
 import { isUserAlias } from '$global/guards';
 import { useCacheStore, usePlunderCacheStore, DemolitionTemplate } from '$electron/interface';
-import type { UserAlias } from '$types/electron';
+import type { UserAlias } from '$types/game';
 import type { DemolitionTemplateType } from '$types/plunder';
 
 export function setPlunderDemolitionEvents() {

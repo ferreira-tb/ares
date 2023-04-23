@@ -2,8 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import { assertInstanceOf } from '$global/guards';
 import { assertWorld } from '$global/guards';
 import { MainProcessError } from '$electron/error';
-import type { UserAlias } from '$types/electron';
-import type { World } from '$types/game';
+import type { UserAlias, World } from '$types/game';
 import type { WorldUnitsType } from '$types/world';
 import type { createWorldUnitStoresMap } from '$stores/world';
 

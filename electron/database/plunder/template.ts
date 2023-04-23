@@ -4,7 +4,7 @@ import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$global/guards';
 import { DatabaseError } from '$electron/error';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import type { UserAlias } from '$types/electron';
+import type { UserAlias } from '$types/game';
 import type { CustomPlunderTemplateType } from '$types/plunder';
 
 export class CustomPlunderTemplate extends Model<
