@@ -14,7 +14,7 @@ if (!Array.isArray(raw)) throw new ModuleError('Database connection error.');
 const errors = reactive(raw);
 watchEffect(() => errors.sort((a, b) => b.time - a.time));
 
-useIpcRendererOn('electron-error-log-did-update', (_e, newError: ErrorLogType) => errors.push(newError));
+useIpcRendererOn('error:electron-log-did-update', (_e, newError: ErrorLogType) => errors.push(newError));
 
 function deleteError(id: number) {
     ipcSend('error:delete-electron-log', id);

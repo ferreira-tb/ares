@@ -33,7 +33,7 @@ export function setErrorEvents() {
 
             const errorModule = getActiveModule('error-log');
             if (errorModule instanceof BrowserWindow) {
-                errorModule.webContents.send('error-log-did-update', newRow.toJSON());
+                errorModule.webContents.send('error:log-did-update', newRow.toJSON());
             };
 
         } catch (err) {
