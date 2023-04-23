@@ -32,7 +32,12 @@ const data = {
 };
 
 const validLabels = ['bug', 'enhancement', 'question'];
-if (!data.isPullRequest && data.labels.length > 0 && data.labels.some((label) => validLabels.includes(label.name))) {
+if (
+    !data.isPullRequest &&
+    data.labels.length > 0 &&
+    data.labels.some((label) => validLabels.includes(label.name)) &&
+    (data.state === 'open' || (data.state === 'closed' && data.state_reason === 'completed'))
+) {
     const embed = new EmbedBuilder()
         .setTitle(data.title)
         .setURL(data.url)
@@ -54,17 +59,9 @@ if (!data.isPullRequest && data.labels.length > 0 && data.labels.some((label) =>
             embed.addFields({ name: 'Status', value: 'Em aberto', inline: true });
         };
 
-    } else if (data.state === 'closed') {
-        if (data.labels.some((label) => label.name === 'wontfix')) {
-            embed.setColor('#bd2c00');
-            embed.addFields({ name: 'Status', value: 'Não trabalharemos nisso', inline: true });
-        } else if (data.labels.some((label) => label.name === 'dropped')) {
-            embed.setColor('#bd2c00');
-            embed.addFields({ name: 'Status', value: 'Descontinuado', inline: true });
-        } else {
-            embed.setColor('#6e5494');
-            embed.addFields({ name: 'Status', value: 'Concluído', inline: true });
-        };
+    } else {
+        embed.setColor('#6e5494');
+        embed.addFields({ name: 'Status', value: 'Concluído', inline: true });
     };
 
     embed.addFields({ name: 'Autor', value: data.author, inline: true });
