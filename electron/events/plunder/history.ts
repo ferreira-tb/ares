@@ -3,6 +3,7 @@ import { assertInteger } from '$global/guards';
 import { MainProcessEventError } from '$electron/error';
 import { assertUserAlias } from '$global/guards';
 import { getPanelWindow } from '$electron/utils/helpers';
+import { showPlunderHistory } from '$electron/app/modules';
 import { usePlunderHistoryStore, PlunderHistory, useCacheStore } from '$electron/interface';
 import { PlunderHistoryVillage } from '$global/objects/plunder';
 import type { PlunderAttackLog } from '$types/plunder';
@@ -12,6 +13,8 @@ export function setPlunderHistoryEvents() {
     
     const cacheStore = useCacheStore();
     const plunderHistoryStore = usePlunderHistoryStore();
+
+    ipcMain.on('plunder:show-history', () => showPlunderHistory());
 
     // Emitido pela view após cada ataque realizado pelo Plunder.
     ipcMain.on('plunder:attack-sent', <T extends keyof PlunderAttackLog>(

@@ -5,6 +5,7 @@ import { configRoutes } from '$modules/router/config';
 import DefaultView from '$renderer/views/DefaultView.vue';
 import AppUpdateView from '$modules/views/AppUpdateView.vue';
 import DemolitionView from '$modules/views/DemolitionView.vue';
+import PlunderHistory from '$modules/views/PlunderHistoryView.vue';
 import PlunderTemplateView from '$modules/views/PlunderTemplateView.vue';
 import type { ModuleRouteRecordRaw, ModuleRoutes, ConfigModuleRoutes } from '$types/modules';
 
@@ -26,6 +27,11 @@ const singleRoutes: ModuleRouteRecordRaw[] = [
         path: '/demolition',
         name: 'demolition',
         component: DemolitionView
+    },
+    {
+        path: '/plunder-history',
+        name: 'plunder-history',
+        component: PlunderHistory
     },
     {
         path: '/plunder-template',
