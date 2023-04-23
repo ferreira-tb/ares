@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, toRaw } from 'vue';
-import { computedEager, whenever } from '@vueuse/core';
+import { computedEager, whenever, watchImmediate } from '@vueuse/core';
 import { useAresStore } from '$renderer/stores/ares';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import { useCurrentVillageStore } from '$renderer/stores/village';
@@ -63,23 +63,32 @@ watch(() => config.groupAttack, async (isGroupAttackActive) => {
     };
 });
 
-watch(() => config.active, async () => {
+watchImmediate(() => config.active, async (isActive) => {
     // Interrompe qualquer ataque em andamento.
     attackEventTarget.dispatchEvent(new Event('stop'));
 
     // Começa a atacar se o Plunder estiver ativado.
-    if (config.active) {
+    if (isActive) {
         groupInfo.value = await queryPlunderGroupInfo();
 
         // Se a aldeia atual não pertencer ao grupo de saque, navega para alguma aldeia do grupo.
-        if (config.groupAttack && groupInfo.value && !belongsToPlunderGroup.value) {
-            ipcSend('plunder:navigate-to-next-village');
-            return;
+        if (config.groupAttack) {
+            if (groupInfo.value && !belongsToPlunderGroup.value) {
+                ipcSend('plunder:navigate-to-next-village');
+                return;
+            } else if (!config.plunderGroupId) {
+                ipcSend('electron:show-message-box', {
+                    type: 'warning',
+                    title: 'Grupo de saque não selecionado',
+                    message: 'Você precisa selecionar um grupo de saque para usar o ataque em grupo.'
+                });
+                return;
+            };
         };
 
         handleAttack().catch(PlunderError.catch);
     };
-}, { immediate: true });
+});
 
 async function handleAttack(): Promise<void> {
     if (!shouldAttack.value) return;
