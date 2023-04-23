@@ -11,6 +11,29 @@ export const enum GameUrl {
     UnitedStates = 'https://www.tribalwars.us'
 };
 
+export const enum GameEndpoints {
+    GetConfig = 'interface.php?func=get_config',
+    GetUnitInfo = 'interface.php?func=get_unit_info',
+    GetBuildingInfo = 'interface.php?func=get_building_info',
+
+    // `unix_timestamp` não pode ser maior do que 24 horas atrás.
+    GetConquer = 'interface.php?func=get_conquer&since=unix_timestamp',
+
+    Village = 'map/village.txt.gz',
+    Player = 'map/player.txt.gz',
+    Ally = 'map/ally.txt.gz',
+    Conquer = 'map/conquer.txt.gz',
+
+    KillAtt = 'map/kill_att.txt.gz',
+    KillDef = 'map/kill_def.txt.gz',
+    KillSup = 'map/kill_sup.txt.gz',
+    KillAll = 'map/kill_all.txt.gz',
+
+    KillAttTribe = 'map/kill_att_tribe.txt.gz',
+    KillDefTribe = 'map/kill_def_tribe.txt.gz',
+    KillAllTribe = 'map/kill_all_tribe.txt.gz'
+};
+
 export const enum GameSearchParams {
     Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0'
 };

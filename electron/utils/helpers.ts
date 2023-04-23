@@ -4,7 +4,7 @@ import { assertWorld } from '$global/guards';
 import { MainProcessError } from '$electron/error';
 import type { UserAlias } from '$types/electron';
 import type { World } from '$types/game';
-import type { WorldUnitType } from '$types/world';
+import type { WorldUnitsType } from '$types/world';
 import type { createWorldUnitStoresMap } from '$stores/world';
 
 export function restartAres() {
@@ -85,11 +85,11 @@ export function getPlayerNameFromAlias(alias: UserAlias): string {
  * Obtém informações sobre as unidades do mundo a partir do mapa contendo as stores de cada unidade.
  * @param worldUnitsMap Mapa contendo as stores de cada unidade.
  */
-export function extractWorldUnitsFromMap(worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>): WorldUnitType {
+export function extractWorldUnitsFromMap(worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>): WorldUnitsType {
     const entries = Array.from(worldUnitsMap.entries());
     return entries.reduce((acc, [key, useStore]) => {
         const unitStore = useStore();
         acc[key] = { ...unitStore };
         return acc;
-    }, {} as WorldUnitType);
+    }, {} as WorldUnitsType);
 };

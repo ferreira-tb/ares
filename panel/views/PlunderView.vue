@@ -5,7 +5,6 @@ import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import { useFeaturesStore } from '$renderer/stores/features';
 import { useGroupsStore } from '$renderer/stores/groups';
 import { ipcSend } from '$renderer/ipc';
-import { togglePlunder } from '$panel/utils/helpers';
 import PlunderResources from '$panel/components/PlunderResources.vue';
 import SwitchPopover from '$renderer/components/SwitchPopover.vue';
 
@@ -24,7 +23,11 @@ const dynamicGroupsAmount = computed<number>(() => {
     }, 0);
 });
 
-watch(() => config.active, togglePlunder);
+watch(() => config.active, (isActive) => {
+    ipcSend('plunder:update-config', 'active', isActive);
+    if (!isActive) ipcSend('plunder:save-history');
+});
+
 watch(() => config.ignoreWall, (v) => ipcSend('plunder:update-config', 'ignoreWall', v));
 watch(() => config.destroyWall, (v) => ipcSend('plunder:update-config', 'destroyWall', v));
 watch(() => config.groupAttack, (v) => ipcSend('plunder:update-config', 'groupAttack', v));
@@ -57,7 +60,7 @@ watchEffect(() => {
             </NButtonGroup>
         </div>
 
-        <PlunderResources :plunder-status="config.active" />
+        <PlunderResources />
 
         <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
             <NGridItem>

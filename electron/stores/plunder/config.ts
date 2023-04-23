@@ -5,39 +5,16 @@ import type { WallLevel } from '$types/game';
 import type { Mechanus, MechanusRefOptions } from 'mechanus';
 
 import {
-    integerRef,
     booleanRef,
     positiveIntegerRef,
     positiveNumberRef,
     arrayIncludesRef,
     wallLevelRef,
-    positiveIntegerOrNullRef,
-    integerOrNullRef
+    positiveIntegerOrNullRef
 } from '$electron/utils/mechanus';
 
-import type {
-    BlindAttackPattern,
-    UseCPattern,
-    PlunderPageListType,
-    DemolitionTemplateType,
-    PlunderGroupType
-} from '$types/plunder';
-
-import type {
-    MechanusPlunderStoreType,
-    MechanusPlunderConfigStoreType,
-    MechanusPlunderHistoryStoreType,
-    MechanusPlunderCacheStoreType
-} from '$types/stores';
-
-export function definePlunderStore(mechanus: Mechanus) {
-    return mechanus.define('plunder', {
-        hideAttacked: ref<boolean>(true, booleanRef),
-        page: ref<number>(0, integerRef),
-        pageSize: ref<number | null>(null, integerOrNullRef),
-        plunderExhausted: ref<boolean>(false, booleanRef)
-    } satisfies MechanusPlunderStoreType);
-};
+import type { BlindAttackPattern, UseCPattern } from '$types/plunder';
+import type { MechanusPlunderConfigStoreType } from '$types/stores';
 
 // Patterns.
 const blindAttackPatterns: BlindAttackPattern[] = ['smaller', 'bigger'];
@@ -131,37 +108,4 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
         plunderedResourcesRatio,
         pageDelay
     } satisfies MechanusPlunderConfigStoreType);
-};
-
-export function setPlunderHistoryStores(mechanus: Mechanus) {
-    const useLastPlunderHistoryStore = mechanus.define('lastPlunderHistory', {
-        wood: ref<number>(0, positiveIntegerRef),
-        stone: ref<number>(0, positiveIntegerRef),
-        iron: ref<number>(0, positiveIntegerRef),
-        total: ref<number>(0, positiveIntegerRef),
-        destroyedWalls: ref<number>(0, positiveIntegerRef),
-        attackAmount: ref<number>(0, positiveIntegerRef)
-    } satisfies MechanusPlunderHistoryStoreType);
-
-    const useTotalPlunderHistoryStore = mechanus.define('totalPlunderHistory', {
-        wood: ref<number>(0, positiveIntegerRef),
-        stone: ref<number>(0, positiveIntegerRef),
-        iron: ref<number>(0, positiveIntegerRef),
-        total: ref<number>(0, positiveIntegerRef),
-        destroyedWalls: ref<number>(0, positiveIntegerRef),
-        attackAmount: ref<number>(0, positiveIntegerRef)
-    } satisfies MechanusPlunderHistoryStoreType);
-
-    return {
-        useLastPlunderHistoryStore,
-        useTotalPlunderHistoryStore
-    };
-};
-
-export function definePlunderCacheStore(mechanus: Mechanus) {
-    return mechanus.define('plunderCache', {
-        pages: ref<PlunderPageListType | null>(null),
-        plunderGroup: ref<PlunderGroupType | null>(null),
-        demolitionTroops: ref<DemolitionTemplateType | null>(null)
-    } satisfies MechanusPlunderCacheStoreType);
 };

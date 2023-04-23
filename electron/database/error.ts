@@ -48,10 +48,7 @@ ErrorLog.init({
     },
     time: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            isInt: true
-        }
+        allowNull: false
     },
     ares: {
         type: DataTypes.STRING,

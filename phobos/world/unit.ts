@@ -1,5 +1,5 @@
 import { PhobosError } from '$phobos/error';
-import type { WorldUnitType, UnitDetails } from '$types/world';
+import type { WorldUnitsType, UnitDetails } from '$types/world';
 
 class EachUnit implements UnitDetails {
     readonly buildTime: number;
@@ -38,7 +38,7 @@ class EachUnit implements UnitDetails {
     };
 };
 
-class WorldUnit implements WorldUnitType {
+class WorldUnits implements WorldUnitsType {
     readonly spear: EachUnit;
     readonly sword: EachUnit;
     readonly axe: EachUnit;
@@ -76,7 +76,7 @@ class WorldUnit implements WorldUnitType {
 
 export function fetchWorldUnit(port: MessagePort) {
     try {
-        const worldUnit = new WorldUnit();
+        const worldUnit = new WorldUnits();
         port.postMessage(worldUnit);
 
     } catch (err) {

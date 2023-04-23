@@ -8,6 +8,8 @@ export function setPlunderConfigEvents() {
     ipcRenderer.on('plunder:config-updated', <T extends keyof typeof plunderConfigStore>(
         _e: unknown, key: T, value: typeof plunderConfigStore[T]
     ) => {
-        plunderConfigStore[key] = value;
+        if (key in plunderConfigStore) {
+            plunderConfigStore[key] = value;
+        };
     });
 };

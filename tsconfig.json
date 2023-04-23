@@ -1,8 +1,13 @@
 {
-    "extends": "@vue/tsconfig/tsconfig.web.json",
     "include": [
         "env.d.ts",
         "global.d.ts",
+
+        "browser.config.*",
+        "modules.config.*",
+        "panel.config.*",
+        "ui.config.*",
+
         "browser/**/*",
         "browser/**/*.vue",
         "global/**/*",
@@ -34,10 +39,15 @@
 
         "target": "esnext",
         "lib": ["esnext", "dom"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
         "esModuleInterop": true,
         "removeComments": true,
+        "verbatimModuleSyntax": true,
+        "jsx": "preserve",
+        "skipLibCheck": true,
         
-        // Restrições
         "alwaysStrict": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
@@ -57,11 +67,5 @@
         "noEmitOnError": true,
 
         "types": ["node"]
-    },
-
-    "references": [
-        {
-            "path": "./tsconfig.config.json"
-        }
-    ]
+    }
 }

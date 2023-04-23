@@ -3,11 +3,10 @@ import { Mechanus, watch, storeToRefs } from 'mechanus';
 import { AppConfig } from '$database/config';
 import { ErrorLog, ElectronErrorLog } from '$database/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
-import { User } from '$database/user';
-import { WorldConfig, WorldUnit } from '$database/world';
+import { getWorldVillagesTable, WorldConfig, WorldUnits, WorldDataFetchHistory } from '$database/world';
 import { VillageGroups } from '$database/groups';
 
-import { definePlunderStore, definePlunderConfigStore, setPlunderHistoryStores, definePlunderCacheStore } from '$stores/plunder';
+import { definePlunderStore, definePlunderConfigStore, definePlunderHistoryStore, definePlunderCacheStore } from '$stores/plunder';
 import { defineAresStore } from '$stores/ares';
 import { defineCacheStore } from '$stores/cache';
 import { defineUnitsStore } from '$stores/units';
@@ -19,8 +18,8 @@ import { defineGroupsStore } from '$stores/groups';
 import { defineBrowserViewStore } from '$stores/view';
 import { defineAppGeneralConfigStore, defineAppNotificationsStore } from '$stores/config';
 
-import { patchAliasRelatedStores } from '$interface/alias';
-import { patchWorldRelatedStores } from '$interface/world';
+import { onAliasChange } from '$interface/alias';
+import { onWorldChange } from '$interface/world';
 import { catchError } from '$interface/error';
 
 import { MainProcessError } from '$electron/error';
@@ -32,7 +31,7 @@ export const useAppNotificationsStore = defineAppNotificationsStore(mechanus);
 export const useAresStore = defineAresStore(mechanus);
 export const usePlunderStore = definePlunderStore(mechanus);
 export const usePlunderConfigStore = definePlunderConfigStore(mechanus);
-export const { useLastPlunderHistoryStore, useTotalPlunderHistoryStore } = setPlunderHistoryStores(mechanus);
+export const usePlunderHistoryStore = definePlunderHistoryStore(mechanus);
 export const usePlunderCacheStore = definePlunderCacheStore(mechanus);
 export const useFeaturesStore = defineFeaturesStore(mechanus);
 export const useUnitsStore = defineUnitsStore(mechanus);
@@ -45,19 +44,20 @@ export const useCacheStore = defineCacheStore(mechanus);
 export const useBrowserViewStore = defineBrowserViewStore(mechanus);
 
 const worldArgs = [
+    WorldDataFetchHistory,
     WorldConfig,
-    WorldUnit,
+    WorldUnits,
     useCacheStore,
     useWorldConfigStore,
-    worldUnitsMap
+    worldUnitsMap,
+    getWorldVillagesTable
 ] as const;
 
 const aliasArgs = [
     PlunderConfig,
     PlunderHistory,
     usePlunderConfigStore,
-    useLastPlunderHistoryStore,
-    useTotalPlunderHistoryStore,
+    usePlunderHistoryStore,
 
     VillageGroups,
     useGroupsStore
@@ -67,13 +67,10 @@ const aliasArgs = [
 MainProcessError.catch = catchError(useAresStore(), useAppNotificationsStore(), ElectronErrorLog);
 
 // WATCHERS
-const { name: playerName } = storeToRefs(usePlayerStore());
-watch(playerName, (name) => User.savePlayerAsUser(name));
-
-// Essas funções retornam outras funções, que, por sua vez, serão usadas como callbacks.
+// Essas funções retornam outras funções, que, por sua vez, são usadas como callbacks.
 const { world, userAlias } = storeToRefs(useCacheStore());
-watch(world, patchWorldRelatedStores(...worldArgs));
-watch(userAlias, patchAliasRelatedStores(...aliasArgs));
+watch(world, onWorldChange(...worldArgs));
+watch(userAlias, onAliasChange(...aliasArgs));
 
 const { screen } = storeToRefs(useAresStore());
 const { pages: plunderPages, plunderGroup } = storeToRefs(usePlunderCacheStore());
@@ -96,8 +93,10 @@ export {
     PlunderConfig,
     CustomPlunderTemplate,
     DemolitionTemplate,
-    User,
+    WorldDataFetchHistory,
     WorldConfig,
-    WorldUnit,
-    VillageGroups
+    WorldUnits,
+    VillageGroups,
+
+    getWorldVillagesTable
 };

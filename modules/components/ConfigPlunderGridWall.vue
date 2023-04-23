@@ -8,6 +8,7 @@ import InputWall from '$renderer/components/InputWall.vue';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';
 import type { PlunderConfigType } from '$types/plunder';
+import type { WallLevel } from '$types/game';
 
 const props = defineProps<{
     config: PlunderConfigType;
@@ -20,8 +21,8 @@ const emit = defineEmits<{
 const dialog = useDialog();
 const message = useMessage();
 
-const wallLevelToIgnore = ref<number>(props.config.wallLevelToIgnore);
-const wallLevelToDestroy = ref<number>(props.config.wallLevelToDestroy);
+const wallLevelToIgnore = ref<WallLevel>(props.config.wallLevelToIgnore);
+const wallLevelToDestroy = ref<WallLevel>(props.config.wallLevelToDestroy);
 const destroyWallMaxDistance = ref<number>(props.config.destroyWallMaxDistance);
 
 watch(wallLevelToIgnore, (v) => emit('update:config', 'wallLevelToIgnore', v));

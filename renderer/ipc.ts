@@ -3,13 +3,13 @@ import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$lib/plunder/attack';
 import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$types/game';
 import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType } from '$types/error';
-import type { WorldConfigType, WorldUnitType } from '$types/world';
+import type { WorldConfigType, WorldUnitsType } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
 import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
 
 import type {
-    PlunderAttackDetails,
+    PlunderAttackLog,
     PlunderInfoType,
     CustomPlunderTemplateType,
     DemolitionTemplateType,
@@ -57,7 +57,7 @@ export async function ipcInvoke(channel: 'current-view-can-go-forward'): Promise
 // Jogo
 export async function ipcInvoke(channel: 'current-world'): Promise<World | null>;
 export async function ipcInvoke(channel: 'current-world-config'): Promise<WorldConfigType>;
-export async function ipcInvoke(channel: 'current-world-units'): Promise<WorldUnitType>;
+export async function ipcInvoke(channel: 'current-world-units'): Promise<WorldUnitsType>;
 export async function ipcInvoke(channel: 'player-name', alias?: UserAlias): Promise<string | null>;
 export async function ipcInvoke(channel: 'is-archer-world'): Promise<boolean>;
 export async function ipcInvoke(channel: 'fetch-village-groups'): Promise<boolean>;
@@ -70,8 +70,7 @@ export async function ipcInvoke(channel: 'get-electron-error-log'): Promise<Elec
 // Plunder
 export async function ipcInvoke(channel: 'plunder:is-active'): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:get-config'): Promise<PlunderConfigType | null>;
-export async function ipcInvoke(channel: 'plunder:get-last-attack-details'): Promise<PlunderAttackDetails | null>;
-export async function ipcInvoke(channel: 'plunder:get-total-attack-details'): Promise<PlunderAttackDetails | null>;
+export async function ipcInvoke(channel: 'plunder:get-history'): Promise<PlunderAttackLog>;
 export async function ipcInvoke(channel: 'plunder:get-custom-templates', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
 export async function ipcInvoke(channel: 'plunder:save-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:destroy-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
@@ -142,7 +141,7 @@ export function ipcSend(channel: 'delete-electron-error-log', id: number): void;
 export function ipcSend(channel: 'plunder:open-custom-template-window'): void;
 export function ipcSend<T extends keyof PlunderConfigType>(channel: 'plunder:update-config', key: T, value: PlunderConfigType[T]): void;
 export function ipcSend(channel: 'plunder:attack-sent', plunderAttack: PlunderAttack): void;
-export function ipcSend(channel: 'plunder:save-attack-details', details: PlunderAttackDetails): void;
+export function ipcSend(channel: 'plunder:save-history'): void;
 export function ipcSend(channel: 'plunder:update-pages-info', villageInfo: PlunderPageListType | null): void;
 export function ipcSend(channel: 'plunder:update-group-info', groupInfo: PlunderGroupType | null): void;
 export function ipcSend(channel: 'plunder:navigate-to-next-village', currentVillageId?: number | null): void;

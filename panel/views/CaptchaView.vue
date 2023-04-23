@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import { watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { NResult } from 'naive-ui';
 import { watchImmediate } from '@vueuse/core';
 import { useAresStore } from '$renderer/stores/ares';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import { router } from '$panel/router';
-import { togglePlunder } from '$panel/utils/helpers';
+import { ipcSend } from '$renderer/ipc';
 
 const aresStore = useAresStore();
 const plunderConfigStore = usePlunderConfigStore();
 
 const { captcha } = storeToRefs(aresStore);
 
-watch(() => plunderConfigStore.active, togglePlunder);
-
 watchImmediate(captcha, (isActive) => {
     if (isActive && router.currentRoute.value.name === 'am_farm') {
         plunderConfigStore.active = false;
+        ipcSend('plunder:save-history');
     };
 });
 </script>

@@ -3,6 +3,8 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
+const extensions = ['.mjs', '.js', '.mts', '.ts', '.json'];
+
 export default [
     {
         input: 'electron/electron.ts',
@@ -12,7 +14,7 @@ export default [
             generatedCode: 'es2015'
         },
         plugins: [
-            nodeResolve({ extensions: ['.mjs', '.js', '.mts', '.ts', '.json'], exportConditions: ['node'] }),
+            nodeResolve({ extensions, exportConditions: ['node'] }),
             commonjs({ ignoreDynamicRequires: true }),
             json(),
             typescript({ tsconfig: 'electron/tsconfig.json' })
@@ -31,6 +33,21 @@ export default [
         }
     },
     {
+        input: 'electron/child-process/world-data.ts',
+        output: {
+            file: 'dist/child-process/world-data.js',
+            format: 'cjs',
+            generatedCode: 'es2015'
+        },
+        plugins: [
+            nodeResolve({ extensions, exportConditions: ['node'] }),
+            commonjs({ ignoreDynamicRequires: true }),
+            json(),
+            typescript({ tsconfig: 'electron/tsconfig.json' })
+        ],
+        external: ['electron']
+    },
+    {
         input: 'deimos/index.ts',
         output: {
             file: 'dist/deimos.js',
@@ -38,7 +55,7 @@ export default [
             generatedCode: 'es2015'
         },
         plugins: [
-            nodeResolve({ extensions: ['.mjs', '.js', '.mts', '.ts', '.json'] }),
+            nodeResolve({ extensions }),
             commonjs(),
             json(),
             typescript({ tsconfig: 'deimos/tsconfig.json' })
@@ -53,7 +70,7 @@ export default [
             generatedCode: 'es2015'
         },
         plugins: [
-            nodeResolve({ extensions: ['.mjs', '.js', '.mts', '.ts', '.json'] }),
+            nodeResolve({ extensions }),
             commonjs(),
             json(),
             typescript({ tsconfig: 'phobos/tsconfig.json' })
