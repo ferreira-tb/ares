@@ -22,6 +22,7 @@ export function setConfigEvents() {
     ipcMain.handle('db:clear-database', async () => {
         try {
             await sequelize.close();
+            if (!sequelize.isClosed) sequelize.isClosed = true;
             await fs.rm(database, { recursive: true, maxRetries: 5 });
             setTimeout(() => restartAres(), 3000);
             return true;

@@ -1,7 +1,11 @@
 import { Sequelize } from 'sequelize';
 import { database } from '$electron/utils/files';
 
-export const sequelize = new Sequelize({
+class SequelizeDatabase extends Sequelize {
+    isClosed: boolean = false;
+};
+
+export const sequelize = new SequelizeDatabase({
     dialect: 'sqlite',
     storage: database,
     logging: false

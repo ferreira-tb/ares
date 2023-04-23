@@ -1,11 +1,10 @@
-import * as fs from 'fs/promises';
-import * as path from 'path';
 import { app, BrowserWindow } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { isString } from '$global/guards';
 import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/app/modules';
 import { getMainWindow } from '$electron/utils/helpers';
+import { MainProcessError } from '$electron/error';
 import type { ElectronErrorLogBase } from '$types/error';
 import type { useAresStore, useAppNotificationsStore } from '$electron/interface';
 import type { ElectronErrorLog as ElectronErrorLogTable } from '$electron/interface';
@@ -45,11 +44,7 @@ export function catchError(
             };
 
         } catch {
-            // Gera um arquivo de log com a data e a pilha de erros.
-            const date = new Date().toLocaleString('pt-br');
-            const logPath = path.join(app.getPath('userData'), 'ares-error.log');
-            const content = `${date}\nAres: ${app.getVersion()} Electron: ${process.versions.electron}\n${err.stack}\n\n`;
-            await fs.appendFile(logPath, content);
+            await MainProcessError.log(err);
         };
     };
 };

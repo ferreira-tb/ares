@@ -1,3 +1,6 @@
+import * as path from 'node:path';
+import * as fs from 'node:fs/promises';
+import { app } from 'electron';
 import { AresError } from '$global/error';
 
 export class MainProcessError extends AresError {
@@ -10,6 +13,15 @@ export class MainProcessError extends AresError {
     public static mock() {
         const error = new this('Isso é um teste.');
         this.catch(error);
+    };
+
+    /** Gera um arquivo de log com a data e a pilha de erros. */
+    public static async log(err: unknown) {
+        if (!(err instanceof Error)) return;
+        const date = new Date().toLocaleString('pt-br');
+        const logPath = path.join(app.getPath('userData'), 'ares-error.log');
+        const content = `${date}\nAres: ${app.getVersion()} Electron: ${process.versions.electron}\n${err.stack}\n\n`;
+        await fs.appendFile(logPath, content);
     };
 };
 
