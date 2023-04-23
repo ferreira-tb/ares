@@ -57,6 +57,9 @@ if (!data.isPullRequest && data.labels.length > 0 && data.labels.some((label) =>
     } else if (data.state === 'closed') {
         if (data.labels.some((label) => label.name === 'wontfix')) {
             embed.setColor('#bd2c00');
+            embed.addFields({ name: 'Status', value: 'Não trabalharemos nisso', inline: true });
+        } else if (data.labels.some((label) => label.name === 'dropped')) {
+            embed.setColor('#bd2c00');
             embed.addFields({ name: 'Status', value: 'Descontinuado', inline: true });
         } else {
             embed.setColor('#6e5494');
