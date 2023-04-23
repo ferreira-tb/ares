@@ -65,6 +65,13 @@ export function generateRandomDelay(base: number, range?: number) {
     return generateIntegerBetween(base - range, base + range);
 };
 
+export function getContinentFromCoords(x: number, y: number, prefix?: string) {
+    const a = y.toString(10)[0];
+    const b = x.toString(10)[0];
+    if (prefix) return `${prefix}${a}${b}`;
+    return `${a}${b}`;
+};
+
 /**
  * Transforma um número em uma string com o formato de data local.
  * @param raw Número representando a data. Se omitido, utiliza `Date.now()`.

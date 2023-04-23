@@ -10,6 +10,7 @@ import { setGroupsEvents } from '$electron/events/groups';
 import { setBrowserEvents } from '$electron/events/browser';
 import { setConfigEvents } from '$electron/events/config';
 import { setDevEvents } from '$electron/events/dev';
+import { setWorldDataEvents } from '$electron/events/world-data';
 import { isUserAlias } from '$global/guards';
 import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$electron/interface';
@@ -57,4 +58,5 @@ export function setEvents() {
     setDeimosEvents();
     setModuleEvents();
     setGroupsEvents();
+    setWorldDataEvents();
 };

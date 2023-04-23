@@ -1,6 +1,6 @@
 import { WebsiteUrl } from '$global/constants';
-import { createModule } from '$electron/app/modules/standard-modules';
-import { createWebsiteModule } from '$electron/app/modules/website-modules';
+import { createModule } from '$electron/app/modules/standard';
+import { createWebsiteModule } from '$electron/app/modules/website';
 
 // Padrão
 export const showAppSettings = createModule('app-config', 'app-config', {
@@ -36,10 +36,14 @@ export const showCustomPlunderTemplate = createModule('plunder-template', 'plund
 });
 
 export const showPlunderHistory = createModule('plunder-history', 'plunder-history', {
-    width: 1000,
-    height: 600,
+    width: 1200,
+    minWidth: 1200,
+    height: 800,
+    minHeight: 800,
     title: 'Histórico de saque',
-    minimizable: true
+    minimizable: true,
+    maximizable: true,
+    resizable: true
 });
 
 // Websites

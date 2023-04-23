@@ -3,10 +3,10 @@ import { assertInteger } from '$global/guards';
 import { MainProcessEventError } from '$electron/error';
 import { assertUserAlias } from '$global/guards';
 import { getPanelWindow } from '$electron/utils/helpers';
-import { showPlunderHistory } from '$electron/app/modules';
+import { showPlunderHistory, getActiveModuleWebContents } from '$electron/app/modules';
 import { usePlunderHistoryStore, PlunderHistory, useCacheStore } from '$electron/interface';
 import { PlunderHistoryVillage } from '$global/objects/plunder';
-import type { PlunderAttackLog } from '$types/plunder';
+import type { PlunderAttackLog, PlunderHistoryType } from '$types/plunder';
 
 export function setPlunderHistoryEvents() {
     const panelWindow = getPanelWindow();
@@ -38,17 +38,15 @@ export function setPlunderHistoryEvents() {
         };
 
         panelWindow.webContents.send('plunder:attack-sent', attackLog);
-    });
 
-    ipcMain.handle('plunder:get-history', (): PlunderAttackLog => {
-        return {
-            wood: plunderHistoryStore.wood,
-            stone: plunderHistoryStore.stone,
-            iron: plunderHistoryStore.iron,
-            attackAmount: plunderHistoryStore.attackAmount,
-            destroyedWalls: plunderHistoryStore.destroyedWalls
+        // Se a janela de histórico estiver aberta, atualiza-a.
+        const plunderHistoryWebContents = getActiveModuleWebContents('plunder-history');
+        if (plunderHistoryWebContents) {
+            plunderHistoryWebContents.send('plunder:history-did-update', getHistory(plunderHistoryStore));
         };
     });
+
+    ipcMain.handle('plunder:get-history', () => getHistory(plunderHistoryStore));
 
     ipcMain.on('plunder:save-history', async () => {
         try {
@@ -59,4 +57,10 @@ export function setPlunderHistoryEvents() {
             MainProcessEventError.catch(err);
         };
     });
+};
+
+function getHistory(plunderHistoryStore: ReturnType<typeof usePlunderHistoryStore>): PlunderHistoryType {
+    // Na store, `villages` é um Proxy, então é necessário clonar o objeto antes de enviá-lo.
+    const villages = { ...plunderHistoryStore.villages };
+    return { ...plunderHistoryStore, villages };
 };

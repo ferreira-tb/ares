@@ -2,7 +2,7 @@ import type { RouteComponent } from 'vue-router';
 import type { BrowserWindowConstructorOptions } from 'electron';
 
 export type ModuleConstructorOptions = Pick<BrowserWindowConstructorOptions,
-    'height' | 'maximizable' | 'minimizable' | 'resizable' | 'title' | 'width'
+    'height' | 'maximizable' | 'minHeight' | 'minimizable' | 'minWidth' | 'resizable' | 'title' | 'width'
 >;
 
 export interface ModuleRouteToPush {

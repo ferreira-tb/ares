@@ -3,19 +3,19 @@ import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$global/objects/plunder';
 import type { UnitAmount, World, TribalWarsGameDataType, VillageGroup } from '$types/game';
 import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType } from '$types/error';
-import type { WorldConfigType, WorldUnitsType } from '$types/world';
+import type { WorldConfigType, WorldUnitsType, WorldVillagesType } from '$types/world';
 import type { UserAlias } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
 import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
 
 import type {
-    PlunderAttackLog,
     PlunderInfoType,
     CustomPlunderTemplateType,
     DemolitionTemplateType,
     PlunderConfigType,
     PlunderPageListType,
-    PlunderGroupType
+    PlunderGroupType,
+    PlunderHistoryType
 } from '$types/plunder';
 
 // Janela
@@ -34,7 +34,7 @@ export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
 export async function ipcInvoke(channel: 'is-ignored-app-version', version: string): Promise<boolean>;
 
 // Configurações
-export async function ipcInvoke(channel: 'drop-database'): Promise<boolean>;
+export async function ipcInvoke(channel: 'db:clear-database'): Promise<boolean>;
 export async function ipcInvoke(channel: 'get-app-general-config'): Promise<GeneralConfigType>;
 export async function ipcInvoke(channel: 'get-app-notifications-config'): Promise<NotificationsConfigType>;
 export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise<boolean>;
@@ -50,6 +50,9 @@ export async function ipcInvoke(channel: 'current-view-url'): Promise<string>;
 export async function ipcInvoke(channel: 'current-view-web-contents-id'): Promise<number>;
 export async function ipcInvoke(channel: 'current-view-can-go-back'): Promise<boolean>;
 export async function ipcInvoke(channel: 'current-view-can-go-forward'): Promise<boolean>;
+
+// World Data
+export async function ipcInvoke(channel: 'world-data:get-village', id?: number[] | number, world?: World): Promise<WorldVillagesType[]>;
 
 // Jogo
 export async function ipcInvoke(channel: 'current-world'): Promise<World | null>;
@@ -67,7 +70,7 @@ export async function ipcInvoke(channel: 'error:get-electron-log'): Promise<Elec
 // Plunder
 export async function ipcInvoke(channel: 'plunder:is-active'): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:get-config'): Promise<PlunderConfigType | null>;
-export async function ipcInvoke(channel: 'plunder:get-history'): Promise<PlunderAttackLog>;
+export async function ipcInvoke(channel: 'plunder:get-history'): Promise<PlunderHistoryType>;
 export async function ipcInvoke(channel: 'plunder:get-custom-templates', alias?: UserAlias): Promise<CustomPlunderTemplateType[] | null>;
 export async function ipcInvoke(channel: 'plunder:save-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:destroy-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;

@@ -18,7 +18,7 @@ export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, Infer
 
     public static async saveHistory(alias: UserAlias, plunderHistoryStore: ReturnType<typeof usePlunderHistoryStore>) {
         try {
-            // Na store, `villages` é um Proxy, então é necessário clonar o objeto para que o Sequelize possa salvá-lo no banco de dados.
+            // Na store, `villages` é um Proxy, então é necessário clonar o objeto antes de salvá-lo.
             const villages = { ...plunderHistoryStore.villages };
             await sequelize.transaction(async (transaction) => {
                 await PlunderHistory.upsert({

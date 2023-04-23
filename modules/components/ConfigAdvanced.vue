@@ -15,8 +15,8 @@ function dropDatabase() {
         onPositiveClick: async () => {
             status.loading = true;
             try {
-                const dropped = await ipcInvoke('drop-database');
-                if (dropped) {
+                const cleared = await ipcInvoke('db:clear-database');
+                if (cleared) {
                     message.success('O Ares reiniciará em instantes...');
                 } else {
                     message.error('Ocorreu algum erro :(');

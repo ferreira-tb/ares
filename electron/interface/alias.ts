@@ -112,9 +112,10 @@ async function patchPlunderHistory<T extends keyof PlunderHistoryType>(
                 plunderHistoryStore[key] = value;
             } else if (key === 'villages') {
                 // Atualiza o histórico individual de cada aldeia.
+                const now = Date.now();
                 for (const [villageId, villageHistory] of Object.entries(value) as [string, PlunderHistoryVillageType[]][]) {
                     plunderHistoryStore.villages[villageId] = villageHistory.filter((log) => {
-                        return log.addedAt >= (Date.now() - Kronos.Month);
+                        return log.addedAt >= (now - Kronos.Month);
                     });
                 };
             };
