@@ -29,4 +29,4 @@ jobs:
         git add ./docs
         git commit -m "${{ format('chore: atualiza para versão `{0}`', github.event.release.tag_name) }}"
         git push origin ${{ format('release-{0}', github.event.release.tag_name) }}
-    - run: 'gh pr create --title "${{ github.event.release.tag_name }}" --body "${{ github.event.release.tag_name }}" --label auto'
+    - run: 'gh pr create --title "${{ github.event.release.tag_name }}" --body "${{ github.event.release.tag_name }}" --label "github actions"'
