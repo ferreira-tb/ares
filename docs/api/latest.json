@@ -1,7 +1,7 @@
 {
-    "version": "1.0.0-alpha.29",
-    "notes": "https://github.com/ferreira-tb/ares/releases/tag/1.0.0-alpha.29",
-    "download": "https://github.com/ferreira-tb/ares/releases/download/1.0.0-alpha.29/ares-win32-x64-1.0.0-alpha.29.zip",
+    "version": "1.0.0-alpha.30",
+    "notes": "https://github.com/ferreira-tb/ares/releases/tag/1.0.0-alpha.30",
+    "download": "https://github.com/ferreira-tb/ares/releases/download/1.0.0-alpha.30/ares-win32-x64-1.0.0-alpha.30.zip",
     "isAlpha": true,
-    "date": 1681944200621
+    "date": 1682295981000
 }
