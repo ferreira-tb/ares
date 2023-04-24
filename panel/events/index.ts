@@ -18,12 +18,12 @@ export function setPanelEvents() {
     const unitStore = useUnitsStore();
     const groupsStore = useGroupsStore();
 
-    ipcRenderer.on('panel:visibility-did-change', (_e, isVisible: boolean) => {
-        panelStore.isVisible = isVisible;
+    ipcRenderer.on('captcha:status-did-update', (_e, thereIsCaptcha: boolean) => {
+        aresStore.captcha = thereIsCaptcha;
     });
 
-    ipcRenderer.on('captcha-status-did-update', (_e, thereIsCaptcha: boolean) => {
-        aresStore.captcha = thereIsCaptcha;
+    ipcRenderer.on('panel:visibility-did-change', (_e, isVisible: boolean) => {
+        panelStore.isVisible = isVisible;
     });
 
     ipcRenderer.on('panel:patch-game-data', (_e, data: TribalWarsGameDataType) => {
