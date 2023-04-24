@@ -30,7 +30,7 @@ watchImmediate(currentScreen, async (name) => {
 whenever(isDeimosReady, async () => {
     if (gameOriginRegex.test(location.origin)) {
         const responseTime = await Deimos.invoke('get-response-time');
-        ipcSend('update-response-time', responseTime);
+        ipcSend('browser:update-response-time', responseTime);
         aresStore.responseTime = responseTime;
     };
 });

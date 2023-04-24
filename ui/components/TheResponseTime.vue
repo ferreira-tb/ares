@@ -5,7 +5,7 @@ import { NTag } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 
 const responseTime = ref<number | null>(null);
-responseTime.value = await ipcInvoke('get-response-time');
+responseTime.value = await ipcInvoke('browser:get-response-time');
 
 const responseTimeTagType = computed(() => {
     if (responseTime.value) {

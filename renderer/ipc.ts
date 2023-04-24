@@ -30,7 +30,7 @@ export async function ipcInvoke(channel: 'user-alias'): Promise<UserAlias | null
 export async function ipcInvoke(channel: 'user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'user-desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-response-time'): Promise<number>;
+export async function ipcInvoke(channel: 'browser:get-response-time'): Promise<number>;
 export async function ipcInvoke(channel: 'is-ignored-app-version', version: string): Promise<boolean>;
 
 // Configurações
@@ -104,8 +104,8 @@ export function ipcSend(channel: 'open-github-issues'): void;
 export function ipcSend(channel: 'open-app-update-window'): void;
 export function ipcSend(channel: 'download-from-url', url: string): void;
 export function ipcSend(channel: 'show-update-available-dialog', newVersion: string): void;
-export function ipcSend(channel: 'update-captcha-status', status: boolean): void;
-export function ipcSend(channel: 'update-response-time', time: number | null): void;
+export function ipcSend(channel: 'captcha:update-status', status: boolean): void;
+export function ipcSend(channel: 'browser:update-response-time', time: number | null): void;
 export function ipcSend(channel: 'electron:show-message-box', options: ElectronMessageBoxOptions): void;
 
 // Desenvolvedor

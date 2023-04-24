@@ -12,7 +12,7 @@ const aresStore = useAresStore();
 const { captcha } = storeToRefs(aresStore);
 
 captcha.value = thereIsBotCheck();
-watchSyncEffect(() => ipcSend('update-captcha-status', captcha.value));
+watchSyncEffect(() => ipcSend('captcha:update-status', captcha.value));
 
 const content = ref(document.querySelector<HTMLTableElement>('table#contentContainer'));
 const options: UseMutationObserverOptions = {
