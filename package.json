@@ -42,7 +42,7 @@
         "@vueuse/core": "^10.1.0",
         "@vueuse/electron": "^10.1.0",
         "csv-parser": "^3.0.0",
-        "discord.js": "^14.9.0",
+        "discord.js": "^14.10.0",
         "mechanus": "^1.0.5",
         "pinia": "^2.0.35",
         "semver": "^7.5.0",
