@@ -4,18 +4,18 @@
             "icon": "vite",
             "extensions": ["browser.config.ts", "modules.config.ts", "panel.config.ts", "ui.config.ts"],
             "filename": true,
-            "format": "FileFormat.svg"
+            "format": "svg"
         }
     ],
     "vsicons.associations.folders": [
-        { "icon": "src", "extensions": ["vue"], "format": "FileFormat.svg" },
-        { "icon": "api", "extensions": ["browser"], "format": "FileFormat.svg" },
-        { "icon": "aurelia", "extensions": ["deimos"], "format": "FileFormat.svg" },
-        { "icon": "ravendb", "extensions": ["phobos"], "format": "FileFormat.svg" },
-        { "icon": "story", "extensions": ["store", "stores"], "format": "FileFormat.svg" },
-        { "icon": "nix", "extensions": ["panel"], "format": "FileFormat.svg" },
-        { "icon": "www", "extensions": ["global"], "format": "FileFormat.svg" },
-        { "icon": "theme", "extensions": ["composable", "composables"], "format": "FileFormat.svg" }
+        { "icon": "src", "extensions": ["vue"], "format": "svg" },
+        { "icon": "api", "extensions": ["browser"], "format": "svg" },
+        { "icon": "aurelia", "extensions": ["deimos"], "format": "svg" },
+        { "icon": "ravendb", "extensions": ["phobos"], "format": "svg" },
+        { "icon": "story", "extensions": ["store", "stores"], "format": "svg" },
+        { "icon": "nix", "extensions": ["panel"], "format": "svg" },
+        { "icon": "www", "extensions": ["global"], "format": "svg" },
+        { "icon": "theme", "extensions": ["composable", "composables"], "format": "svg" }
     ],
     "conventionalCommits.scopes": [
         "browser"
