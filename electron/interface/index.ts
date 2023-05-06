@@ -64,7 +64,7 @@ const aliasArgs = [
 ] as const;
 
 // ERROS
-MainProcessError.catch = catchError(useAresStore(), useAppNotificationsStore(), ElectronErrorLog);
+MainProcessError.catch = catchError(useAppNotificationsStore(), ElectronErrorLog);
 
 // WATCHERS
 // Essas funções retornam outras funções, que, por sua vez, são usadas como callbacks.

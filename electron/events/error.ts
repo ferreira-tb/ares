@@ -5,14 +5,14 @@ import { MainProcessEventError } from '$electron/error';
 import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/app/modules';
 import { ErrorLog, ElectronErrorLog, useAresStore } from '$electron/interface';
-import type { ErrorLogBase, ErrorLogType } from '$types/error';
+import type { ErrorLogBase, ErrorLogType, OmitOptionalErrorLogProps } from '$types/error';
 
 export function setErrorEvents() {
     const aresStore = useAresStore();
 
-    ipcMain.on('error:create-log', async (e, error: ErrorLogBase) => {
+    ipcMain.on('error:create-log', async (e, error: Omit<ErrorLogBase, 'id' | 'pending'>) => {
         try {
-            const errorLog: Omit<ErrorLogType, 'id' | 'pending'> = {
+            const errorLog: OmitOptionalErrorLogProps<ErrorLogType> = {
                 name: error.name,
                 message: error.message,
                 stack: error.stack,

@@ -3,9 +3,9 @@ import { useIpcRendererOn } from '@vueuse/electron';
 import { NConfigProvider, NLoadingBarProvider, darkTheme } from 'naive-ui';
 import TheTopContainer from '$ui/components/TheTopContainer.vue';
 import TheLoadingBar from '$ui/components/TheLoadingBar.vue';
-import type { ElectronErrorLogBase } from '$types/error';
+import type { ElectronErrorLogType } from '$types/error';
 
-useIpcRendererOn('notify-electron-error', (_e, err: ElectronErrorLogBase) => {
+useIpcRendererOn('notify-electron-error', (_e, err: ElectronErrorLogType) => {
     new Notification(err.name, { body: err.message });
 });
 </script>
@@ -19,7 +19,3 @@ useIpcRendererOn('notify-electron-error', (_e, err: ElectronErrorLogBase) => {
         </NLoadingBarProvider>
     </NConfigProvider>
 </template>
-
-<style scoped>
-
-</style>

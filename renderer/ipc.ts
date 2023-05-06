@@ -2,7 +2,7 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$global/objects/plunder';
 import type { UnitAmount, World, TribalWarsGameDataType, UserAlias, VillageGroup } from '$types/game';
-import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType } from '$types/error';
+import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType, OmitOptionalErrorLogProps } from '$types/error';
 import type { WorldConfigType, WorldUnitsType, WorldVillagesType } from '$types/world';
 import type { ElectronMessageBoxOptions } from '$types/electron';
 import type { ConfigModuleRoutes } from '$types/modules';
@@ -136,7 +136,7 @@ export function ipcSend(channel: 'destroy-browser-view', webContentsId: number):
 
 // Erros
 export function ipcSend(channel: 'error:open-log-window'): void;
-export function ipcSend(channel: 'error:create-log', err: ErrorLogBase): void;
+export function ipcSend(channel: 'error:create-log', err: OmitOptionalErrorLogProps<ErrorLogBase>): void;
 export function ipcSend(channel: 'error:delete-log', id: number): void;
 export function ipcSend(channel: 'error:delete-electron-log', id: number): void;
 

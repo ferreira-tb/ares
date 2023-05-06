@@ -2,6 +2,8 @@ import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { app } from 'electron';
 import { AresError } from '$global/error';
+import { isString } from '$global/guards';
+import type { ElectronErrorLogType, OmitOptionalErrorLogProps } from '$types/error';
 
 export class MainProcessError extends AresError {
     constructor(message: string) {
@@ -18,9 +20,21 @@ export class MainProcessError extends AresError {
     /** Gera um arquivo de log com a data e a pilha de erros. */
     public static async log(err: unknown) {
         if (!(err instanceof Error)) return;
-        const date = new Date().toLocaleString('pt-br');
+
+        const errorLog: OmitOptionalErrorLogProps<ElectronErrorLogType> = {
+            name: err.name,
+            message: err.message,
+            stack: isString(err.stack) ? err.stack : null,
+            time: Date.now(),
+            ares: app.getVersion(),
+            chrome: process.versions.chrome,
+            electron: process.versions.electron,
+            tribal: process.env.TRIBAL_WARS_VERSION ?? 'unknown',
+            locale: process.env.TRIBAL_WARS_LOCALE ?? 'unknown'
+        };
+
+        const content = this.generateLogContent(errorLog);
         const logPath = path.join(app.getPath('userData'), 'ares-error.log');
-        const content = `${date}\nAres: ${app.getVersion()} Electron: ${process.versions.electron}\n${err.stack}\n\n`;
         await fs.appendFile(logPath, content);
     };
 };

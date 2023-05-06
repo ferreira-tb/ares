@@ -13,7 +13,7 @@ export class RendererProcessError extends AresError {
             const errorLog = {
                 name: err.name,
                 message: err.message,
-                stack: isString(err.stack) ? err.stack : null
+                stack: isString(err.stack) ? err.stack : err.message
             };
 
             ipcSend('error:create-log', errorLog);

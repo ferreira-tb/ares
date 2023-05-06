@@ -5,12 +5,11 @@ import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/app/modules';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessError } from '$electron/error';
-import type { ElectronErrorLogBase } from '$types/error';
-import type { useAresStore, useAppNotificationsStore } from '$electron/interface';
+import type { ElectronErrorLogType, OmitOptionalErrorLogProps } from '$types/error';
+import type { useAppNotificationsStore } from '$electron/interface';
 import type { ElectronErrorLog as ElectronErrorLogTable } from '$electron/interface';
 
 export function catchError(
-    aresStore: ReturnType<typeof useAresStore>,
     appNotificationsStore: ReturnType<typeof useAppNotificationsStore>,
     ElectronErrorLog: typeof ElectronErrorLogTable
 ) {
@@ -18,16 +17,16 @@ export function catchError(
     return async function(err: unknown) {
         if (!(err instanceof Error)) return;
         try {
-            const errorLog: ElectronErrorLogBase = {
+            const errorLog: OmitOptionalErrorLogProps<ElectronErrorLogType> = {
                 name: err.name,
                 message: err.message,
-                stack: isString(err.stack) ? err.stack : null,
+                stack: isString(err.stack) ? err.stack : err.message,
                 time: Date.now(),
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: aresStore.majorVersion,
-                locale: aresStore.locale
+                tribal: process.env.TRIBAL_WARS_VERSION ?? 'unknown',
+                locale: process.env.TRIBAL_WARS_LOCALE ?? 'unknown'
             };
 
             await sequelize.transaction(async (transaction) => {
