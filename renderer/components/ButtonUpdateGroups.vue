@@ -32,15 +32,15 @@ async function fetchVillageGroups() {
 </script>
 
 <template>
-    <div class="grid-button-area">
+    <div class="btn-groups-update">
         <NButton :loading="loading" :disabled="loading" @click="fetchVillageGroups">
             Atualizar grupos
         </NButton>
     </div>
 </template>
 
-<style scoped>
-.grid-button-area {
+<style scoped lang="scss">
+.btn-groups-update {
     display: flex;
     justify-content: center;
 }

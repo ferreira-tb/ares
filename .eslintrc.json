@@ -417,7 +417,7 @@
         "vue/no-lone-template": "error",
         "vue/this-in-template": ["error", "never"],
 
-        "vue/block-lang": ["error", { "script": { "lang": "ts" } }],
+        "vue/block-lang": ["error", { "script": { "lang": "ts" }, "style": { "lang": "scss" } }],
         "vue/component-api-style": ["error", ["script-setup"]],
         "vue/component-name-in-template-casing": ["error", "PascalCase"],
         "vue/component-options-name-casing": ["error", "PascalCase"],

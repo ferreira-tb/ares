@@ -131,7 +131,7 @@ watch(demolitionData, async (newData) => {
     <ResultError v-else />
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 main {
     user-select: none;
 }

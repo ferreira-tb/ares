@@ -35,7 +35,3 @@ useIpcRendererOn('plunder:history-did-update', (_e, updatedHistory: PlunderHisto
         />
     </main>
 </template>
-
-<style scoped>
-
-</style>

@@ -64,7 +64,7 @@ function removeTemplate(template: CustomPlunderTemplateType) {
     </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .button-area {
     position: absolute;
     top: 0;
