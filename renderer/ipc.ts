@@ -137,8 +137,6 @@ export function ipcSend(channel: 'destroy-browser-view', webContentsId: number):
 // Erros
 export function ipcSend(channel: 'error:open-log-window'): void;
 export function ipcSend(channel: 'error:create-log', err: OmitOptionalErrorLogProps<ErrorLogBase>): void;
-export function ipcSend(channel: 'error:delete-log', id: number): void;
-export function ipcSend(channel: 'error:delete-electron-log', id: number): void;
 
 // Plunder
 export function ipcSend(channel: 'plunder:open-custom-template-window'): void;
