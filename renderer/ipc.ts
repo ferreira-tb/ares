@@ -64,6 +64,7 @@ export async function ipcInvoke(channel: 'fetch-village-groups'): Promise<boolea
 export async function ipcInvoke(channel: 'get-village-groups'): Promise<Set<VillageGroup>>;
 
 // Erros
+export async function ipcInvoke(channel: 'error:export'): Promise<'canceled' | 'error' | 'sucess'>;
 export async function ipcInvoke(channel: 'error:get-log'): Promise<ErrorLogType[] | null>;
 export async function ipcInvoke(channel: 'error:get-electron-log'): Promise<ElectronErrorLogType[] | null>;
 

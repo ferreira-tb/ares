@@ -8,7 +8,7 @@ export class AresError extends Error {
         this.name = 'AresError';
     };
 
-    protected static generateLogContent(err: AllErrorLogTypes | AllErrorLogTypes[]) {
+    public static generateLogContent(err: AllErrorLogTypes | AllErrorLogTypes[]) {
         const errors = Array.isArray(err) ? err : [err];
 
         let content = '';

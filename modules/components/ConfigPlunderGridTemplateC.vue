@@ -109,7 +109,3 @@ const useCOptions = [
         </NGrid>
     </div>
 </template>
-
-<style scoped>
-
-</style>

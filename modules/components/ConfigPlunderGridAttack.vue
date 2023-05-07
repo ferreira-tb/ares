@@ -121,7 +121,3 @@ const blindAttackOptions = [
         </NGrid>
     </div>
 </template>
-
-<style scoped>
-
-</style>

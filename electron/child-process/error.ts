@@ -2,6 +2,7 @@ import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { AresError } from '$global/error';
 import { isString } from '$global/guards';
+import { ErrorLogFile } from '$global/constants';
 import type { ElectronErrorLogType, OmitOptionalErrorLogProps } from '$types/error';
 
 export class ChildProcessError extends AresError {
@@ -28,8 +29,8 @@ export class ChildProcessError extends AresError {
 
             // Gera um arquivo de log com a data e a pilha de erros.
             const content = this.generateLogContent(errorLog);
-            const logPath = path.join(process.env.USER_DATA_PATH, 'child-process-error.log');
-            await fs.appendFile(logPath, content);
+            const logPath = path.join(process.env.USER_DATA_PATH, ErrorLogFile.ChildProcess);
+            await fs.appendFile(logPath, content, { encoding: 'utf-8' });
         };
     };
 };

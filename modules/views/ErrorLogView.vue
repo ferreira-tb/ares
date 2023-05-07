@@ -2,10 +2,11 @@
 import { computed, ref, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { useElementSize, useWindowSize } from '@vueuse/core';
-import { NButton, NTabs, NTab } from 'naive-ui';
+import { NTabs, NTab } from 'naive-ui';
 import { router } from '$modules/router';
 import { ModuleRouterError } from '$modules/error';
 import type { ErrorModuleRoutes } from '$types/modules';
+import ButtonErrorExport from '$renderer/components/ButtonErrorExport.vue';
 
 const { height: windowHeight } = useWindowSize();
 
@@ -16,7 +17,7 @@ const exportButton = ref<HTMLElement | null>(null);
 const { height: exportButtonHeight } = useElementSize(exportButton);
 
 const contentHeight = computed(() => windowHeight.value - navBarHeight.value);
-const buttonAreaTopPosition = computed(() => `${contentHeight.value - 30}px`);
+const wrapperBottom = computed(() => `${contentHeight.value - 30}px`);
 const wrapperHeight = computed(() => `${contentHeight.value - exportButtonHeight.value}px`);
 
 const route = ref<ErrorModuleRoutes>('error-general');
@@ -50,9 +51,7 @@ watchEffect(() => {
         </RouterView>
     </div>
 
-    <div ref="exportButton" class="btn-export-errors">
-        <NButton>Exportar</NButton>
-    </div>
+    <ButtonErrorExport ref="exportButton" :button-top="wrapperBottom" />
 </template>
 
 <style scoped lang="scss">
@@ -60,17 +59,7 @@ watchEffect(() => {
 
 .module-tabbed-view-wrapper {
     @include main.module-tabbed-view-wrapper($margin-bottom: 2rem);
-    bottom: v-bind("buttonAreaTopPosition");
+    bottom: v-bind("wrapperBottom");
     height: v-bind("wrapperHeight");
-}
-
-.btn-export-errors {
-    position: absolute;
-    top: v-bind("buttonAreaTopPosition");
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
 }
 </style>

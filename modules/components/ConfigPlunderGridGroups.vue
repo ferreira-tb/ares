@@ -6,7 +6,7 @@ import { isDistance } from '$global/guards';
 import { ipcInvoke } from '$renderer/ipc';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';
-import ButtonUpdateGroups from '$renderer/components/ButtonUpdateGroups.vue';
+import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
 import type { PlunderConfigType } from '$types/plunder';
 
 const props = defineProps<{
@@ -98,12 +98,8 @@ watchEffect(() => {
             </NGridItem>
 
             <NGridItem :span="2">
-                <ButtonUpdateGroups v-model:groups="groups" />
+                <ButtonGroupsUpdate v-model:groups="groups" />
             </NGridItem>
         </NGrid>
     </div>
 </template>
-
-<style scoped>
-
-</style>

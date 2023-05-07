@@ -59,6 +59,12 @@ export const enum Kronos {
     Month = 30 * Day
 };
 
+export const enum ErrorLogFile {
+    All = 'error.log',
+    ChildProcess = 'child-process-error.log',
+    Uncaught = 'uncaught-error.log'
+};
+
 // Jogo.
 export const resources = ['wood', 'stone', 'iron'] as const;
 export const farmUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'marcher', 'heavy', 'knight'] as const;

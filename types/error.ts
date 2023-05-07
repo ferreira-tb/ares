@@ -17,4 +17,6 @@ export interface ErrorLogType extends EnvironmentInfo, ErrorLogBase {
 export type ElectronErrorLogType = EnvironmentInfo & ErrorLogBase;
 
 export type OmitOptionalErrorLogProps<T> = Omit<T, 'id' | 'pending'>;
-export type AllErrorLogTypes = OmitOptionalErrorLogProps<ElectronErrorLogType> | OmitOptionalErrorLogProps<ErrorLogType>;
+export type AllErrorLogTypes = 
+    | OmitOptionalErrorLogProps<ElectronErrorLogType> & Partial<Pick<ErrorLogBase, 'id' | 'pending'>>
+    | OmitOptionalErrorLogProps<ErrorLogType> & Partial<Pick<ErrorLogBase, 'id' | 'pending'>>;

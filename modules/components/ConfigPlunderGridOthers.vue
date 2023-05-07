@@ -83,7 +83,3 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
         </NGrid>
     </div>
 </template>
-
-<style scoped>
-
-</style>
