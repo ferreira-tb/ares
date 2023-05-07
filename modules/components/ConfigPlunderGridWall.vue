@@ -112,7 +112,3 @@ function resetDemolitionConfig() {
         </NGrid>
     </div>
 </template>
-
-<style scoped>
-
-</style>

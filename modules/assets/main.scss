@@ -17,16 +17,19 @@ html {
     user-select: none;
 }
 
-.module-content {
+@mixin module-tabbed-view-wrapper($margin-bottom: 0) {
     position: absolute;
     top: 30px;
     bottom: 0;
     width: 100%;
     padding-left: 0.3em;
-    padding-right: 0.3em;
     margin-top: 0.5em;
     overflow: hidden;
     user-select: none;
+
+    @if $margin-bottom > 0 {
+        margin-bottom: $margin-bottom;
+    }
 }
 
 .module-view {
@@ -35,4 +38,18 @@ html {
     overflow-x: hidden;
     overflow-y: auto;
     user-select: none;
+}
+
+.config-divider {
+    margin-top: 1em !important;
+    margin-bottom: 0.5em !important;
+}
+
+.config-divider:first-of-type {
+    margin-top: 0.3em !important;
+}
+
+.error-log {
+    margin-bottom: 0.5em;
+    user-select: text;
 }

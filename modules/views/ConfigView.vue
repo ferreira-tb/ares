@@ -48,7 +48,7 @@ onMounted(async () => {
         </NTabs>
     </nav>
 
-    <div class="module-content">
+    <div class="module-tabbed-view-wrapper">
         <RouterView #default="{ Component }" class="module-view tb-scrollbar">
             <template v-if="Component">
                 <Transition name="tb-fade" mode="out-in">
@@ -66,13 +66,10 @@ onMounted(async () => {
     </div>
 </template>
 
-<style scoped>
-:deep(.config-divider) {
-    margin-top: 1em !important;
-    margin-bottom: 0.5em !important;
-}
+<style scoped lang="scss">
+@use '$modules/assets/main.scss';
 
-:deep(.config-divider:first-of-type) {
-    margin-top: 0.3em !important;
+.module-tabbed-view-wrapper {
+    @include main.module-tabbed-view-wrapper;
 }
 </style>

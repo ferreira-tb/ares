@@ -51,7 +51,7 @@ const timePeriod = useVModel(props, 'period', emit);
     </NPageHeader>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .button-area {
     margin-right: 1rem;
 }

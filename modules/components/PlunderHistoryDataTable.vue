@@ -134,7 +134,7 @@ function filterLogs(logs: PlunderHistoryVillageType[]) {
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .history-table {
     margin-top: 1rem;
 }

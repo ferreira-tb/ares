@@ -11,6 +11,7 @@ import type { GameRegion } from '$types/game';
 export const getMainViewWebContents = () => {
     const id = Number.parseIntStrict(process.env.MAIN_VIEW_WEB_CONTENTS_ID ?? '');
     const mainViewWebContents = webContents.fromId(id);
+    if (!mainViewWebContents) throw new BrowserViewError('Could not get main view web contents.');
     return mainViewWebContents;
 };
 
