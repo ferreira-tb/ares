@@ -39,7 +39,7 @@
         "forge:publish": "npm run build && electron-forge make"
     },
     "dependencies": {
-        "@vueuse/core": "^10.1.0",
+        "@vueuse/core": "^10.1.2",
         "@vueuse/electron": "^10.1.0",
         "csv-parser": "^3.0.0",
         "discord.js": "^14.11.0",
