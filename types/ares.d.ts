@@ -1,4 +1,4 @@
-export type EnvironmentInfo = {
+type EnvironmentInfo = {
     readonly time: number;
     readonly ares: string;
     readonly electron: string;
@@ -7,7 +7,7 @@ export type EnvironmentInfo = {
     readonly locale: string | null;
 };
 
-export type LatestVersion = {
+type LatestVersion = {
     readonly version: string;
     readonly notes: string;
     readonly download: string;
@@ -16,7 +16,7 @@ export type LatestVersion = {
     readonly date: number;
 };
 
-export type DownloadProgressType = {
+type DownloadProgressType = {
     readonly receivedBytes: number;
     readonly totalBytes: number;
 };

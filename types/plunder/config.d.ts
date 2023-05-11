@@ -1,5 +1,3 @@
-import type { WallLevel } from '$types/game';
-
 /**
  * Padrão de ataque quando o Plunder não tem informações dos exploradores.
  * 
@@ -7,7 +5,7 @@ import type { WallLevel } from '$types/game';
  * 
  * `smaller`: Ataca com a menor capacidade de carga possível.
  */
-export type BlindAttackPattern = 'bigger' | 'smaller';
+type BlindAttackPattern = 'bigger' | 'smaller';
 
 /**
  * Padrão de ataque quando o Plunder está usando o modelo C.
@@ -19,9 +17,9 @@ export type BlindAttackPattern = 'bigger' | 'smaller';
  * 
  * `only`: Utiliza apenas o modelo C.
  */
-export type UseCPattern = 'excess' | 'normal' | 'only';
+type UseCPattern = 'excess' | 'normal' | 'only';
 
-export type PlunderConfigType = {
+type PlunderConfigType = {
     // Painel
     /** Indica se o Plunder está ativado. */
     active: boolean;
@@ -91,9 +89,9 @@ export type PlunderConfigType = {
     pageDelay: number;
 };
 
-export type PlunderPanelConfig = Pick<PlunderConfigType,
+type PlunderPanelConfig = Pick<PlunderConfigType,
     'active' | 'blindAttack' | 'destroyWall' | 'groupAttack' | 'ignoreDelay' | 'ignoreWall' | 'useC'
 >;
 
-export type PlunderPanelConfigKeys = keyof PlunderPanelConfig;
-export type PlunderPanelConfigValues = PlunderPanelConfig[PlunderPanelConfigKeys];
+type PlunderPanelConfigKeys = keyof PlunderPanelConfig;
+type PlunderPanelConfigValues = PlunderPanelConfig[PlunderPanelConfigKeys];

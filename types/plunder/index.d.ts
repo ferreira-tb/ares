@@ -1,14 +1,4 @@
-import type { FarmUnitsAmount, UserAlias, UnitsToDestroyWall } from '$types/game';
-import type { PlunderGroupType } from '$types/plunder/group';
-import type { PlunderPageListType } from '$types/plunder/page';
-
-export type * from '$types/plunder/config';
-export type * from '$types/plunder/group';
-export type * from '$types/plunder/history';
-export type * from '$types/plunder/info';
-export type * from '$types/plunder/page';
-
-export type PlunderCacheType = {
+type PlunderCacheType = {
     /** Páginas do assistente de saque referentes à aldeia atual. */
     readonly pages: PlunderPageListType | null;
     /** Informações sobre o grupo de saque. */
@@ -17,7 +7,7 @@ export type PlunderCacheType = {
     readonly demolitionTroops: DemolitionTemplateType | null;
 };
 
-export type PlunderTableButtons = {
+type PlunderTableButtons = {
     /** Botão A do assistente de saque. */
     a: HTMLAnchorElement | null;
     /** Botão B do assistente de saque. */
@@ -28,7 +18,7 @@ export type PlunderTableButtons = {
     place: HTMLAnchorElement | null;
 };
 
-export type PlunderTableResources = {
+type PlunderTableResources = {
     /** Estimativa da quantidade de madeira disponível na aldeia. */
     wood: number;
     /** Estimativa da quantidade de argila disponível na aldeia. */
@@ -39,7 +29,7 @@ export type PlunderTableResources = {
     total: number;
 };
 
-export type CustomPlunderTemplateType = {
+type CustomPlunderTemplateType = {
     /** Alias do usuário. */
     alias: UserAlias;
     /** Nome do modelo. */
@@ -50,7 +40,7 @@ export type CustomPlunderTemplateType = {
     readonly units: Omit<FarmUnitsAmount, 'knight'>;
 };
 
-export type DemolitionTemplateType = {
+type DemolitionTemplateType = {
     /** Alias do usuário. */
     alias: UserAlias;
     /** Modelos. */

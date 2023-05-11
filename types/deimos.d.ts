@@ -1,20 +1,18 @@
-import type { Resources, ResourcesPTBR, UnitsAmountAsStrings } from '$types/game';
+type UIMessageType = 'show-ui-error-message' | 'show-ui-info-message' | 'show-ui-success-message';
 
-export type UIMessageType = 'show-ui-error-message' | 'show-ui-info-message' | 'show-ui-success-message';
-
-export type ActivePossible = {
+type ActivePossible = {
     readonly active: boolean;
     readonly possible: boolean;
 };
 
-export type Features = {
+type Features = {
     // Aqui é AccountManager, mas a variável global é Accountmanager.
     readonly AccountManager: ActivePossible;
     readonly FarmAssistent: ActivePossible;
     readonly Premium: ActivePossible;
 };
 
-export type Player = {
+type Player = {
     ally: string;
     ally_level: string;
     ally_member_count: string;
@@ -52,7 +50,7 @@ export type Player = {
     villages: string;
 };
 
-export type Village = {
+type Village = {
     buildings: Buildings;
     coord: string;
     display_name: string;
@@ -80,7 +78,7 @@ export type Village = {
     y: number;
 };
 
-export type Buildings = {
+type Buildings = {
     barracks: string;
     farm: string;
     garage: string;
@@ -100,7 +98,7 @@ export type Buildings = {
     wood: string;
 };
 
-export interface RawTribalWarsGameData {
+interface RawTribalWarsGameData {
     // TribalWars.getGameData()
     readonly device: string;
     readonly features: Readonly<Features>;
@@ -121,7 +119,7 @@ export interface RawTribalWarsGameData {
     readonly world: string;
 };
 
-export interface RawPlunderInfo {
+interface RawPlunderInfo {
     // Accountmanager.farm
     readonly current_units: Readonly<UnitsAmountAsStrings>;
     readonly extended: boolean;
@@ -137,20 +135,20 @@ export interface RawPlunderInfo {
     setPageSize(size: number): boolean;
 };
 
-export type MarketDataTrader = {
+type MarketDataTrader = {
     readonly amount: number;
     readonly carry: number;
     readonly total: number;
 };
 
-export type PremiumExchangeGraphResourceData = {
+type PremiumExchangeGraphResourceData = {
     readonly color: string;
     readonly data: ReadonlyArray<[number, string]>;
     readonly details: ReadonlyArray<{ res_type: Resources }>;
     readonly label: ResourcesPTBR;
 };
 
-export interface RawTiming {
+interface RawTiming {
     readonly added_server_time: number;
     readonly initial_server_time: number;
     readonly is_ready: boolean;

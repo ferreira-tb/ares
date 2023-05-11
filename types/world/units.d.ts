@@ -1,6 +1,4 @@
-import type { AllUnits } from '$types/game';
-
-export type UnitDetails = {
+type UnitDetails = {
     buildTime: number;
     pop: number;
     /** Velocidade da unidade (FLOAT). */
@@ -12,6 +10,6 @@ export type UnitDetails = {
     carry: number;
 };
 
-export type WorldUnitsType = {
+type WorldUnitsType = {
     [key in AllUnits]: key extends 'archer' | 'marcher' ? UnitDetails | null : UnitDetails
 };

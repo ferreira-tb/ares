@@ -1,4 +1,4 @@
-export type PlunderInfoType = {
+type PlunderInfoType = {
     /** Indica se as aldeias sob ataque estão ocultas. */
     readonly hideAttacked: boolean;
     /** Página atual. */

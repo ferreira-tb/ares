@@ -1,4 +1,4 @@
-export type PlunderAttackLog = {
+type PlunderAttackLog = {
     wood: number;
     stone: number;
     iron: number;
@@ -6,11 +6,11 @@ export type PlunderAttackLog = {
     destroyedWalls: number;
 };
 
-export interface PlunderHistoryVillageType extends PlunderAttackLog {
+interface PlunderHistoryVillageType extends PlunderAttackLog {
     readonly addedAt: number;
 };
 
-export interface PlunderHistoryType extends PlunderAttackLog {
+interface PlunderHistoryType extends PlunderAttackLog {
     /** Histórico individual de cada aldeia nos últimos 30 dias. */
     readonly villages: {
         [id: string]: PlunderHistoryVillageType[];

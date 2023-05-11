@@ -1,4 +1,4 @@
-export type WorldConfigType = {
+type WorldConfigType = {
     /** Velocidade do mundo (FLOAT). */
     speed: number;
     /** Velocidade das unidades (FLOAT). */

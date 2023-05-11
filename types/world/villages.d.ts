@@ -1,6 +1,4 @@
-import type { Model } from 'sequelize';
-
-export interface WorldVillagesModel extends Model {
+interface WorldVillagesModel extends import('sequelize').Model {
     readonly id: number;
     readonly name: string;
     readonly x: number;
@@ -10,4 +8,4 @@ export interface WorldVillagesModel extends Model {
     readonly type: number;
 };
 
-export type WorldVillagesType = Omit<WorldVillagesModel, keyof Model>;
+type WorldVillagesType = Omit<WorldVillagesModel, keyof import('sequelize').Model>;

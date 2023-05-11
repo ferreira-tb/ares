@@ -1,74 +1,68 @@
-import type { ComputedRef, Ref } from 'vue';
-import type { WebContents } from 'electron';
-import type { MechanusComputedRef, MechanusRef, MechanusStore } from 'mechanus';
-import type { RemoveMethods } from '$types/utils';
-import type { WorldConfigType } from '$types/world';
-import type { UnitDetails } from '$types/world';
-import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
-import type { PlunderInfoType, PlunderConfigType, PlunderHistoryType, PlunderCacheType } from '$types/plunder';
-import type { AllUnits, GameRegion, TribalWarsGameDataType, UnitAmount, UserAlias, VillageGroup, World } from '$types/game';
+type MechanusRef = import('mechanus').MechanusRef;
+type MechanusComputedRef = import('mechanus').MechanusComputedRef;
+type MechanusStore = import('mechanus').MechanusStore;
 
 // APP GENERAL CONFIG
-export type AppGeneralConfigStore = GeneralConfigType;
-export type MechanusAppGeneralConfigStoreType = {
+type AppGeneralConfigStore = GeneralConfigType;
+type MechanusAppGeneralConfigStoreType = {
     [K in keyof AppGeneralConfigStore]: MechanusRef<AppGeneralConfigStore[K]>;
 };
 
 // APP NOTIFICATIONS CONFIG
-export type AppNotificationsConfigStore = NotificationsConfigType;
-export type MechanusAppNotificationsConfigStoreType = {
+type AppNotificationsConfigStore = NotificationsConfigType;
+type MechanusAppNotificationsConfigStoreType = {
     [K in keyof AppNotificationsConfigStore]: MechanusRef<AppNotificationsConfigStore[K]>;
 };
 
 // ARES
 type AresType = TribalWarsGameDataType['ares'];
-export interface AresStore extends AresType {
+interface AresStore extends AresType {
     /** Indica se há um captcha ativo. */
     readonly captcha: boolean;
     /** Tempo de resposta do servidor do jogo. */
     readonly responseTime: number | null;
 };
-export type PiniaAresStoreType = {
-    [K in keyof AresStore]: Ref<AresStore[K]>;
+type PiniaAresStoreType = {
+    [K in keyof AresStore]: import('vue').Ref<AresStore[K]>;
 };
-export type MechanusAresStoreType = {
+type MechanusAresStoreType = {
     [K in keyof AresStore]: MechanusRef<AresStore[K]>;
 };
 
 // PLAYER
-export type PlayerStore = TribalWarsGameDataType['player'];
-export type PiniaPlayerStoreType = {
-    [K in keyof PlayerStore]: Ref<PlayerStore[K]>;
+type PlayerStore = TribalWarsGameDataType['player'];
+type PiniaPlayerStoreType = {
+    [K in keyof PlayerStore]: import('vue').Ref<PlayerStore[K]>;
 };
-export type MechanusPlayerStoreType = {
+type MechanusPlayerStoreType = {
     [K in keyof PlayerStore]: MechanusRef<PlayerStore[K]>;
 };
 
 // FEATURES
-export type FeaturesStore = TribalWarsGameDataType['features'];
-export type PiniaFeaturesStoreType = {
-    [K in keyof FeaturesStore]: Ref<FeaturesStore[K]>;
+type FeaturesStore = TribalWarsGameDataType['features'];
+type PiniaFeaturesStoreType = {
+    [K in keyof FeaturesStore]: import('vue').Ref<FeaturesStore[K]>;
 };
-export type MechanusFeaturesStoreType = {
+type MechanusFeaturesStoreType = {
     [K in keyof FeaturesStore]: MechanusRef<FeaturesStore[K]>;
 };
 
 // GROUPS
 type GameDataGroups = TribalWarsGameDataType['groups'];
-export interface GroupsStore extends GameDataGroups {
+interface GroupsStore extends GameDataGroups {
     /** Todos os grupos de aldeias referentes ao alias atual. */
     readonly all: Set<VillageGroup>;
 };
-export type PiniaGroupsStoreType = {
-    [K in keyof GroupsStore]: Ref<GroupsStore[K]>;
+type PiniaGroupsStoreType = {
+    [K in keyof GroupsStore]: import('vue').Ref<GroupsStore[K]>;
 };
-export type MechanusGroupsStoreType = {
+type MechanusGroupsStoreType = {
     [K in keyof GroupsStore]: MechanusRef<GroupsStore[K]>;
 };
 
 // CURRENT VILLAGE
 type CurrentVillageType = TribalWarsGameDataType['currentVillage'];
-export interface CurrentVillageStore extends CurrentVillageType {
+interface CurrentVillageStore extends CurrentVillageType {
     readonly coords: [CurrentVillageType['x'], CurrentVillageType['y']];
     readonly totalResources: number | null;
 
@@ -79,17 +73,17 @@ export interface CurrentVillageStore extends CurrentVillageType {
     getId(): number;
 };
 
-export type PiniaCurrentVillageStoreActions = CurrentVillageStore['getId'];
-export type PiniaCurrentVillageStoreType = {
+type PiniaCurrentVillageStoreActions = CurrentVillageStore['getId'];
+type PiniaCurrentVillageStoreType = {
     [K in keyof CurrentVillageStore]:
         CurrentVillageStore[K] extends PiniaCurrentVillageStoreActions ?
         CurrentVillageStore[K] :
         K extends keyof Omit<CurrentVillageStore, keyof CurrentVillageType> ?
-        ComputedRef<CurrentVillageStore[K]> :
-        Ref<CurrentVillageStore[K]>;
+        import('vue').ComputedRef<CurrentVillageStore[K]> :
+        import('vue').Ref<CurrentVillageStore[K]>;
 };
 
-export type MechanusCurrentVillageStoreType = {
+type MechanusCurrentVillageStoreType = {
     [K in keyof RemoveMethods<CurrentVillageStore>]:
         K extends keyof Omit<CurrentVillageStore, keyof CurrentVillageType> ?
         MechanusComputedRef<CurrentVillageStore[K]> :
@@ -97,90 +91,90 @@ export type MechanusCurrentVillageStoreType = {
 };
 
 // PLUNDER INFO
-export type PlunderStore = PlunderInfoType;
-export type PiniaPlunderStoreType = {
-    [K in keyof PlunderStore]: Ref<PlunderStore[K]>;
+type PlunderStore = PlunderInfoType;
+type PiniaPlunderStoreType = {
+    [K in keyof PlunderStore]: import('vue').Ref<PlunderStore[K]>;
 };
-export type MechanusPlunderStoreType = {
+type MechanusPlunderStoreType = {
     [K in keyof PlunderStore]: MechanusRef<PlunderStore[K]>;
 };
 
 // PLUNDER CONFIG
-export interface PlunderConfigStore extends PlunderConfigType {
+interface PlunderConfigStore extends PlunderConfigType {
     raw(): PlunderConfigType;
 };
 
-export type PiniaPlunderConfigStoreActions = PlunderConfigStore['raw'];
+type PiniaPlunderConfigStoreActions = PlunderConfigStore['raw'];
 
-export type PiniaPlunderConfigStoreType = {
+type PiniaPlunderConfigStoreType = {
     [K in keyof PlunderConfigStore]:
         PlunderConfigStore[K] extends PiniaPlunderConfigStoreActions ?
         PlunderConfigStore[K] :
-        Ref<PlunderConfigStore[K]>;
+        import('vue').Ref<PlunderConfigStore[K]>;
 };
-export type MechanusPlunderConfigStoreType = {
+type MechanusPlunderConfigStoreType = {
     [K in keyof RemoveMethods<PlunderConfigStore>]: MechanusRef<RemoveMethods<PlunderConfigStore>[K]>;
 };
 
 // PLUNDER HISTORY
-export interface PlunderHistoryStore extends PlunderHistoryType {
-    useTotal(): ComputedRef<number>;
+interface PlunderHistoryStore extends PlunderHistoryType {
+    useTotal(): import('vue').ComputedRef<number>;
 };
-export type PiniaPlunderHistoryStoreActions = PlunderHistoryStore['useTotal'];
+type PiniaPlunderHistoryStoreActions = PlunderHistoryStore['useTotal'];
 
-export type PiniaPlunderHistoryStoreType = {
+type PiniaPlunderHistoryStoreType = {
     [K in Exclude<keyof PlunderHistoryStore, 'villages'>]:
         PlunderHistoryStore[K] extends PiniaPlunderHistoryStoreActions ?
         PlunderHistoryStore[K] :
-        Ref<PlunderHistoryStore[K]>;
+        import('vue').Ref<PlunderHistoryStore[K]>;
 };
-export type MechanusPlunderHistoryStoreType = {
+type MechanusPlunderHistoryStoreType = {
     [K in keyof RemoveMethods<PlunderHistoryStore>]: MechanusRef<RemoveMethods<PlunderHistoryStore>[K]>;
 };
 
 // PLUNDER CACHE
-export type PlunderCacheStore = PlunderCacheType;
-export type MechanusPlunderCacheStoreType = {
+type PlunderCacheStore = PlunderCacheType;
+type MechanusPlunderCacheStoreType = {
     [K in keyof PlunderCacheStore]: MechanusRef<PlunderCacheStore[K]>;
 };
 
 // UNITS
-export interface UnitsStore extends UnitAmount {
+interface UnitsStore extends UnitAmount {
     raw(): UnitAmount;
 };
 
-export type PiniaUnitsStoreActions = UnitsStore['raw'];
-export type PiniaUnitsStoreType = {
+type PiniaUnitsStoreActions = UnitsStore['raw'];
+type PiniaUnitsStoreType = {
     [K in keyof UnitsStore]:
         UnitsStore[K] extends PiniaUnitsStoreActions ?
         UnitsStore[K] :
-        Ref<UnitsStore[K]>;
+        import('vue').Ref<UnitsStore[K]>;
 };
-export type MechanusUnitsStoreType = {
+type MechanusUnitsStoreType = {
     [K in keyof RemoveMethods<UnitsStore>]: MechanusRef<RemoveMethods<UnitsStore>[K]>;
 };
 
 // WORLD CONFIG
-export type WorldConfigStore = WorldConfigType;
-export type MechanusWorldConfigStoreType = {
+type WorldConfigStore = WorldConfigType;
+type MechanusWorldConfigStoreType = {
     [K in keyof WorldConfigStore]: MechanusRef<WorldConfigStore[K]>;
 };
 
 // WORLD UNIT
-export type WorldUnitStoresMap = ReadonlyMap<AllUnits, () => MechanusStore<UnitDetails>>;
-export type MechanusWorldUnitStoreType = {
+type WorldUnitStoresMap = ReadonlyMap<AllUnits, () => MechanusStore<UnitDetails>>;
+type MechanusWorldUnitStoreType = {
     [K in keyof UnitDetails]: MechanusRef<UnitDetails[K]>;
 };
 
 // CACHE
-export interface CacheStore {
+interface CacheStore {
     readonly region: GameRegion;
     readonly world: World | null;
     readonly player: string | null;
     readonly userAlias: UserAlias | null;
 };
 
-export type MechanusCacheStoreType = {
+type MechanusCacheStoreType = {
     [K in keyof CacheStore]:
         K extends 'userAlias' ?
         MechanusComputedRef<CacheStore[K]> :
@@ -188,7 +182,7 @@ export type MechanusCacheStoreType = {
 };
 
 // BROWSER VIEW
-export interface BrowserViewStore {
+interface BrowserViewStore {
     /** Todos os WebContents de BrowserViews associados à janela principal. */
     readonly allWebContents: Set<WebContents>;
     /** Todos os WebContents de BrowserViews com eventos já registrados. */
@@ -199,26 +193,26 @@ export interface BrowserViewStore {
     readonly currentAutoResize: (() => void) | null;
 };
 
-export type MechanusBrowserViewStoreType = {
+type MechanusBrowserViewStoreType = {
     [K in keyof BrowserViewStore]: MechanusRef<BrowserViewStore[K]>;
 };
 
 // BROWSER
-export interface BrowserStore {
+interface BrowserStore {
     /** Indica se o Deimos está pronto para receber comandos. */
     readonly isDeimosReady: boolean;
 };
 
-export type PiniaBrowserStoreType = {
-    [K in keyof BrowserStore]: Ref<BrowserStore[K]>;
+type PiniaBrowserStoreType = {
+    [K in keyof BrowserStore]: import('vue').Ref<BrowserStore[K]>;
 };
 
 // PAINEL
-export interface PanelStore {
+interface PanelStore {
     /** Indica se o painel está visível. */
     readonly isVisible: boolean;
 };
 
-export type PiniaPanelStoreType = {
-    [K in keyof PanelStore]: Ref<PanelStore[K]>;
+type PiniaPanelStoreType = {
+    [K in keyof PanelStore]: import('vue').Ref<PanelStore[K]>;
 };
