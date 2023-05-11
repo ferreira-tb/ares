@@ -1,8 +1,5 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { WallLevel } from '$types/game';
-import type { PlunderConfigType, BlindAttackPattern, UseCPattern } from '$types/plunder';
-import type { PiniaPlunderConfigStoreType } from '$types/stores';
 
 export const usePlunderConfigStore = defineStore('plunder-config', () => {
     // Painel

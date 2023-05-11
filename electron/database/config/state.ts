@@ -5,8 +5,6 @@ import { getGameRegionUrl } from '$global/helpers';
 import { isGameRegion } from '$global/guards';
 import type { AppConfig as AppConfigTable } from '$database/config';
 import type { useCacheStore } from '$electron/interface';
-import type { AppStateType } from '$types/config';
-import type { GameRegion } from '$types/game';
 
 export function getLastRegionGameUrl(AppConfig: typeof AppConfigTable) {
     return async function() {

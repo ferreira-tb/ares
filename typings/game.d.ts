@@ -1,66 +1,64 @@
-import type { IntRange, IntRangeToStrings } from '$types/utils';
-
-export type UserAlias = `${World}__USERID__${string}`;
-export type GameRegion = 'br' | 'en' | 'nl' | 'pt' | 'uk' | 'us';
-export type World =
+type UserAlias = `${World}__USERID__${string}`;
+type GameRegion = 'br' | 'en' | 'nl' | 'pt' | 'uk' | 'us';
+type World =
     // eslint-disable-next-line @typescript-eslint/sort-type-constituents
     | `${GameRegion}${string}` // Mundo padrão.
     | `${GameRegion}s${string}` // Rodada speed.
     | `${GameRegion}p${string}`; // Mundo casual.
 
 // RECURSOS
-export type Resources = 'iron' | 'stone' | 'wood';
-export type ResourcesPTBR = 'Argila' | 'Ferro' | 'Madeira';
-export type ResourceAmount = { [key in Resources]: number };
+type Resources = 'iron' | 'stone' | 'wood';
+type ResourcesPTBR = 'Argila' | 'Ferro' | 'Madeira';
+type ResourceAmount = { [key in Resources]: number };
 
 // UNIDADES
 /** Unidades que podem ser usadas no assistente de saque. */
-export type FarmUnits =
+type FarmUnits =
     'archer' | 'axe' | 'heavy' | 'knight' | 'light' | 'marcher' | 'spear' | 'spy' | 'sword';
 
 /** Unidades que não podem saquear. */
-export type OtherUnits =
+type OtherUnits =
     'catapult' | 'militia' | 'ram' | 'snob';
 
 /** Todas as unidades do jogo. */
-export type AllUnits =
+type AllUnits =
     | FarmUnits
     | OtherUnits;
 
-export type FarmUnitsAmount = { [key in FarmUnits]: number };
-export type UnitAmount = { [key in AllUnits]: number };
-export type UnitsAmountAsStrings = { [key in AllUnits]: string };
-export type PlaceUnitsAmount = Partial<Omit<UnitAmount, 'militia'>>;
+type FarmUnitsAmount = { [key in FarmUnits]: number };
+type UnitAmount = { [key in AllUnits]: number };
+type UnitsAmountAsStrings = { [key in AllUnits]: string };
+type PlaceUnitsAmount = Partial<Omit<UnitAmount, 'militia'>>;
 
 // CONSTRUÇÕES
-export type WallLevel = IntRange<0, 21>;
-export type StringWallLevel = IntRangeToStrings<0, 21>;
+type WallLevel = IntRange<0, 21>;
+type StringWallLevel = IntRangeToStrings<0, 21>;
 
 // OUTROS
-export type DemolitionTroops = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
-export type UnitsToDestroyWall = Record<StringWallLevel, DemolitionTroops>;
+type DemolitionTroops = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
+type UnitsToDestroyWall = Record<StringWallLevel, DemolitionTroops>;
 
-export type GameScreen =
+type GameScreen =
     'am_farm' | 'info_player' | 'market' | 'overview_villages' | 'overview' | 'place' | 'report';
 
-export type Coords = {
+type Coords = {
     x: number;
     y: number;
 };
 
-export type VillageGroup = {
+type VillageGroup = {
     readonly id: number;
     /** Nome do grupo após codificado pela função `encodeURIComponent`. */
     readonly name: string;
     readonly type: 'dynamic' | 'static';
 };
 
-export type VillageGroupsType = {
+type VillageGroupsType = {
     /** Todos os grupos de aldeias referentes a um determinado alias. */
     readonly allGroups: VillageGroup[];
 };
 
-export interface TribalWarsGameDataType {
+interface TribalWarsGameDataType {
     readonly ares: {
         /** Local. */
         readonly locale: string | null;
@@ -128,7 +126,7 @@ export interface TribalWarsGameDataType {
     };
 };
 
-export interface TribalWarsTimingType {
+interface TribalWarsTimingType {
     readonly addedServerTime: number;
     readonly initialServerTime: number;
     readonly isReady: boolean;

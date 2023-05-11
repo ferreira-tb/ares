@@ -228,7 +228,10 @@
         "@typescript-eslint/consistent-generic-constructors": ["error", "constructor"],
         "@typescript-eslint/consistent-type-assertions": ["error", { "assertionStyle": "as" }],
         "@typescript-eslint/consistent-type-exports": "error",
-        "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
+        "@typescript-eslint/consistent-type-imports": ["error", {
+            "prefer": "type-imports",
+            "disallowTypeAnnotations": false
+        }],
         "@typescript-eslint/no-confusing-non-null-assertion": "error",
         "@typescript-eslint/no-confusing-void-expression": ["error", { "ignoreArrowShorthand": true }],
         "@typescript-eslint/no-duplicate-enum-values": "error",

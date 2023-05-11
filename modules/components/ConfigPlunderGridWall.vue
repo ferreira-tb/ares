@@ -7,8 +7,6 @@ import { ModuleConfigError } from '$modules/error';
 import InputWall from '$renderer/components/InputWall.vue';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';
-import type { PlunderConfigType } from '$types/plunder';
-import type { WallLevel } from '$types/game';
 
 const props = defineProps<{
     config: PlunderConfigType;

@@ -1,7 +1,5 @@
 import { assertInteger, isInteger } from '$global/guards';
 import { DeimosModelError } from '$deimos/interface/error';
-import type { RawPlunderInfo } from '$types/deimos';
-import type { PlunderInfoType } from '$types/plunder';
 
 export class PlunderInfo implements PlunderInfoType {
     public readonly hideAttacked: boolean;

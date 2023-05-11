@@ -1,7 +1,6 @@
 import { useCurrentVillageStore } from '$renderer/stores/village';
 import { usePlunderStore } from '$renderer/stores/plunder';
 import { ipcSend } from '$renderer/ipc';
-import type { PlunderPageListType, PlunderPageType } from '$types/plunder';
 
 class PlunderPageList implements PlunderPageListType {
     readonly id: number;

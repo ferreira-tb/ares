@@ -3,8 +3,6 @@ import { sequelize } from '$electron/database';
 import { DatabaseError } from '$electron/error';
 import { assertWorld } from '$global/guards';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { World } from '$types/game';
-import type { WorldDataFetchHistoryType } from '$types/world';
 
 export class WorldDataFetchHistory extends Model<
     InferAttributes<WorldDataFetchHistory>,

@@ -5,7 +5,6 @@ import { useFetch } from '@vueuse/core';
 import { NTag } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { AresAPI } from '$global/constants';
-import type { LatestVersion } from '$types/ares';
 
 const appVersion = await ipcInvoke('app-version');
 const { data } = useFetch(AresAPI.Latest).json<LatestVersion>();

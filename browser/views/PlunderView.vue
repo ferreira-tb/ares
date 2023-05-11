@@ -18,7 +18,6 @@ import { PlunderError } from '$browser/error';
 import { ipcSend } from '$renderer/ipc';
 import { Kronos } from '$global/constants';
 import PlunderReload from '$browser/components/PlunderReload.vue';
-import type { PlunderGroupType } from '$types/plunder';
 
 const ares = useAresStore();
 const config = usePlunderConfigStore();

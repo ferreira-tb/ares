@@ -4,7 +4,6 @@ import semverValid from 'semver/functions/valid';
 import { MainProcessEventError } from '$electron/error';
 import { AppConfig } from '$electron/interface';
 import { showAppUpdate } from '$electron/app/modules';
-import type { UpdateConfigType } from '$types/config';
 
 export function setAppUpdateModuleEvents() {
     ipcMain.on('open-app-update-window', () => showAppUpdate());

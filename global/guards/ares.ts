@@ -1,7 +1,6 @@
 import { isString } from '$global/guards/base';
 import { aliasRegex, allowedOriginRegexList } from '$global/regex';
 import type { AresError } from '$global/error';
-import type { UserAlias } from '$types/game';
 
 export const isUserAlias = (alias: unknown): alias is UserAlias => (isString(alias) && aliasRegex.test(alias));
 export function assertUserAlias<T extends typeof AresError>(alias: unknown, SomeError: T, message?: string): asserts alias is UserAlias {

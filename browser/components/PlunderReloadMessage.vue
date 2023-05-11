@@ -33,7 +33,7 @@ const autoReloadMessage = computed(() => {
     </span>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .auto-reload-message {
     font-style: normal;
     position: absolute;

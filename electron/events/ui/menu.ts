@@ -6,9 +6,6 @@ import { showErrorLog, openIssuesWebsite } from '$electron/app/modules';
 import { AppConfig, useCacheStore } from '$electron/interface';
 import { MainProcessError } from '$electron/error';
 import { getGameRegionUrl } from '$global/helpers';
-import type { MenuItemConstructorOptions } from 'electron';
-import type { MechanusRef } from 'mechanus';
-import type { GameRegion } from '$types/game';
 
 export function setMenuEvents() {
     const mainWindow = getMainWindow();
@@ -19,7 +16,7 @@ export function setMenuEvents() {
     AppConfig.setGameRegion(cacheStore).catch(MainProcessError.catch);
 
     ipcMain.on('open-region-select-menu', () => {
-        const template: MenuItemConstructorOptions[] = [
+        const template: Electron.MenuItemConstructorOptions[] = [
             { label: 'tribalwars.com.br', type: 'radio', click: () => void setGameRegion('br', region) }
         ];
 
@@ -39,7 +36,7 @@ export function setMenuEvents() {
     });
 
     ipcMain.on('open-bug-report-menu', () => {
-        const template: MenuItemConstructorOptions[] = [
+        const template: Electron.MenuItemConstructorOptions[] = [
             { label: 'Registro de erros', click: () => showErrorLog() },
             { label: 'Problemas conhecidos', click: () => openIssuesWebsite() }
         ];
@@ -49,7 +46,7 @@ export function setMenuEvents() {
     });
 };
 
-function setCheckedGameRegion(template: MenuItemConstructorOptions[], region: GameRegion) {
+function setCheckedGameRegion(template: Electron.MenuItemConstructorOptions[], region: GameRegion) {
     template.forEach((item) => {
         if (item.label?.endsWith(region) || (region === 'en' && item.label?.endsWith('net'))) {
             item.checked = true;

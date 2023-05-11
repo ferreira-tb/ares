@@ -4,14 +4,12 @@ import { isString } from '$global/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { getActiveModuleWebContents } from '$electron/app/modules';
 import { DownloadError } from '$electron/error';
-import type { DownloadItem } from 'electron';
-import type { DownloadProgressType } from '$types/ares';
 
 class DownloadProgress implements DownloadProgressType {
     readonly receivedBytes: number;
     readonly totalBytes: number;
 
-    constructor(item: DownloadItem) {
+    constructor(item: Electron.DownloadItem) {
         this.receivedBytes = item.getReceivedBytes();
         this.totalBytes = item.getTotalBytes();
     };
@@ -29,7 +27,7 @@ export function setMainWindowDownloadEvents() {
     });
 };
 
-function handleUpdateDownload(item: DownloadItem) {
+function handleUpdateDownload(item: Electron.DownloadItem) {
     const updateContents = getActiveModuleWebContents('app-update');
     if (updateContents) {
         updateContents.send('will-download-update', new DownloadProgress(item));

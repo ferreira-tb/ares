@@ -1,22 +1,6 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
 import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$global/objects/plunder';
-import type { UnitAmount, World, TribalWarsGameDataType, UserAlias, VillageGroup } from '$types/game';
-import type { ErrorLogBase, ErrorLogType, ElectronErrorLogType, OmitOptionalErrorLogProps } from '$types/error';
-import type { WorldConfigType, WorldUnitsType, WorldVillagesType } from '$types/world';
-import type { ElectronMessageBoxOptions } from '$types/electron';
-import type { ConfigModuleRoutes } from '$types/modules';
-import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
-
-import type {
-    PlunderInfoType,
-    CustomPlunderTemplateType,
-    DemolitionTemplateType,
-    PlunderConfigType,
-    PlunderPageListType,
-    PlunderGroupType,
-    PlunderHistoryType
-} from '$types/plunder';
 
 // Janela
 export async function ipcInvoke(channel: 'maximize-or-restore-main-window'): Promise<boolean>;

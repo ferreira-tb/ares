@@ -1,12 +1,10 @@
-import { ref, type Mechanus } from 'mechanus';
-import type { WebContents } from 'electron';
-import type { MechanusBrowserViewStoreType } from '$types/stores';
+import { ref } from 'mechanus';
 
 export function defineBrowserViewStore(mechanus: Mechanus) {
     return mechanus.define('browser-view', {
-        allWebContents: ref<Set<WebContents>>(new Set()),
-        registeredWebContents: ref<WeakSet<WebContents>>(new WeakSet()),
-        currentWebContents: ref<WebContents | null>(null),
+        allWebContents: ref<Set<Electron.WebContents>>(new Set()),
+        registeredWebContents: ref<WeakSet<Electron.WebContents>>(new WeakSet()),
+        currentWebContents: ref<Electron.WebContents | null>(null),
         currentAutoResize: ref<(() => void) | null>(null)
     } satisfies MechanusBrowserViewStoreType);
 };

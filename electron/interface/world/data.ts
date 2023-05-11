@@ -3,8 +3,6 @@ import { sequelize } from '$electron/database';
 import { Kronos } from '$global/constants';
 import { childProcess } from '$electron/utils/files';
 import { WorldInterfaceError } from '$electron/error';
-import type { World } from '$types/game';
-import type { WorldDataType } from '$types/world';
 import type {
     WorldDataFetchHistory as WorldDataFetchHistoryTable,
     getWorldVillagesTable as getWorldVillagesTableType

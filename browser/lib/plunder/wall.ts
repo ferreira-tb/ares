@@ -7,7 +7,6 @@ import { sendAttackFromPlace } from '$lib/plunder/attack';
 import { PlunderError } from '$browser/error';
 import { PlunderAttackWithLoot } from '$lib/plunder/resources';
 import { queryAvailableUnits } from '$lib/plunder/units';
-import type { DemolitionTroops, StringWallLevel } from '$types/game';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {

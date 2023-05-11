@@ -4,7 +4,6 @@ import { RouterView } from 'vue-router';
 import { syncRef, useArrayIncludes } from '@vueuse/core';
 import { NTabs, NTab, type TabsInst } from 'naive-ui';
 import { configRouteNames, router } from '$modules/router';
-import type { ConfigModuleRoutes } from '$types/modules';
 
 const tabs = ref<TabsInst | null>(null);
 const tabName = ref<ConfigModuleRoutes>('config-general');

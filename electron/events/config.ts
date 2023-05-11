@@ -6,8 +6,6 @@ import { AppConfig, useAppGeneralConfigStore, useAppNotificationsStore } from '$
 import { MainProcessEventError } from '$electron/error';
 import { database } from '$electron/utils/files';
 import { restartAres } from '$electron/utils/helpers';
-import type { ConfigModuleRoutes } from '$types/modules';
-import type { GeneralConfigType, NotificationsConfigType } from '$types/config';
 
 export function setConfigEvents() {
     const appGeneralConfigStore = useAppGeneralConfigStore();

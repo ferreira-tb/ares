@@ -10,8 +10,6 @@ import { setPlunderConfigEvents } from '$electron/events/plunder/config';
 import { setPlunderHistoryEvents } from '$electron/events/plunder/history';
 import { setPlunderDemolitionEvents } from '$electron/events/plunder/demolition';
 import { setPlunderTemplatesEvents } from '$electron/events/plunder/templates';
-import type { UnitAmount, World } from '$types/game';
-import type { WorldUnitsType } from '$types/world';
 
 export function setPlunderEvents() {
     const cacheStore = useCacheStore();

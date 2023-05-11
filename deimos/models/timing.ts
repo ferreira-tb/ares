@@ -1,6 +1,4 @@
 import { assertInteger } from '$global/guards';
-import type { TribalWarsTimingType } from '$types/game';
-import type { RawTiming } from '$types/deimos';
 import { DeimosModelError } from '$deimos/interface/error';
 
 export class TribalWarsTiming implements TribalWarsTimingType {

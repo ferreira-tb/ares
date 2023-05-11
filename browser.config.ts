@@ -16,7 +16,6 @@ export default defineConfig({
             '$modules': fileURLToPath(new URL('./modules', import.meta.url)),
             '$panel': fileURLToPath(new URL('./panel', import.meta.url)),
             '$renderer': fileURLToPath(new URL('./renderer', import.meta.url)),
-            '$types': fileURLToPath(new URL('./types', import.meta.url)),
             '$ui': fileURLToPath(new URL('./ui', import.meta.url))
         }
     },

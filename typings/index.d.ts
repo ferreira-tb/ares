@@ -1,4 +1,11 @@
-export type EnvironmentInfo = {
+type SequelizeModel = import('sequelize').Model<T, U>;
+type WindowOpenHandler = ReturnType<Parameters<Electron.WebContents['setWindowOpenHandler']>[0]>;
+
+type ElectronMessageBoxOptions = Pick<Electron.MessageBoxOptions,
+    'buttons' | 'cancelId' | 'defaultId' | 'message' | 'noLink' | 'title' | 'type'
+>;
+
+type EnvironmentInfo = {
     readonly time: number;
     readonly ares: string;
     readonly electron: string;
@@ -7,7 +14,7 @@ export type EnvironmentInfo = {
     readonly locale: string | null;
 };
 
-export type LatestVersion = {
+type LatestVersion = {
     readonly version: string;
     readonly notes: string;
     readonly download: string;
@@ -16,7 +23,7 @@ export type LatestVersion = {
     readonly date: number;
 };
 
-export type DownloadProgressType = {
+type DownloadProgressType = {
     readonly receivedBytes: number;
     readonly totalBytes: number;
 };

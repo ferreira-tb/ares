@@ -7,8 +7,6 @@ import { PlunderError } from '$browser/error';
 import { Kronos, resources as resourceList } from '$global/constants';
 import { useCurrentVillageStore } from '$renderer/stores/village';
 import { assertWallLevel } from '$global/guards';
-import type { Coords, WallLevel } from '$types/game';
-import type { PlunderTableButtons, PlunderTableResources } from '$types/plunder';
 
 /** Informações sobre a aldeia-alvo. */
 export class PlunderTargetInfo {

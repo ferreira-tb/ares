@@ -1,5 +1,4 @@
 import { assertString, isString } from '$global/guards';
-import type { UnitAmount, UnitsAmountAsStrings } from '$types/game';
 
 interface MaybeNotArcherWorld extends Omit<UnitsAmountAsStrings, 'archer' | 'marcher'> {
     archer?: string;

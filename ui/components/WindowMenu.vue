@@ -9,7 +9,6 @@ import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { WebsiteUrl } from '$global/constants';
 import TheResponseTime from '$ui/components/TheResponseTime.vue';
 import TheUpdateNotification from '$ui/components/TheUpdateNotification.vue';
-import type { BackForwardStatus } from '$types/view';
 
 import {
     ArrowBackSharp,

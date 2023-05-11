@@ -4,7 +4,6 @@ import { app } from 'electron';
 import { AresError } from '$global/error';
 import { isString } from '$global/guards';
 import { ErrorLogFile } from '$global/constants';
-import type { ElectronErrorLogType, OmitOptionalErrorLogProps } from '$types/error';
 
 export class MainProcessError extends AresError {
     constructor(message: string) {

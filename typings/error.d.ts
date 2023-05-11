@@ -1,7 +1,4 @@
-import type { EnvironmentInfo } from '$types/ares';
-import type { World } from '$types/game';
-
-export type ErrorLogBase = {
+type ErrorLogBase = {
     readonly id: number;
     readonly pending: boolean;
     readonly name: string;
@@ -9,14 +6,14 @@ export type ErrorLogBase = {
     readonly stack: string | null;
 };
 
-export interface ErrorLogType extends EnvironmentInfo, ErrorLogBase {
+interface ErrorLogType extends EnvironmentInfo, ErrorLogBase {
     readonly world: World | null;
     readonly url: string;
 };
 
-export type ElectronErrorLogType = EnvironmentInfo & ErrorLogBase;
+type ElectronErrorLogType = EnvironmentInfo & ErrorLogBase;
 
-export type OmitOptionalErrorLogProps<T> = Omit<T, 'id' | 'pending'>;
-export type AllErrorLogTypes = 
+type OmitOptionalErrorLogProps<T> = Omit<T, 'id' | 'pending'>;
+type AllErrorLogTypes = 
     | OmitOptionalErrorLogProps<ElectronErrorLogType> & Partial<Pick<ErrorLogBase, 'id' | 'pending'>>
     | OmitOptionalErrorLogProps<ErrorLogType> & Partial<Pick<ErrorLogBase, 'id' | 'pending'>>;

@@ -1,9 +1,6 @@
 import { ref } from 'mechanus';
 import { positiveIntegerRef } from '$electron/utils/mechanus';
 import { PlunderHistoryVillage } from '$global/objects/plunder';
-import type { Mechanus } from 'mechanus';
-import type { MechanusPlunderHistoryStoreType } from '$types/stores';
-import type { PlunderHistoryType, PlunderHistoryVillageType } from '$types/plunder';
 
 const villages = new Proxy({} as PlunderHistoryType['villages'], {
     get(target, villageId): PlunderHistoryVillageType[] {

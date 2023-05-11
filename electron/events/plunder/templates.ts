@@ -3,8 +3,6 @@ import { storeToRefs } from 'mechanus';
 import { showCustomPlunderTemplate } from '$electron/app/modules';
 import { isUserAlias } from '$global/guards';
 import { useCacheStore, useBrowserViewStore, CustomPlunderTemplate } from '$electron/interface';
-import type { UserAlias } from '$types/game';
-import type { CustomPlunderTemplateType } from '$types/plunder';
 
 export function setPlunderTemplatesEvents() {
     const cacheStore = useCacheStore();

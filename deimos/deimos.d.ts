@@ -1,11 +1,3 @@
-import type { ResourceAmount } from '$types/game';
-import type {
-    RawTribalWarsGameData,
-    RawPlunderInfo,
-    MarketDataTrader,
-    PremiumExchangeGraphResourceData
-} from '$types/deimos';
-
 declare global {
     const Accountmanager: {
         readonly farm: RawPlunderInfo
@@ -92,3 +84,5 @@ declare global {
         SuccessMessage(message: string): void;
     };
 }
+
+export {};

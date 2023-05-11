@@ -4,12 +4,9 @@ import { assertInstanceOf } from '$global/guards';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { getMainViewWebContents } from '$electron/utils/view';
 import { getPanelWindow } from '$electron/utils/helpers';
-import type { MechanusRef } from 'mechanus';
-import type { VillageGroup } from '$types/game';
-import type { PhobosPortMessage } from '$types/phobos';
 
-export function fetchVillageGroups() {
-    return new Promise<Set<VillageGroup>>(async (resolve, reject) => {
+export function fetchVillageGroups(): Promise<Set<VillageGroup>> {
+    return new Promise(async (resolve, reject) => {
         // Cria o Phobos na tela de grupos manuais.
         // Lá é possível obter tanto os grupos manuais quanto os dinâmicos.
         const mainViewWebContents = getMainViewWebContents();
@@ -37,7 +34,7 @@ export function fetchVillageGroups() {
     });
 };
 
-export function patchVillageGroups(groups: Set<VillageGroup>, all: MechanusRef<Set<VillageGroup>>) {
+export function patchVillageGroups(groups: Set<VillageGroup>, all: MechanusRef<Set<VillageGroup>>): void {
     all.value.clear();
     groups.forEach((group) => {
         all.value.add(group);

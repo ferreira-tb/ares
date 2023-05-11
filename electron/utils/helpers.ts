@@ -2,8 +2,6 @@ import { app, BrowserWindow } from 'electron';
 import { assertInstanceOf } from '$global/guards';
 import { assertWorld } from '$global/guards';
 import { MainProcessError } from '$electron/error';
-import type { UserAlias, World } from '$types/game';
-import type { WorldUnitsType } from '$types/world';
 import type { createWorldUnitStoresMap } from '$stores/world';
 
 export function restartAres() {
@@ -11,14 +9,14 @@ export function restartAres() {
     app.quit();
 };
 
-export const getMainWindow = () => {
+export function getMainWindow(): BrowserWindow {
     const id = Number.parseIntStrict(process.env.MAIN_WINDOW_ID ?? '');
     const mainWindow = BrowserWindow.fromId(id);
     assertInstanceOf(mainWindow, BrowserWindow, 'Could not get main window.');
     return mainWindow;
 };
 
-export const getPanelWindow = () => {
+export function getPanelWindow(): BrowserWindow {
     const id = Number.parseIntStrict(process.env.PANEL_WINDOW_ID ?? '');
     const panelWindow = BrowserWindow.fromId(id);
     assertInstanceOf(panelWindow, BrowserWindow, 'Could not get panel window.');
@@ -26,7 +24,7 @@ export const getPanelWindow = () => {
 };
 
 /** Exibe ou oculta a janela do painel. */
-export function togglePanelWindow() {
+export function togglePanelWindow(): void {
     const mainWindow = getMainWindow();
     const panelWindow = getPanelWindow();
 
@@ -49,7 +47,7 @@ export function togglePanelWindow() {
  * @param window Janela a ser maximizada ou restaurada.
  * @returns Booleano indicando se a janela está maximizada.
  */
-export function maximizeOrRestoreWindow(window: BrowserWindow) {
+export function maximizeOrRestoreWindow(window: BrowserWindow): boolean {
     if (window.isMaximized()) {
         window.restore();
     } else {

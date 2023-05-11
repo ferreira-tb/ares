@@ -4,7 +4,6 @@ import { saveConfig, setConfig } from '$database/config/config';
 import { savePanelBounds, setPanelBounds } from '$database/config/panel';
 import { getLastRegionGameUrl, setGameRegion, saveGameRegion } from '$database/config/state';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { AppConfigName, AppConfigJSON } from '$types/config';
 
 /** Diz respeito a configurações que abrangem toda a aplicação, independentemente do usuário. */
 export class AppConfig extends Model<InferAttributes<AppConfig>, InferCreationAttributes<AppConfig>> {

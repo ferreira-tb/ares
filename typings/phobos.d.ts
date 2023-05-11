@@ -1,8 +1,6 @@
-import type { AutoResizeOptions, Rectangle, BrowserViewConstructorOptions } from 'electron';
-
-export interface PhobosOptions extends BrowserViewConstructorOptions {
-    autoResize?: AutoResizeOptions;
-    bounds?: Rectangle;
+interface PhobosOptions extends Electron.BrowserViewConstructorOptions {
+    autoResize?: Electron.AutoResizeOptions;
+    bounds?: Electron.Rectangle;
     
     /** Define se um Phobos já ativo será destruido ao se tentar criar um novo com o mesmo nome.  */
     override?: boolean;
@@ -13,13 +11,13 @@ export interface PhobosOptions extends BrowserViewConstructorOptions {
     overrideUrl?: boolean;
 };
 
-export type PhobosNames =
+type PhobosNames =
     | 'fetch-world-config'
     | 'fetch-world-unit'
     | 'get-village-groups';
 
-export type PhobosChannel = PhobosNames;
+type PhobosChannel = PhobosNames;
 
-export interface PhobosPortMessage extends Record<string, unknown> {
+interface PhobosPortMessage extends Record<string, unknown> {
     channel: PhobosChannel;
 };

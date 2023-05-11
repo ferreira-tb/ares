@@ -27,7 +27,7 @@ watch(config, () => ipcSend('update-app-general-config', toRaw(config)));
     </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .general-config {
     padding: 0.5em;
 }

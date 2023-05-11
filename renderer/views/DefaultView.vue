@@ -8,7 +8,7 @@
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .default-view > span {
     visibility: hidden;
 }

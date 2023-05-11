@@ -3,7 +3,6 @@ import { computed, storeToRefs } from 'mechanus';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
 import { useBrowserViewStore } from '$electron/interface';
-import type { WebContents } from 'electron';
 
 export function setDevEvents() {
     if (process.env.ARES_MODE !== 'dev') return;
@@ -13,7 +12,7 @@ export function setDevEvents() {
     const { webContents: panelContents } = getPanelWindow();
     const { currentWebContents: currentWebContentsMaybeNull } = storeToRefs(browserViewStore);
 
-    const contents = computed<WebContents>([currentWebContentsMaybeNull], () => {
+    const contents = computed<Electron.WebContents>([currentWebContentsMaybeNull], () => {
         return currentWebContentsMaybeNull.value ?? getMainViewWebContents();
     });
 

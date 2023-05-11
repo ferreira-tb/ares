@@ -25,7 +25,7 @@ watch(config, () => ipcSend('update-app-notifications-config', toRaw(config)));
     </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .notifications-config {
     padding: 0.5em;
 }

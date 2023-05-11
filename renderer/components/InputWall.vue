@@ -69,7 +69,7 @@ assertWallLevel(props.value, RendererProcessError);
         />
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .wall-input {
     margin-right: v-bind("`${props.marginRight.toString(10)}em`");
 }

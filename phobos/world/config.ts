@@ -1,5 +1,4 @@
 import { PhobosError } from '$phobos/error';
-import type { WorldConfigType } from '$types/world';
 
 class WorldConfig implements WorldConfigType {
     readonly speed: number;

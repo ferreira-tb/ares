@@ -7,15 +7,14 @@ import { assertInteger } from '$global/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import WindowTabsButtons from '$ui/components/WindowTabsButtons.vue';
 import LightIcon from '$icons/units/LightIcon.vue';
-import type { WebContents } from 'electron';
 
 const tabsContainer = ref<HTMLElement | null>(null);
 const { width } = useElementSize(tabsContainer);
 const tabsWidth = computed(() => `${width.value - 150}px`);
 
-const allTabs = reactive<Map<WebContents['id'], string>>(new Map());
+const allTabs = reactive<Map<Electron.WebContents['id'], string>>(new Map());
 const mainViewWebContentsId = await ipcInvoke('main-view-web-contents-id');
-const activeView = ref<WebContents['id']>(mainViewWebContentsId);
+const activeView = ref<Electron.WebContents['id']>(mainViewWebContentsId);
 watch(activeView, (webContentsId) => ipcSend('update-current-view', webContentsId));
 
 useIpcRendererOn('focus-main-view', () => (activeView.value = mainViewWebContentsId));
@@ -38,7 +37,7 @@ useIpcRendererOn('browser-view-title-updated', (_e, webContentsId: number, viewT
     allTabs.set(webContentsId, viewTitle);
 });
 
-function destroyBrowserView(webContentsId: WebContents['id']) {
+function destroyBrowserView(webContentsId: Electron.WebContents['id']) {
     assertInteger(webContentsId, `Invalid webContentsId: ${webContentsId}`);
     ipcSend('destroy-browser-view', webContentsId);
 };

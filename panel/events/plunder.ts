@@ -2,7 +2,6 @@ import { ipcRenderer } from 'electron';
 import { assertInteger } from '$global/guards';
 import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$renderer/stores/plunder';
 import { PanelPlunderError } from '$panel/error';
-import type { PlunderConfigType, PlunderAttackLog, PlunderInfoType, PlunderHistoryType } from '$types/plunder';
 
 export function setPlunderEvents() {
     const plunderStore = usePlunderStore();

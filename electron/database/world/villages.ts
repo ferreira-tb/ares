@@ -1,8 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { World } from '$types/game';
-import type { WorldVillagesModel } from '$types/world';
 
 const worldVillagesTableMap = new Map<World, ReturnType<typeof createWorldVillagesTable>>();
 

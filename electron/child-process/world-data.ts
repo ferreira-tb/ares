@@ -6,8 +6,6 @@ import { Readable } from 'node:stream';
 import { assertWorld } from '$global/guards';
 import { getRegionFromWorld, getVillagesDataUrl } from '$global/helpers';
 import { ChildProcessError } from '$electron/child-process/error';
-import type { World, GameRegion } from '$types/game';
-import type { WorldDataType, WorldVillagesType } from '$types/world';
 
 const gunzip = promisify(zlib.gunzip);
 

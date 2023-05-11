@@ -7,9 +7,7 @@ import { Kronos } from '$global/constants';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke } from '$renderer/ipc';
 import type { usePlunderConfigStore } from '$renderer/stores/plunder';
-import type { FarmUnits, FarmUnitsAmount, UserAlias } from '$types/game';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
-import type { CustomPlunderTemplateType } from '$types/plunder';
 
 class TemplateUnits implements FarmUnitsAmount {
     spear = 0;

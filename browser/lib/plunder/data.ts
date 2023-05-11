@@ -1,7 +1,7 @@
 import { Deimos } from '$deimos/interface/ipc';
 import { PlunderError } from '$browser/error';
-import { usePlunderStore, usePlunderConfigStore } from '$renderer/stores/plunder';
 import { ipcInvoke } from '$renderer/ipc';
+import { usePlunderStore, usePlunderConfigStore } from '$renderer/stores/plunder';
 
 export async function getPlunderInfo() {
     try {

@@ -1,5 +1,3 @@
-import type { PlunderAttackLog, PlunderHistoryVillageType } from '$types/plunder';
-
 export abstract class PlunderAttack implements PlunderAttackLog {
     // Já incluso o ataque enviado.
     readonly attackAmount: number = 1;

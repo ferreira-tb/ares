@@ -124,7 +124,7 @@ watchEffect(() => {
     </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .button-area {
     display: flex;
     justify-content: center;

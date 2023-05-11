@@ -4,7 +4,6 @@ import type { TribalWarsGameData } from '$deimos/models/data';
 import type { PlunderInfo } from '$deimos/models/plunder';
 import type { Units } from '$deimos/models/units';
 import type { TribalWarsTiming } from '$deimos/models/timing';
-import type { UIMessageType } from '$types/deimos';
 
 // Arquivos no diretório "interface" não podem importar de outras partes do Deimos.
 // Isso é para evitar que a importações dos protótipos feitas no index vazem para o resto do código.

@@ -3,7 +3,6 @@ import * as fs from 'node:fs/promises';
 import { AresError } from '$global/error';
 import { isString } from '$global/guards';
 import { ErrorLogFile } from '$global/constants';
-import type { ElectronErrorLogType, OmitOptionalErrorLogProps } from '$types/error';
 
 export class ChildProcessError extends AresError {
     constructor(message: string) {
@@ -11,7 +10,7 @@ export class ChildProcessError extends AresError {
         this.name = 'ChildProcessError';
     };
 
-    public static override async catch(err: unknown) {
+    public static override async catch(err: unknown): Promise<void> {
         if (!process.env.USER_DATA_PATH) return;
 
         if (err instanceof Error) {

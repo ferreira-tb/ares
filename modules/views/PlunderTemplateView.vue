@@ -7,7 +7,6 @@ import PlunderTemplateModal from '$modules/components/PlunderTemplateModal.vue';
 import ResultError from '$renderer/components/ResultError.vue';
 import ResultInfo from '$renderer/components/ResultInfo.vue';
 import PlunderTemplateCard from '$modules/components/PlunderTemplateCard.vue';
-import type { CustomPlunderTemplateType } from '$types/plunder';
 
 const userAlias = await ipcInvoke('user-alias');
 const isArcherWorld = await ipcInvoke('is-archer-world');

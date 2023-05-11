@@ -3,9 +3,6 @@ import { WorldInterfaceError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { getWorldConfigUrl } from '$global/helpers';
 import { sequelize } from '$electron/database';
-import type { WorldConfigType } from '$types/world';
-import type { PhobosPortMessage } from '$types/phobos';
-import type { World } from '$types/game';
 import type {
     WorldConfig as WorldConfigTable,
     useCacheStore as useCacheStoreType,

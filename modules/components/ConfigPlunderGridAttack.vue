@@ -5,8 +5,6 @@ import { isInteger, isFiniteNumber } from '$global/guards';
 import { isDistance } from '$global/guards';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';
-import type { PlunderConfigType, BlindAttackPattern } from '$types/plunder';
-import type { NSelectPatternOption } from '$types/utils';
 
 const props = defineProps<{
     config: PlunderConfigType;

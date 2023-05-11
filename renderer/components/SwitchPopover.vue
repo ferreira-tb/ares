@@ -69,7 +69,7 @@ const popoverStyle = reactive({
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .switch-popover {
     text-align: v-bind("props.textAlign");
 }

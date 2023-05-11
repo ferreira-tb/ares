@@ -16,6 +16,3 @@ useIpcRendererOn('current-view-did-stop-loading', () => {
 <template>
     <div></div>
 </template>
-
-<style scoped>
-</style>
