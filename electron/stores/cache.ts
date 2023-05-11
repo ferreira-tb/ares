@@ -1,9 +1,7 @@
-import { computed, ref, type Mechanus } from 'mechanus';
+import { computed, ref } from 'mechanus';
 import { isString } from '$global/guards';
 import { generateUserAlias } from '$electron/utils/helpers';
 import { gameRegionRef, worldRef, stringRef } from '$electron/utils/mechanus';
-import type { MechanusCacheStoreType } from '$types/stores';
-import type { GameRegion, UserAlias, World } from '$types/game';
 
 export function defineCacheStore(mechanus: Mechanus) {
     const region = ref<GameRegion>('br', gameRegionRef);

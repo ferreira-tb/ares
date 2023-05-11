@@ -16,8 +16,6 @@ import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebs
 import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$electron/interface';
 import { getPlayerNameFromAlias, extractWorldUnitsFromMap, getMainWindow } from '$electron/utils/helpers';
 import { MainProcessEventError } from '$electron/error';
-import type { UserAlias } from '$types/game';
-import type { ElectronMessageBoxOptions } from '$types/electron';
 
 export function setEvents() {
     const mainWindow = getMainWindow();

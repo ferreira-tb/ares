@@ -1,6 +1,8 @@
-type MechanusRef = import('mechanus').MechanusRef;
-type MechanusComputedRef = import('mechanus').MechanusComputedRef;
-type MechanusStore = import('mechanus').MechanusStore;
+type Mechanus = import('mechanus').Mechanus;
+type MechanusRef<T> = import('mechanus').MechanusRef<T>;
+type MechanusRefOptions<T> = import('mechanus').MechanusRefOptions<T>;
+type MechanusComputedRef<T> = import('mechanus').MechanusComputedRef<T>;
+type MechanusStore<T> = import('mechanus').MechanusStore<T>;
 
 // APP GENERAL CONFIG
 type AppGeneralConfigStore = GeneralConfigType;
@@ -188,7 +190,7 @@ interface BrowserViewStore {
     /** Todos os WebContents de BrowserViews com eventos já registrados. */
     readonly registeredWebContents: WeakSet<WebContents>;
     /** O WebContents atualmente ativo (em primeiro plano). */
-    readonly currentWebContents: WebContents | null;
+    readonly currentWebContents: Electron.WebContents | null;
     /** Função para remover o evento de redimensionamento do WebContents ativo. */
     readonly currentAutoResize: (() => void) | null;
 };

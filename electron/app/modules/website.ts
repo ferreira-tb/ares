@@ -5,7 +5,6 @@ import { getMainWindow } from '$electron/utils/helpers';
 import { isAllowedOrigin } from '$global/guards';
 import { ModuleCreationError } from '$electron/error';
 import { setModuleDevMenu } from '$electron/menu/dev';
-import type { WebsiteModuleNames } from '$types/modules';
 
 const activeWebsiteModules = new Map<WebsiteModuleNames, BrowserWindow>();
 export const getActiveWebsiteModule = (name: WebsiteModuleNames) => activeWebsiteModules.get(name) ?? null;

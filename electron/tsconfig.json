@@ -1,7 +1,7 @@
 {
     "include": [
         "./**/*",
-        "../types/**/*"
+        "../typings/**/*"
     ],
     
     "compilerOptions": {
@@ -13,8 +13,7 @@
             "$global/*": ["../global/*"],
             "$interface/*": ["./interface/*"],
             "$renderer/*": ["../renderer/*"],
-            "$stores/*": ["./stores/*"],
-            "$types/*": ["../types/*"]
+            "$stores/*": ["./stores/*"]
         },
         
         "alwaysStrict": true,

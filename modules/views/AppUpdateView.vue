@@ -8,7 +8,6 @@ import { NButton, NButtonGroup, NSpin, NProgress } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { WebsiteUrl, AresAPI } from '$global/constants';
 import { ModuleAppUpdateError } from '$modules/error';
-import type { LatestVersion, DownloadProgressType } from '$types/ares';
 
 const appVersion = await ipcInvoke('app-version');
 const { isFetching, error, data } = useFetch(AresAPI.Latest).json<LatestVersion>();

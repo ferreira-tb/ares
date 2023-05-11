@@ -17,7 +17,7 @@
         "panel/**/*.vue",
         "renderer/**/*",
         "renderer/**/*.vue",
-        "types/**/*",
+        "typings/**/*",
         "ui/**/*",
         "ui/**/*.vue"
     ],
@@ -33,7 +33,6 @@
             "$modules/*": ["./modules/*"],
             "$panel/*": ["./panel/*"],
             "$renderer/*": ["./renderer/*"],
-            "$types/*": ["./types/*"],
             "$ui/*": ["./ui/*"]
         },
 

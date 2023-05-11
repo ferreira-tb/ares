@@ -1,6 +1,5 @@
-import { ref, type Mechanus } from 'mechanus';
+import { ref } from 'mechanus';
 import { integerRef } from '$electron/utils/mechanus';
-import type { MechanusUnitsStoreType } from '$types/stores';
 
 export function defineUnitsStore(mechanus: Mechanus) {
     return mechanus.define('units', {

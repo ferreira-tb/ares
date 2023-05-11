@@ -7,7 +7,6 @@ import AppUpdateView from '$modules/views/AppUpdateView.vue';
 import DemolitionView from '$modules/views/DemolitionView.vue';
 import PlunderHistory from '$modules/views/PlunderHistoryView.vue';
 import PlunderTemplateView from '$modules/views/PlunderTemplateView.vue';
-import type { ModuleRouteRecordRaw, ModuleRoutes, ConfigModuleRoutes } from '$types/modules';
 
 // Os componentes devem ser passados diretamente.
 // Importá-los gera problemas ao compilar.

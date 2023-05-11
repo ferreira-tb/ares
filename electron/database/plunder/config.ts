@@ -3,8 +3,6 @@ import { sequelize } from '$electron/database';
 import { assertUserAlias, assertWallLevel } from '$global/guards';
 import { DatabaseError } from '$electron/error';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { UserAlias, WallLevel } from '$types/game';
-import type { PlunderConfigType, BlindAttackPattern, UseCPattern } from '$types/plunder';
 
 export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCreationAttributes<PlunderConfig>> implements PlunderConfigType {
     declare readonly id: UserAlias;

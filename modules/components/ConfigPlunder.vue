@@ -9,7 +9,6 @@ import ConfigPlunderGridGroups from '$modules/components/ConfigPlunderGridGroups
 import ConfigPlunderGridTemplateC from '$modules/components/ConfigPlunderGridTemplateC.vue';
 import ConfigPlunderGridWall from '$modules/components/ConfigPlunderGridWall.vue';
 import ConfigPlunderGridOthers from '$modules/components/ConfigPlunderGridOthers.vue';
-import type { PlunderConfigType } from '$types/plunder';
 
 const previousConfig = await ipcInvoke('plunder:get-config');
 const config = ref<PlunderConfigType | null>(previousConfig);

@@ -5,7 +5,6 @@ import { useElementSize, useWindowSize } from '@vueuse/core';
 import { NTabs, NTab } from 'naive-ui';
 import { router } from '$modules/router';
 import { ModuleRouterError } from '$modules/error';
-import type { ErrorModuleRoutes } from '$types/modules';
 import ButtonErrorExport from '$renderer/components/ButtonErrorExport.vue';
 
 const { height: windowHeight } = useWindowSize();

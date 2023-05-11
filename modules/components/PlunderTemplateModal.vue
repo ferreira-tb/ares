@@ -16,8 +16,6 @@ import SpearIcon from '$icons/units/SpearIcon.vue';
 import SpyIcon from '$icons/units/SpyIcon.vue';
 import SwordIcon from '$icons/units/SwordIcon.vue';
 import type { FormRules, FormItemRule } from 'naive-ui';
-import type { CustomPlunderTemplateType } from '$types/plunder';
-import type { UserAlias } from '$types/game';
 
 interface Props {
     show: boolean;

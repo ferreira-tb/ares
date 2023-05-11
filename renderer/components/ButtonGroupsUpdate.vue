@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { NButton, useMessage } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import type { VillageGroup } from '$types/game';
 
 const props = defineProps<{
     groups: Set<VillageGroup>;

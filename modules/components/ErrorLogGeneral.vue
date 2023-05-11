@@ -5,7 +5,6 @@ import { NCard } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 import { getLocaleDateString } from '$global/helpers';
 import { ModuleError } from '$modules/error';
-import type { ErrorLogType } from '$types/error';
 import ResultSucess from '$renderer/components/ResultSucess.vue';
 
 const raw = await ipcInvoke('error:get-log');

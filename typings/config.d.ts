@@ -29,4 +29,4 @@ type NotificationsConfigType = {
     notifyOnError: boolean;
 };
 
-type PanelBoundsConfigType = import('electron').Rectangle;
+type PanelBoundsConfigType = Electron.Rectangle;

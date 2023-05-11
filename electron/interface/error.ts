@@ -5,7 +5,6 @@ import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/app/modules';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessError } from '$electron/error';
-import type { ElectronErrorLogType, OmitOptionalErrorLogProps } from '$types/error';
 import type { useAppNotificationsStore } from '$electron/interface';
 import type { ElectronErrorLog as ElectronErrorLogTable } from '$electron/interface';
 

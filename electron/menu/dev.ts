@@ -3,18 +3,17 @@ import { computed, storeToRefs } from 'mechanus';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
 import type { useBrowserViewStore } from '$electron/interface';
-import type { BrowserWindow, MenuItemConstructorOptions, WebContents } from 'electron';
 
-function getDevOptions(browserViewStore: ReturnType<typeof useBrowserViewStore>): MenuItemConstructorOptions[] {
+function getDevOptions(browserViewStore: ReturnType<typeof useBrowserViewStore>): Electron.MenuItemConstructorOptions[] {
     const { webContents: mainContents } = getMainWindow();
     const { webContents: panelContents } = getPanelWindow();
     const { currentWebContents: currentWebContentsMaybeNull } = storeToRefs(browserViewStore);
 
-    const contents = computed<WebContents>([currentWebContentsMaybeNull], () => {
+    const contents = computed<Electron.WebContents>([currentWebContentsMaybeNull], () => {
         return currentWebContentsMaybeNull.value ?? getMainViewWebContents();
     });
 
-    const options: MenuItemConstructorOptions[] = [
+    const options: Electron.MenuItemConstructorOptions[] = [
         { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => contents.value.reloadIgnoringCache() },
         { label: 'Conjurar magia', accelerator: 'F9', click: () => castDevMagic() },
         { label: 'Inspecionar', accelerator: 'F10', click: () => contents.value.openDevTools({ mode: 'detach' }) },
@@ -30,7 +29,7 @@ function getDevOptions(browserViewStore: ReturnType<typeof useBrowserViewStore>)
 };
 
 /** Adiciona o menu de desenvolvedor à janela. */
-export function setDevMenu(browserViewStore: ReturnType<typeof useBrowserViewStore>, ...args: BrowserWindow[]) {
+export function setDevMenu(browserViewStore: ReturnType<typeof useBrowserViewStore>, ...args: Electron.BrowserWindow[]) {
     const options = getDevOptions(browserViewStore);
     for (const browserWindow of args) {
         if (process.env.ARES_MODE !== 'dev') {
@@ -54,14 +53,14 @@ export function appendDevMenu(browserViewStore: ReturnType<typeof useBrowserView
     };
 };
 
-export function setModuleDevMenu(browserWindow: BrowserWindow) {
+export function setModuleDevMenu(browserWindow: Electron.BrowserWindow) {
     if (process.env.ARES_MODE !== 'dev') {
         browserWindow.setMenu(null);
         return;
     };
 
     const contents = browserWindow.webContents;
-    const options: MenuItemConstructorOptions[] = [
+    const options: Electron.MenuItemConstructorOptions[] = [
         { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => contents.reloadIgnoringCache() },
         { label: 'Conjurar magia', accelerator: 'F9', click: () => castDevMagic() },
         { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => contents.openDevTools({ mode: 'detach' }) }

@@ -7,7 +7,6 @@ import { ipcInvoke } from '$renderer/ipc';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';
 import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
-import type { PlunderConfigType } from '$types/plunder';
 
 const props = defineProps<{
     config: PlunderConfigType;

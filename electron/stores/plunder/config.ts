@@ -1,8 +1,6 @@
 import { ref } from 'mechanus';
 import { Kronos } from '$global/constants';
 import { isInteger, isFiniteNumber } from '$global/guards';
-import type { WallLevel } from '$types/game';
-import type { Mechanus, MechanusRefOptions } from 'mechanus';
 
 import {
     booleanRef,
@@ -12,9 +10,6 @@ import {
     wallLevelRef,
     positiveIntegerOrNullRef
 } from '$electron/utils/mechanus';
-
-import type { BlindAttackPattern, UseCPattern } from '$types/plunder';
-import type { MechanusPlunderConfigStoreType } from '$types/stores';
 
 // Patterns.
 const blindAttackPatterns: BlindAttackPattern[] = ['smaller', 'bigger'];

@@ -2,7 +2,6 @@ import { isFiniteNumber, isInteger, isString } from '$global/guards/base';
 import { farmUnits, allUnits } from '$global/constants';
 import { regionRegex, worldRegex } from '$global/regex';
 import type { AresError } from '$global/error';
-import type { FarmUnits, GameRegion, World, WallLevel, AllUnits } from '$types/game';
 
 /** Verifica se o valor passado é um nome válido de unidade. */
 export const isUnit = (unit: unknown): unit is AllUnits => allUnits.includes(unit as AllUnits);

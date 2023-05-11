@@ -3,8 +3,6 @@ import { BrowserView } from 'electron';
 import { assertString, assertInstanceOf, isInstanceOf } from '$global/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { phobosJs } from '$electron/utils/files';
-import type { WebPreferences } from 'electron';
-import type { PhobosNames, PhobosOptions } from '$types/phobos';
 
 const activePhobos = new Map<PhobosNames, BrowserView>();
 
@@ -39,7 +37,7 @@ export async function createPhobos(name: PhobosNames, url: URL, options?: Phobos
         };
     };
 
-    const webPreferences: WebPreferences = options?.webPreferences ?? {};
+    const webPreferences: Electron.WebPreferences = options?.webPreferences ?? {};
     webPreferences.preload = phobosJs;
     webPreferences.devTools = process.env.ARES_MODE === 'dev';
 

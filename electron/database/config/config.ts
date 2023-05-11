@@ -1,7 +1,6 @@
 import { sequelize } from '$electron/database';
 import { DatabaseError } from '$electron/error';
 import type { AppConfig as AppConfigTable } from '$database/config';
-import type { AppConfigName, AppConfigByName } from '$types/config';
 import type { useAppGeneralConfigStore, useAppNotificationsStore } from '$electron/interface';
 
 type OnlyConfig = Extract<AppConfigName, `config_${string}`>;

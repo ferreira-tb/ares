@@ -4,7 +4,6 @@ import { showAppSettings } from '$electron/app/modules';
 import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { appendDevMenu } from '$electron/menu/dev';
 import { getMainViewWebContents, contentsGoBack, contentsGoForward, contentsGoHome } from '$electron/utils/view';
-import type { MenuItemConstructorOptions, WebContents } from 'electron';
 import type { useBrowserViewStore, useCacheStore } from '$electron/interface';
 
 export function setAppMenu(
@@ -15,11 +14,11 @@ export function setAppMenu(
     const panelWindow = getPanelWindow();
     const { currentWebContents: currentWebContentsMaybeNull } = storeToRefs(browserViewStore);
 
-    const currentWebContents = computed<WebContents>([currentWebContentsMaybeNull], () => {
+    const currentWebContents = computed<Electron.WebContents>([currentWebContentsMaybeNull], () => {
         return currentWebContentsMaybeNull.value ?? getMainViewWebContents();
     });
 
-    const sharedOptions: MenuItemConstructorOptions[] = [
+    const sharedOptions: Electron.MenuItemConstructorOptions[] = [
         { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => contentsGoHome(currentWebContents.value, cacheStore.region) },
         { label: 'Atualizar', accelerator: 'F5', click: () => currentWebContents.value.reload() },
         { label: 'Voltar', accelerator: 'CmdOrCtrl+Left', click: () => contentsGoBack(currentWebContents.value) },

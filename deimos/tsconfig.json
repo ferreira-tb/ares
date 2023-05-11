@@ -3,7 +3,7 @@
         "./**/*",
         "../global/**/*",
         "../renderer/**/*",
-        "../types/**/*"
+        "../typings/**/*"
     ],
 
     "compilerOptions": {
@@ -17,8 +17,7 @@
             "$modules/*": ["../modules/*"],
             "$panel/*": ["../panel/*"],
             "$phobos/*": ["../phobos/*"],
-            "$renderer/*": ["../renderer/*"],
-            "$types/*": ["../types/*"]    
+            "$renderer/*": ["../renderer/*"]   
         },
         
         "alwaysStrict": true,

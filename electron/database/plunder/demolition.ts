@@ -4,8 +4,6 @@ import { assertUserAlias } from '$global/guards';
 import { DatabaseError } from '$electron/error';
 import { unitsToDestroyWall } from '$global/constants';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import type { UnitsToDestroyWall, UserAlias } from '$types/game';
-import type { DemolitionTemplateType } from '$types/plunder';
 
 export class DemolitionTemplate extends Model<
     InferAttributes<DemolitionTemplate>,

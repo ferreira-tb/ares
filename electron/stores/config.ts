@@ -1,7 +1,6 @@
 import { app } from 'electron';
-import { ref, type Mechanus } from 'mechanus';
+import { ref } from 'mechanus';
 import { booleanRef } from '$electron/utils/mechanus';
-import type { MechanusAppGeneralConfigStoreType, MechanusAppNotificationsConfigStoreType } from '$types/stores';
 
 export function defineAppGeneralConfigStore(mechanus: Mechanus) {
     return mechanus.define('appGeneralConfig', {

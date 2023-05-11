@@ -3,7 +3,6 @@ import ConfigAdvanced from '$modules/components/ConfigAdvanced.vue';
 import ConfigGeneral from '$modules/components/ConfigGeneral.vue';
 import ConfigNotifications from '$modules/components/ConfigNotifications.vue';
 import ConfigPlunder from '$modules/components/ConfigPlunder.vue';
-import type { ModuleRouteRecordRawStrict, ConfigModuleRoutes } from '$types/modules';
 
 export const configRoutes: ModuleRouteRecordRawStrict<ConfigModuleRoutes | 'app-config'> = {
     path: '/app-config',

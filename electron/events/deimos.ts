@@ -2,10 +2,6 @@ import { ipcMain } from 'electron';
 import { readDeimosFile } from '$electron/app/deimos';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { MainProcessEventError } from '$electron/error';
-import type { IpcMainEvent } from 'electron';
-import type { MechanusStore } from 'mechanus';
-import type { PlunderInfoType } from '$types/plunder';
-import type { UnitAmount, TribalWarsGameDataType, World } from '$types/game';
 
 import {
     useAresStore,
@@ -42,7 +38,9 @@ export function setDeimosEvents() {
     });
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
-    ipcMain.on('deimos:update-game-data', <T extends keyof TribalWarsGameDataType>(_e: IpcMainEvent, gameData: TribalWarsGameDataType) => {
+    ipcMain.on('deimos:update-game-data', <T extends keyof TribalWarsGameDataType>(
+        _e: Electron.IpcMainEvent, gameData: TribalWarsGameDataType
+    ) => {
         try {
             for (const key of Object.keys(gameData) as T[]) {
                 switch (key) {
@@ -76,7 +74,7 @@ export function setDeimosEvents() {
 
     // Recebe as informações referentes ao assistente de saque, salva-as localmente e então envia-as ao painel.
     ipcMain.handle('deimos:update-plunder-info', <T extends keyof typeof plunderStore>(
-        _e: IpcMainEvent, plunderInfo: PlunderInfoType
+        _e: Electron.IpcMainEvent, plunderInfo: PlunderInfoType
     ) => {
         try {
             for (const [key, value] of Object.entries(plunderInfo) as [T, typeof plunderStore[T]][]) {
@@ -95,7 +93,7 @@ export function setDeimosEvents() {
 
     // Recebe as informações referentes às unidades da aldeia atual, salva-as localmente e então envia-as ao painel.
     ipcMain.handle('deimos:update-current-village-units', <T extends keyof typeof unitsStore>(
-        _e: IpcMainEvent, units: UnitAmount
+        _e: Electron.IpcMainEvent, units: UnitAmount
     ) => {
         try {
             for (const [key, value] of Object.entries(units) as [T, typeof unitsStore[T]][]) {

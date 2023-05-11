@@ -4,7 +4,6 @@ import { PhobosError } from '$phobos/error';
 import { fetchWorldConfig } from '$phobos/world/config';
 import { fetchWorldUnit } from '$phobos/world/unit';
 import { getVillageGroups } from '$phobos/groups/groups';
-import type { PhobosPortMessage } from '$types/phobos';
 
 export function setPhobosEvents() {
     ipcRenderer.on('port', (e) => handlePort(e.ports[0]));

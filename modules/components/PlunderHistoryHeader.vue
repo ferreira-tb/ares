@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core';
 import { NButton, NButtonGroup, NPageHeader, NGrid, NGridItem, NStatistic } from 'naive-ui';
-import type { PlunderHistoryType } from '$types/plunder';
 
 const props = defineProps<{
     average: number;

@@ -3,8 +3,6 @@ import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$global/guards';
 import { DatabaseError } from '$electron/error';
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { UserAlias } from '$types/game';
-import type { PlunderHistoryType } from '$types/plunder';
 import type { usePlunderHistoryStore } from '$electron/interface';
 
 export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, InferCreationAttributes<PlunderHistory>> implements PlunderHistoryType {

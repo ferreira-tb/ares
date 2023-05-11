@@ -1,10 +1,9 @@
-import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
+import { BrowserWindow } from 'electron';
 import { isInstanceOf } from '$global/guards';
 import { appIcon, moduleHtml } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
 import { ModuleCreationError } from '$electron/error';
 import { setModuleDevMenu } from '$electron/menu/dev';
-import type { ModuleNames, ModuleRoutes, ModuleConstructorOptions } from '$types/modules';
 
 const activeModules = new Map<ModuleNames, BrowserWindow>();
 export const getActiveModule = (name: ModuleNames) => activeModules.get(name) ?? null;
@@ -33,7 +32,7 @@ export function createModule<T extends keyof ModuleConstructorOptions>(
                 return;
             };
 
-            const windowOptions: BrowserWindowConstructorOptions = {
+            const windowOptions: Electron.BrowserWindowConstructorOptions = {
                 parent: mainWindow,
                 width: 500,
                 height: 600,

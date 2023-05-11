@@ -7,7 +7,6 @@ import { useCurrentVillageStore } from '$renderer/stores/village';
 import { useUnitsStore } from '$renderer/stores/units';
 import { useGroupsStore } from '$renderer/stores/groups';
 import { setPlunderEvents } from '$panel/events/plunder';
-import type { TribalWarsGameDataType, UnitAmount, VillageGroup } from '$types/game';
 
 export function setPanelEvents() {
     const panelStore = usePanelStore();

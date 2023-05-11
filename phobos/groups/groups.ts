@@ -1,5 +1,4 @@
 import { PhobosError } from '$phobos/error';
-import type { VillageGroup } from '$types/game';
 
 export function getVillageGroups(port: MessagePort) {
     try {

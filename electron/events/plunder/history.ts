@@ -6,7 +6,6 @@ import { getPanelWindow } from '$electron/utils/helpers';
 import { showPlunderHistory, getActiveModuleWebContents } from '$electron/app/modules';
 import { usePlunderHistoryStore, PlunderHistory, useCacheStore } from '$electron/interface';
 import { PlunderHistoryVillage } from '$global/objects/plunder';
-import type { PlunderAttackLog, PlunderHistoryType } from '$types/plunder';
 
 export function setPlunderHistoryEvents() {
     const panelWindow = getPanelWindow();

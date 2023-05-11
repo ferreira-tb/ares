@@ -5,7 +5,6 @@ import { MainProcessEventError } from '$electron/error';
 import { GameSearchParams } from '$global/constants';
 import { generateRandomDelay } from '$global/helpers';
 import { usePlunderConfigStore, usePlunderCacheStore } from '$electron/interface';
-import type { PlunderGroupType, PlunderGroupVillageType } from '$types/plunder';
 
 export function setPlunderGroupEvents() {
     const plunderCacheStore = usePlunderCacheStore();

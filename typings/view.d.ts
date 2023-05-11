@@ -1,4 +1,4 @@
-export type BackForwardStatus = {
+type BackForwardStatus = {
     canGoBack: boolean;
     canGoForward: boolean;
 };

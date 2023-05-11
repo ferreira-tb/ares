@@ -76,7 +76,7 @@ const computedMarginRight = computed(() => {
         />
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .standard-number-input {
     margin-right: v-bind("computedMarginRight");
 }

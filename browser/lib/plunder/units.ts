@@ -4,7 +4,6 @@ import { useUnitsStore } from '$renderer/stores/units';
 import { assertUnit } from '$global/guards';
 import { ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
-import type { AllUnits } from '$types/game';
 
 /** Atualiza a quantidade de unidades disponíveis no assistente de saque. */
 export async function queryAvailableUnits() {

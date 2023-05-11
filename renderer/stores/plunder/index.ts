@@ -1,6 +1,5 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { PiniaPlunderStoreType, PiniaPlunderHistoryStoreType } from '$types/stores';
 
 export * from '$renderer/stores/plunder/config';
 

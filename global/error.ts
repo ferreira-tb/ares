@@ -1,5 +1,3 @@
-import type { AllErrorLogTypes } from '$types/error';
-
 export class AresError extends Error {
     declare public static catch: (err: unknown) => Promise<void>;
 

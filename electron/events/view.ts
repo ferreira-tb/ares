@@ -5,8 +5,6 @@ import { useBrowserViewStore, useCacheStore } from '$electron/interface';
 import { isAllowedOrigin } from '$global/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
-import type { WebContents, BrowserWindow } from 'electron';
-import type { MechanusRef } from 'mechanus';
 
 import {
     insertViewCSS,
@@ -101,8 +99,8 @@ export function setBrowserViewEvents() {
  * Esses eventos devem ser removidos quando a BrowserView for destruída.
  */
 function setViewSharedEvents(
-    mainWindow: BrowserWindow = getMainWindow(),
-    mainViewWebContents: WebContents = getMainViewWebContents()
+    mainWindow: Electron.BrowserWindow = getMainWindow(),
+    mainViewWebContents: Electron.WebContents = getMainViewWebContents()
 ) {
     const browserViewStore = useBrowserViewStore();
     const { allWebContents, registeredWebContents } = storeToRefs(browserViewStore);
@@ -134,7 +132,7 @@ function setViewSharedEvents(
  * Se um novo evento for adicionado, é preciso adicionar a remoção dele na função `removePreviousViewEvents`.
  * @param view WebContents da BrowserView atual.
  */
-function setCurrentViewEvents(view: WebContents, mainWindow: BrowserWindow = getMainWindow()) {
+function setCurrentViewEvents(view: Electron.WebContents, mainWindow: Electron.BrowserWindow = getMainWindow()) {
     view.on('did-start-loading', () => {
         mainWindow.webContents.send('current-view-did-start-loading');
     });
@@ -168,7 +166,7 @@ function setCurrentViewEvents(view: WebContents, mainWindow: BrowserWindow = get
  * Esses eventos são definidos na função `setCurrentViewEvents`.
  * @param view WebContents da BrowserView atual.
  */
-function removePreviousViewEvents(view: WebContents) {
+function removePreviousViewEvents(view: Electron.WebContents) {
     view.removeAllListeners('did-start-loading');
     view.removeAllListeners('did-stop-loading');
     view.removeAllListeners('did-navigate');
@@ -183,7 +181,7 @@ function removePreviousViewEvents(view: WebContents) {
  * @param rawUrl URL da nova BrowserView.
  * @returns BrowserView criada ou `null` se algo impedir a criação.
  */
-async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = getMainWindow()) {
+async function createBrowserView(rawUrl: string, mainWindow: Electron.BrowserWindow = getMainWindow()) {
     try {
         mainWindow.webContents.send('browser-view-will-be-created');
         const browserView = new BrowserView({
@@ -225,8 +223,8 @@ async function createBrowserView(rawUrl: string, mainWindow: BrowserWindow = get
 
 function destroyBrowserView(
     view: BrowserView,
-    mainWindow: BrowserWindow = getMainWindow(),
-    mainViewWebContents: WebContents = getMainViewWebContents()
+    mainWindow: Electron.BrowserWindow = getMainWindow(),
+    mainViewWebContents: Electron.WebContents = getMainViewWebContents()
 ) {
     try {
         const browserViewStore = useBrowserViewStore();
@@ -260,7 +258,7 @@ function destroyBrowserView(
  * @param view WebContents da BrowserView atual.
  * @param mainWindow Janela principal.
  */
-function updateCurrentViewBackForwardStatus(view: WebContents, mainWindow: BrowserWindow = getMainWindow()) {
+function updateCurrentViewBackForwardStatus(view: Electron.WebContents, mainWindow: Electron.BrowserWindow = getMainWindow()) {
     const backForwardStatus = getBackForwardStatus(view);
     mainWindow.webContents.send('current-view-back-forward-status', backForwardStatus);
 };
@@ -271,14 +269,16 @@ function updateCurrentViewBackForwardStatus(view: WebContents, mainWindow: Brows
  * Uma nova BrowserView será criada se a URL for permitida.
  * @param contents WebContents da BrowserView.
  */
-function setWindowOpenHandler(contents: WebContents) {
+function setWindowOpenHandler(contents: Electron.WebContents) {
     contents.setWindowOpenHandler(({ url }) => {
         queueMicrotask(() => createBrowserView(url));
         return { action: 'deny' };
     });
 };
 
-function findBrowserViewByWebContentsId(webContentsId: number, mainWindow: BrowserWindow = getMainWindow()) {
+function findBrowserViewByWebContentsId(
+    webContentsId: number, mainWindow: Electron.BrowserWindow = getMainWindow()
+): Electron.BrowserView {
     const browserViews = mainWindow.getBrowserViews();
     const browserView = browserViews.find((view) => view.webContents.id === webContentsId);
     if (browserView) return browserView;
@@ -292,10 +292,10 @@ function findBrowserViewByWebContentsId(webContentsId: number, mainWindow: Brows
  * @param mainWindow Janela principal.
  */
 function setViewAsTopBrowserView(
-    view: BrowserView,
+    view: Electron.BrowserView,
     currentAutoResize: MechanusRef<(() => void) | null>,
-    mainWindow: BrowserWindow = getMainWindow()
-) {
+    mainWindow: Electron.BrowserWindow = getMainWindow()
+): void {
     mainWindow.webContents.send('browser-view-will-be-set-as-top', view.webContents.id);
     mainWindow.setTopBrowserView(view);
     setBrowserViewBounds(view);
@@ -310,10 +310,10 @@ function setViewAsTopBrowserView(
  * @param mainWindow Janela principal.
  */
 function hideBrowserView(
-    view: BrowserView,
+    view: Electron.BrowserView,
     currentAutoResize: MechanusRef<(() => void) | null>,
-    mainWindow: BrowserWindow = getMainWindow()
-) {
+    mainWindow: Electron.BrowserWindow = getMainWindow()
+): void {
     mainWindow.webContents.send('browser-view-will-be-hidden', view.webContents.id);
     view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
     if (typeof currentAutoResize.value === 'function') {

@@ -5,8 +5,6 @@ import { Kronos } from '$global/constants';
 import { fetchVillageGroups, patchVillageGroups } from '$electron/utils/groups';
 import { AliasInterfaceError } from '$electron/error';
 import { sequelize } from '$electron/database';
-import type { UserAlias } from '$types/game';
-import type { PlunderConfigType, PlunderHistoryType, PlunderHistoryVillageType } from '$types/plunder';
 import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$database/plunder';
 import type { VillageGroups as VillageGroupsTable } from '$database/groups';
 

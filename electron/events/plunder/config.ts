@@ -3,7 +3,6 @@ import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
 import { useCacheStore, usePlunderConfigStore, PlunderConfig } from '$electron/interface';
 import { isUserAlias, assertUserAlias } from '$global/guards';
-import type { IpcMainEvent } from 'electron';
 
 export function setPlunderConfigEvents() {
     const cacheStore = useCacheStore();
@@ -21,7 +20,7 @@ export function setPlunderConfigEvents() {
 
     // Recebe as configurações do Plunder do painel ou do módulo de configuração e as salva no banco de dados.
     ipcMain.on('plunder:update-config', async <T extends keyof typeof plunderConfigStore>(
-        e: IpcMainEvent, key: T, value: typeof plunderConfigStore[T]
+        e: Electron.IpcMainEvent, key: T, value: typeof plunderConfigStore[T]
     ) => {
         try {
             if (!(key in plunderConfigStore)) return;

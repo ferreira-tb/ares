@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
 import { useVModel, watchImmediate } from '@vueuse/core';
-import { NDataTable } from 'naive-ui';
+import { NDataTable, type DataTableColumns } from 'naive-ui';
 import { Kronos } from '$global/constants';
 import { ipcInvoke } from '$renderer/ipc';
 import { getContinentFromCoords } from '$global/helpers';
-import type { DataTableColumns } from 'naive-ui';
-import type { PlunderHistoryType, PlunderHistoryVillageType } from '$types/plunder';
-import type { WorldVillagesType } from '$types/world';
 
 interface PlunderHistoryVillageData {
     readonly coords: string;

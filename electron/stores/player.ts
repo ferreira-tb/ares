@@ -1,6 +1,5 @@
-import { ref, type Mechanus } from 'mechanus';
+import { ref } from 'mechanus';
 import { integerOrNullRef, stringOrNullRef } from '$electron/utils/mechanus';
-import type { MechanusPlayerStoreType } from '$types/stores';
 
 export function definePlayerStore(mechanus: Mechanus) {
     return mechanus.define('player', {

@@ -11,7 +11,6 @@ import MarcherIcon from '$icons/units/MarcherIcon.vue';
 import SpearIcon from '$icons/units/SpearIcon.vue';
 import SpyIcon from '$icons/units/SpyIcon.vue';
 import SwordIcon from '$icons/units/SwordIcon.vue';
-import type { CustomPlunderTemplateType } from '$types/plunder';
 
 const props = defineProps<{
     template: CustomPlunderTemplateType;
@@ -89,7 +88,7 @@ function destroyTemplate() {
     </NCard>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .template-card {
     height: 150px;
 }

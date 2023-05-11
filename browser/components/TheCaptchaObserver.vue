@@ -61,6 +61,6 @@ async function reloadMainView() {
     <div></div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 
 </style>

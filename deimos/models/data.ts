@@ -1,7 +1,5 @@
 import { isString, isInteger } from '$global/guards';
 import { isWorld } from '$global/guards';
-import type { RawTribalWarsGameData } from '$types/deimos';
-import type { TribalWarsGameDataType } from '$types/game';
 
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export class TribalWarsGameData implements TribalWarsGameDataType {

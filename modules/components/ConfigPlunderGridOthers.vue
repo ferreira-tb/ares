@@ -4,7 +4,6 @@ import { NDivider, NGrid, NGridItem } from 'naive-ui';
 import { isInteger, isFiniteNumber } from '$global/guards';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';
-import type { PlunderConfigType } from '$types/plunder';
 
 const props = defineProps<{
     config: PlunderConfigType;

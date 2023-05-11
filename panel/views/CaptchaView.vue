@@ -13,7 +13,7 @@ import { NResult } from 'naive-ui';
     </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 main {
     margin-top: 1.5rem;
 }

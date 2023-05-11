@@ -1,12 +1,10 @@
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { until, useStyleTag, useMutationObserver } from '@vueuse/core';
 import { isInstanceOf, isInteger } from '$global/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useFeaturesStore } from '$renderer/stores/features';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import { PlunderError } from '$browser/error';
-import type { Ref } from 'vue';
-import type { PlunderGroupType, PlunderGroupVillageType } from '$types/plunder';
 
 class PlunderGroup implements PlunderGroupType {
     readonly id: number;

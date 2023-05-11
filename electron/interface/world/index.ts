@@ -3,7 +3,6 @@ import { WorldInterfaceError } from '$electron/error';
 import { fetchWorldData } from '$interface/world/data';
 import { patchWorldConfigStoreState } from '$interface/world/config';
 import { patchWorldUnitsStoresState } from '$interface/world/units';
-import type { World } from '$types/game';
 import type { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/world';
 import type { defineCacheStore } from '$stores/cache';
  

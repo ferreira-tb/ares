@@ -1,3 +1,10 @@
+type SequelizeModel = import('sequelize').Model<T, U>;
+type WindowOpenHandler = ReturnType<Parameters<Electron.WebContents['setWindowOpenHandler']>[0]>;
+
+type ElectronMessageBoxOptions = Pick<Electron.MessageBoxOptions,
+    'buttons' | 'cancelId' | 'defaultId' | 'message' | 'noLink' | 'title' | 'type'
+>;
+
 type EnvironmentInfo = {
     readonly time: number;
     readonly ares: string;

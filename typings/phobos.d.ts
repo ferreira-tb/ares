@@ -1,6 +1,6 @@
-interface PhobosOptions extends BrowserViewConstructorOptions {
-    autoResize?: import('electron').AutoResizeOptions;
-    bounds?: import('electron').Rectangle;
+interface PhobosOptions extends Electron.BrowserViewConstructorOptions {
+    autoResize?: Electron.AutoResizeOptions;
+    bounds?: Electron.Rectangle;
     
     /** Define se um Phobos já ativo será destruido ao se tentar criar um novo com o mesmo nome.  */
     override?: boolean;

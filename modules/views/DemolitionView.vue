@@ -17,7 +17,6 @@ import HeavyIcon from '$icons/units/HeavyIcon.vue';
 import RamIcon from '$icons/units/RamIcon.vue';
 import CatapultIcon from '$icons/units/CatapultIcon.vue';
 import type { PaginationProps, DataTableBaseColumn } from 'naive-ui';
-import type { DemolitionTroops, StringWallLevel } from '$types/game';
 
 interface DemolitionData extends DemolitionTroops {
     level: number;

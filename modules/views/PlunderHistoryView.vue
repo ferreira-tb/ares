@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, type ComponentPublicInstance } from 'vue';
 import { useElementSize, useWindowSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { ipcInvoke } from '$renderer/ipc';
 import PlunderHistoryHeader from '$modules/components/PlunderHistoryHeader.vue';
 import PlunderHistoryDataTable from '$modules/components/PlunderHistoryDataTable.vue';
-import type { ComponentPublicInstance } from 'vue';
-import type { PlunderHistoryType } from '$types/plunder';
 
 const previousHistory = await ipcInvoke('plunder:get-history');
 const history = ref<PlunderHistoryType>(previousHistory);

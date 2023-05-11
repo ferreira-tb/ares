@@ -1,10 +1,6 @@
 import { ref } from 'mechanus';
 import { finiteNumberRef, integerRef, booleanRef } from '$electron/utils/mechanus';
 import { allUnits } from '$global/constants';
-import type { AllUnits } from '$types/game';
-import type { UnitDetails } from '$types/world';
-import type { Mechanus, MechanusStore } from 'mechanus';
-import type { MechanusWorldConfigStoreType, MechanusWorldUnitStoreType, WorldUnitStoresMap } from '$types/stores';
 
 export function defineWorldConfigStore(mechanus: Mechanus) {
     return mechanus.define('worldConfig', {

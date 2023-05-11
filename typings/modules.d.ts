@@ -1,4 +1,4 @@
-type ModuleConstructorOptions = Pick<BrowserWindowConstructorOptions,
+type ModuleConstructorOptions = Pick<Electron.BrowserWindowConstructorOptions,
     'height' | 'maximizable' | 'minHeight' | 'minimizable' | 'minWidth' | 'resizable' | 'title' | 'width'
 >;
 

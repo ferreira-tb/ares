@@ -2,7 +2,7 @@
     "include": [
         "./**/*",
         "../global/**/*",
-        "../types/**/*",
+        "../typings/**/*",
         "../global.d.ts"
     ],
 
@@ -17,8 +17,7 @@
             "$deimos/*": ["../deimos/*"],
             "$panel/*": ["../panel/*"],
             "$phobos/*": ["./*"],
-            "$renderer/*": ["../renderer/*"],
-            "$types/*": ["../types/*"]
+            "$renderer/*": ["../renderer/*"]
         },
         
         "alwaysStrict": true,

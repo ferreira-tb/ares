@@ -8,7 +8,6 @@ import { unitsRegex } from '$global/regex';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
 import type { PlunderAttack } from '$global/objects/plunder';
-import type { PlaceUnitsAmount } from '$types/game';
 
 export const eventTarget = new EventTarget();
 

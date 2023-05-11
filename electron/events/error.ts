@@ -9,7 +9,6 @@ import { getActiveModule } from '$electron/app/modules';
 import { ErrorLog, ElectronErrorLog, useAresStore } from '$electron/interface';
 import { getMainWindow } from '$electron/utils/helpers';
 import { ErrorLogFile } from '$global/constants';
-import type { AllErrorLogTypes, ErrorLogBase, ErrorLogType, OmitOptionalErrorLogProps } from '$types/error';
 
 export function setErrorEvents() {
     const mainWindow = getMainWindow();

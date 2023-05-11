@@ -95,3 +95,114 @@ type PlunderPanelConfig = Pick<PlunderConfigType,
 
 type PlunderPanelConfigKeys = keyof PlunderPanelConfig;
 type PlunderPanelConfigValues = PlunderPanelConfig[PlunderPanelConfigKeys];
+
+type PlunderCacheType = {
+    /** Páginas do assistente de saque referentes à aldeia atual. */
+    readonly pages: PlunderPageListType | null;
+    /** Informações sobre o grupo de saque. */
+    readonly plunderGroup: PlunderGroupType | null;
+    /** Modelos usados no assistente de saque para demolição de muralhas. */
+    readonly demolitionTroops: DemolitionTemplateType | null;
+};
+
+type PlunderGroupVillageType = {
+    /** Distância coberta pela última onda de ataques. */
+    waveMaxDistance: number;
+    /** Indica se o Plunder já enviou todos os ataques possíveis a partir dessa aldeia. */
+    done: boolean;
+};
+
+type PlunderGroupType = {
+    /** ID do grupo. */
+    readonly id: number;
+    /** Mapa contento as aldeias do grupo. As chaves são os IDs das aldeias. */
+    readonly villages: Map<number, PlunderGroupVillageType>;
+};
+
+type PlunderAttackLog = {
+    wood: number;
+    stone: number;
+    iron: number;
+    attackAmount: number;
+    destroyedWalls: number;
+};
+
+interface PlunderHistoryVillageType extends PlunderAttackLog {
+    readonly addedAt: number;
+};
+
+interface PlunderHistoryType extends PlunderAttackLog {
+    /** Histórico individual de cada aldeia nos últimos 30 dias. */
+    readonly villages: {
+        [id: string]: PlunderHistoryVillageType[];
+    };
+};
+
+type PlunderInfoType = {
+    /** Indica se as aldeias sob ataque estão ocultas. */
+    readonly hideAttacked: boolean;
+    /** Página atual. */
+    readonly page: number;
+    /**
+     * Quantidade de aldeias por página.
+     * 
+     * O valor dessa propriedade é `NaN` quando a tabela do assistente de saque está vazia.
+     * Nesse caso, em vez de manter como `NaN`, usa-se `null`.
+     */
+    readonly pageSize: number | null;
+    readonly plunderExhausted: boolean;
+};
+
+type PlunderPageType = {
+    /** Índice da página (inicia em zero). */
+    readonly index: number;
+    /** Indica se o Plunder já enviou ataques a partir dessa página. */
+    done: boolean;
+}
+
+type PlunderPageListType = {
+    /** ID da aldeia a qual as páginas pertencem. */
+    readonly id: number;
+    /** Lista de páginas. */
+    readonly all: PlunderPageType[];
+};
+
+type PlunderTableButtons = {
+    /** Botão A do assistente de saque. */
+    a: HTMLAnchorElement | null;
+    /** Botão B do assistente de saque. */
+    b: HTMLAnchorElement | null;
+    /** Botão C do assistente de saque. */
+    c: HTMLAnchorElement | null;
+    /** Botão para abrir a janela de comandos no assistente de saque. */
+    place: HTMLAnchorElement | null;
+};
+
+type PlunderTableResources = {
+    /** Estimativa da quantidade de madeira disponível na aldeia. */
+    wood: number;
+    /** Estimativa da quantidade de argila disponível na aldeia. */
+    stone: number;
+    /** Estimativa da quantidade de ferro disponível na aldeia. */
+    iron: number;
+    /** Total de recursos que se espera ter na aldeia. */
+    total: number;
+};
+
+type CustomPlunderTemplateType = {
+    /** Alias do usuário. */
+    alias: UserAlias;
+    /** Nome do modelo. */
+    type: string;
+    /** Descrição do modelo. */
+    description: string | null;
+    /** Quantidade de unidades de cada tipo. */
+    readonly units: Omit<FarmUnitsAmount, 'knight'>;
+};
+
+type DemolitionTemplateType = {
+    /** Alias do usuário. */
+    alias: UserAlias;
+    /** Modelos. */
+    units: UnitsToDestroyWall;
+};
