@@ -45,7 +45,7 @@
         "discord.js": "^14.11.0",
         "mechanus": "^1.0.5",
         "pinia": "^2.0.36",
-        "semver": "^7.5.0",
+        "semver": "^7.5.1",
         "sequelize": "^6.31.1",
         "sqlite3": "^5.1.6",
         "vue": "^3.3.1",
