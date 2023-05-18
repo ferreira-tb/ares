@@ -79,7 +79,7 @@
         "sass": "^1.62.1",
         "tslib": "^2.5.0",
         "typescript": "^5.0.4",
-        "vite": "^4.3.7",
+        "vite": "^4.3.8",
         "vue-eslint-parser": "^9.3.0",
         "vue-tsc": "^1.6.5"
     }
