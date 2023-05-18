@@ -49,7 +49,7 @@
         "sequelize": "^6.31.1",
         "sqlite3": "^5.1.6",
         "vue": "^3.3.2",
-        "vue-router": "^4.2.0"
+        "vue-router": "^4.2.1"
     },
     "devDependencies": {
         "@electron-forge/cli": "^6.1.1",
