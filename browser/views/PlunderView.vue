@@ -16,7 +16,7 @@ import { handleLackOfTargets } from '$lib/plunder/next';
 import { queryPlunderGroupInfo } from '$lib/plunder/group';
 import { PlunderError } from '$browser/error';
 import { ipcSend } from '$renderer/ipc';
-import { Kronos } from '$global/constants';
+import { Kronos } from '@tb-dev/kronos';
 import PlunderReload from '$browser/components/PlunderReload.vue';
 
 const ares = useAresStore();

@@ -4,12 +4,16 @@ import { NButton, NButtonGroup, NPageHeader, NGrid, NGridItem, NStatistic } from
 
 const props = defineProps<{
     average: number;
-    period: 'day' | 'month' | 'week';
-    history: PlunderHistoryType;
+    period: PlunderHistoryTimePeriod;
+    wood: number;
+    stone: number;
+    iron: number;
+    attackAmount: number;
+    destroyedWalls: number;
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:period', period: 'day' | 'month' | 'week'): void;
+    (e: 'update:period', period: PlunderHistoryTimePeriod): void;
 }>();
 
 const timePeriod = useVModel(props, 'period', emit);
@@ -19,19 +23,19 @@ const timePeriod = useVModel(props, 'period', emit);
     <NPageHeader title="Histórico">
         <NGrid :cols="6">
             <NGridItem>
-                <NStatistic label="Madeira" :value="history.wood.toLocaleString('pt-br')" />
+                <NStatistic label="Madeira" :value="wood.toLocaleString('pt-br')" />
             </NGridItem>
             <NGridItem>
-                <NStatistic label="Argila" :value="history.stone.toLocaleString('pt-br')" />
+                <NStatistic label="Argila" :value="stone.toLocaleString('pt-br')" />
             </NGridItem>
             <NGridItem>
-                <NStatistic label="Ferro" :value="history.iron.toLocaleString('pt-br')" />
+                <NStatistic label="Ferro" :value="iron.toLocaleString('pt-br')" />
             </NGridItem>
             <NGridItem>
-                <NStatistic label="Ataques" :value="history.attackAmount.toLocaleString('pt-br')" />
+                <NStatistic label="Ataques" :value="attackAmount.toLocaleString('pt-br')" />
             </NGridItem>
             <NGridItem>
-                <NStatistic label="Muralhas destruídas" :value="history.destroyedWalls.toLocaleString('pt-br')" />
+                <NStatistic label="Muralhas destruídas" :value="destroyedWalls.toLocaleString('pt-br')" />
             </NGridItem>
             <NGridItem>
                 <NStatistic label="Saque por aldeia" :value="average.toLocaleString('pt-br')" />

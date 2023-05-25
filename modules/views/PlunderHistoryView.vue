@@ -9,8 +9,15 @@ import PlunderHistoryDataTable from '$modules/components/PlunderHistoryDataTable
 const previousHistory = await ipcInvoke('plunder:get-history');
 const history = ref<PlunderHistoryType>(previousHistory);
 
-const average = ref<number>(0);
-const period = ref<'day' | 'month' | 'week'>('month');
+const period = ref<PlunderHistoryTimePeriod>('month');
+const headerProps = ref<PlunderHistoryDataTableHeaderProps>({
+    average: 0,
+    wood: 0,
+    stone: 0,
+    iron: 0,
+    attackAmount: 0,
+    destroyedWalls: 0
+});
 
 const header = ref<ComponentPublicInstance | null>(null);
 const { height } = useWindowSize();
@@ -24,9 +31,9 @@ useIpcRendererOn('plunder:history-did-update', (_e, updatedHistory: PlunderHisto
 
 <template>
     <main>
-        <PlunderHistoryHeader ref="header" v-model:period="period" :average="average" :history="history" />
+        <PlunderHistoryHeader ref="header" v-model:period="period" v-bind="headerProps" />
         <PlunderHistoryDataTable
-            v-model:average="average"
+            v-model:header-props="headerProps"
             :max-height="tableMaxHeight"
             :history="history"
             :period="period"

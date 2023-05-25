@@ -1,5 +1,5 @@
 import { ref } from 'mechanus';
-import { Kronos } from '$global/constants';
+import { Kronos } from '@tb-dev/kronos';
 import { isInteger, isFiniteNumber } from '$global/guards';
 
 import {

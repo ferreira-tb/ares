@@ -1,6 +1,6 @@
 import { MessageChannelMain, utilityProcess } from 'electron';
 import { sequelize } from '$electron/database';
-import { Kronos } from '$global/constants';
+import { Kronos } from '@tb-dev/kronos';
 import { childProcess } from '$electron/utils/files';
 import { WorldInterfaceError } from '$electron/error';
 import type {

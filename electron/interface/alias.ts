@@ -1,7 +1,7 @@
 import { storeToRefs } from 'mechanus';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { isUserAlias } from '$global/guards';
-import { Kronos } from '$global/constants';
+import { Kronos } from '@tb-dev/kronos';
 import { fetchVillageGroups, patchVillageGroups } from '$electron/utils/groups';
 import { AliasInterfaceError } from '$electron/error';
 import { sequelize } from '$electron/database';
