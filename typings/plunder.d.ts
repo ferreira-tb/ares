@@ -149,6 +149,8 @@ type PlunderHistoryVillageData = {
 
 type PlunderHistoryTimePeriod = 'day' | 'month' | 'week';
 
+type PlunderHistoryDataTableHeaderProps = PlunderAttackLog & { average: number };
+
 type PlunderInfoType = {
     /** Indica se as aldeias sob ataque estão ocultas. */
     readonly hideAttacked: boolean;

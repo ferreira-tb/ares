@@ -5,22 +5,22 @@ import { NDataTable, type DataTableColumns } from 'naive-ui';
 import { usePlunderHistoryVillageData } from '$modules/composables/plunder-history';
 
 const props = defineProps<{
-    average: number;
+    headerProps: PlunderHistoryDataTableHeaderProps;
     maxHeight: number;
     history: PlunderHistoryType;
     period: PlunderHistoryTimePeriod;
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:average', average: number): void;
+    (e: 'update:header', header: PlunderHistoryDataTableHeaderProps): void;
 }>();
 
-const weightedAverage = useVModel(props, 'average', emit);
+const header = useVModel(props, 'headerProps', emit);
 const villagesHistory = toRef(props, 'history');
 const timePeriod = toRef(props, 'period');
-const { villageData, onAverageChange } = usePlunderHistoryVillageData(villagesHistory, timePeriod);
+const { villageData, onHeaderInfoUpdated } = usePlunderHistoryVillageData(villagesHistory, timePeriod);
 
-onAverageChange((average) => (weightedAverage.value = average));
+onHeaderInfoUpdated((newValue) => (header.value = newValue));
 
 const columns: DataTableColumns<PlunderHistoryVillageData> = [
     {

@@ -1,5 +1,5 @@
-import { computed, effectScope, reactive, ref, watch, type Ref } from 'vue';
-import { tryOnScopeDispose, watchImmediate } from '@vueuse/core';
+import { computed, effectScope, reactive, ref, type Ref } from 'vue';
+import { tryOnScopeDispose, watchDeep, watchImmediate } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
 import { ipcInvoke } from '$renderer/ipc';
 import { getContinentFromCoords } from '$global/helpers';
@@ -7,12 +7,20 @@ import { getContinentFromCoords } from '$global/helpers';
 export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, period: Ref<PlunderHistoryTimePeriod>) {
     const scope = effectScope();
 
-    const weightedAverage = ref<number>(0);
+    const headerProps = ref<PlunderHistoryDataTableHeaderProps>({
+        average: 0,
+        wood: 0,
+        stone: 0,
+        iron: 0,
+        attackAmount: 0,
+        destroyedWalls: 0
+    });
+
     const villageData = ref<PlunderHistoryVillageData[]>([]);
     const villageMap = reactive(new Map<number, WorldVillagesType>());
 
-    function onAverageChange(callback: (average: number, previousAverage: number) => void) {
-        const unwatch = watch(weightedAverage, callback);
+    function onHeaderInfoUpdated(callback: (newProps: PlunderHistoryDataTableHeaderProps) => void) {
+        const unwatch = watchDeep(headerProps, callback);
         tryOnScopeDispose(() => unwatch());
     };
 
@@ -33,6 +41,13 @@ export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, p
 
         watchImmediate([period, villageMap, () => history.value.villages], () => {
             const allVillages: PlunderHistoryVillageData[] = [];
+
+            let totalWood: number = 0;
+            let totalStone: number = 0;
+            let totalIron: number = 0;
+            let totalAttackAmount: number = 0;
+            let totalDestroyedWalls: number = 0;
+
             for (const [rawId, logs] of Object.entries(history.value.villages)) {
                 const id = rawId.toIntegerStrict();
                 if (!villageMap.has(id) || logs.length === 0) continue;
@@ -40,12 +55,18 @@ export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, p
                 const info = villageMap.getStrict(id);
                 const parsedLogs = parseLogs(logs, period);
                 if (parsedLogs.attackAmount === 0) continue;
+
+                totalWood += parsedLogs.wood;
+                totalStone += parsedLogs.stone;
+                totalIron += parsedLogs.iron;
         
                 const data = {
                     coords: `${info.x.toString(10)}|${info.y.toString(10)} ${getContinentFromCoords(info.x, info.y, 'K')}`,
                     name: decodeURIComponent(info.name.replace(/\+/g, ' ')),
                     score: 0,
-                    ...parsedLogs
+                    total: parsedLogs.wood + parsedLogs.stone + parsedLogs.iron,
+                    attackAmount: parsedLogs.attackAmount,
+                    destroyedWalls: parsedLogs.destroyedWalls
                 };
         
                 allVillages.push(data);
@@ -53,18 +74,26 @@ export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, p
         
             if (allVillages.length === 0) return;
             const weightedSum = allVillages.reduce((acc, curr) => acc + (curr.total * curr.attackAmount), 0);
-            const totalAttacks = allVillages.reduce((acc, curr) => acc + curr.attackAmount, 0);
-            if (totalAttacks === 0) return;
-        
-            const average = Math.ceil(weightedSum / totalAttacks);
+            for (const village of allVillages) {
+                totalAttackAmount += village.attackAmount;
+                totalDestroyedWalls += village.destroyedWalls;
+            };
+
+            if (totalAttackAmount === 0) return;
+            const average = Math.ceil(weightedSum / totalAttackAmount);
+
             if (average === 0) return;
-        
             for (const village of allVillages) {
                 village.score = (village.total / average) * 100;
             };
         
             villageData.value = allVillages;
-            weightedAverage.value = average;
+            headerProps.value.average = average;
+            headerProps.value.wood = totalWood;
+            headerProps.value.stone = totalStone;
+            headerProps.value.iron = totalIron;
+            headerProps.value.attackAmount = totalAttackAmount;
+            headerProps.value.destroyedWalls = totalDestroyedWalls;
         });
     });
 
@@ -72,12 +101,14 @@ export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, p
 
     return {
         villageData,
-        onAverageChange
+        onHeaderInfoUpdated
     };
 };
 
 function parseLogs(logs: PlunderHistoryVillageType[], period: Ref<PlunderHistoryTimePeriod>) {
-    let total: number = 0;
+    let wood: number = 0;
+    let stone: number = 0;
+    let iron: number = 0;
     let attackAmount: number = 0;
     let destroyedWalls: number = 0;
 
@@ -94,13 +125,17 @@ function parseLogs(logs: PlunderHistoryVillageType[], period: Ref<PlunderHistory
     };
 
     for (const log of logs) {
-        total += (log.wood + log.stone + log.iron);
+        wood += log.wood;
+        stone += log.stone;
+        iron += log.iron;
         attackAmount += log.attackAmount;
         destroyedWalls += log.destroyedWalls;
     };
 
     return {
-        total,
+        wood,
+        stone,
+        iron,
         attackAmount,
         destroyedWalls
     } as const;
