@@ -16,8 +16,8 @@ const emit = defineEmits<{
 }>();
 
 const weightedAverage = useVModel(props, 'average', emit);
-const timePeriod = toRef(props, 'period');
 const villagesHistory = toRef(props, 'history');
+const timePeriod = toRef(props, 'period');
 const { villageData, onAverageChange } = usePlunderHistoryVillageData(villagesHistory, timePeriod);
 
 onAverageChange((average) => (weightedAverage.value = average));

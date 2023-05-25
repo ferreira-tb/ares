@@ -31,7 +31,7 @@ export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, p
             };
         });
 
-        watchImmediate([period, villageMap], () => {
+        watchImmediate([period, villageMap, () => history.value.villages], () => {
             const allVillages: PlunderHistoryVillageData[] = [];
             for (const [rawId, logs] of Object.entries(history.value.villages)) {
                 const id = rawId.toIntegerStrict();
