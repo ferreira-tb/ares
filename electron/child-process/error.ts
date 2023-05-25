@@ -21,7 +21,7 @@ export class ChildProcessError extends AresError {
                 time: Date.now(),
                 ares: process.env.ARES_VERSION ?? 'unknown',
                 chrome: process.env.CHROME_VERSION ?? 'unknown',
-                electron: process.env.ELECTRON_VERSION ??= 'unknown',
+                electron: process.env.ELECTRON_VERSION ?? 'unknown',
                 tribal: process.env.TRIBAL_WARS_VERSION ?? 'unknown',
                 locale: process.env.TRIBAL_WARS_LOCALE ?? 'unknown'
             };
