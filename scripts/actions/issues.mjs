@@ -21,6 +21,7 @@ const data = {
     body: issue.data.body,
     date: Date.parse(issue.data.created_at),
     state: issue.data.state,
+    state_reason: issue.data.state_reason,
     number: issue.data.number,
     labels: issue.data.labels,
 
