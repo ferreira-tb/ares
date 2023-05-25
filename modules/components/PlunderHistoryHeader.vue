@@ -4,12 +4,12 @@ import { NButton, NButtonGroup, NPageHeader, NGrid, NGridItem, NStatistic } from
 
 const props = defineProps<{
     average: number;
-    period: 'day' | 'month' | 'week';
+    period: PlunderHistoryTimePeriod;
     history: PlunderHistoryType;
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:period', period: 'day' | 'month' | 'week'): void;
+    (e: 'update:period', period: PlunderHistoryTimePeriod): void;
 }>();
 
 const timePeriod = useVModel(props, 'period', emit);

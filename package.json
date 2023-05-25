@@ -39,6 +39,7 @@
         "forge:publish": "npm run build && electron-forge make"
     },
     "dependencies": {
+        "@tb-dev/kronos": "^1.0.1",
         "@vueuse/core": "^10.1.2",
         "@vueuse/electron": "^10.1.2",
         "csv-parser": "^3.0.0",

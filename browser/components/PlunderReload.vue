@@ -3,7 +3,7 @@ import { ref, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { ipcSend } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
-import { Kronos } from '$global/constants';
+import { Kronos } from '@tb-dev/kronos';
 import PlunderReloadMessage from '$browser/components/PlunderReloadMessage.vue';
 
 const props = defineProps<{

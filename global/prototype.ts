@@ -1,4 +1,4 @@
-import { Kronos } from '$global/constants';
+import { Kronos } from '@tb-dev/kronos';
 import { isString } from '$global/guards';
 
 declare global {

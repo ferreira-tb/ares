@@ -138,6 +138,17 @@ interface PlunderHistoryType extends PlunderAttackLog {
     };
 };
 
+type PlunderHistoryVillageData = {
+    readonly coords: string;
+    readonly name: string;
+    readonly total: number;
+    readonly attackAmount: number;
+    readonly destroyedWalls: number;
+    score: number;
+};
+
+type PlunderHistoryTimePeriod = 'day' | 'month' | 'week';
+
 type PlunderInfoType = {
     /** Indica se as aldeias sob ataque estão ocultas. */
     readonly hideAttacked: boolean;

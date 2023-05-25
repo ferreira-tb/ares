@@ -10,7 +10,7 @@ const previousHistory = await ipcInvoke('plunder:get-history');
 const history = ref<PlunderHistoryType>(previousHistory);
 
 const average = ref<number>(0);
-const period = ref<'day' | 'month' | 'week'>('month');
+const period = ref<PlunderHistoryTimePeriod>('month');
 
 const header = ref<ComponentPublicInstance | null>(null);
 const { height } = useWindowSize();
