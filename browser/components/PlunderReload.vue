@@ -38,14 +38,9 @@ function setPlunderTimeout() {
 };
 
 function reloadMainView() {
-    try {
-        ipcSend('plunder:update-pages-info', null);
-        ipcSend('plunder:update-group-info', null);
-    } catch (err) {
-        PlunderError.catch(err);
-    } finally {
-        ipcSend('reload-main-view');
-    };
+    ipcSend('plunder:update-pages-info', null);
+    ipcSend('plunder:update-group-info', null);
+    ipcSend('reload-main-view');
 };
 </script>
 
