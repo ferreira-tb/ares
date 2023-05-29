@@ -31,8 +31,8 @@ implements DemolitionTemplateType {
 
     public static async saveDemolitionTroopsConfig(template: DemolitionTemplateType): Promise<boolean> {
         try {
-            await sequelize.transaction(async (transaction) => {
-                await DemolitionTemplate.upsert({ ...template }, { transaction });
+            await sequelize.transaction(async () => {
+                await DemolitionTemplate.upsert({ ...template });
             });
             return true;
 
@@ -45,8 +45,8 @@ implements DemolitionTemplateType {
     public static async destroyDemolitionTroopsConfig(alias: UserAlias): Promise<boolean> {
         try {
             assertUserAlias(alias, DatabaseError);
-            await sequelize.transaction(async (transaction) => {
-                await DemolitionTemplate.destroy({ where: { alias }, transaction });
+            await sequelize.transaction(async () => {
+                await DemolitionTemplate.destroy({ where: { alias } });
             });
             return true;
 

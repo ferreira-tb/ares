@@ -20,11 +20,8 @@ export function setGroupsEvents() {
             const groups = await fetchVillageGroups();
             patchVillageGroups(groups, all);
 
-            await sequelize.transaction(async (transaction) => {
-                await VillageGroups.upsert({
-                    id: userAlias,
-                    allGroups: [...groups]
-                }, { transaction });
+            await sequelize.transaction(async () => {
+                await VillageGroups.upsert({ id: userAlias, allGroups: [...groups] });
             });
 
             return true;

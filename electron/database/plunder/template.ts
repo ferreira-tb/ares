@@ -34,8 +34,8 @@ implements CustomPlunderTemplateType {
                 if (amount < 0) throw new DatabaseError(`${unit} amount cannot be negative`);
             };
 
-            await sequelize.transaction(async (transaction) => {
-                await CustomPlunderTemplate.upsert({ ...template }, { transaction });
+            await sequelize.transaction(async () => {
+                await CustomPlunderTemplate.upsert({ ...template });
             });
 
             return true;
@@ -49,8 +49,8 @@ implements CustomPlunderTemplateType {
     public static async destroyCustomPlunderTemplate(template: CustomPlunderTemplateType): Promise<boolean> {
         try {
             assertUserAlias(template.alias, DatabaseError);
-            await sequelize.transaction(async (transaction) => {
-                await CustomPlunderTemplate.destroy({ where: { alias: template.alias, type: template.type }, transaction });
+            await sequelize.transaction(async () => {
+                await CustomPlunderTemplate.destroy({ where: { alias: template.alias, type: template.type } });
             });
 
             return true;

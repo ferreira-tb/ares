@@ -38,8 +38,8 @@ export function setPlunderConfigEvents() {
             const userAlias = cacheStore.userAlias;
             assertUserAlias(userAlias, MainProcessEventError);
 
-            await sequelize.transaction(async (transaction) => {
-                await PlunderConfig.upsert({ id: userAlias, ...plunderConfigStore }, { transaction });
+            await sequelize.transaction(async () => {
+                await PlunderConfig.upsert({ id: userAlias, ...plunderConfigStore });
             });
 
         } catch (err) {

@@ -30,8 +30,8 @@ export function setErrorEvents() {
                 locale: aresStore.locale
             };
 
-            const newRow = await sequelize.transaction(async (transaction) => {
-                const row = await ErrorLog.create(errorLog, { transaction });
+            const newRow = await sequelize.transaction(async () => {
+                const row = await ErrorLog.create(errorLog);
                 return row;
             });
 
@@ -47,10 +47,10 @@ export function setErrorEvents() {
 
     ipcMain.handle('error:get-log', async () => {
         try {
-            await sequelize.transaction(async (transaction) => {
+            await sequelize.transaction(async () => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
                 const expiration = Date.thirtyDaysAgo();
-                await ErrorLog.destroy({ where: { time: { [Op.lte]: expiration } }, transaction });
+                await ErrorLog.destroy({ where: { time: { [Op.lte]: expiration } } });
             });
             
             const errors = await ErrorLog.findAll({ where: { pending: true } });
@@ -64,10 +64,10 @@ export function setErrorEvents() {
 
     ipcMain.handle('error:get-electron-log', async () => {
         try {
-            await sequelize.transaction(async (transaction) => {
+            await sequelize.transaction(async () => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
                 const expiration = Date.thirtyDaysAgo();
-                await ElectronErrorLog.destroy({ where: { time: { [Op.lte]: expiration } }, transaction });
+                await ElectronErrorLog.destroy({ where: { time: { [Op.lte]: expiration } } });
             });
             
             const errors = await ElectronErrorLog.findAll({ where: { pending: true } });
@@ -110,9 +110,9 @@ export function setErrorEvents() {
 
             await fs.writeFile(savePath, content, { encoding: 'utf-8' });
 
-            await sequelize.transaction(async (transaction) => {
-                await ErrorLog.update({ pending: false }, { fields: ['pending'], where: { pending: true }, transaction });
-                await ElectronErrorLog.update({ pending: false }, { fields: ['pending'], where: { pending: true }, transaction });
+            await sequelize.transaction(async () => {
+                await ErrorLog.update({ pending: false }, { fields: ['pending'], where: { pending: true } });
+                await ElectronErrorLog.update({ pending: false }, { fields: ['pending'], where: { pending: true } });
             });
 
             return 'sucess';

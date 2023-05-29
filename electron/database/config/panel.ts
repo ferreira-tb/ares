@@ -20,8 +20,8 @@ export function setPanelBounds(AppConfig: typeof AppConfigTable) {
 export function savePanelBounds(AppConfig: typeof AppConfigTable) {
     return async function(rectangle: Electron.Rectangle) {
         try {
-            await sequelize.transaction(async (transaction) => {
-                await AppConfig.upsert({ name: 'panel_bounds', json: rectangle }, { transaction });
+            await sequelize.transaction(async () => {
+                await AppConfig.upsert({ name: 'panel_bounds', json: rectangle });
             });
     
         } catch (err) {

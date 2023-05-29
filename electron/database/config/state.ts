@@ -40,8 +40,8 @@ export function saveGameRegion(AppConfig: typeof AppConfigTable) {
                 { ...appState.json, lastRegion: region } :
                 { lastRegion: region };
 
-            await sequelize.transaction(async (transaction) => {
-                await AppConfig.upsert({ name: 'app_state', json }, { transaction });
+            await sequelize.transaction(async () => {
+                await AppConfig.upsert({ name: 'app_state', json });
             });
     
         } catch (err) {
