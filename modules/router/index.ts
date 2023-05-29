@@ -1,10 +1,10 @@
 import { createRouter, createMemoryHistory } from 'vue-router';
 import { getRouteNames, getChildrenRoutes } from '$renderer/utils/router';
-import { errorRoutes } from '$modules/router/error';
 import { configRoutes } from '$modules/router/config';
 import DefaultView from '$renderer/views/DefaultView.vue';
 import AppUpdateView from '$modules/views/AppUpdateView.vue';
 import DemolitionView from '$modules/views/DemolitionView.vue';
+import ErrorLogView from '$modules/views/ErrorLogView.vue';
 import PlunderHistory from '$modules/views/PlunderHistoryView.vue';
 import PlunderTemplateView from '$modules/views/PlunderTemplateView.vue';
 
@@ -28,6 +28,11 @@ const singleRoutes: ModuleRouteRecordRaw[] = [
         component: DemolitionView
     },
     {
+        path: '/error-log',
+        name: 'error-log',
+        component: ErrorLogView
+    },
+    {
         path: '/plunder-history',
         name: 'plunder-history',
         component: PlunderHistory
@@ -39,11 +44,7 @@ const singleRoutes: ModuleRouteRecordRaw[] = [
     }
 ];
 
-const routes: ModuleRouteRecordRaw[] = [
-    ...singleRoutes,
-    configRoutes,
-    errorRoutes
-];
+const routes: ModuleRouteRecordRaw[] = [...singleRoutes, configRoutes];
 
 export const router = createRouter({
     history: createMemoryHistory(),

@@ -4,7 +4,11 @@ import { NButton, useMessage } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 
 defineProps<{
-    buttonTop: string;
+    top: string;
+}>();
+
+const emit = defineEmits<{
+    (e: 'export'): void;
 }>();
 
 const message = useMessage();
@@ -15,6 +19,7 @@ async function exportLog() {
     const status = await ipcInvoke('error:export');
     if (status === 'sucess') {
         message.success('Tudo certo!');
+        emit('export');
     } else if (status === 'error') {
         message.error('Erro ao exportar o registro de erros.');
     };
@@ -24,7 +29,7 @@ async function exportLog() {
 </script>
 
 <template>
-    <div class="btn-error-export">
+    <div class="error-log-button-area">
         <NButton :loading="loading" :disabled="loading" @click="exportLog">
             Exportar
         </NButton>
@@ -32,9 +37,9 @@ async function exportLog() {
 </template>
 
 <style scoped lang="scss">
-.btn-error-export {
+.error-log-button-area {
     position: absolute;
-    top: v-bind("buttonTop");
+    top: v-bind("top");
     bottom: 0;
     display: flex;
     justify-content: center;

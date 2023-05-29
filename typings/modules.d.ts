@@ -23,12 +23,10 @@ type SingleModules =
 type NestedModules = 'app-config' | 'error-log';
 type ModuleNames = NestedModules | SingleModules;
 
-type ErrorModuleRoutes = 'error-electron' | 'error-general';
-
 type ConfigModuleRoutes =
     'config-advanced' | 'config-general' | 'config-notifications' | 'config-plunder';
 
-type ModuleRoutes = ConfigModuleRoutes | ErrorModuleRoutes | ModuleNames;
+type ModuleRoutes = ConfigModuleRoutes | ModuleNames;
 
 // WEBSITE
 type WebsiteModuleNames = 'any-allowed' | 'ares' | 'issues' | 'repo';
