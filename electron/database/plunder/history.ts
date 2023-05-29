@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
-import { assertUserAlias } from '$global/guards';
+import { assertUserAlias } from '$shared/guards';
 import { DatabaseError } from '$electron/error';
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import type { usePlunderHistoryStore } from '$electron/interface';

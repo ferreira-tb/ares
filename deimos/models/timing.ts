@@ -1,4 +1,4 @@
-import { assertInteger } from '$global/guards';
+import { assertInteger } from '$shared/guards';
 import { DeimosModelError } from '$deimos/interface/error';
 
 export class TribalWarsTiming implements TribalWarsTimingType {

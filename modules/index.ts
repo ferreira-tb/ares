@@ -1,5 +1,5 @@
 import '$modules/assets/main.scss';
-import '$global/prototype';
+import '$shared/prototype';
 import '$renderer/prototype';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';

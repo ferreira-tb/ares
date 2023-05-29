@@ -1,6 +1,6 @@
-import { isString } from '$global/guards';
+import { isString } from '$shared/guards';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
-import { AresError } from '$global/error';
+import { AresError } from '$shared/error';
 
 export class RendererProcessError extends AresError {
     constructor(message: string) {

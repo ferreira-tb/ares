@@ -1,6 +1,6 @@
-import { isInteger, assertGameRegion } from '$global/guards';
-import { GameUrl, GameEndpoints } from '$global/constants';
-import type { AresError } from '$global/error';
+import { isInteger, assertGameRegion } from '$shared/guards';
+import { GameUrl, GameEndpoints } from '$shared/constants';
+import type { AresError } from '$shared/error';
 
 /**
  * Obtém a região referente a um mundo.

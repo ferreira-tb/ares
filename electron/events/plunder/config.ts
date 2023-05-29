@@ -2,7 +2,7 @@ import { ipcMain, webContents } from 'electron';
 import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
 import { useCacheStore, usePlunderConfigStore, PlunderConfig } from '$electron/interface';
-import { isUserAlias, assertUserAlias } from '$global/guards';
+import { isUserAlias, assertUserAlias } from '$shared/guards';
 
 export function setPlunderConfigEvents() {
     const cacheStore = useCacheStore();

@@ -1,9 +1,9 @@
 import { computed, nextTick, ref } from 'vue';
 import { ipcRenderer } from 'electron';
 import { Kronos } from '@tb-dev/kronos';
-import { assertInteger, isInteger } from '$global/guards';
+import { assertInteger, isInteger } from '$shared/guards';
 import { useUnitsStore } from '$renderer/stores/units';
-import { assertFarmUnit } from '$global/guards';
+import { assertFarmUnit } from '$shared/guards';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke } from '$renderer/ipc';
 import type { usePlunderConfigStore } from '$renderer/stores/plunder';

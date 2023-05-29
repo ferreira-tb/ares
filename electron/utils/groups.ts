@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import { MessageChannelMain } from 'electron';
-import { assertInstanceOf } from '$global/guards';
+import { assertInstanceOf } from '$shared/guards';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
 import { getMainViewWebContents } from '$electron/utils/view';
 import { getPanelWindow } from '$electron/utils/helpers';

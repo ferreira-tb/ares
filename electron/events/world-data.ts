@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import { ipcMain } from 'electron';
 import { getWorldVillagesTable, useCacheStore } from '$electron/interface';
-import { isWorld } from '$global/guards';
+import { isWorld } from '$shared/guards';
 
 export function setWorldDataEvents() {
     const cacheStore = useCacheStore();

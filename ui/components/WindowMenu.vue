@@ -6,7 +6,7 @@ import { useIpcRendererOn } from '@vueuse/electron';
 import { NIcon } from 'naive-ui';
 import { DiscordSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
-import { WebsiteUrl } from '$global/constants';
+import { WebsiteUrl } from '$shared/constants';
 import TheResponseTime from '$ui/components/TheResponseTime.vue';
 import TheUpdateNotification from '$ui/components/TheUpdateNotification.vue';
 

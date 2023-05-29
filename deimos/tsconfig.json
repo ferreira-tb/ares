@@ -12,12 +12,12 @@
         "paths": {
             "$browser/*": ["../browser/*"],
             "$deimos/*": ["./*"],
-            "$global/*": ["../global/*"],
             "$lib/*": ["../browser/lib/*"],
             "$modules/*": ["../modules/*"],
             "$panel/*": ["../panel/*"],
             "$phobos/*": ["../phobos/*"],
-            "$renderer/*": ["../renderer/*"]   
+            "$renderer/*": ["../renderer/*"],
+            "$shared/*": ["../shared/*"]
         },
         
         "alwaysStrict": true,

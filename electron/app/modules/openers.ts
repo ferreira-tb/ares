@@ -1,4 +1,4 @@
-import { WebsiteUrl } from '$global/constants';
+import { WebsiteUrl } from '$shared/constants';
 import { createModule } from '$electron/app/modules/standard';
 import { createWebsiteModule } from '$electron/app/modules/website';
 

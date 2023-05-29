@@ -1,5 +1,5 @@
 import { computed, ref } from 'mechanus';
-import { isString } from '$global/guards';
+import { isString } from '$shared/guards';
 import { generateUserAlias } from '$electron/utils/helpers';
 import { gameRegionRef, worldRef, stringRef } from '$electron/utils/mechanus';
 

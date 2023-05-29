@@ -1,9 +1,9 @@
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
-import { isInteger } from '$global/guards';
+import { isInteger } from '$shared/guards';
 import { MainProcessEventError } from '$electron/error';
-import { GameSearchParams } from '$global/constants';
-import { generateRandomDelay } from '$global/helpers';
+import { GameSearchParams } from '$shared/constants';
+import { generateRandomDelay } from '$shared/helpers';
 import { usePlunderConfigStore, usePlunderCacheStore } from '$electron/interface';
 
 export function setPlunderGroupEvents() {

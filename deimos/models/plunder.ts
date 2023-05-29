@@ -1,4 +1,4 @@
-import { assertInteger, isInteger } from '$global/guards';
+import { assertInteger, isInteger } from '$shared/guards';
 import { DeimosModelError } from '$deimos/interface/error';
 
 export class PlunderInfo implements PlunderInfoType {

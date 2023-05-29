@@ -1,6 +1,6 @@
 import { ref } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
-import { isInteger, isFiniteNumber } from '$global/guards';
+import { isInteger, isFiniteNumber } from '$shared/guards';
 
 import {
     booleanRef,

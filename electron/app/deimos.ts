@@ -1,5 +1,5 @@
 import * as fs from 'fs/promises';
-import { assertString } from '$global/guards';
+import { assertString } from '$shared/guards';
 import { deimosJs } from '$electron/utils/files';
 import { MainProcessError } from '$electron/error';
 

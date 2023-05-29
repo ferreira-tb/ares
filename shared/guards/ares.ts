@@ -1,6 +1,6 @@
-import { isString } from '$global/guards/base';
-import { aliasRegex, allowedOriginRegexList } from '$global/regex';
-import type { AresError } from '$global/error';
+import { isString } from '$shared/guards/base';
+import { aliasRegex, allowedOriginRegexList } from '$shared/regex';
+import type { AresError } from '$shared/error';
 
 export const isUserAlias = (alias: unknown): alias is UserAlias => (isString(alias) && aliasRegex.test(alias));
 export function assertUserAlias<T extends typeof AresError>(alias: unknown, SomeError: T, message?: string): asserts alias is UserAlias {

@@ -2,7 +2,7 @@
 import { ref, watchEffect } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import { isUserAlias } from '$global/guards';
+import { isUserAlias } from '$shared/guards';
 import PlunderTemplateModal from '$modules/components/PlunderTemplateModal.vue';
 import ResultError from '$renderer/components/ResultError.vue';
 import ResultInfo from '$renderer/components/ResultInfo.vue';

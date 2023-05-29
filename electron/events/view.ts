@@ -2,7 +2,7 @@ import { URL } from 'url';
 import { ipcMain, BrowserView } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { useBrowserViewStore, useCacheStore } from '$electron/interface';
-import { isAllowedOrigin } from '$global/guards';
+import { isAllowedOrigin } from '$shared/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
 

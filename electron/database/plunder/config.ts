@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
-import { assertUserAlias, assertWallLevel } from '$global/guards';
+import { assertUserAlias, assertWallLevel } from '$shared/guards';
 import { DatabaseError } from '$electron/error';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 

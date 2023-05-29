@@ -1,8 +1,8 @@
 import { sequelize } from '$electron/database';
 import { DatabaseError } from '$electron/error';
-import { GameUrl } from '$global/constants';
-import { getGameRegionUrl } from '$global/helpers';
-import { isGameRegion } from '$global/guards';
+import { GameUrl } from '$shared/constants';
+import { getGameRegionUrl } from '$shared/helpers';
+import { isGameRegion } from '$shared/guards';
 import type { AppConfig as AppConfigTable } from '$database/config';
 import type { useCacheStore } from '$electron/interface';
 

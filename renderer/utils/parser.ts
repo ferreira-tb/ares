@@ -1,5 +1,5 @@
-import { months } from '$global/constants';
-import { assertInteger, assertString } from '$global/guards';
+import { months } from '$shared/constants';
+import { assertInteger, assertString } from '$shared/guards';
 import { RendererProcessError } from '$renderer/error';
 
 /**

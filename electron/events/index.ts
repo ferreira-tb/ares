@@ -11,7 +11,7 @@ import { setBrowserEvents } from '$electron/events/browser';
 import { setConfigEvents } from '$electron/events/config';
 import { setDevEvents } from '$electron/events/dev';
 import { setWorldDataEvents } from '$electron/events/world-data';
-import { isUserAlias } from '$global/guards';
+import { isUserAlias } from '$shared/guards';
 import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
 import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$electron/interface';
 import { getPlayerNameFromAlias, extractWorldUnitsFromMap, getMainWindow } from '$electron/utils/helpers';

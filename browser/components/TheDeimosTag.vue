@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { tryOnUnmounted, whenever } from '@vueuse/core';
-import { assertString } from '$global/guards';
+import { assertString } from '$shared/guards';
 import { useBrowserStore } from '$browser/stores/browser';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 

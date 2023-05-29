@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { Deimos } from '$deimos/interface/ipc';
 import { useUnitsStore } from '$renderer/stores/units';
-import { assertUnit } from '$global/guards';
+import { assertUnit } from '$shared/guards';
 import { ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
 

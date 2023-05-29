@@ -2,7 +2,7 @@
 import { computed, reactive } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { NInputNumber } from 'naive-ui';
-import { isInteger } from '$global/guards';
+import { isInteger } from '$shared/guards';
 
 type Keyboard = {
     ArrowUp?: boolean | undefined;

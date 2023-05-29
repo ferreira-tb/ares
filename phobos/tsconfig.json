@@ -11,13 +11,13 @@
         "lib": ["esnext", "dom"],
         "paths": {
             "$browser/*": ["../browser/*"],
-            "$global/*": ["../global/*"],
             "$lib/*": ["../browser/lib/*"],
             "$modules/*": ["../modules/*"],
             "$deimos/*": ["../deimos/*"],
             "$panel/*": ["../panel/*"],
             "$phobos/*": ["./*"],
-            "$renderer/*": ["../renderer/*"]
+            "$renderer/*": ["../renderer/*"],
+            "$shared/*": ["../shared/*"]
         },
         
         "alwaysStrict": true,

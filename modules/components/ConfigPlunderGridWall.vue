@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NButton, NButtonGroup, useDialog, useMessage } from 'naive-ui';
-import { assertUserAlias, isDistance } from '$global/guards';
+import { assertUserAlias, isDistance } from '$shared/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { ModuleConfigError } from '$modules/error';
 import InputWall from '$renderer/components/InputWall.vue';

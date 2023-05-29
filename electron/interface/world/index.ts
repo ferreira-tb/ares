@@ -1,4 +1,4 @@
-import { isWorld } from '$global/guards';
+import { isWorld } from '$shared/guards';
 import { WorldInterfaceError } from '$electron/error';
 import { fetchWorldData } from '$interface/world/data';
 import { patchWorldConfigStoreState } from '$interface/world/config';
