@@ -4,7 +4,7 @@ import { computed, watchEffect } from 'vue';
 import { useFetch } from '@vueuse/core';
 import { NTag } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { AresAPI } from '$global/constants';
+import { AresAPI } from '$shared/constants';
 
 const appVersion = await ipcInvoke('app-version');
 const { data } = useFetch(AresAPI.Latest).json<LatestVersion>();

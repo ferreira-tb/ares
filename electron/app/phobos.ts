@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import { BrowserView } from 'electron';
-import { assertString, assertInstanceOf, isInstanceOf } from '$global/guards';
+import { assertString, assertInstanceOf, isInstanceOf } from '$shared/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { phobosJs } from '$electron/utils/files';
 

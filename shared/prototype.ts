@@ -1,5 +1,5 @@
 import { Kronos } from '@tb-dev/kronos';
-import { isString } from '$global/guards';
+import { isString } from '$shared/guards';
 
 declare global {
     interface Array<T> {

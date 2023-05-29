@@ -1,7 +1,7 @@
-import { isFiniteNumber, isInteger, isString } from '$global/guards/base';
-import { farmUnits, allUnits } from '$global/constants';
-import { regionRegex, worldRegex } from '$global/regex';
-import type { AresError } from '$global/error';
+import { isFiniteNumber, isInteger, isString } from '$shared/guards/base';
+import { farmUnits, allUnits } from '$shared/constants';
+import { regionRegex, worldRegex } from '$shared/regex';
+import type { AresError } from '$shared/error';
 
 /** Verifica se o valor passado é um nome válido de unidade. */
 export const isUnit = (unit: unknown): unit is AllUnits => allUnits.includes(unit as AllUnits);

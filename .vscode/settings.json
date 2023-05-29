@@ -14,7 +14,6 @@
         { "icon": "ravendb", "extensions": ["phobos"], "format": "svg" },
         { "icon": "story", "extensions": ["store", "stores"], "format": "svg" },
         { "icon": "nix", "extensions": ["panel"], "format": "svg" },
-        { "icon": "www", "extensions": ["global"], "format": "svg" },
         { "icon": "theme", "extensions": ["composable", "composables"], "format": "svg" }
     ],
     "conventionalCommits.scopes": [

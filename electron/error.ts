@@ -1,9 +1,9 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { app } from 'electron';
-import { AresError } from '$global/error';
-import { isString } from '$global/guards';
-import { ErrorLogFile } from '$global/constants';
+import { AresError } from '$shared/error';
+import { isString } from '$shared/guards';
+import { ErrorLogFile } from '$shared/constants';
 
 export class MainProcessError extends AresError {
     constructor(message: string) {

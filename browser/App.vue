@@ -7,7 +7,7 @@ import { routeNames, router } from '$browser/router/router';
 import { useAresStore } from '$renderer/stores/ares';
 import { useBrowserStore } from '$browser/stores/browser';
 import { ipcSend } from '$renderer/ipc';
-import { gameOriginRegex } from '$global/regex';
+import { gameOriginRegex } from '$shared/regex';
 import TheDeimosTag from '$browser/components/TheDeimosTag.vue';
 import TheCaptchaObserver from '$browser/components/TheCaptchaObserver.vue';
 

@@ -2,7 +2,7 @@ import { computed, effectScope, reactive, ref, type Ref } from 'vue';
 import { tryOnScopeDispose, watchDeep, watchImmediate } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
 import { ipcInvoke } from '$renderer/ipc';
-import { getContinentFromCoords } from '$global/helpers';
+import { getContinentFromCoords } from '$shared/helpers';
 
 export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, period: Ref<PlunderHistoryTimePeriod>) {
     const scope = effectScope();

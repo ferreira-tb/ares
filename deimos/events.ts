@@ -1,4 +1,4 @@
-import { assertInteger } from '$global/guards';
+import { assertInteger } from '$shared/guards';
 import { Deimos } from '$deimos/interface/ipc';
 import { DeimosError } from '$deimos/interface/error';
 import { TribalWarsGameData } from '$deimos/models/data';

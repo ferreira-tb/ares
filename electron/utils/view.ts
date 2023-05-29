@@ -2,7 +2,7 @@ import * as fs from 'node:fs/promises';
 import { webContents } from 'electron';
 import { browserCss } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
-import { Dimensions, GameUrl } from '$global/constants';
+import { Dimensions, GameUrl } from '$shared/constants';
 import { BrowserViewError } from '$electron/error';
 
 export function getMainViewWebContents(): Electron.WebContents {

@@ -3,7 +3,7 @@ import { h, computed, ref, reactive, watch } from 'vue';
 import { NTabs, NTab } from 'naive-ui';
 import { useElementSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
-import { assertInteger } from '$global/guards';
+import { assertInteger } from '$shared/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import WindowTabsButtons from '$ui/components/WindowTabsButtons.vue';
 import LightIcon from '$icons/units/LightIcon.vue';

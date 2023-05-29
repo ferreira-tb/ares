@@ -4,7 +4,7 @@ import { useWindowSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { NCard } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import { getLocaleDateString } from '$global/helpers';
+import { getLocaleDateString } from '$shared/helpers';
 import ErrorLogExportButton from '$modules/components/ErrorLogExportButton.vue';
 import ResultSucess from '$renderer/components/ResultSucess.vue';
 

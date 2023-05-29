@@ -1,4 +1,4 @@
-import { assertString, isString } from '$global/guards';
+import { assertString, isString } from '$shared/guards';
 
 interface MaybeNotArcherWorld extends Omit<UnitsAmountAsStrings, 'archer' | 'marcher'> {
     archer?: string;

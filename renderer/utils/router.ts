@@ -1,4 +1,4 @@
-import { isString } from '$global/guards';
+import { isString } from '$shared/guards';
 import type { RouteRecordRaw } from 'vue-router';
 
 // As funções aqui presentes dependem do Vue em algum grau.

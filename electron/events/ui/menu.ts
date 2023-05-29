@@ -5,7 +5,7 @@ import { getMainViewWebContents } from '$electron/utils/view';
 import { showErrorLog, openIssuesWebsite } from '$electron/app/modules';
 import { AppConfig, useCacheStore } from '$electron/interface';
 import { MainProcessError } from '$electron/error';
-import { getGameRegionUrl } from '$global/helpers';
+import { getGameRegionUrl } from '$shared/helpers';
 
 export function setMenuEvents() {
     const mainWindow = getMainWindow();

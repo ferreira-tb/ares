@@ -1,4 +1,4 @@
-import { assertInteger } from '$global/guards';
+import { assertInteger } from '$shared/guards';
 import { useUnitsStore } from '$renderer/stores/units';
 import { useCurrentVillageStore } from '$renderer/stores/village';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';

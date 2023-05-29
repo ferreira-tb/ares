@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
-import { assertInstanceOf } from '$global/guards';
-import { assertWorld } from '$global/guards';
+import { assertInstanceOf } from '$shared/guards';
+import { assertWorld } from '$shared/guards';
 import { MainProcessError } from '$electron/error';
 import type { createWorldUnitStoresMap } from '$stores/world';
 

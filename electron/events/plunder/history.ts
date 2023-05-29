@@ -1,11 +1,11 @@
 import { ipcMain } from 'electron';
-import { assertInteger } from '$global/guards';
+import { assertInteger } from '$shared/guards';
 import { MainProcessEventError } from '$electron/error';
-import { assertUserAlias } from '$global/guards';
+import { assertUserAlias } from '$shared/guards';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { showPlunderHistory, getActiveModuleWebContents } from '$electron/app/modules';
 import { usePlunderHistoryStore, PlunderHistory, useCacheStore } from '$electron/interface';
-import { PlunderHistoryVillage } from '$global/objects/plunder';
+import { PlunderHistoryVillage } from '$shared/objects/plunder';
 
 export function setPlunderHistoryEvents() {
     const panelWindow = getPanelWindow();

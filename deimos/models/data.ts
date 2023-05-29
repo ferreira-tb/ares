@@ -1,5 +1,5 @@
-import { isString, isInteger } from '$global/guards';
-import { isWorld } from '$global/guards';
+import { isString, isInteger } from '$shared/guards';
+import { isWorld } from '$shared/guards';
 
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
 export class TribalWarsGameData implements TribalWarsGameDataType {

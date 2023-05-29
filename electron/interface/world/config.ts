@@ -1,7 +1,7 @@
 import { MessageChannelMain } from 'electron';
 import { WorldInterfaceError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
-import { getWorldConfigUrl } from '$global/helpers';
+import { getWorldConfigUrl } from '$shared/helpers';
 import { sequelize } from '$electron/database';
 import type {
     WorldConfig as WorldConfigTable,

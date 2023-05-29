@@ -6,7 +6,7 @@ import { computedEager, useFetch, useWindowSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { NButton, NButtonGroup, NSpin, NProgress } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { WebsiteUrl, AresAPI } from '$global/constants';
+import { WebsiteUrl, AresAPI } from '$shared/constants';
 import { ModuleAppUpdateError } from '$modules/error';
 
 const appVersion = await ipcInvoke('app-version');

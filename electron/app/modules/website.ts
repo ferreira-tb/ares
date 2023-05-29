@@ -1,8 +1,8 @@
 import { BrowserWindow } from 'electron';
-import { isInstanceOf, isString } from '$global/guards';
+import { isInstanceOf, isString } from '$shared/guards';
 import { appIcon } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
-import { isAllowedOrigin } from '$global/guards';
+import { isAllowedOrigin } from '$shared/guards';
 import { ModuleCreationError } from '$electron/error';
 import { setModuleDevMenu } from '$electron/menu/dev';
 

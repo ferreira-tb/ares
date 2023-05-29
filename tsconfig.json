@@ -10,13 +10,13 @@
 
         "browser/**/*",
         "browser/**/*.vue",
-        "global/**/*",
         "modules/**/*",
         "modules/**/*.vue",
         "panel/**/*",
         "panel/**/*.vue",
         "renderer/**/*",
         "renderer/**/*.vue",
+        "shared/**/*",
         "typings/**/*",
         "ui/**/*",
         "ui/**/*.vue"
@@ -27,12 +27,12 @@
             "$assets/*": ["./renderer/assets/*"],
             "$browser/*": ["./browser/*"],
             "$deimos/*": ["./deimos/*"],
-            "$global/*": ["./global/*"],
             "$icons/*": ["./renderer/components/icons/*"],
             "$lib/*": ["./browser/lib/*"],
             "$modules/*": ["./modules/*"],
             "$panel/*": ["./panel/*"],
             "$renderer/*": ["./renderer/*"],
+            "$shared/*": ["./shared/*"],
             "$ui/*": ["./ui/*"]
         },
 

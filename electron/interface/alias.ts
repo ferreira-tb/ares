@@ -1,6 +1,6 @@
 import { storeToRefs } from 'mechanus';
 import { getPanelWindow } from '$electron/utils/helpers';
-import { isUserAlias } from '$global/guards';
+import { isUserAlias } from '$shared/guards';
 import { Kronos } from '@tb-dev/kronos';
 import { fetchVillageGroups, patchVillageGroups } from '$electron/utils/groups';
 import { AliasInterfaceError } from '$electron/error';

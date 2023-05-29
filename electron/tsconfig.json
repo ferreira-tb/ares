@@ -10,9 +10,9 @@
         "paths": {
             "$database/*": ["./database/*"],
             "$electron/*": ["./*"],
-            "$global/*": ["../global/*"],
             "$interface/*": ["./interface/*"],
             "$renderer/*": ["../renderer/*"],
+            "$shared/*": ["../shared/*"],
             "$stores/*": ["./stores/*"]
         },
         

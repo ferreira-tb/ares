@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import { DatabaseError } from '$electron/error';
-import { assertWorld } from '$global/guards';
+import { assertWorld } from '$shared/guards';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class WorldDataFetchHistory extends Model<

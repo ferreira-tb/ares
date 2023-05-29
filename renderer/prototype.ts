@@ -1,4 +1,4 @@
-import { isString, isInstanceOf } from '$global/guards';
+import { isString, isInstanceOf } from '$shared/guards';
 
 declare global {
     interface Document {

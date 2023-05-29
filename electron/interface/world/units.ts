@@ -1,7 +1,7 @@
 import { MessageChannelMain } from 'electron';
 import { WorldInterfaceError } from '$electron/error';
 import { createPhobos, destroyPhobos } from '$electron/app/phobos';
-import { getWorldUnitInfoUrl } from '$global/helpers';
+import { getWorldUnitInfoUrl } from '$shared/helpers';
 import { sequelize } from '$electron/database';
 import type { WorldUnits as WorldUnitsTable } from '$electron/database/world';
 import type { createWorldUnitStoresMap } from '$stores/world';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
-import { isDistance, isFiniteNumber, isInteger } from '$global/guards';
+import { isDistance, isFiniteNumber, isInteger } from '$shared/guards';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';
 

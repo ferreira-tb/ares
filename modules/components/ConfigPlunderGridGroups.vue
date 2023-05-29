@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch, watchEffect } from 'vue';
 import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
-import { isInteger } from '$global/guards';
-import { isDistance } from '$global/guards';
+import { isInteger } from '$shared/guards';
+import { isDistance } from '$shared/guards';
 import { ipcInvoke } from '$renderer/ipc';
 import InputNumber from '$renderer/components/InputNumber.vue';
 import LabelPopover from '$renderer/components/LabelPopover.vue';

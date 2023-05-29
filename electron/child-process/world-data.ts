@@ -1,10 +1,10 @@
-import '$global/prototype';
+import '$shared/prototype';
 import zlib from 'node:zlib';
 import csvParser from 'csv-parser';
 import { promisify } from 'node:util';
 import { Readable } from 'node:stream';
-import { assertWorld } from '$global/guards';
-import { getRegionFromWorld, getVillagesDataUrl } from '$global/helpers';
+import { assertWorld } from '$shared/guards';
+import { getRegionFromWorld, getVillagesDataUrl } from '$shared/helpers';
 import { ChildProcessError } from '$electron/child-process/error';
 
 const gunzip = promisify(zlib.gunzip);

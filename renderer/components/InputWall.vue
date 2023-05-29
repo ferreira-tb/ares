@@ -2,7 +2,7 @@
 import { reactive } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { NInputNumber } from 'naive-ui';
-import { isWallLevel, assertWallLevel } from '$global/guards';
+import { isWallLevel, assertWallLevel } from '$shared/guards';
 import { RendererProcessError } from '$renderer/error';
 
 type Keyboard = {
