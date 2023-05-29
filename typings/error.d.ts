@@ -17,3 +17,5 @@ type OmitOptionalErrorLogProps<T> = Omit<T, 'id' | 'pending'>;
 type AllErrorLogTypes = 
     | OmitOptionalErrorLogProps<ElectronErrorLogType> & Partial<Pick<ErrorLogBase, 'id' | 'pending'>>
     | OmitOptionalErrorLogProps<ErrorLogType> & Partial<Pick<ErrorLogBase, 'id' | 'pending'>>;
+
+type ErrorCard<T extends ElectronErrorLogType | ErrorLogType> = Omit<T, 'id'> & { id: string };

@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, onMounted } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { RouterView } from 'vue-router';
-import { syncRef, useArrayIncludes } from '@vueuse/core';
+import { syncRef, useArrayIncludes, useElementSize, useWindowSize } from '@vueuse/core';
 import { NTabs, NTab, type TabsInst } from 'naive-ui';
 import { configRouteNames, router } from '$modules/router';
 
 const tabs = ref<TabsInst | null>(null);
 const tabName = ref<ConfigModuleRoutes>('config-general');
 watch(tabName, (name) => router.push({ name }));
+
+const navBar = ref<HTMLElement | null>(null);
+const { height: navBarHeight } = useElementSize(navBar, { width: 0, height: 0 }, { box: 'border-box' });
+
+const { height: windowHeight } = useWindowSize();
+const viewHeight = computed(() => `${windowHeight.value - navBarHeight.value}px`);
 
 const currentRouteName = ref<string | null>(null);
 syncRef(router.currentRoute, currentRouteName, {
@@ -31,7 +37,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <nav class="module-nav-bar">
+    <nav ref="navBar" class="config-nav-bar">
         <NTabs
             ref="tabs"
             v-model:value="tabName"
@@ -47,8 +53,8 @@ onMounted(async () => {
         </NTabs>
     </nav>
 
-    <div class="module-tabbed-view-wrapper">
-        <RouterView #default="{ Component }" class="module-view tb-scrollbar">
+    <div class="config-view-wrapper tb-scrollbar">
+        <RouterView #default="{ Component }">
             <template v-if="Component">
                 <Transition name="tb-fade" mode="out-in">
                     <KeepAlive>
@@ -66,9 +72,24 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
-@use '$modules/assets/main.scss';
+.config-nav-bar {
+    height: 30px;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    user-select: none;
+}
 
-.module-tabbed-view-wrapper {
-    @include main.module-tabbed-view-wrapper;
+.config-view-wrapper {
+    position: absolute;
+    top: 30px;
+    bottom: 0;
+    width: 100%;
+    height: v-bind("viewHeight");
+    overflow-x: hidden;
+    overflow-y: auto;
+    user-select: none;
+    padding-left: 0.3em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 </style>

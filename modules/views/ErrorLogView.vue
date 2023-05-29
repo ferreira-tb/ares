@@ -1,64 +1,78 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue';
-import { RouterView } from 'vue-router';
-import { useElementSize, useWindowSize } from '@vueuse/core';
-import { NTabs, NTab } from 'naive-ui';
-import { router } from '$modules/router';
-import { ModuleRouterError } from '$modules/error';
-import ButtonErrorExport from '$renderer/components/ButtonErrorExport.vue';
+import { computed, ref } from 'vue';
+import { useWindowSize } from '@vueuse/core';
+import { useIpcRendererOn } from '@vueuse/electron';
+import { NCard } from 'naive-ui';
+import { ipcInvoke } from '$renderer/ipc';
+import { getLocaleDateString } from '$global/helpers';
+import ErrorLogExportButton from '$modules/components/ErrorLogExportButton.vue';
+import ResultSucess from '$renderer/components/ResultSucess.vue';
 
 const { height: windowHeight } = useWindowSize();
+const contentHeight = computed(() => `${windowHeight.value - 50}px`);
 
-const navBar = ref<HTMLElement | null>(null);
-const { height: navBarHeight } = useElementSize(navBar);
+const errorCardContainer = ref<HTMLDivElement | null>(null);
+const isContainerOverflowing = computed(() => {
+    if (errorCardContainer.value) {
+        return errorCardContainer.value.scrollHeight > errorCardContainer.value.clientHeight;
+    };
 
-const exportButton = ref<HTMLElement | null>(null);
-const { height: exportButtonHeight } = useElementSize(exportButton);
-
-const contentHeight = computed(() => windowHeight.value - navBarHeight.value);
-const wrapperBottom = computed(() => `${contentHeight.value - 30}px`);
-const wrapperHeight = computed(() => `${contentHeight.value - exportButtonHeight.value}px`);
-
-const route = ref<ErrorModuleRoutes>('error-general');
-watchEffect(() => {
-    router.push({ name: route.value }).catch(ModuleRouterError.catch);
+    return false;
 });
+
+const general = await ipcInvoke('error:get-log') ?? [];
+const electron = await ipcInvoke('error:get-electron-log') ?? [];
+
+const errors = ref<(ErrorCard<ElectronErrorLogType | ErrorLogType>)[]>([
+    ...general.map((e) => ({ ...e, id: `general-${e.id}` })),
+    ...electron.map((e) => ({ ...e, id: `electron-${e.id}` }))
+]);
+
+function updateErrorList(err: ElectronErrorLogType | ErrorLogType, type: 'electron' | 'general') {
+    const newError = { ...err, id: `${type}-${err.id}` };
+    errors.value.push(newError);
+};
+
+useIpcRendererOn('error:log-did-update', (_e, err: ErrorLogType) => updateErrorList(err, 'general'));
+useIpcRendererOn('error:electron-log-did-update', (_e, err: ErrorLogType) => updateErrorList(err, 'electron'));
 </script>
 
 <template>
-    <nav ref="navBar" class="module-nav-bar">
-        <NTabs v-model:value="route" animated default-value="error-general" justify-content="start" tab-style="margin-right: 2em;">
-            <NTab name="error-general" tab="Geral" />
-            <NTab name="error-electron" tab="Electron" />
-        </NTabs>
-    </nav>
+    <section>
+        <template v-if="errors.length > 0">
+            <div ref="errorCardContainer" class="error-card-container tb-scrollbar">
+                <TransitionGroup name="tb-fade">
+                    <NCard v-for="error of errors" :key="error.id" class="error-card" hoverable>
+                        <template #header>{{ error.name }}</template>
+                        <template #header-extra>{{ getLocaleDateString(error.time, true) }}</template>
+                        <template #default>{{ error.message }}</template>
+                    </NCard>
+                </TransitionGroup>
+            </div>
 
-    <div class="module-tabbed-view-wrapper">
-        <RouterView #default="{ Component }" class="module-view tb-scrollbar">
-            <template v-if="Component">
-                <Transition name="tb-fade" mode="out-in">
-                    <KeepAlive>
-                        <Suspense>
-                            <component :is="Component" />
-                            <template #fallback>
-                                <span class="bold-green to-center">Carregando...</span>
-                            </template>
-                        </Suspense>
-                    </KeepAlive>
-                </Transition>
-            </template>
-        </RouterView>
-    </div>
-
-    <ButtonErrorExport ref="exportButton" :button-top="wrapperBottom" />
+            <ErrorLogExportButton :top="contentHeight" @export="errors = []" />
+        </template>
+        <ResultSucess v-else description="Nenhum erro registrado :)" />
+    </section>
 </template>
 
 <style scoped lang="scss">
-@use '$modules/assets/main.scss';
+.error-card-container {
+    position: absolute;
+    top: 0;
+    bottom: v-bind("contentHeight");
+    width: 100%;
+    height: v-bind("contentHeight");
+    overflow-x: hidden;
+    overflow-y: auto;
+    user-select: none;
+    padding-top: 0.5em;
+    padding-left: 0.3em;
+    padding-right: v-bind("isContainerOverflowing ? 0 : '0.3em'");
+}
 
-.module-tabbed-view-wrapper {
-    @include main.module-tabbed-view-wrapper($margin-bottom: 2rem);
-    bottom: v-bind("wrapperBottom");
-    height: v-bind("wrapperHeight");
+.error-card {
+    margin-bottom: 0.5em;
+    user-select: text;
 }
 </style>

@@ -78,6 +78,6 @@ export function setModuleDevMenu(browserWindow: Electron.BrowserWindow) {
 function castDevMagic() {
     const allWebContents = webContents.getAllWebContents();
     for (const contents of allWebContents) {
-        contents.send('its-dev-magic');
+        contents.send('dev:magic');
     };
 };
