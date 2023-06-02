@@ -201,8 +201,8 @@ type MechanusBrowserViewStoreType = {
 
 // BROWSER
 interface BrowserStore {
-    /** Indica se o Deimos está pronto para receber comandos. */
-    readonly isDeimosReady: boolean;
+    /** Indica se o IpcTribal está pronto para receber comandos. */
+    readonly isIpcTribalReady: boolean;
 };
 
 type PiniaBrowserStoreType = {

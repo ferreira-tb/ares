@@ -26,8 +26,8 @@
         "paths": {
             "$assets/*": ["./renderer/assets/*"],
             "$browser/*": ["./browser/*"],
-            "$deimos/*": ["./deimos/*"],
             "$icons/*": ["./renderer/components/icons/*"],
+            "$ipc/*": ["./ipc/*"],
             "$lib/*": ["./browser/lib/*"],
             "$modules/*": ["./modules/*"],
             "$panel/*": ["./panel/*"],

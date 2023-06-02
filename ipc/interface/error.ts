@@ -1,7 +1,7 @@
-export class DeimosError extends Error {
+export class IpcTribalError extends Error {
     constructor(message: string) {
         super(message);
-        this.name = 'DeimosError';
+        this.name = 'IpcTribalError';
     };
 
     public static catch(err: unknown) {
@@ -10,9 +10,9 @@ export class DeimosError extends Error {
     };
 };
 
-export class DeimosModelError extends DeimosError {
+export class IpcTribalModelError extends IpcTribalError {
     constructor(message: string) {
         super(message);
-        this.name = 'DeimosModelError';
+        this.name = 'IpcTribalModelError';
     };
 };

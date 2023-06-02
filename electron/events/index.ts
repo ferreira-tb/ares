@@ -2,7 +2,7 @@ import { app, dialog, ipcMain } from 'electron';
 import { setPlunderEvents } from '$electron/events/plunder';
 import { setErrorEvents } from '$electron/events/error';
 import { setPanelEvents } from '$electron/events/panel';
-import { setDeimosEvents } from '$electron/events/deimos';
+import { setIpcTribalEvents } from '$electron/events/ipc-tribal';
 import { setModuleEvents } from '$electron/events/modules';
 import { setMainWindowEvents } from '$electron/events/ui';
 import { setBrowserViewEvents } from '$electron/events/view';
@@ -60,7 +60,7 @@ export function setEvents() {
     setPanelEvents();
     setPlunderEvents();
     setErrorEvents();
-    setDeimosEvents();
+    setIpcTribalEvents();
     setModuleEvents();
     setGroupsEvents();
     setWorldDataEvents();

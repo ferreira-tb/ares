@@ -48,9 +48,9 @@ export default [
         external: ['electron']
     },
     {
-        input: 'deimos/index.ts',
+        input: 'ipc/index.ts',
         output: {
-            file: 'dist/deimos.js',
+            file: 'dist/ipc-tw.js',
             format: 'iife',
             generatedCode: 'es2015'
         },
@@ -58,7 +58,7 @@ export default [
             nodeResolve({ extensions }),
             commonjs(),
             json(),
-            typescript({ tsconfig: 'deimos/tsconfig.json' })
+            typescript({ tsconfig: 'ipc/tsconfig.json' })
         ],
         external: ['electron']
     },

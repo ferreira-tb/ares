@@ -1,6 +1,7 @@
+import * as fs from 'node:fs/promises';
 import { ipcMain } from 'electron';
-import { readDeimosFile } from '$electron/app/deimos';
 import { getPanelWindow } from '$electron/utils/helpers';
+import { ipcTribalJs } from '$electron/utils/files';
 import { MainProcessEventError } from '$electron/error';
 
 import {
@@ -14,7 +15,7 @@ import {
     useGroupsStore
 } from '$electron/interface';
 
-export function setDeimosEvents() {
+export function setIpcTribalEvents() {
     const aresStore = useAresStore();
     const playerStore = usePlayerStore();
     const unitsStore = useUnitsStore();
@@ -23,22 +24,29 @@ export function setDeimosEvents() {
     const currentVillageStore = useCurrentVillageStore();
     const groupsStore = useGroupsStore();
 
-    /** Conteúdo do arquivo `deimos.js`. */
-    let deimos: string | null = null;
+    /** Conteúdo do arquivo `ipc-tw.js`. */
+    let ipcTribal: string | null = null;
 
-    // Indica que o script `deimos.js` foi completamente carregado na view.
-    ipcMain.on('deimos:tag-is-ready', (e) => e.sender.send('get-game-data'));
+    // Indica que o script `ipc-tw.js` foi completamente carregado na view.
+    ipcMain.on('ipc-tribal:tag-is-ready', (e) => e.sender.send('get-game-data'));
 
-    // Retorna o conteúdo do arquivo `deimos.js`.
-    ipcMain.handle('deimos:get-file', async () => {
-        if (deimos) return deimos;
-        const deimosFile = await readDeimosFile();
-        deimos ??= deimosFile;
-        return deimos;
+    // Retorna o conteúdo do arquivo `ipc-tw.js`.
+    ipcMain.handle('ipc-tribal:get-file', async (): Promise<string | null> => {
+        try {
+            if (ipcTribal) return ipcTribal;
+            const ipcTribalFileContent = await fs.readFile(ipcTribalJs, 'utf8');
+            if (ipcTribalFileContent.length === 0) throw new MainProcessEventError('ipc-tw.js file is empty.');
+            ipcTribal ??= ipcTribalFileContent;
+            return ipcTribal;
+
+        } catch (err) {
+            MainProcessEventError.catch(err);
+            return null;
+        };
     });
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
-    ipcMain.on('deimos:update-game-data', <T extends keyof TribalWarsGameDataType>(
+    ipcMain.on('ipc-tribal:update-game-data', <T extends keyof TribalWarsGameDataType>(
         _e: Electron.IpcMainEvent, gameData: TribalWarsGameDataType
     ) => {
         try {
@@ -73,7 +81,7 @@ export function setDeimosEvents() {
     });
 
     // Recebe as informações referentes ao assistente de saque, salva-as localmente e então envia-as ao painel.
-    ipcMain.handle('deimos:update-plunder-info', <T extends keyof typeof plunderStore>(
+    ipcMain.handle('ipc-tribal:update-plunder-info', <T extends keyof typeof plunderStore>(
         _e: Electron.IpcMainEvent, plunderInfo: PlunderInfoType
     ) => {
         try {
@@ -92,7 +100,7 @@ export function setDeimosEvents() {
     });
 
     // Recebe as informações referentes às unidades da aldeia atual, salva-as localmente e então envia-as ao painel.
-    ipcMain.handle('deimos:update-current-village-units', <T extends keyof typeof unitsStore>(
+    ipcMain.handle('ipc-tribal:update-current-village-units', <T extends keyof typeof unitsStore>(
         _e: Electron.IpcMainEvent, units: UnitAmount
     ) => {
         try {

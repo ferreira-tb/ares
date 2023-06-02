@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { assertInteger } from '$shared/guards';
-import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$renderer/stores/plunder';
+import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$renderer/stores';
 import { PanelPlunderError } from '$panel/error';
 
 export function setPlunderEvents() {

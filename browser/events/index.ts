@@ -1,14 +1,12 @@
 import { setDevEvents } from '$browser/events/dev';
 import { setPlunderEvents } from '$browser/events/plunder';
-import { setDeimosEvents } from '$browser/events/deimos';
-import { ipcInvoke } from '$renderer/ipc';
+import { setIpcTribalEvents } from '$browser/events/ipc-tribal';
+
 import { BrowserEventError } from '$browser/error';
 
 export function setBrowserEvents() {
     setPlunderEvents();
-    setDeimosEvents();
+    setIpcTribalEvents();
 
-    ipcInvoke('is-dev')
-        .then((isDev) => setDevEvents(isDev))
-        .catch((err: unknown) => BrowserEventError.catch(err));
+    setDevEvents().catch(BrowserEventError.catch);
 };

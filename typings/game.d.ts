@@ -72,7 +72,6 @@ interface TribalWarsGameDataType {
         readonly screenMode: string | null;
         /** Indica se está no modo de pré-jogo. */
         readonly pregame: boolean | null;
-        
     };
 
     readonly features: {
@@ -95,9 +94,11 @@ interface TribalWarsGameDataType {
         /** ID do jogador ativo. */
         readonly id: number | null;
         /** Pontuação do jogador. */
-        readonly points: number | null;
+        readonly points: number;
         /** Quantidade de aldeias que o jogador possui. */
-        readonly villageAmount: number | null;
+        readonly villageAmount: number;
+        /** Quantidade de ataques a caminho. */
+        readonly incomings: number;
     };
     
     readonly currentVillage: {

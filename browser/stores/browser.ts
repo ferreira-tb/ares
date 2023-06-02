@@ -2,9 +2,9 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 
 export const useBrowserStore = defineStore('browser', () => {
-    const isDeimosReady = ref<boolean>(false);
+    const isIpcTribalReady = ref<boolean>(false);
 
     return {
-        isDeimosReady
+        isIpcTribalReady
     } satisfies PiniaBrowserStoreType;
 });

@@ -11,7 +11,7 @@
         "lib": ["esnext", "DOM"],
         "paths": {
             "$browser/*": ["../browser/*"],
-            "$deimos/*": ["./*"],
+            "$ipc/*": ["./*"],
             "$lib/*": ["../browser/lib/*"],
             "$modules/*": ["../modules/*"],
             "$panel/*": ["../panel/*"],

@@ -1,7 +1,9 @@
 import { ipcRenderer } from 'electron';
 import { RendererProcessError } from '$renderer/error';
+import { ipcInvoke } from '$renderer/ipc';
 
-export function setDevEvents(isDev: boolean) {
+export async function setDevEvents() {
+    const isDev = await ipcInvoke('is-dev');
     if (!isDev) return;
     
     // A callback desse evento varia conforme o que está sendo testado no momento.

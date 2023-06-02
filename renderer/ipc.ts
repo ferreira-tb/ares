@@ -67,10 +67,10 @@ export async function ipcInvoke(channel: 'plunder:get-demolition-config', alias?
 export async function ipcInvoke(channel: 'plunder:save-demolition-config', template: DemolitionTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:destroy-demolition-config', alias: UserAlias): Promise<boolean>;
 
-// Deimos
-export async function ipcInvoke(channel: 'deimos:get-file'): Promise<string | null>;
-export async function ipcInvoke(channel: 'deimos:update-plunder-info', plunderInfo: PlunderInfoType): Promise<boolean>;
-export async function ipcInvoke(channel: 'deimos:update-current-village-units', units: UnitAmount): Promise<boolean>;
+// IpcTribal
+export async function ipcInvoke(channel: 'ipc-tribal:get-file'): Promise<string | null>;
+export async function ipcInvoke(channel: 'ipc-tribal:update-plunder-info', plunderInfo: PlunderInfoType): Promise<boolean>;
+export async function ipcInvoke(channel: 'ipc-tribal:update-current-village-units', units: UnitAmount): Promise<boolean>;
 
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
     const response: unknown = await ipcRenderer.invoke(channel, ...args);
@@ -136,9 +136,9 @@ export function ipcSend(channel: 'plunder:navigate-to-group'): void;
 export function ipcSend(channel: 'plunder:navigate-to-first-page'): void;
 export function ipcSend(channel: 'plunder:open-demolition-config-window'): void;
 
-// Deimos
-export function ipcSend(channel: 'deimos:tag-is-ready'): void;
-export function ipcSend(channel: 'deimos:update-game-data', gameData: TribalWarsGameDataType): void;
+// IpcTribal
+export function ipcSend(channel: 'ipc-tribal:tag-is-ready'): void;
+export function ipcSend(channel: 'ipc-tribal:update-game-data', gameData: TribalWarsGameDataType): void;
 
 export function ipcSend(channel: string, ...args: any[]): void {
     ipcRenderer.send(channel, ...args);

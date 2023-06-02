@@ -10,7 +10,7 @@
     "vsicons.associations.folders": [
         { "icon": "src", "extensions": ["vue"], "format": "svg" },
         { "icon": "api", "extensions": ["browser"], "format": "svg" },
-        { "icon": "aurelia", "extensions": ["deimos"], "format": "svg" },
+        { "icon": "aurelia", "extensions": ["ipc"], "format": "svg" },
         { "icon": "ravendb", "extensions": ["phobos"], "format": "svg" },
         { "icon": "story", "extensions": ["store", "stores"], "format": "svg" },
         { "icon": "nix", "extensions": ["panel"], "format": "svg" },
