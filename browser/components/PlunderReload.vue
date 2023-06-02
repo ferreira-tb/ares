@@ -40,7 +40,7 @@ function setPlunderTimeout() {
 function reloadMainView() {
     ipcSend('plunder:update-pages-info', null);
     ipcSend('plunder:update-group-info', null);
-    ipcSend('reload-main-view');
+    ipcSend('main-view:reload');
 };
 </script>
 

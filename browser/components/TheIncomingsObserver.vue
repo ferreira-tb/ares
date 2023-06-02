@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useMutationObserver } from '@vueuse/core';
+import { watchImmediate, useMutationObserver } from '@vueuse/core';
 import { usePlayerStore } from '$renderer/stores';
 import { IpcTribal } from '$ipc/interface';
+import { ipcSend } from '$renderer/ipc';
 import type { UseMutationObserverOptions } from '@vueuse/core';
 
 const playerStore = usePlayerStore();
@@ -24,5 +25,5 @@ useMutationObserver(incomingsElement, async (mutations) => {
     };
 }, options);
 
-watch(incomings, (v) => console.log(v));
+watchImmediate(incomings, (newAmount) => ipcSend('game:update-incoming-attacks', newAmount));
 </script>

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, toRaw } from 'vue';
 import { computedEager, whenever, watchImmediate } from '@vueuse/core';
-import { useAresStore } from '$renderer/stores/ares';
-import { usePlunderConfigStore } from '$renderer/stores/plunder';
-import { useCurrentVillageStore } from '$renderer/stores/village';
+import { Kronos } from '@tb-dev/kronos';
+import { useAresStore, usePlunderConfigStore, useCurrentVillageStore } from '$renderer/stores';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
 import { queryTargetsInfo, targets } from '$browser/lib/plunder/targets';
 import { queryAvailableUnits } from '$lib/plunder/units';
@@ -16,7 +15,6 @@ import { handleLackOfTargets } from '$lib/plunder/next';
 import { queryPlunderGroupInfo } from '$lib/plunder/group';
 import { PlunderError } from '$browser/error';
 import { ipcSend } from '$renderer/ipc';
-import { Kronos } from '@tb-dev/kronos';
 import PlunderReload from '$browser/components/PlunderReload.vue';
 
 const ares = useAresStore();

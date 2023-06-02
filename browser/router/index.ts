@@ -3,6 +3,8 @@ import { getRouteNames } from '$renderer/utils/router';
 import DefaultView from '$renderer/views/DefaultView.vue';
 import PlunderView from '$browser/views/PlunderView.vue';
 
+export * from '$browser/router/guards';
+
 const routes: RouteRecordRaw[] = [
     {
         path: '/',

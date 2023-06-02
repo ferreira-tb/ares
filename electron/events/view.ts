@@ -39,13 +39,13 @@ export function setBrowserViewEvents() {
     setWindowOpenHandler(mainViewWebContents);
 
     // View principal.
-    ipcMain.handle('main-view-web-contents-id', () => mainViewWebContents.id);
-    ipcMain.handle('main-view-url', () => mainViewWebContents.getURL());
-    ipcMain.on('reload-main-view', () => mainViewWebContents.reload());
-    ipcMain.on('force-reload-main-view', () => mainViewWebContents.reloadIgnoringCache());
+    ipcMain.handle('main-view:web-contents-id', () => mainViewWebContents.id);
+    ipcMain.handle('main-view:url', () => mainViewWebContents.getURL());
+    ipcMain.on('main-view:reload', () => mainViewWebContents.reload());
+    ipcMain.on('main-view:force-reload', () => mainViewWebContents.reloadIgnoringCache());
 
     // View atual.
-    ipcMain.on('update-current-view', (_e, webContentsId: number) => {
+    ipcMain.on('current-view:update', (_e, webContentsId: number) => {
         try {
             const view = findBrowserViewByWebContentsId(webContentsId, mainWindow);
             currentWebContents.value = view.webContents;
@@ -56,19 +56,19 @@ export function setBrowserViewEvents() {
 
     // Os eventos abaixo estão relacionados à BrowserView atual.
     // No entanto, não precisam ser definidos separadamente, pois são obtidos dinamicamente dentro da callback.
-    ipcMain.handle('current-view-url', () => currentView.value.webContents.getURL());
-    ipcMain.handle('current-view-web-contents-id', () => currentView.value.webContents.id);
-    ipcMain.handle('current-view-can-go-back', () => currentView.value.webContents.canGoBack());
-    ipcMain.handle('current-view-can-go-forward', () => currentView.value.webContents.canGoForward());
+    ipcMain.handle('current-view:url', () => currentView.value.webContents.getURL());
+    ipcMain.handle('current-view:web-contents-id', () => currentView.value.webContents.id);
+    ipcMain.handle('current-view:can-go-back', () => currentView.value.webContents.canGoBack());
+    ipcMain.handle('current-view:can-go-forward', () => currentView.value.webContents.canGoForward());
 
-    ipcMain.on('reload-current-view', () => currentView.value.webContents.reload());
-    ipcMain.on('force-reload-current-view', () => currentView.value.webContents.reloadIgnoringCache());
-    ipcMain.on('current-view-go-home', () => contentsGoHome(currentView.value.webContents, cacheStore.region));
-    ipcMain.on('current-view-go-back', () => contentsGoBack(currentView.value.webContents));
-    ipcMain.on('current-view-go-forward', () => contentsGoForward(currentView.value.webContents));
+    ipcMain.on('current-view:reload', () => currentView.value.webContents.reload());
+    ipcMain.on('current-view:force-reload', () => currentView.value.webContents.reloadIgnoringCache());
+    ipcMain.on('current-view:home', () => contentsGoHome(currentView.value.webContents, cacheStore.region));
+    ipcMain.on('current-view:back', () => contentsGoBack(currentView.value.webContents));
+    ipcMain.on('current-view:forward', () => contentsGoForward(currentView.value.webContents));
 
     // BrowserViews específicas.
-    ipcMain.on('destroy-browser-view', (_e, webContentsId: number) => {
+    ipcMain.on('view:destroy', (_e, webContentsId: number) => {
         try {
             const view = findBrowserViewByWebContentsId(webContentsId, mainWindow);
             destroyBrowserView(view, mainWindow, mainViewWebContents);

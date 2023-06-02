@@ -95,6 +95,10 @@ export function getLocaleDateString(raw?: number, includeTime: boolean = false):
     return `${date} ${time}`;
 };
 
+/**
+ * Obtém o nome do jogador a partir do alias, decodificando-o.
+ * @param alias Alias do jogador.
+ */
 export function getPlayerNameFromAlias(alias: UserAlias): string {
     const encodedPlayerName = alias.replace(/^[a-z]+\d+__USERID__/, '');
     return decodeURIComponent(encodedPlayerName);

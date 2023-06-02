@@ -9,7 +9,7 @@ import ResultInfo from '$renderer/components/ResultInfo.vue';
 import PlunderTemplateCard from '$modules/components/PlunderTemplateCard.vue';
 
 const userAlias = await ipcInvoke('user-alias');
-const isArcherWorld = await ipcInvoke('is-archer-world');
+const isArcherWorld = await ipcInvoke('game:is-archer-world');
 const previousTemplates = await ipcInvoke('plunder:get-custom-templates');
 
 const showTemplateModal = ref<boolean>(false);
@@ -40,7 +40,7 @@ function removeTemplate(template: CustomPlunderTemplateType) {
                     v-model:show="showTemplateModal"
                     v-model:templates="templates"
                     :user-alias="userAlias"
-                    :is-archer-world="isArcherWorld"
+                    :game:is-archer-world="isArcherWorld"
                 />
             </Suspense>
 

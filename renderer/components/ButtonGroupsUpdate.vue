@@ -18,9 +18,9 @@ const groups = useVModel(props, 'groups', emit);
 
 async function fetchVillageGroups() {
     loading.value = true;
-    const fetched = await ipcInvoke('fetch-village-groups');
+    const fetched = await ipcInvoke('game:fetch-village-groups');
     if (fetched) {
-        groups.value = await ipcInvoke('get-village-groups');
+        groups.value = await ipcInvoke('game:get-village-groups');
         message.success('Lista de grupos atualizada');
     } else {
         message.error('Erro ao atualizar a lista de grupos');

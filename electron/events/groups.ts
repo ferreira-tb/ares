@@ -10,9 +10,9 @@ export function setGroupsEvents() {
     const groupsStore = useGroupsStore();
     const { all } = storeToRefs(groupsStore);
 
-    ipcMain.handle('get-village-groups', () => groupsStore.all);
+    ipcMain.handle('game:get-village-groups', () => groupsStore.all);
 
-    ipcMain.handle('fetch-village-groups', async () => {
+    ipcMain.handle('game:fetch-village-groups', async () => {
         try {
             if (!cacheStore.userAlias) return false;
             const userAlias = cacheStore.userAlias;

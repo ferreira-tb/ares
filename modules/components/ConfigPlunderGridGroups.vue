@@ -16,7 +16,7 @@ const emit = defineEmits<{
     <T extends keyof PlunderConfigType>(e: 'update:config', name: T, value: PlunderConfigType[T]): void;
 }>();
 
-const previousGroups = await ipcInvoke('get-village-groups');
+const previousGroups = await ipcInvoke('game:get-village-groups');
 const groups = ref(previousGroups);
 
 const plunderGroupOptions = computed(() => {

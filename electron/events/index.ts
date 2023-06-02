@@ -11,16 +11,15 @@ import { setBrowserEvents } from '$electron/events/browser';
 import { setConfigEvents } from '$electron/events/config';
 import { setDevEvents } from '$electron/events/dev';
 import { setWorldDataEvents } from '$electron/events/world-data';
-import { isUserAlias } from '$shared/guards';
+import { setGameEvents } from '$electron/events/game';
 import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/app/modules';
-import { useCacheStore, useWorldConfigStore, worldUnitsMap } from '$electron/interface';
-import { getPlayerNameFromAlias, extractWorldUnitsFromMap, getMainWindow } from '$electron/utils/helpers';
+import { useCacheStore } from '$electron/interface';
+import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessEventError } from '$electron/error';
 
 export function setEvents() {
     const mainWindow = getMainWindow();
     const cacheStore = useCacheStore();
-    const worldConfigStore = useWorldConfigStore();
     
     // Geral.
     ipcMain.handle('app-name', () => app.getName());
@@ -40,28 +39,18 @@ export function setEvents() {
     ipcMain.on('open-github-repo', () => openRepoWebsite());
     ipcMain.on('open-github-issues', () => openIssuesWebsite());
 
-    // Jogo.
-    ipcMain.handle('current-world', () => cacheStore.world);
-    ipcMain.handle('current-world-config', () => ({ ...worldConfigStore }));
-    ipcMain.handle('current-world-units', () => extractWorldUnitsFromMap(worldUnitsMap));
-    ipcMain.handle('is-archer-world', () => worldConfigStore.archer);
-
-    ipcMain.handle('player-name', (_e, alias: UserAlias): string | null => {
-        if (!isUserAlias(alias)) return cacheStore.player;
-        return getPlayerNameFromAlias(alias);
-    });
-
     // Outros eventos.
-    setDevEvents();
-    setConfigEvents();
-    setMainWindowEvents();
     setBrowserEvents();
     setBrowserViewEvents();
+    setConfigEvents();
+    setDevEvents();
+    setErrorEvents();
+    setGameEvents();
+    setGroupsEvents();
+    setIpcTribalEvents();
+    setMainWindowEvents();
+    setModuleEvents();
     setPanelEvents();
     setPlunderEvents();
-    setErrorEvents();
-    setIpcTribalEvents();
-    setModuleEvents();
-    setGroupsEvents();
     setWorldDataEvents();
 };

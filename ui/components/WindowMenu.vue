@@ -26,8 +26,8 @@ const { width } = useElementSize(mainWindowMenu);
 const menuWidth = computed(() => `${width.value - 300}px`);
 const isSmallScreen = useMediaQuery('(max-width: 600px)');
 
-const canGoBack = ref<boolean>(await ipcInvoke('current-view-can-go-back'));
-const canGoForward = ref<boolean>(await ipcInvoke('current-view-can-go-forward'));
+const canGoBack = ref<boolean>(await ipcInvoke('current-view:can-go-back'));
+const canGoForward = ref<boolean>(await ipcInvoke('current-view:can-go-forward'));
 
 const goBackDepth = computed(() => canGoBack.value ? 3 : 5);
 const goForwardDepth = computed(() => canGoForward.value ? 3 : 5);
@@ -41,16 +41,16 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
 <template>
     <div ref="mainWindowMenu" class="main-window-menu">
         <div class="menu-icon-area">
-            <div class="menu-icon" @click="ipcSend('current-view-go-back')">
+            <div class="menu-icon" @click="ipcSend('current-view:back')">
                 <NIcon :size="22" :depth="goBackDepth" :component="ArrowBackSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('current-view-go-forward')">
+            <div class="menu-icon" @click="ipcSend('current-view:forward')">
                 <NIcon :size="22" :depth="goForwardDepth" :component="ArrowForwardSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('reload-current-view')">
+            <div class="menu-icon" @click="ipcSend('current-view:reload')">
                 <NIcon :size="22" :depth="3" :component="ReloadSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('current-view-go-home')">
+            <div class="menu-icon" @click="ipcSend('current-view:home')">
                 <NIcon :size="22" :depth="3" :component="HomeSharp" />
             </div>
             <div class="menu-icon" @click="ipcSend('open-settings-window', 'config-general')">
