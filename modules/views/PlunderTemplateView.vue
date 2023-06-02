@@ -40,7 +40,7 @@ function removeTemplate(template: CustomPlunderTemplateType) {
                     v-model:show="showTemplateModal"
                     v-model:templates="templates"
                     :user-alias="userAlias"
-                    :game:is-archer-world="isArcherWorld"
+                    :is-archer-world="isArcherWorld"
                 />
             </Suspense>
 

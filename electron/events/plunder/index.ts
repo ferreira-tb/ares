@@ -1,6 +1,5 @@
 import { ipcMain } from 'electron';
-import { isInteger } from '$shared/guards';
-import { isWorld } from '$shared/guards';
+import { isInteger, isWorld } from '$shared/guards';
 import { MainProcessEventError } from '$electron/error';
 import { extractWorldUnitsFromMap } from '$electron/utils/helpers';
 import { useCacheStore, WorldUnits, worldUnitsMap } from '$electron/interface';

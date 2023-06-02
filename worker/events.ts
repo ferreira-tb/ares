@@ -1,19 +1,20 @@
 import { ipcRenderer } from 'electron';
-import { assertString } from '$shared/guards';
-import { PhobosError } from '$phobos/error';
-import { fetchWorldConfig } from '$phobos/world/config';
-import { fetchWorldUnit } from '$phobos/world/unit';
-import { getVillageGroups } from '$phobos/groups/groups';
+import { TribalWorkerError } from '$worker/error';
+import { fetchWorldConfig } from '$worker/world/config';
+import { fetchWorldUnit } from '$worker/world/unit';
+import { getVillageGroups } from '$worker/groups/groups';
 
-export function setPhobosEvents() {
+export function setTribalWorkerEvents() {
     ipcRenderer.on('port', (e) => handlePort(e.ports[0]));
 };
 
 function handlePort(port: MessagePort) {
     try {
         port.onmessage = (e) => {
-            const { channel } = e.data as PhobosPortMessage;
-            assertString(channel, `Channel should be a string, got ${channel}.`);
+            const { channel } = e.data as TribalWorkerPortMessage;
+            if (typeof channel !== 'string' || channel.length === 0) {
+                throw new TribalWorkerError(`Invalid channel: ${String(channel)}`);
+            };
             
             switch (channel) {
                 case 'fetch-world-config':
@@ -26,11 +27,11 @@ function handlePort(port: MessagePort) {
                     getVillageGroups(port);
                     break;
                 default:
-                    throw new PhobosError(`Unknown channel: ${channel}`);
+                    throw new TribalWorkerError(`Unknown channel: ${channel}`);
             };
         };
 
     } catch (err) {
-        PhobosError.catch(err);
+        TribalWorkerError.catch(err);
     };
 };

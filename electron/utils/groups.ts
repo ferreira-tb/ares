@@ -1,7 +1,7 @@
 import { URL } from 'url';
 import { MessageChannelMain } from 'electron';
 import { assertInstanceOf } from '$shared/guards';
-import { createPhobos, destroyPhobos } from '$electron/app/phobos';
+import { TribalWorker } from '$electron/worker';
 import { getMainViewWebContents } from '$electron/utils/view';
 import { getPanelWindow } from '$electron/utils/helpers';
 
@@ -12,11 +12,13 @@ export function fetchVillageGroups(): Promise<Set<VillageGroup>> {
         const mainViewWebContents = getMainViewWebContents();
         const url = new URL(mainViewWebContents.getURL());
         url.search = 'screen=overview_villages&&mode=groups&type=static';
-        const phobos = await createPhobos('get-village-groups', url, { override: true });
+
+        const worker = new TribalWorker('get-village-groups', url, { override: true });
+        await worker.init();
         
         const { port1, port2 } = new MessageChannelMain();
-        phobos.webContents.postMessage('port', null, [port2]);
-        port1.postMessage({ channel: 'get-village-groups' } satisfies PhobosPortMessage);
+        worker.view.webContents.postMessage('port', null, [port2]);
+        port1.postMessage({ channel: 'get-village-groups' } satisfies TribalWorkerPortMessage);
 
         port1.on('message', (e) => {
             try {
@@ -26,7 +28,7 @@ export function fetchVillageGroups(): Promise<Set<VillageGroup>> {
                 reject(err);
             } finally {
                 port1.close();
-                destroyPhobos(phobos);
+                worker.destroy();
             };
         });
 

@@ -1,7 +1,6 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { AresError } from '$shared/error';
-import { isString } from '$shared/guards';
 import { ErrorLogFile } from '$shared/constants';
 
 export class ChildProcessError extends AresError {
@@ -17,7 +16,7 @@ export class ChildProcessError extends AresError {
             const errorLog: OmitOptionalErrorLogProps<ElectronErrorLogType> = {
                 name: err.name,
                 message: err.message,
-                stack: isString(err.stack) ? err.stack : err.message,
+                stack: typeof err.stack === 'string' && err.stack.length > 0 ? err.stack : err.message,
                 time: Date.now(),
                 ares: process.env.ARES_VERSION ?? 'unknown',
                 chrome: process.env.CHROME_VERSION ?? 'unknown',

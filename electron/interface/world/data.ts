@@ -38,10 +38,10 @@ export async function fetchWorldData(
         });
 
         if (newData && typeof newData === 'object') {
-            await sequelize.transaction(async (transaction) => {
+            await sequelize.transaction(async () => {
                 const WorldVillages = await getWorldVillagesTable(world);
-                await WorldVillages.bulkCreate(newData.villages, { updateOnDuplicate: ['name', 'player', 'points'], transaction });
-                await WorldDataFetchHistory.upsert({ world, village: Date.now() }, { transaction });
+                await WorldVillages.bulkCreate(newData.villages, { updateOnDuplicate: ['name', 'player', 'points'] });
+                await WorldDataFetchHistory.upsert({ world, village: Date.now() });
             });
 
         } else if (typeof newData === 'string') {

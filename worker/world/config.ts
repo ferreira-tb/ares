@@ -1,4 +1,4 @@
-import { PhobosError } from '$phobos/error';
+import { TribalWorkerError } from '$worker/error';
 
 class WorldConfig implements WorldConfigType {
     readonly speed: number;
@@ -39,7 +39,7 @@ export function fetchWorldConfig(port: MessagePort) {
         port.postMessage(worldConfig);
 
     } catch (err) {
-        PhobosError.catch(err);
+        TribalWorkerError.catch(err);
         port.postMessage(null);
         
     } finally {

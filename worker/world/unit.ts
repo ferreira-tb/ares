@@ -1,4 +1,4 @@
-import { PhobosError } from '$phobos/error';
+import { TribalWorkerError } from '$worker/error';
 
 class EachUnit implements UnitDetails {
     readonly buildTime: number;
@@ -79,7 +79,7 @@ export function fetchWorldUnit(port: MessagePort) {
         port.postMessage(worldUnit);
 
     } catch (err) {
-        PhobosError.catch(err);
+        TribalWorkerError.catch(err);
         port.postMessage(null);
         
     } finally {

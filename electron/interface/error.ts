@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { isString } from '$shared/guards';
 import { sequelize } from '$electron/database';
-import { getActiveModule } from '$electron/app/modules';
+import { getActiveModule } from '$electron/modules';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessError } from '$electron/error';
 import type { useAppNotificationsStore } from '$electron/interface';

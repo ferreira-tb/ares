@@ -1,6 +1,6 @@
 import { Menu } from 'electron';
 import { computed, storeToRefs } from 'mechanus';
-import { showAppSettings } from '$electron/app/modules';
+import { showAppSettings } from '$electron/modules';
 import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { appendDevMenu } from '$electron/menu/dev';
 import { getMainViewWebContents, contentsGoBack, contentsGoForward, contentsGoHome } from '$electron/utils/view';

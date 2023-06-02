@@ -1,6 +1,5 @@
-import { MessageChannelMain } from 'electron';
 import { WorldInterfaceError } from '$electron/error';
-import { createPhobos, destroyPhobos } from '$electron/app/phobos';
+import { TribalWorker } from '$electron/worker';
 import { getWorldUnitInfoUrl } from '$shared/helpers';
 import { sequelize } from '$electron/database';
 import type { WorldUnits as WorldUnitsTable } from '$electron/database/world';
@@ -21,30 +20,22 @@ export async function patchWorldUnitsStoresState(
             // Se não houver informações sobre as unidades do mundo atual, cria um novo registro.
             const state = await new Promise<WorldUnitsType>(async (resolve, reject) => {
                 const url = getWorldUnitInfoUrl(world, cacheStore.region);
-                const phobos = await createPhobos('fetch-world-unit', url, { override: true });
-                
-                const { port1, port2 } = new MessageChannelMain();
-                phobos.webContents.postMessage('port', null, [port2]);
-                port1.postMessage({ channel: 'fetch-world-unit' } satisfies PhobosPortMessage);
-    
-                port1.on('message', (e) => {
+                const worker = new TribalWorker('fetch-world-unit', url, { override: true });
+                await worker.init((e) => {
                     try {
                         if (!e.data) throw new WorldInterfaceError(`No data received for world ${world}.`);
                         resolve(e.data);             
                     } catch (err) {
                         reject(err);
                     } finally {
-                        port1.close();
-                        destroyPhobos(phobos);
+                        worker.destroy();
                     };
                 });
-    
-                port1.start();
             });
 
             // Salva o registro no banco de dados.
-            worldUnit = await sequelize.transaction(async (transaction) => {
-                return (await WorldUnits.create({ id: world, ...state }, { transaction })).toJSON();
+            worldUnit = await sequelize.transaction(async () => {
+                return (await WorldUnits.create({ id: world, ...state })).toJSON();
             });
         };
 

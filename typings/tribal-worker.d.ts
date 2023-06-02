@@ -1,4 +1,4 @@
-interface PhobosOptions extends Electron.BrowserViewConstructorOptions {
+interface TribalWorkerOptions extends Electron.BrowserViewConstructorOptions {
     autoResize?: Electron.AutoResizeOptions;
     bounds?: Electron.Rectangle;
     
@@ -11,13 +11,13 @@ interface PhobosOptions extends Electron.BrowserViewConstructorOptions {
     overrideUrl?: boolean;
 };
 
-type PhobosNames =
+type TribalWorkerName =
     | 'fetch-world-config'
     | 'fetch-world-unit'
     | 'get-village-groups';
 
-type PhobosChannel = PhobosNames;
+type TribalWorkerChannel = TribalWorkerName;
 
-interface PhobosPortMessage extends Record<string, unknown> {
-    channel: PhobosChannel;
+interface TribalWorkerPortMessage extends Record<string, unknown> {
+    channel: TribalWorkerChannel;
 };

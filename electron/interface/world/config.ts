@@ -1,6 +1,5 @@
-import { MessageChannelMain } from 'electron';
 import { WorldInterfaceError } from '$electron/error';
-import { createPhobos, destroyPhobos } from '$electron/app/phobos';
+import { TribalWorker } from '$electron/worker';
 import { getWorldConfigUrl } from '$shared/helpers';
 import { sequelize } from '$electron/database';
 import type {
@@ -24,30 +23,22 @@ export async function patchWorldConfigStoreState<T extends keyof WorldConfigType
             // Se não houver configurações para o mundo atual, cria um novo registro.
             const state = await new Promise<WorldConfigType>(async (resolve, reject) => {
                 const url = getWorldConfigUrl(world, cacheStore.region);
-                const phobos = await createPhobos('fetch-world-config', url, { override: true });
-                
-                const { port1, port2 } = new MessageChannelMain();
-                phobos.webContents.postMessage('port', null, [port2]);
-                port1.postMessage({ channel: 'fetch-world-config' } satisfies PhobosPortMessage);
-    
-                port1.on('message', (e) => {
+                const worker = new TribalWorker('fetch-world-config', url, { override: true });
+                await worker.init((e) => {
                     try {
                         if (!e.data) throw new WorldInterfaceError(`No data received for world ${world}.`);
                         resolve(e.data);
                     } catch (err) {
                         reject(err);
                     } finally {
-                        port1.close();
-                        destroyPhobos(phobos);
+                        worker.destroy();
                     };
                 });
-    
-                port1.start();
             });
 
             // Salva o registro no banco de dados.
-            worldConfig = await sequelize.transaction(async (transaction) => {
-                return (await WorldConfig.create({ id: world, ...state }, { transaction })).toJSON();
+            worldConfig = await sequelize.transaction(async () => {
+                return (await WorldConfig.create({ id: world, ...state })).toJSON();
             });
         };
     

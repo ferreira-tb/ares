@@ -1,4 +1,4 @@
-import { PhobosError } from '$phobos/error';
+import { TribalWorkerError } from '$worker/error';
 
 export function getVillageGroups(port: MessagePort) {
     try {
@@ -8,7 +8,7 @@ export function getVillageGroups(port: MessagePort) {
             const groupName = el.getTextContentStrict().replace(/^([<>[\]])(.*?)([<>[\]])$/, '$2');
             const groupType = el.getAttributeStrict('data-group-type');
             if (groupType !== 'dynamic' && groupType !== 'static') {
-                throw new PhobosError(`Invalid group type: ${groupType}`);
+                throw new TribalWorkerError(`Invalid group type: ${groupType}`);
             };
 
             return {
@@ -21,7 +21,7 @@ export function getVillageGroups(port: MessagePort) {
         port.postMessage(groups);
 
     } catch (err) {
-        PhobosError.catch(err);
+        TribalWorkerError.catch(err);
         port.postMessage(null);
         
     } finally {

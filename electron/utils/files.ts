@@ -7,7 +7,7 @@ export const database = join(app.getPath('userData'), 'ares.db');
 // JavaScript
 export const browserJs = join(__dirname, 'browser.js');
 export const ipcTribalJs = join(__dirname, 'ipc-tw.js');
-export const phobosJs = join(__dirname, 'phobos.js');
+export const tribalWorkerJs = join(__dirname, 'worker-tw.js');
 
 export const childProcess = {
     worldData: join(__dirname, 'child-process/world-data.js')

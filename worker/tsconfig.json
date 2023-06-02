@@ -15,9 +15,9 @@
             "$lib/*": ["../browser/lib/*"],
             "$modules/*": ["../modules/*"],
             "$panel/*": ["../panel/*"],
-            "$phobos/*": ["./*"],
             "$renderer/*": ["../renderer/*"],
-            "$shared/*": ["../shared/*"]
+            "$shared/*": ["../shared/*"],
+            "$worker/*": ["./*"]
         },
         
         "alwaysStrict": true,
