@@ -2,10 +2,9 @@ import { URL } from 'node:url';
 import { ipcMain, BrowserView } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { useBrowserViewStore, useCacheStore } from '$electron/interface';
-import { isAllowedOrigin, assertWorld } from '$shared/guards';
+import { isAllowedOrigin } from '$shared/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
-import { getWorldUrl } from '$shared/helpers';
 
 import {
     insertViewCSS,
@@ -75,14 +74,11 @@ export function setBrowserViewEvents() {
                 throw new BrowserViewError(errMessage);
             };
 
-            const world = cacheStore.world;
-            assertWorld(world, BrowserViewError);
-            const gameUrl = getWorldUrl(world, cacheStore.region);
-            gameUrl.pathname = '/game.php';
-            gameUrl.search = `village=${villageId}&screen=place`;
+            const contents = currentView.value.webContents;
+            const url = new URL(contents.getURL());
+            url.search = `village=${villageId}&screen=place`;
+            await contents.loadURL(url.href);
 
-            await currentView.value.webContents.loadURL(gameUrl.href);
-            
         } catch (err) {
             BrowserViewError.catch(err);
         };
