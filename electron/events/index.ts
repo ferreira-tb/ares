@@ -21,25 +21,29 @@ export function setEvents() {
     const mainWindow = getMainWindow();
     const cacheStore = useCacheStore();
     
-    // Geral.
-    ipcMain.handle('app-name', () => app.getName());
-    ipcMain.handle('app-version', () => app.getVersion());
+    // Geral
     ipcMain.handle('user-alias', () => cacheStore.userAlias);
-    ipcMain.handle('user-data-path', () => app.getPath('userData'));
-    ipcMain.handle('user-desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
 
+    // Aplicação
+    ipcMain.handle('app:name', () => app.getName());
+    ipcMain.handle('app:version', () => app.getVersion());
+    ipcMain.handle('app:locale', () => app.getLocale());
+    ipcMain.handle('app:user-data-path', () => app.getPath('userData'));
+    ipcMain.handle('app:desktop-path', () => app.getPath('desktop'));
+
+    // Electron
     ipcMain.on('electron:show-message-box', (_e, options: ElectronMessageBoxOptions) => {
         dialog.showMessageBox(mainWindow, options).catch(MainProcessEventError.catch);
     });
 
-    // Website.
+    // Website
     ipcMain.on('open-any-allowed-website', (_e, url: string) => openAnyAllowedWebsite(url));
     ipcMain.on('open-ares-website', () => openAresWebsite());
     ipcMain.on('open-github-repo', () => openRepoWebsite());
     ipcMain.on('open-github-issues', () => openIssuesWebsite());
 
-    // Outros eventos.
+    // Outros eventos
     setBrowserEvents();
     setBrowserViewEvents();
     setConfigEvents();

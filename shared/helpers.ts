@@ -78,31 +78,6 @@ export function getContinentFromCoords(x: number, y: number, prefix?: string) {
 };
 
 /**
- * Transforma um número em uma string com o formato de data local.
- * @param raw Número representando a data. Se omitido, utiliza `Date.now()`.
- * @param includeTime Indica se a string resultante deve incluir a hora.
- */
-export function getLocaleDateString(raw?: number, includeTime: boolean = false): string {
-    if (typeof raw !== 'number' || !Number.isInteger(raw)) raw = Date.now();
-    
-    const dateObject = new Date(raw);
-    const date = dateObject.toLocaleDateString('pt-br', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    });
-
-    if (!includeTime) return date;
-
-    const time = dateObject.toLocaleTimeString('pt-br', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-
-    return `${date} ${time}`;
-};
-
-/**
  * Obtém o nome do jogador a partir do alias, decodificando-o.
  * @param alias Alias do jogador.
  */

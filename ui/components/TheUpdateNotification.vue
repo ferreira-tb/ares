@@ -7,7 +7,7 @@ import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { AresAPI } from '$shared/constants';
 import { MainWindowError } from '$ui/error';
 
-const appVersion = await ipcInvoke('app-version');
+const appVersion = await ipcInvoke('app:version');
 const { data, onFetchError } = useFetch(AresAPI.Latest).json<LatestVersion>();
 onFetchError(MainWindowError.catch);
 
@@ -26,10 +26,16 @@ watchEffect(async () => {
 </script>
 
 <template>
-    <div class="update-notification-tag">
+    <div class="update-notification-tag-container">
         <Transition name="tb-fade" mode="out-in">
             <div v-if="data && updateAvailable" :key="data.version" class="tag-wrapper">
-                <NTag class="version-tag" round type="success" size="small" @click="ipcSend('open-app-update-window')">
+                <NTag 
+                    class="update-notification-tag"
+                    type="success"
+                    size="small"
+                    round
+                    @click="ipcSend('open-app-update-window')"
+                >
                     Nova versão disponível
                 </NTag>
             </div>
@@ -40,13 +46,13 @@ watchEffect(async () => {
 <style scoped lang="scss">
 @use '$ui/assets/main.scss' as ui;
 
-.update-notification-tag {
+.update-notification-tag-container {
     @include ui.ui-tag;
 
     .tag-wrapper {
         @include ui.tag-wrapper;
-        
-        .version-tag {
+
+        .update-notification-tag {
             cursor: pointer;
         }
     }

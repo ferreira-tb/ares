@@ -27,10 +27,11 @@ export function setIncomingAttacksEvents() {
         mainWindow.webContents.send('game:incomings-info-did-update', newIncomings);
     });
 
-    watch(amount, labelIncomings());
+    const handleIncomings = createIncomingsHandler();
+    watch(amount, handleIncomings);
 };
 
-function labelIncomings() {
+function createIncomingsHandler() {
     const aresStore = useAresStore();
     const { captcha, responseTime } = storeToRefs(aresStore);
 

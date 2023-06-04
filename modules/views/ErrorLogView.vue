@@ -4,9 +4,11 @@ import { useWindowSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { NCard } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import { getLocaleDateString } from '$shared/helpers';
+import { getLocaleDateString } from '$renderer/utils/helpers';
 import ErrorLogExportButton from '$modules/components/ErrorLogExportButton.vue';
 import ResultSucess from '$renderer/components/ResultSucess.vue';
+
+const locale = await ipcInvoke('app:locale');
 
 const { height: windowHeight } = useWindowSize();
 const contentHeight = computed(() => `${windowHeight.value - 50}px`);
@@ -46,7 +48,7 @@ useIpcRendererOn('error:electron-log-did-update', (_e, err: ErrorLogType) => upd
                 <TransitionGroup name="tb-fade">
                     <NCard v-for="error of errors" :key="error.id" class="error-card" hoverable>
                         <template #header>{{ error.name }}</template>
-                        <template #header-extra>{{ getLocaleDateString(error.time, true) }}</template>
+                        <template #header-extra>{{ getLocaleDateString(locale, error.time) }}</template>
                         <template #default>{{ error.message }}</template>
                     </NCard>
                 </TransitionGroup>

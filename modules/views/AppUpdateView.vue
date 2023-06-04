@@ -9,7 +9,7 @@ import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { WebsiteUrl, AresAPI } from '$shared/constants';
 import { ModuleAppUpdateError } from '$modules/error';
 
-const appVersion = await ipcInvoke('app-version');
+const appVersion = await ipcInvoke('app:version');
 const { isFetching, data, onFetchError } = useFetch(AresAPI.Latest).json<LatestVersion>();
 
 const { width: windowWidth, height: windowHeight } = useWindowSize();

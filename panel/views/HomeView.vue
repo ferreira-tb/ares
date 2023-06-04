@@ -4,8 +4,8 @@ import { NButton, NButtonGroup } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { WebsiteUrl } from '$shared/constants';
 
-const appName = await ipcInvoke('app-name');
-const appVersion = await ipcInvoke('app-version');
+const appName = await ipcInvoke('app:name');
+const appVersion = await ipcInvoke('app:version');
 </script>
 
 <template>

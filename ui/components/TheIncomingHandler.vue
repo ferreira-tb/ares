@@ -19,11 +19,11 @@ useIpcRendererOn('tribal-worker:did-fail-to-handle-incoming-attack', () => {
 </script>
 
 <template>
-    <div class="incoming-handler-tag">
+    <div class="incoming-handler-tag-container">
         <Transition name="tb-fade" mode="out-in">
             <div v-if="isHandlingIncoming" class="tag-wrapper">
                 <NTag round type="warning" size="small">
-                    Analisando ataque
+                    Analisando ataques...
                 </NTag>
             </div>
         </Transition>
@@ -33,7 +33,7 @@ useIpcRendererOn('tribal-worker:did-fail-to-handle-incoming-attack', () => {
 <style scoped lang="scss">
 @use '$ui/assets/main.scss' as ui;
 
-.incoming-handler-tag {
+.incoming-handler-tag-container {
     @include ui.ui-tag;
 
     .tag-wrapper {

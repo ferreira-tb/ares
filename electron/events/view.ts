@@ -2,9 +2,10 @@ import { URL } from 'node:url';
 import { ipcMain, BrowserView } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { useBrowserViewStore, useCacheStore } from '$electron/interface';
-import { isAllowedOrigin } from '$shared/guards';
+import { isAllowedOrigin, assertWorld } from '$shared/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
+import { getWorldUrl } from '$shared/helpers';
 
 import {
     insertViewCSS,
@@ -66,6 +67,26 @@ export function setBrowserViewEvents() {
     ipcMain.on('current-view:home', () => contentsGoHome(currentView.value.webContents, cacheStore.region));
     ipcMain.on('current-view:back', () => contentsGoBack(currentView.value.webContents));
     ipcMain.on('current-view:forward', () => contentsGoForward(currentView.value.webContents));
+
+    ipcMain.on('current-view:navigate-to-place', async (_e, villageId: number) => {
+        try {
+            if (!Number.isInteger(villageId)) {
+                const errMessage = 'Cannot navigate to place: village id must be an integer.';
+                throw new BrowserViewError(errMessage);
+            };
+
+            const world = cacheStore.world;
+            assertWorld(world, BrowserViewError);
+            const gameUrl = getWorldUrl(world, cacheStore.region);
+            gameUrl.pathname = '/game.php';
+            gameUrl.search = `village=${villageId}&screen=place`;
+
+            await currentView.value.webContents.loadURL(gameUrl.href);
+            
+        } catch (err) {
+            BrowserViewError.catch(err);
+        };
+    });
 
     // BrowserViews específicas.
     ipcMain.on('view:destroy', (_e, webContentsId: number) => {
