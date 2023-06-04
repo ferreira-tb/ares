@@ -6,7 +6,6 @@ import { setIpcTribalEvents } from '$electron/events/ipc-tribal';
 import { setModuleEvents } from '$electron/events/modules';
 import { setMainWindowEvents } from '$electron/events/ui';
 import { setBrowserViewEvents } from '$electron/events/view';
-import { setGroupsEvents } from '$electron/events/groups';
 import { setBrowserEvents } from '$electron/events/browser';
 import { setConfigEvents } from '$electron/events/config';
 import { setDevEvents } from '$electron/events/dev';
@@ -46,7 +45,6 @@ export function setEvents() {
     setDevEvents();
     setErrorEvents();
     setGameEvents();
-    setGroupsEvents();
     setIpcTribalEvents();
     setMainWindowEvents();
     setModuleEvents();

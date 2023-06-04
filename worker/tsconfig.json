@@ -43,6 +43,11 @@
         "moduleResolution": "bundler",
         "esModuleInterop": true,
         "noEmitOnError": true,
-        "verbatimModuleSyntax": true
+        "verbatimModuleSyntax": true,
+
+        "types": [
+            "node",
+            "@tb-dev/prototype"
+        ]
     }
 }

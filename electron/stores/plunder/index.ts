@@ -1,8 +1,8 @@
 import { ref } from 'mechanus';
 import { integerRef, booleanRef, integerOrNullRef } from '$electron/utils/mechanus';
 
-export * from '$stores/plunder/config';
-export * from '$stores/plunder/history';
+export * from '$electron/stores/plunder/config';
+export * from '$electron/stores/plunder/history';
 
 export function definePlunderStore(mechanus: Mechanus) {
     return mechanus.define('plunder', {

@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
-import { URL } from 'url';
+import { URL } from 'node:url';
 import { Op } from 'sequelize';
 import { app, dialog, ipcMain, BrowserWindow } from 'electron';
 import { MainProcessEventError } from '$electron/error';

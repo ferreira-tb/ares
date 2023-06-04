@@ -4,8 +4,10 @@ import type { AresError } from '$shared/error';
 
 export const isUserAlias = (alias: unknown): alias is UserAlias => (isString(alias) && aliasRegex.test(alias));
 export function assertUserAlias<T extends typeof AresError>(alias: unknown, SomeError: T, message?: string): asserts alias is UserAlias {
-    if (!isString(message)) message = 'Invalid user alias.';
-    if (!isUserAlias(alias)) throw new SomeError(message);
+    if (!isUserAlias(alias)) {
+        if (!isString(message)) message = `Invalid user alias: ${String(alias)}`;
+        throw new SomeError(message);
+    };
 };
 
 export function isAllowedOrigin(url: string): boolean {

@@ -16,7 +16,7 @@ export async function setDevEvents() {
     ipcRenderer.on('dev:mock-error', () => mockRendererProcessError());
 };
 
-function mockCaptcha(): void {
+function mockCaptcha() {
     const previous = document.querySelector('#bot_check[ares="test"]');
     if (previous) {
         previous.remove();
@@ -30,7 +30,7 @@ function mockCaptcha(): void {
     };
 };
 
-function mockRendererProcessError(): void {
+function mockRendererProcessError() {
     const err = new RendererProcessError('Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
     RendererProcessError.catch(err);
 };

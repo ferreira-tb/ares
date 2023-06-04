@@ -1,8 +1,7 @@
 import { app, BrowserWindow } from 'electron';
-import { assertInstanceOf } from '$shared/guards';
 import { assertWorld } from '$shared/guards';
 import { MainProcessError } from '$electron/error';
-import type { createWorldUnitStoresMap } from '$stores/world';
+import type { createWorldUnitStoresMap } from '$electron/stores/world';
 
 export function restartAres() {
     app.relaunch();
@@ -12,14 +11,18 @@ export function restartAres() {
 export function getMainWindow(): BrowserWindow {
     const id = Number.parseIntStrict(process.env.MAIN_WINDOW_ID ?? '');
     const mainWindow = BrowserWindow.fromId(id);
-    assertInstanceOf(mainWindow, BrowserWindow, 'Could not get main window.');
+    if (!(mainWindow instanceof BrowserWindow)) {
+        throw new MainProcessError('Could not get main window.');
+    };
     return mainWindow;
 };
 
 export function getPanelWindow(): BrowserWindow {
     const id = Number.parseIntStrict(process.env.PANEL_WINDOW_ID ?? '');
     const panelWindow = BrowserWindow.fromId(id);
-    assertInstanceOf(panelWindow, BrowserWindow, 'Could not get panel window.');
+    if (!(panelWindow instanceof BrowserWindow)) {
+        throw new MainProcessError('Could not get panel window.');
+    };
     return panelWindow;
 };
 

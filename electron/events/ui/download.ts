@@ -1,4 +1,4 @@
-import path from 'node:path';
+import * as path from 'node:path';
 import { ipcMain, shell } from 'electron';
 import { isString } from '$shared/guards';
 import { getMainWindow } from '$electron/utils/helpers';

@@ -3,8 +3,7 @@ import { WorldInterfaceError } from '$electron/error';
 import { fetchWorldData } from '$interface/world/data';
 import { patchWorldConfigStoreState } from '$interface/world/config';
 import { patchWorldUnitsStoresState } from '$interface/world/units';
-import type { defineWorldConfigStore, createWorldUnitStoresMap } from '$stores/world';
-import type { defineCacheStore } from '$stores/cache';
+import type { defineCacheStore, defineWorldConfigStore, createWorldUnitStoresMap } from '$electron/stores';
  
 import type {
     WorldConfig as WorldConfigTable,

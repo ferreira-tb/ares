@@ -32,7 +32,21 @@ type PlaceUnitsAmount = Partial<Omit<UnitAmount, 'militia'>>;
 
 // CONSTRUÇÕES
 type WallLevel = IntRange<0, 21>;
-type StringWallLevel = IntRangeToStrings<0, 21>;
+type StringWallLevel = IntRangeToString<0, 21>;
+
+// ATAQUE A CAMINHO
+type IncomingAttack = {
+    /** ID do ataque. */
+    readonly id: number;
+    /** ID da aldeia alvo. */
+    readonly target: number;
+    /** ID da aldeia de origem. */
+    readonly origin: number;
+    /** ID do jogador atacante. */
+    readonly attacker: number;
+    /** Data de chegada do ataque. */
+    readonly arrivalTime: number;
+};
 
 // OUTROS
 type DemolitionTroops = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
@@ -97,8 +111,6 @@ interface TribalWarsGameDataType {
         readonly points: number;
         /** Quantidade de aldeias que o jogador possui. */
         readonly villageAmount: number;
-        /** Quantidade de ataques a caminho. */
-        readonly incomings: number;
     };
     
     readonly currentVillage: {

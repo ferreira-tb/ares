@@ -73,7 +73,7 @@ class WorldUnits implements WorldUnitsType {
     };
 };
 
-export function fetchWorldUnit(port: MessagePort) {
+export function fetchWorldUnits(port: MessagePort) {
     try {
         const worldUnit = new WorldUnits();
         port.postMessage(worldUnit);

@@ -4,11 +4,11 @@ import { useIpcRendererOn } from '@vueuse/electron';
 
 const loadingBar = useLoadingBar();
 
-useIpcRendererOn('current-view-did-start-loading', () => {
+useIpcRendererOn('current-view:did-start-loading', () => {
     loadingBar.start();
 });
 
-useIpcRendererOn('current-view-did-stop-loading', () => {
+useIpcRendererOn('current-view:did-stop-loading', () => {
     loadingBar.finish();
 });
 </script>

@@ -26,13 +26,13 @@ export function setDeimosEvents() {
         };
     });
 
-    IpcTribal.handle('get-incoming-attacks', (): number => {
+    IpcTribal.handle('get-incoming-attacks', () => {
         try {
             const incomingAttacks = TribalWars.getGameData().player.incomings;
             return Number.parseIntStrict(incomingAttacks);
         } catch (err) {
             IpcTribalError.catch(err);
-            return 0;
+            return null;
         };
     });
 

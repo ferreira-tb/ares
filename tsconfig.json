@@ -65,6 +65,10 @@
         "forceConsistentCasingInFileNames": true,
         "noEmitOnError": true,
 
-        "types": ["node"]
+        "types": [
+            "node",
+            "@tb-dev/prototype",
+            "@tb-dev/prototype-dom"
+        ]
     }
 }

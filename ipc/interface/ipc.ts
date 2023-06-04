@@ -58,9 +58,8 @@ export class IpcTribal {
 
     public static handle(channel: 'get-current-village-units', listener: () => Units | null): void;
     public static handle(channel: 'get-game-data', listener: () => TribalWarsGameData | null): void;
-    public static handle(channel: 'get-incoming-attacks', listener: () => number): void;
+    public static handle(channel: 'get-incoming-attacks' | 'get-response-time', listener: () => number | null): void;
     public static handle(channel: 'get-plunder-info', listener: () => PlunderInfo | null): void;
-    public static handle(channel: 'get-response-time', listener: () => number | null): void;
     public static handle(channel: 'get-timing', listener: () => TribalWarsTiming | null): void;
     public static handle(channel: string, listener: (...args: unknown[]) => unknown): void {
         channel = this.#handleKey(channel);

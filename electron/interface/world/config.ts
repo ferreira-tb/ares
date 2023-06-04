@@ -23,7 +23,7 @@ export async function patchWorldConfigStoreState<T extends keyof WorldConfigType
             // Se não houver configurações para o mundo atual, cria um novo registro.
             const state = await new Promise<WorldConfigType>(async (resolve, reject) => {
                 const url = getWorldConfigUrl(world, cacheStore.region);
-                const worker = new TribalWorker('fetch-world-config', url, { override: true });
+                const worker = new TribalWorker('fetch-world-config', url);
                 await worker.init((e) => {
                     try {
                         if (!e.data) throw new WorldInterfaceError(`No data received for world ${world}.`);

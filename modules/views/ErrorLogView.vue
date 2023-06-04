@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { NCard } from 'naive-ui';
@@ -27,6 +27,8 @@ const errors = ref<(ErrorCard<ElectronErrorLogType | ErrorLogType>)[]>([
     ...general.map((e) => ({ ...e, id: `general-${e.id}` })),
     ...electron.map((e) => ({ ...e, id: `electron-${e.id}` }))
 ]);
+
+watchEffect(() => errors.value.sort((a, b) => b.time - a.time));
 
 function updateErrorList(err: ElectronErrorLogType | ErrorLogType, type: 'electron' | 'general') {
     const newError = { ...err, id: `${type}-${err.id}` };

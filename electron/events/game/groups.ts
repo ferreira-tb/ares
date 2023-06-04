@@ -25,6 +25,7 @@ export function setGroupsEvents() {
             });
 
             return true;
+            
         } catch (err) {
             MainProcessEventError.catch(err);
             return false;

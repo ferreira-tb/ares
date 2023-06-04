@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { watchImmediate, useMutationObserver } from '@vueuse/core';
-import { usePlayerStore } from '$renderer/stores';
+import { useMutationObserver, type UseMutationObserverOptions } from '@vueuse/core';
+import { useIncomingsStore } from '$renderer/stores';
 import { IpcTribal } from '$ipc/interface';
 import { ipcSend } from '$renderer/ipc';
-import type { UseMutationObserverOptions } from '@vueuse/core';
 
-const playerStore = usePlayerStore();
-const { incomings } = storeToRefs(playerStore);
-
+const incomingsStore = useIncomingsStore();
+const { amount } = storeToRefs(incomingsStore);
 const incomingsElement = ref(document.querySelector<HTMLSpanElement>('#incomings_cell #incomings_amount'));
+await updateAmount();
+
 const options: UseMutationObserverOptions = {
     childList: true,
     subtree: true,
@@ -21,9 +21,13 @@ const options: UseMutationObserverOptions = {
 useMutationObserver(incomingsElement, async (mutations) => {
     for (const mutation of mutations) {
         if (mutation.addedNodes.length === 0) continue;
-        incomings.value = await IpcTribal.invoke('get-incoming-attacks');
+        await updateAmount();
     };
 }, options);
 
-watchImmediate(incomings, (newAmount) => ipcSend('game:update-incoming-attacks', newAmount));
+async function updateAmount() {
+    const current = incomingsElement.value ? await IpcTribal.invoke('get-incoming-attacks') : null;
+    amount.value = current;
+    ipcSend('game:update-incomings-amount', current);
+};
 </script>

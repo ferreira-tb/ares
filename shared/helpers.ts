@@ -1,4 +1,4 @@
-import { isInteger, assertGameRegion } from '$shared/guards';
+import { assertGameRegion } from '$shared/guards';
 import { GameUrl, GameEndpoints } from '$shared/constants';
 import type { AresError } from '$shared/error';
 
@@ -19,10 +19,11 @@ export function getWorldUrl(world: World, region: GameRegion) {
 
 function getEndPointUrl(world: World, region: GameRegion, endpoint: keyof typeof GameEndpoints) {
     const { origin } = getWorldUrl(world, region);
+    const url = (e: GameEndpoints) => new URL(`${origin}/${e}`);
     switch (endpoint) {
-        case 'GetConfig': return new URL(`${origin}/${GameEndpoints.GetConfig}`);
-        case 'GetUnitInfo': return new URL(`${origin}/${GameEndpoints.GetUnitInfo}`);
-        case 'Village': return new URL(`${origin}/${GameEndpoints.Village}`);
+        case 'GetConfig': return url(GameEndpoints.GetConfig);
+        case 'GetUnitInfo': return url(GameEndpoints.GetUnitInfo);
+        case 'Village': return url(GameEndpoints.Village);
         default: throw new TypeError(`Invalid endpoint: ${endpoint}.`);
     };
 };
@@ -31,7 +32,7 @@ export const getWorldConfigUrl = (world: World, region: GameRegion) => getEndPoi
 export const getWorldUnitInfoUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'GetUnitInfo');
 export const getVillagesDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Village');
 
-export function getGameRegionUrl(region: unknown) {
+export function getGameRegionUrl(region: unknown): GameUrl {
     switch (region) {
         case 'br': return GameUrl.Brazil;
         case 'en': return GameUrl.Global;
@@ -59,7 +60,7 @@ export function generateIntegerBetween(min: number, max: number) {
  * @param range Intervalo.
  */
 export function generateRandomDelay(base: number, range?: number) {
-    if (!isInteger(range)) range = 50;
+    if (typeof range !== 'number' || !Number.isInteger(range)) range = 50;
     return generateIntegerBetween(base - range, base + range);
 };
 
@@ -76,7 +77,7 @@ export function getContinentFromCoords(x: number, y: number, prefix?: string) {
  * @param includeTime Indica se a string resultante deve incluir a hora.
  */
 export function getLocaleDateString(raw?: number, includeTime: boolean = false): string {
-    if (!isInteger(raw)) raw = Date.now();
+    if (typeof raw !== 'number' || !Number.isInteger(raw)) raw = Date.now();
     
     const dateObject = new Date(raw);
     const date = dateObject.toLocaleDateString('pt-br', {

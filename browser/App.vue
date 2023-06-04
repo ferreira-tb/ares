@@ -38,12 +38,17 @@ whenever(isIpcTribalReady, async () => {
 </script>
 
 <template>
-    <TheCaptchaObserver />
-    <TheIncomingsObserver />
-
     <Suspense>
         <TheIpcTribalTag />
     </Suspense>
+    
+    <TheCaptchaObserver />
+    
+    <template v-if="isIpcTribalReady">
+        <Suspense>
+            <TheIncomingsObserver />
+        </Suspense>
+    </template>
 
     <RouterView #default="{ Component }">
         <template v-if="Component">

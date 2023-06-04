@@ -218,3 +218,19 @@ interface PanelStore {
 type PiniaPanelStoreType = {
     [K in keyof PanelStore]: import('vue').Ref<PanelStore[K]>;
 };
+
+// INCOMING ATTACKS
+interface IncomingAttacksStore {
+    /** Quantidade total de ataques a caminho. */
+    readonly amount: number | null;
+    /** Ataques a caminho. */
+    readonly incomings: IncomingAttack[];
+};
+
+type PiniaIncomingAttacksStoreType = {
+    [K in keyof IncomingAttacksStore]: import('vue').Ref<IncomingAttacksStore[K]>;
+};
+
+type MechanusIncomingAttacksStoreType = {
+    [K in keyof RemoveMethods<IncomingAttacksStore>]: MechanusRef<IncomingAttacksStore[K]>;
+};

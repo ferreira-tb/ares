@@ -1,16 +1,19 @@
 import { ipcRenderer } from 'electron';
 import { TribalWorkerError } from '$worker/error';
-import { fetchWorldConfig } from '$worker/world/config';
-import { fetchWorldUnit } from '$worker/world/unit';
-import { getVillageGroups } from '$worker/groups/groups';
+import { fetchWorldConfig, fetchWorldUnits } from '$worker/world';
+import { getVillageGroups } from '$worker/groups';
+import { handleIncomingAttacks } from '$worker/incomings';
 
 export function setTribalWorkerEvents() {
-    ipcRenderer.on('port', (e) => handlePort(e.ports[0]));
+    ipcRenderer.on('port', (e) => {
+        const port = e.ports[0];
+        port.onmessage = listener(port);
+    });
 };
 
-function handlePort(port: MessagePort) {
-    try {
-        port.onmessage = (e) => {
+function listener(port: MessagePort) {
+    return function(e: MessageEvent) {
+        try {
             const { channel } = e.data as TribalWorkerPortMessage;
             if (typeof channel !== 'string' || channel.length === 0) {
                 throw new TribalWorkerError(`Invalid channel: ${String(channel)}`);
@@ -21,17 +24,20 @@ function handlePort(port: MessagePort) {
                     fetchWorldConfig(port);
                     break;
                 case 'fetch-world-unit':
-                    fetchWorldUnit(port);
+                    fetchWorldUnits(port);
                     break;
                 case 'get-village-groups':
                     getVillageGroups(port);
                     break;
+                case 'handle-incoming-attacks':
+                    void handleIncomingAttacks(port);
+                    break;
                 default:
                     throw new TribalWorkerError(`Unknown channel: ${channel}`);
             };
-        };
 
-    } catch (err) {
-        TribalWorkerError.catch(err);
+        } catch (err) {
+            TribalWorkerError.catch(err);
+        };
     };
 };

@@ -24,7 +24,7 @@ export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise
 export async function ipcInvoke(channel: 'should-notify-on-error'): Promise<boolean>;
 
 // Browser
-export async function ipcInvoke(channel: 'browser:get-response-time'): Promise<number>;
+export async function ipcInvoke(channel: 'browser:get-response-time'): Promise<number | null>;
 
 // Painel
 export async function ipcInvoke(channel: 'panel:is-visible'): Promise<boolean>;
@@ -44,7 +44,7 @@ export async function ipcInvoke(channel: 'world-data:get-village', id?: number[]
 export async function ipcInvoke(channel: 'game:current-world'): Promise<World | null>;
 export async function ipcInvoke(channel: 'game:current-world-config'): Promise<WorldConfigType>;
 export async function ipcInvoke(channel: 'game:current-world-units'): Promise<WorldUnitsType>;
-export async function ipcInvoke(channel: 'game:player-name', alias?: UserAlias): Promise<string | null>;
+export async function ipcInvoke(channel: 'game:player-name'): Promise<string | null>;
 export async function ipcInvoke(channel: 'game:is-archer-world'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:get-village-groups'): Promise<Set<VillageGroup>>;
@@ -128,7 +128,8 @@ export function ipcSend(channel: 'error:open-log-window'): void;
 export function ipcSend(channel: 'error:create-log', err: OmitOptionalErrorLogProps<ErrorLogBase>): void;
 
 // Jogo
-export function ipcSend(channel: 'game:update-incoming-attacks', incomingAttacks: number): void;
+export function ipcSend(channel: 'game:update-incomings-amount', incomingAttacks: number | null): void;
+export function ipcSend(channel: 'game:update-incomings-info', incomingAttacks: IncomingAttack[]): void;
 
 // Plunder
 export function ipcSend(channel: 'plunder:open-custom-template-window'): void;

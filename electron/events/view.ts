@@ -1,4 +1,4 @@
-import { URL } from 'url';
+import { URL } from 'node:url';
 import { ipcMain, BrowserView } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { useBrowserViewStore, useCacheStore } from '$electron/interface';
@@ -134,11 +134,11 @@ function setViewSharedEvents(
  */
 function setCurrentViewEvents(view: Electron.WebContents, mainWindow: Electron.BrowserWindow = getMainWindow()) {
     view.on('did-start-loading', () => {
-        mainWindow.webContents.send('current-view-did-start-loading');
+        mainWindow.webContents.send('current-view:did-start-loading');
     });
 
     view.on('did-stop-loading', () => {
-        mainWindow.webContents.send('current-view-did-stop-loading');
+        mainWindow.webContents.send('current-view:did-stop-loading');
     });
 
     view.on('did-navigate', () => {

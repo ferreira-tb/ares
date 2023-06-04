@@ -40,8 +40,7 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
             name: isString(rawGameData.player.name) ? rawGameData.player.name : null,
             id: isInteger(rawGameData.player.id) ? rawGameData.player.id : null,
             points: isString(rawGameData.player.points) ? Number.parseIntStrict(rawGameData.player.points) : 0,
-            villageAmount: isString(rawGameData.player.villages) ? Number.parseIntStrict(rawGameData.player.villages) : 0,
-            incomings: isString(rawGameData.player.incomings) ? Number.parseIntStrict(rawGameData.player.incomings) : 0
+            villageAmount: isString(rawGameData.player.villages) ? Number.parseIntStrict(rawGameData.player.villages) : 0
         };
 
         this.currentVillage = {

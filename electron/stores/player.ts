@@ -6,7 +6,6 @@ export function definePlayerStore(mechanus: Mechanus) {
         name: ref<string | null>(null, stringOrNullRef),
         id: ref<number | null>(null, integerOrNullRef),
         points: ref<number>(0, integerRef),
-        villageAmount: ref<number>(0, integerRef),
-        incomings: ref<number>(0, integerRef)
+        villageAmount: ref<number>(0, integerRef)
     } satisfies MechanusPlayerStoreType);
 };

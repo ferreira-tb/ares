@@ -1,6 +1,6 @@
 import '$browser/assets/main.scss';
-import '$shared/prototype';
-import '$renderer/prototype';
+import '@tb-dev/prototype';
+import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router, setNavigationGuards } from '$browser/router';

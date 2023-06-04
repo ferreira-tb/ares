@@ -1,10 +1,11 @@
 import { storeToRefs } from 'pinia';
 import { useMutationObserver, useEventListener } from '@vueuse/core';
+import { Kronos } from '@tb-dev/kronos';
 import { assertInteger } from '$shared/guards';
 import { calcDistance } from '$shared/helpers';
 import { parseCoordsFromTextContentStrict, parseGameDate } from '$renderer/utils/parser';
 import { PlunderError } from '$browser/error';
-import { Kronos, resources as resourceList } from '$shared/constants';
+import { resources as resourceList } from '$shared/constants';
 import { useCurrentVillageStore } from '$renderer/stores/village';
 import { assertWallLevel } from '$shared/guards';
 

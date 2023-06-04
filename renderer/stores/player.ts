@@ -6,13 +6,11 @@ export const usePlayerStore = defineStore('player', () => {
     const id = ref<number | null>(null);
     const points = ref<number>(0);
     const villageAmount = ref<number>(0);
-    const incomings = ref<number>(0);
 
     return {
         name,
         id,
         points,
-        villageAmount,
-        incomings
+        villageAmount
     } satisfies PiniaPlayerStoreType;
 });

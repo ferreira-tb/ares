@@ -1,4 +1,4 @@
-import '$shared/prototype';
+import '@tb-dev/prototype';
 import zlib from 'node:zlib';
 import csvParser from 'csv-parser';
 import { promisify } from 'node:util';
