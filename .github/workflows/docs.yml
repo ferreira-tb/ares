@@ -4,8 +4,6 @@ name: docs
 on:
   push:
     branches: [main]
-  release:
-    types: [published]
 
 jobs:
   docs:
