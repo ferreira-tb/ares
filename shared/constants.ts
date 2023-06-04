@@ -1,5 +1,5 @@
 export const enum AresAPI {
-    Latest = 'https://tb.dev.br/ares/api/latest.json'
+    Latest = 'https://tb.dev.br/ares/latest.json'
 };
 
 export const enum GameUrl {
