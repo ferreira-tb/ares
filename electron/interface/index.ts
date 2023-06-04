@@ -3,7 +3,7 @@ import { Mechanus, watch, storeToRefs } from 'mechanus';
 import { AppConfig } from '$database/config';
 import { ErrorLog, ElectronErrorLog } from '$database/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
-import { getWorldVillagesTable, WorldConfig, WorldUnits, WorldDataFetchHistory } from '$database/world';
+import { getPlayersTable, getVillagesTable, WorldConfig, WorldUnits, WorldDataFetchHistory } from '$database/world';
 import { VillageGroups } from '$database/groups';
 
 import { 
@@ -59,7 +59,8 @@ const worldArgs = [
     useCacheStore,
     useWorldConfigStore,
     worldUnitsMap,
-    getWorldVillagesTable
+    getPlayersTable,
+    getVillagesTable
 ] as const;
 
 const aliasArgs = [
@@ -107,5 +108,6 @@ export {
     WorldUnits,
     VillageGroups,
 
-    getWorldVillagesTable
+    getPlayersTable,
+    getVillagesTable
 };

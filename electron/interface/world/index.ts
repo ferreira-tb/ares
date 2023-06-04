@@ -9,7 +9,8 @@ import type {
     WorldConfig as WorldConfigTable,
     WorldUnits as WorldUnitsTable,
     WorldDataFetchHistory as WorldDataFetchHistoryTable,
-    getWorldVillagesTable as getWorldVillagesTableType
+    getPlayersTable as getWorldPlayersTableType,
+    getVillagesTable as getWorldVillagesTableType
 } from '$electron/database/world';
 
 export function onWorldChange(
@@ -19,13 +20,14 @@ export function onWorldChange(
     useCacheStore: ReturnType<typeof defineCacheStore>,
     useWorldConfigStore: ReturnType<typeof defineWorldConfigStore>,
     worldUnitsMap: ReturnType<typeof createWorldUnitStoresMap>,
-    getWorldVillagesTable: typeof getWorldVillagesTableType
+    getPlayersTable: typeof getWorldPlayersTableType,
+    getVillagesTable: typeof getWorldVillagesTableType
 ) {
     return async function(world: World | null) {
         try {
             if (!isWorld(world)) return;
             await Promise.all([
-                fetchWorldData(world, WorldDataFetchHistory, getWorldVillagesTable),
+                fetchWorldData(world, WorldDataFetchHistory, getPlayersTable, getVillagesTable),
                 patchWorldConfigStoreState(world, WorldConfig, useCacheStore, useWorldConfigStore),
                 patchWorldUnitsStoresState(world, WorldUnits, useCacheStore, worldUnitsMap)
             ]);

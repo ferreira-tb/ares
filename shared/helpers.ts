@@ -6,9 +6,9 @@ import type { AresError } from '$shared/error';
  * Obtém a região referente a um mundo.
  * @throws Se a região obtida não for válida.
  */
-export function getRegionFromWorld<T extends typeof AresError>(world: World, SomeError: T, message?: string) {
+export function getRegionFromWorld<T extends typeof AresError>(world: World, SomeError: T) {
     const region = world.slice(0, 2);
-    assertGameRegion(region, SomeError, message);
+    assertGameRegion(region, SomeError, `Could not get region from world: ${world}.`);
     return region;
 };
 
@@ -23,6 +23,9 @@ function getEndPointUrl(world: World, region: GameRegion, endpoint: keyof typeof
     switch (endpoint) {
         case 'GetConfig': return url(GameEndpoints.GetConfig);
         case 'GetUnitInfo': return url(GameEndpoints.GetUnitInfo);
+        case 'Ally': return url(GameEndpoints.Ally);
+        case 'Conquer': return url(GameEndpoints.Conquer);
+        case 'Player': return url(GameEndpoints.Player);
         case 'Village': return url(GameEndpoints.Village);
         default: throw new TypeError(`Invalid endpoint: ${endpoint}.`);
     };
@@ -30,7 +33,10 @@ function getEndPointUrl(world: World, region: GameRegion, endpoint: keyof typeof
 
 export const getWorldConfigUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'GetConfig');
 export const getWorldUnitInfoUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'GetUnitInfo');
-export const getVillagesDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Village');
+export const getAllyDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Ally');
+export const getConquerDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Conquer');
+export const getPlayerDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Player');
+export const getVillageDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Village');
 
 export function getGameRegionUrl(region: unknown): GameUrl {
     switch (region) {

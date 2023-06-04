@@ -2,16 +2,16 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import { DatabaseError } from '$electron/error';
 import { assertWorld } from '$shared/guards';
-import type { InferAttributes, InferCreationAttributes } from 'sequelize';
+import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class WorldDataFetchHistory extends Model<
     InferAttributes<WorldDataFetchHistory>,
     InferCreationAttributes<WorldDataFetchHistory>
 > implements WorldDataFetchHistoryType {
     declare readonly world: World;
-    declare readonly village: number | null;
-    declare readonly player: number | null;
-    declare readonly ally: number | null;
+    declare readonly village: CreationOptional<number>;
+    declare readonly player: CreationOptional<number>;
+    declare readonly ally: CreationOptional<number>;
 };
 
 WorldDataFetchHistory.init({
@@ -28,14 +28,17 @@ WorldDataFetchHistory.init({
     },
     village: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: false,
+        defaultValue: 0
     },
     player: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: false,
+        defaultValue: 0
     },
     ally: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: false,
+        defaultValue: 0
     }
 }, { sequelize, tableName: 'world_fetch_history', timestamps: false });

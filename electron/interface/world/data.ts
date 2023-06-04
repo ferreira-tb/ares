@@ -5,22 +5,31 @@ import { childProcess } from '$electron/utils/files';
 import { WorldInterfaceError } from '$electron/error';
 import type {
     WorldDataFetchHistory as WorldDataFetchHistoryTable,
-    getWorldVillagesTable as getWorldVillagesTableType
+    getPlayersTable as getWorldPlayersTableType,
+    getVillagesTable as getWorldVillagesTableType
 } from '$electron/database/world';
 
 export async function fetchWorldData(
     world: World,
     WorldDataFetchHistory: typeof WorldDataFetchHistoryTable,
-    getWorldVillagesTable: typeof getWorldVillagesTableType
+    getPlayersTable: typeof getWorldPlayersTableType,
+    getVillagesTable: typeof getWorldVillagesTableType
 ) {
     try {
+        const now = Date.now();
         const worldData = await WorldDataFetchHistory.findByPk(world);
-        if (worldData?.village && ((Date.now() - worldData.village) <= Kronos.Day)) return;
+        const request: WorldDataRequest = {
+            ally: false,
+            player: (now - (worldData?.player ?? 0)) <= Kronos.Day,
+            village: (now - (worldData?.village ?? 0)) <= Kronos.Day,
+            world
+        };
 
-        const newData = await new Promise<WorldDataType | string>((resolve, reject) => {
+        if (!Object.values(request).some((value) => value === true)) return;
+        const newData = await new Promise<WorldDataType | null>((resolve, reject) => {
             const { port1, port2 } = new MessageChannelMain();
             const child = utilityProcess.fork(childProcess.worldData);
-            child.postMessage(world, [port2]);
+            child.postMessage(request, [port2]);
 
             port1.on('message', (e) => {
                 try {
@@ -37,15 +46,28 @@ export async function fetchWorldData(
             port1.start();
         });
 
-        if (newData && typeof newData === 'object') {
+        if (newData) {
             await sequelize.transaction(async () => {
-                const WorldVillages = await getWorldVillagesTable(world);
-                await WorldVillages.bulkCreate(newData.villages, { updateOnDuplicate: ['name', 'player', 'points'] });
-                await WorldDataFetchHistory.upsert({ world, village: Date.now() });
-            });
+                const history: PartialWorldDataFetchHistory = {};
+                if (newData.players.length > 0) {
+                    const Players = await getPlayersTable(world);
+                    await Players.bulkCreate(newData.players, { updateOnDuplicate: ['name', 'ally', 'villages', 'points', 'rank'] });
+                    history.player = Date.now();
+                };
 
-        } else if (typeof newData === 'string') {
-            throw new WorldInterfaceError(newData);
+                if (newData.villages.length > 0) {
+                    const Villages = await getVillagesTable(world);
+                    await Villages.bulkCreate(newData.villages, { updateOnDuplicate: ['name', 'player', 'points'] });
+                    history.village = Date.now();
+                };
+                
+                if (Object.keys(history).length > 0) {
+                    await WorldDataFetchHistory.upsert({ world, ...history });
+                };
+            });
+            
+        } else {
+            throw new WorldInterfaceError(`No data received for world ${world}.`);
         };
 
     } catch (err) {

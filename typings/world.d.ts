@@ -18,14 +18,24 @@ type WorldConfigType = {
 };
 
 type WorldDataType = {
-    villages: WorldVillagesType[];
+    readonly players: ReadonlyArray<WorldPlayersType>;
+    readonly villages: ReadonlyArray<WorldVillagesType>;
 };
 
 type WorldDataFetchHistoryType = {
     readonly world: World;
-    readonly village: number | null;
-    readonly player: number | null;
-    readonly ally: number | null;
+    readonly village: number;
+    readonly player: number;
+    readonly ally: number;
+};
+
+type PartialWorldDataFetchHistory = Partial<{
+    -readonly [key in keyof Omit<WorldDataFetchHistoryType, 'world'>]: number;
+}>;
+
+/** Indica quais dados devem ser requisitados. */
+type WorldDataRequest = {
+    [key in keyof WorldDataFetchHistoryType]: key extends 'world' ? World : boolean;
 };
 
 type UnitDetails = {
@@ -55,3 +65,14 @@ interface WorldVillagesModel extends SequelizeModel {
 };
 
 type WorldVillagesType = Omit<WorldVillagesModel, keyof import('sequelize').Model>;
+
+interface WorldPlayersModel extends SequelizeModel {
+    readonly id: number;
+    readonly name: string;
+    readonly ally: number;
+    readonly villages: number;
+    readonly points: number;
+    readonly rank: number;
+};
+
+type WorldPlayersType = Omit<WorldPlayersModel, keyof import('sequelize').Model>;
