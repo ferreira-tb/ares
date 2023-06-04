@@ -53,7 +53,6 @@ export async function ipcInvoke(channel: 'game:player-name'): Promise<string | n
 export async function ipcInvoke(channel: 'game:is-archer-world'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:get-village-groups'): Promise<Set<VillageGroup>>;
-export async function ipcInvoke(channel: 'game:get-incomings-info'): Promise<IncomingAttack[]>;
 
 // Erros
 export async function ipcInvoke(channel: 'error:export'): Promise<'canceled' | 'error' | 'sucess'>;

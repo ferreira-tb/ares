@@ -53,13 +53,13 @@ export async function handleIncomingAttacks(port: MessagePort) {
             return { id, target, origin, attacker, arrivalTime, addedAt: Date.now() };
         });
 
-        if (incomings.size === 0) return;
-        const previousIncomings = await ipcInvoke('game:get-incomings-info');
-        ipcSend('game:update-incomings-info', previousIncomings.concat(
-            Array.from(incomings.values()).filter(({ id }) => {
-                return !previousIncomings.some((prev) => prev.id === id);
-            })
-        ));
+        if (incomings.size === 0) {
+            ipcSend('tribal-worker:did-handle-incoming-attack');
+            port.postMessage('destroy');
+            return;
+        };
+
+        ipcSend('game:update-incomings-info', Array.from(incomings.values()));
 
         // Registra os ataques que já foram etiquetados.
         const playerName = await ipcInvoke('game:player-name');
@@ -89,8 +89,8 @@ export async function handleIncomingAttacks(port: MessagePort) {
         }, Kronos.Second + responseTime);
 
     } catch (err) {
-        TribalWorkerError.catch(err);
-        port.postMessage('destroy');
+        await TribalWorkerError.catch(err);
         ipcSend('tribal-worker:did-fail-to-handle-incoming-attack');
+        port.postMessage('destroy');
     };
 };

@@ -3,7 +3,7 @@ import { ipcMain } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { TribalWorker } from '$electron/worker';
-import { useAresStore, useFeaturesStore, useIncomingsStore } from '$electron/interface';
+import { useAresStore, useIncomingsStore } from '$electron/interface';
 import { GameSearchParams } from '$shared/constants';
 import { getMainViewWebContents } from '$electron/utils/view';
 import { getMainWindow } from '$electron/utils/helpers';
@@ -20,31 +20,20 @@ export function setIncomingAttacksEvents() {
         mainWindow.webContents.send('game:incomings-amount-did-update', newAmount);
     });
 
-    ipcMain.handle('game:get-incomings-info', (): IncomingAttack[] => incomings.value);
-
     ipcMain.on('game:update-incomings-info', (_e, newIncomings: IncomingAttack[]) => {
         incomings.value = newIncomings;
         mainWindow.webContents.send('game:incomings-info-did-update', newIncomings);
     });
 
-    const handleIncomings = createIncomingsHandler();
-    watch(amount, handleIncomings);
+    watch(amount, createIncomingsHandler());
 };
 
 function createIncomingsHandler() {
     const aresStore = useAresStore();
-    const { captcha, responseTime } = storeToRefs(aresStore);
-
-    const featuresStore = useFeaturesStore();
-    const { premium } = storeToRefs(featuresStore);
+    const { responseTime } = storeToRefs(aresStore);
 
     const delay = computed([responseTime], () => {
         return (Kronos.Second * 5) + (responseTime.value ?? 1000);
-    });
-
-    const shouldLabel = computed([captcha, premium], () => {
-        if (captcha.value || !premium.value) return false;
-        return true;
     });
 
     let worker: TribalWorker | null = null;
@@ -78,8 +67,8 @@ function createIncomingsHandler() {
         };
     };
 
-    return async function(value: number | null, oldValue: number | null) {
-        if (!shouldLabel.value || value === null || oldValue === null || value <= oldValue) return;
-        await createWorker();
+    return function(value: number | null) {
+        if (value === null) return;
+        createWorker().catch(MainProcessEventError.catch);
     };
 };
