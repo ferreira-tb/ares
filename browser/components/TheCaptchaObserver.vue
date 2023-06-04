@@ -3,7 +3,7 @@ import { ref, watchSyncEffect, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useMutationObserver } from '@vueuse/core';
 import { isInstanceOf } from '$shared/guards';
-import { useAresStore } from '$renderer/stores/ares';
+import { useAresStore } from '$renderer/stores';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
 import type { UseMutationObserverOptions } from '@vueuse/core';
@@ -52,7 +52,7 @@ async function reloadMainView() {
     const shouldReload = await ipcInvoke('should-reload-after-captcha');
     if (shouldReload) {
         await nextTick();
-        ipcSend('reload-main-view');
+        ipcSend('main-view:reload');
     };
 };
 </script>

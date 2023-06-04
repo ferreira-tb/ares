@@ -7,6 +7,8 @@ import { NIcon } from 'naive-ui';
 import { DiscordSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { WebsiteUrl } from '$shared/constants';
+import TheIncomingHandler from '$ui/components/TheIncomingHandler.vue';
+import TheNextIncoming from '$ui/components/TheNextIncoming.vue';
 import TheResponseTime from '$ui/components/TheResponseTime.vue';
 import TheUpdateNotification from '$ui/components/TheUpdateNotification.vue';
 
@@ -26,8 +28,8 @@ const { width } = useElementSize(mainWindowMenu);
 const menuWidth = computed(() => `${width.value - 300}px`);
 const isSmallScreen = useMediaQuery('(max-width: 600px)');
 
-const canGoBack = ref<boolean>(await ipcInvoke('current-view-can-go-back'));
-const canGoForward = ref<boolean>(await ipcInvoke('current-view-can-go-forward'));
+const canGoBack = ref<boolean>(await ipcInvoke('current-view:can-go-back'));
+const canGoForward = ref<boolean>(await ipcInvoke('current-view:can-go-forward'));
 
 const goBackDepth = computed(() => canGoBack.value ? 3 : 5);
 const goForwardDepth = computed(() => canGoForward.value ? 3 : 5);
@@ -41,16 +43,16 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
 <template>
     <div ref="mainWindowMenu" class="main-window-menu">
         <div class="menu-icon-area">
-            <div class="menu-icon" @click="ipcSend('current-view-go-back')">
+            <div class="menu-icon" @click="ipcSend('current-view:back')">
                 <NIcon :size="22" :depth="goBackDepth" :component="ArrowBackSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('current-view-go-forward')">
+            <div class="menu-icon" @click="ipcSend('current-view:forward')">
                 <NIcon :size="22" :depth="goForwardDepth" :component="ArrowForwardSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('reload-current-view')">
+            <div class="menu-icon" @click="ipcSend('current-view:reload')">
                 <NIcon :size="22" :depth="3" :component="ReloadSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('current-view-go-home')">
+            <div class="menu-icon" @click="ipcSend('current-view:home')">
                 <NIcon :size="22" :depth="3" :component="HomeSharp" />
             </div>
             <div class="menu-icon" @click="ipcSend('open-settings-window', 'config-general')">
@@ -71,14 +73,16 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
         </div>
 
         <div v-show="!isSmallScreen" class="menu-tag-area">
-            <TheUpdateNotification />
-            <TheResponseTime />
+            <TheIncomingHandler />
+            <Suspense><TheNextIncoming /></Suspense>
+            <Suspense><TheUpdateNotification /></Suspense>
+            <Suspense><TheResponseTime /></Suspense>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-@use '$ui/assets/main.scss';
+@use '$ui/assets/main.scss' as ui;
 
 .main-window-menu {
     position: absolute;
@@ -96,12 +100,12 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
 }
 
 .menu-icon-area {
-    @include main.display-flex-center;
+    @include ui.display-flex-center;
     width: v-bind("menuWidth");
     height: 100%;
 
     & > .menu-icon {
-        @include main.display-flex-center;
+        @include ui.display-flex-center;
         padding-left: 0.5em;
         padding-right: 0.5em;
     }
@@ -113,7 +117,7 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
 }
 
 .menu-tag-area {
-    @include main.display-flex-center;
+    @include ui.display-flex-center;
     justify-content: end;
     width: 300px;
 }

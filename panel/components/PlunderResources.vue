@@ -3,7 +3,7 @@ import { h } from 'vue';
 import { NButton } from 'naive-ui';
 import { storeToRefs } from 'pinia';
 import { watchImmediate } from '@vueuse/core';
-import { usePlunderConfigStore, usePlunderHistoryStore } from '$renderer/stores/plunder';
+import { usePlunderConfigStore, usePlunderHistoryStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import StorageIcon from '$icons/buildings/StorageIcon.vue';
 

@@ -3,6 +3,10 @@
         "vscode-icons-team.vscode-icons",
         "vivaxy.vscode-conventional-commits",
         "mhutchie.git-graph",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "github.vscode-github-actions",
+        "redhat.vscode-yaml",
+        "vue.volar",
+        "github.vscode-pull-request-github"
     ]
 }

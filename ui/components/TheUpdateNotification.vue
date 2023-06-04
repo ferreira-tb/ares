@@ -5,9 +5,11 @@ import { useFetch } from '@vueuse/core';
 import { NTag } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { AresAPI } from '$shared/constants';
+import { MainWindowError } from '$ui/error';
 
-const appVersion = await ipcInvoke('app-version');
-const { data } = useFetch(AresAPI.Latest).json<LatestVersion>();
+const appVersion = await ipcInvoke('app:version');
+const { data, onFetchError } = useFetch(AresAPI.Latest).json<LatestVersion>();
+onFetchError(MainWindowError.catch);
 
 const updateAvailable = computed(() => {
     if (!data.value) return false;
@@ -24,10 +26,16 @@ watchEffect(async () => {
 </script>
 
 <template>
-    <div class="update-notification-tag">
+    <div class="update-notification-tag-container">
         <Transition name="tb-fade" mode="out-in">
             <div v-if="data && updateAvailable" :key="data.version" class="tag-wrapper">
-                <NTag class="version-tag" round type="success" size="small" @click="ipcSend('open-app-update-window')">
+                <NTag 
+                    class="update-notification-tag"
+                    type="success"
+                    size="small"
+                    round
+                    @click="ipcSend('open-app-update-window')"
+                >
                     Nova versão disponível
                 </NTag>
             </div>
@@ -36,20 +44,15 @@ watchEffect(async () => {
 </template>
 
 <style scoped lang="scss">
-.update-notification-tag {
-    width: max-content;
-    height: 100%;
+@use '$ui/assets/main.scss' as ui;
+
+.update-notification-tag-container {
+    @include ui.ui-tag;
 
     .tag-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: end;
-        
-        width: inherit;
-        height: inherit;
-        padding-right: 0.5rem;
-        
-        .version-tag {
+        @include ui.tag-wrapper;
+
+        .update-notification-tag {
             cursor: pointer;
         }
     }

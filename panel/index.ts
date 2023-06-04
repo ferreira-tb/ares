@@ -1,6 +1,6 @@
+import '@tb-dev/prototype';
+import '@tb-dev/prototype-dom';
 import '$panel/assets/main.scss';
-import '$shared/prototype';
-import '$renderer/prototype';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '$panel/router';

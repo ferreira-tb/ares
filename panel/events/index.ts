@@ -1,12 +1,14 @@
 import { ipcRenderer } from 'electron';
-import { usePanelStore } from '$panel/stores/panel';
-import { useAresStore } from '$renderer/stores/ares';
-import { useFeaturesStore } from '$renderer/stores/features';
-import { usePlayerStore } from '$renderer/stores/player';
-import { useCurrentVillageStore } from '$renderer/stores/village';
-import { useUnitsStore } from '$renderer/stores/units';
-import { useGroupsStore } from '$renderer/stores/groups';
+import { usePanelStore } from '$panel/stores';
 import { setPlunderEvents } from '$panel/events/plunder';
+import {
+    useAresStore,
+    useFeaturesStore,
+    usePlayerStore,
+    useCurrentVillageStore,
+    useUnitsStore,
+    useGroupsStore
+} from '$renderer/stores';
 
 export function setPanelEvents() {
     const panelStore = usePanelStore();

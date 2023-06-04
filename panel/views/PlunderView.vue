@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { computed, watch, watchEffect } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
-import { usePlunderConfigStore } from '$renderer/stores/plunder';
-import { useFeaturesStore } from '$renderer/stores/features';
-import { useGroupsStore } from '$renderer/stores/groups';
+import { useFeaturesStore, useGroupsStore, usePlunderConfigStore } from '$renderer/stores';
 import { ipcSend } from '$renderer/ipc';
 import PlunderResources from '$panel/components/PlunderResources.vue';
 import SwitchPopover from '$renderer/components/SwitchPopover.vue';

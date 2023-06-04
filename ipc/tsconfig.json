@@ -1,0 +1,53 @@
+{
+    "include": [
+        "./**/*",
+        "../global/**/*",
+        "../renderer/**/*",
+        "../typings/**/*"
+    ],
+
+    "compilerOptions": {
+        "target": "esnext",
+        "lib": ["esnext", "DOM"],
+        "paths": {
+            "$browser/*": ["../browser/*"],
+            "$ipc/*": ["./*"],
+            "$lib/*": ["../browser/lib/*"],
+            "$modules/*": ["../modules/*"],
+            "$panel/*": ["../panel/*"],
+            "$phobos/*": ["../phobos/*"],
+            "$renderer/*": ["../renderer/*"],
+            "$shared/*": ["../shared/*"]
+        },
+        
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "useUnknownInCatchVariables": true,
+        
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "allowUnusedLabels": false,
+        "allowUnreachableCode": false,
+
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+
+        "exactOptionalPropertyTypes": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        "removeComments": true,
+        "moduleResolution": "bundler",
+        "esModuleInterop": true,
+        "noEmitOnError": true,
+        "verbatimModuleSyntax": true,
+
+        "types": [
+            "node",
+            "@tb-dev/prototype"
+        ]
+    }
+}

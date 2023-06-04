@@ -2,24 +2,24 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 
-const worldVillagesTableMap = new Map<World, ReturnType<typeof createWorldVillagesTable>>();
+const villagesTableMap = new Map<World, ReturnType<typeof createVillagesTable>>();
 
-export async function getWorldVillagesTable(world: World) {
-    const table = worldVillagesTableMap.get(world);
+export async function getVillagesTable(world: World) {
+    const table = villagesTableMap.get(world);
     if (table) return table;
 
-    const newTable = createWorldVillagesTable(world);
+    const newTable = createVillagesTable(world);
     await newTable.sync();
     
-    worldVillagesTableMap.set(world, newTable);
+    villagesTableMap.set(world, newTable);
     return newTable;
 };
 
-function createWorldVillagesTable(world: World) {
+function createVillagesTable(world: World) {
     const VillagesTable = class extends Model<InferAttributes<WorldVillagesModel>, InferCreationAttributes<WorldVillagesModel>> {};
 
-    const tableName = `world_villages_${world}`;
-    const modelName = `WorldVillages${world.toUpperCase()}`;
+    const tableName = `villages_${world}`;
+    const modelName = `Villages${world.toUpperCase()}`;
     Object.defineProperty(VillagesTable, 'name', { value: modelName });
 
     VillagesTable.init({

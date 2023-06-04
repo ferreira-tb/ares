@@ -1,5 +1,5 @@
 export class AresError extends Error {
-    declare public static catch: (err: unknown) => Promise<void>;
+    declare public static catch: (err: unknown, ...args: any[]) => Promise<void>;
 
     constructor(message: string) {
         super(message);

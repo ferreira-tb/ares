@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { isString } from '$shared/guards';
 import { sequelize } from '$electron/database';
-import { getActiveModule } from '$electron/app/modules';
+import { getActiveModule } from '$electron/modules';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessError } from '$electron/error';
 import type { useAppNotificationsStore } from '$electron/interface';
@@ -28,8 +28,8 @@ export function catchError(
                 locale: process.env.TRIBAL_WARS_LOCALE ?? 'unknown'
             };
 
-            await sequelize.transaction(async (transaction) => {
-                const newRow = await ElectronErrorLog.create(errorLog, { transaction });
+            await sequelize.transaction(async () => {
+                const newRow = await ElectronErrorLog.create(errorLog);
                 const errorModule = getActiveModule('error-log');
                 if (errorModule instanceof BrowserWindow) {
                     errorModule.webContents.send('error:electron-log-did-update', newRow.toJSON());

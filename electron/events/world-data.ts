@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import { ipcMain } from 'electron';
-import { getWorldVillagesTable, useCacheStore } from '$electron/interface';
+import { getVillagesTable, useCacheStore } from '$electron/interface';
 import { isWorld } from '$shared/guards';
 
 export function setWorldDataEvents() {
@@ -10,7 +10,7 @@ export function setWorldDataEvents() {
         world ??= cacheStore.world;
         if (!isWorld(world)) return [];
 
-        const VillagesTable = await getWorldVillagesTable(world);
+        const VillagesTable = await getVillagesTable(world);
         if (!villageId) return (await VillagesTable.findAll()).map((v) => v.toJSON());
 
         const idList = Array.isArray(villageId) ? villageId : [villageId];

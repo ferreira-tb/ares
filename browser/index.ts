@@ -1,11 +1,10 @@
 import '$browser/assets/main.scss';
-import '$shared/prototype';
-import '$renderer/prototype';
+import '@tb-dev/prototype';
+import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { router } from '$browser/router/router';
-import { setNavigationGuards } from '$browser/router/guards/index';
-import { setBrowserEvents } from '$browser/events/index';
+import { router, setNavigationGuards } from '$browser/router';
+import { setBrowserEvents } from '$browser/events';
 import { BrowserError } from '$browser/error';
 import App from '$browser/App.vue';
 

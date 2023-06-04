@@ -1,22 +1,24 @@
+import * as path from 'node:path';
 import { app } from 'electron';
-import { join } from 'node:path';
 
-export const appIcon = join(__dirname, 'favicon.ico');
-export const database = join(app.getPath('userData'), 'ares.db');
+const userData = app.getPath('userData');
+
+export const appIcon = path.join(__dirname, 'favicon.ico');
+export const database = path.join(userData, 'ares.db');
 
 // JavaScript
-export const browserJs = join(__dirname, 'browser.js');
-export const deimosJs = join(__dirname, 'deimos.js');
-export const phobosJs = join(__dirname, 'phobos.js');
+export const browserJs = path.join(__dirname, 'browser.js');
+export const ipcTribalJs = path.join(__dirname, 'ipc-tw.js');
+export const tribalWorkerJs = path.join(__dirname, 'worker-tw.js');
 
 export const childProcess = {
-    worldData: join(__dirname, 'child-process/world-data.js')
+    worldData: path.join(__dirname, 'child-process/world-data.js')
 } as const;
 
 // HTML
-export const moduleHtml = join(__dirname, 'modules.html');
-export const panelHtml = join(__dirname, 'panel.html');
-export const uiHtml = join(__dirname, 'ui.html');
+export const moduleHtml = path.join(__dirname, 'modules.html');
+export const panelHtml = path.join(__dirname, 'panel.html');
+export const uiHtml = path.join(__dirname, 'ui.html');
 
 // CSS
-export const browserCss = join(__dirname, 'browser.css');
+export const browserCss = path.join(__dirname, 'browser.css');

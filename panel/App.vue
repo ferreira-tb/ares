@@ -4,8 +4,8 @@ import { RouterView } from 'vue-router';
 import { useArrayIncludes, watchImmediate } from '@vueuse/core';
 import { NConfigProvider, darkTheme } from 'naive-ui';
 import { routeNames, router } from '$panel/router';
-import { useAresStore } from '$renderer/stores/ares';
-import { usePanelStore } from '$panel/stores/panel';
+import { useAresStore } from '$renderer/stores';
+import { usePanelStore } from '$panel/stores';
 import HomeView from '$panel/views/HomeView.vue';
 import CaptchaView from '$panel/views/CaptchaView.vue';
 
@@ -52,7 +52,7 @@ watchImmediate(currentScreen, async (name) => {
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .app-container {
     width: 100%;
     height: 100%;

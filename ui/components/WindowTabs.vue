@@ -13,9 +13,9 @@ const { width } = useElementSize(tabsContainer);
 const tabsWidth = computed(() => `${width.value - 150}px`);
 
 const allTabs = reactive<Map<Electron.WebContents['id'], string>>(new Map());
-const mainViewWebContentsId = await ipcInvoke('main-view-web-contents-id');
+const mainViewWebContentsId = await ipcInvoke('main-view:web-contents-id');
 const activeView = ref<Electron.WebContents['id']>(mainViewWebContentsId);
-watch(activeView, (webContentsId) => ipcSend('update-current-view', webContentsId));
+watch(activeView, (webContentsId) => ipcSend('current-view:update', webContentsId));
 
 useIpcRendererOn('focus-main-view', () => (activeView.value = mainViewWebContentsId));
 
@@ -39,7 +39,7 @@ useIpcRendererOn('browser-view-title-updated', (_e, webContentsId: number, viewT
 
 function destroyBrowserView(webContentsId: Electron.WebContents['id']) {
     assertInteger(webContentsId, `Invalid webContentsId: ${webContentsId}`);
-    ipcSend('destroy-browser-view', webContentsId);
+    ipcSend('view:destroy', webContentsId);
 };
 
 function renderMainTab() {
@@ -82,8 +82,6 @@ function renderMainTab() {
 </template>
 
 <style scoped lang="scss">
-@use '$ui/assets/main.scss';
-
 .main-window-tabs-container {
     position: absolute;
     top: 0;
@@ -91,7 +89,7 @@ function renderMainTab() {
     right: 0;
 
     width: 100%;
-    height: main.$tab-height;
+    height: 40px;
     
     display: flex;
     align-items: center;
@@ -100,7 +98,7 @@ function renderMainTab() {
 
 .main-window-tab-area {
     width: v-bind("tabsWidth");
-    height: main.$tab-height;
+    height: 40px;
 }
 
 :global(.main-tab-icon) {

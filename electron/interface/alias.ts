@@ -58,10 +58,8 @@ async function patchGroups(
 
         patchVillageGroups(groups, all);
         
-        await sequelize.transaction(async (transaction) => {
-            await VillageGroups.upsert({
-                id: alias, allGroups: [...groups]
-            }, { transaction });
+        await sequelize.transaction(async () => {
+            await VillageGroups.upsert({ id: alias, allGroups: [...groups] });
         });
 
     } catch (err) {

@@ -1,8 +1,6 @@
 import { isString } from '$shared/guards';
 import type { RouteRecordRaw } from 'vue-router';
 
-// As funções aqui presentes dependem do Vue em algum grau.
-
 export function getRouteNames<T extends string>(routes: RouteRecordRaw[]): T[] {
     const names: string[] = [];
 

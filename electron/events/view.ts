@@ -1,4 +1,4 @@
-import { URL } from 'url';
+import { URL } from 'node:url';
 import { ipcMain, BrowserView } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { useBrowserViewStore, useCacheStore } from '$electron/interface';
@@ -39,13 +39,13 @@ export function setBrowserViewEvents() {
     setWindowOpenHandler(mainViewWebContents);
 
     // View principal.
-    ipcMain.handle('main-view-web-contents-id', () => mainViewWebContents.id);
-    ipcMain.handle('main-view-url', () => mainViewWebContents.getURL());
-    ipcMain.on('reload-main-view', () => mainViewWebContents.reload());
-    ipcMain.on('force-reload-main-view', () => mainViewWebContents.reloadIgnoringCache());
+    ipcMain.handle('main-view:web-contents-id', () => mainViewWebContents.id);
+    ipcMain.handle('main-view:url', () => mainViewWebContents.getURL());
+    ipcMain.on('main-view:reload', () => mainViewWebContents.reload());
+    ipcMain.on('main-view:force-reload', () => mainViewWebContents.reloadIgnoringCache());
 
     // View atual.
-    ipcMain.on('update-current-view', (_e, webContentsId: number) => {
+    ipcMain.on('current-view:update', (_e, webContentsId: number) => {
         try {
             const view = findBrowserViewByWebContentsId(webContentsId, mainWindow);
             currentWebContents.value = view.webContents;
@@ -56,19 +56,36 @@ export function setBrowserViewEvents() {
 
     // Os eventos abaixo estão relacionados à BrowserView atual.
     // No entanto, não precisam ser definidos separadamente, pois são obtidos dinamicamente dentro da callback.
-    ipcMain.handle('current-view-url', () => currentView.value.webContents.getURL());
-    ipcMain.handle('current-view-web-contents-id', () => currentView.value.webContents.id);
-    ipcMain.handle('current-view-can-go-back', () => currentView.value.webContents.canGoBack());
-    ipcMain.handle('current-view-can-go-forward', () => currentView.value.webContents.canGoForward());
+    ipcMain.handle('current-view:url', () => currentView.value.webContents.getURL());
+    ipcMain.handle('current-view:web-contents-id', () => currentView.value.webContents.id);
+    ipcMain.handle('current-view:can-go-back', () => currentView.value.webContents.canGoBack());
+    ipcMain.handle('current-view:can-go-forward', () => currentView.value.webContents.canGoForward());
 
-    ipcMain.on('reload-current-view', () => currentView.value.webContents.reload());
-    ipcMain.on('force-reload-current-view', () => currentView.value.webContents.reloadIgnoringCache());
-    ipcMain.on('current-view-go-home', () => contentsGoHome(currentView.value.webContents, cacheStore.region));
-    ipcMain.on('current-view-go-back', () => contentsGoBack(currentView.value.webContents));
-    ipcMain.on('current-view-go-forward', () => contentsGoForward(currentView.value.webContents));
+    ipcMain.on('current-view:reload', () => currentView.value.webContents.reload());
+    ipcMain.on('current-view:force-reload', () => currentView.value.webContents.reloadIgnoringCache());
+    ipcMain.on('current-view:home', () => contentsGoHome(currentView.value.webContents, cacheStore.region));
+    ipcMain.on('current-view:back', () => contentsGoBack(currentView.value.webContents));
+    ipcMain.on('current-view:forward', () => contentsGoForward(currentView.value.webContents));
+
+    ipcMain.on('current-view:navigate-to-place', async (_e, villageId: number) => {
+        try {
+            if (!Number.isInteger(villageId)) {
+                const errMessage = 'Cannot navigate to place: village id must be an integer.';
+                throw new BrowserViewError(errMessage);
+            };
+
+            const contents = currentView.value.webContents;
+            const url = new URL(contents.getURL());
+            url.search = `village=${villageId}&screen=place`;
+            await contents.loadURL(url.href);
+
+        } catch (err) {
+            BrowserViewError.catch(err);
+        };
+    });
 
     // BrowserViews específicas.
-    ipcMain.on('destroy-browser-view', (_e, webContentsId: number) => {
+    ipcMain.on('view:destroy', (_e, webContentsId: number) => {
         try {
             const view = findBrowserViewByWebContentsId(webContentsId, mainWindow);
             destroyBrowserView(view, mainWindow, mainViewWebContents);
@@ -134,11 +151,11 @@ function setViewSharedEvents(
  */
 function setCurrentViewEvents(view: Electron.WebContents, mainWindow: Electron.BrowserWindow = getMainWindow()) {
     view.on('did-start-loading', () => {
-        mainWindow.webContents.send('current-view-did-start-loading');
+        mainWindow.webContents.send('current-view:did-start-loading');
     });
 
     view.on('did-stop-loading', () => {
-        mainWindow.webContents.send('current-view-did-stop-loading');
+        mainWindow.webContents.send('current-view:did-stop-loading');
     });
 
     view.on('did-navigate', () => {

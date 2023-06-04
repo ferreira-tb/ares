@@ -68,7 +68,7 @@ function sendAttack(button: HTMLAnchorElement) {
  */
 export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<boolean> {
     try {
-        const isArcherWorld = await ipcInvoke('is-archer-world');
+        const isArcherWorld = await ipcInvoke('game:is-archer-world');
         const commandForm = document.queryAndAssert('#command-data-form[action*="place" i]');
 
         for (const [key, value] of Object.entries(units)) {

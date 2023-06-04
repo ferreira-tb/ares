@@ -2,7 +2,7 @@ import { app, dialog, ipcMain, Menu } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { getMainWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
-import { showErrorLog, openIssuesWebsite } from '$electron/app/modules';
+import { showErrorLog, openIssuesWebsite } from '$electron/modules';
 import { AppConfig, useCacheStore } from '$electron/interface';
 import { MainProcessError } from '$electron/error';
 import { getGameRegionUrl } from '$shared/helpers';

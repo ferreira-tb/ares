@@ -1,4 +1,4 @@
-import { isInteger, assertGameRegion } from '$shared/guards';
+import { assertGameRegion } from '$shared/guards';
 import { GameUrl, GameEndpoints } from '$shared/constants';
 import type { AresError } from '$shared/error';
 
@@ -6,9 +6,9 @@ import type { AresError } from '$shared/error';
  * Obtém a região referente a um mundo.
  * @throws Se a região obtida não for válida.
  */
-export function getRegionFromWorld<T extends typeof AresError>(world: World, SomeError: T, message?: string) {
+export function getRegionFromWorld<T extends typeof AresError>(world: World, SomeError: T) {
     const region = world.slice(0, 2);
-    assertGameRegion(region, SomeError, message);
+    assertGameRegion(region, SomeError, `Could not get region from world: ${world}.`);
     return region;
 };
 
@@ -19,19 +19,26 @@ export function getWorldUrl(world: World, region: GameRegion) {
 
 function getEndPointUrl(world: World, region: GameRegion, endpoint: keyof typeof GameEndpoints) {
     const { origin } = getWorldUrl(world, region);
+    const url = (e: GameEndpoints) => new URL(`${origin}/${e}`);
     switch (endpoint) {
-        case 'GetConfig': return new URL(`${origin}/${GameEndpoints.GetConfig}`);
-        case 'GetUnitInfo': return new URL(`${origin}/${GameEndpoints.GetUnitInfo}`);
-        case 'Village': return new URL(`${origin}/${GameEndpoints.Village}`);
+        case 'GetConfig': return url(GameEndpoints.GetConfig);
+        case 'GetUnitInfo': return url(GameEndpoints.GetUnitInfo);
+        case 'Ally': return url(GameEndpoints.Ally);
+        case 'Conquer': return url(GameEndpoints.Conquer);
+        case 'Player': return url(GameEndpoints.Player);
+        case 'Village': return url(GameEndpoints.Village);
         default: throw new TypeError(`Invalid endpoint: ${endpoint}.`);
     };
 };
 
 export const getWorldConfigUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'GetConfig');
 export const getWorldUnitInfoUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'GetUnitInfo');
-export const getVillagesDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Village');
+export const getAllyDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Ally');
+export const getConquerDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Conquer');
+export const getPlayerDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Player');
+export const getVillageDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Village');
 
-export function getGameRegionUrl(region: unknown) {
+export function getGameRegionUrl(region: unknown): GameUrl {
     switch (region) {
         case 'br': return GameUrl.Brazil;
         case 'en': return GameUrl.Global;
@@ -59,7 +66,7 @@ export function generateIntegerBetween(min: number, max: number) {
  * @param range Intervalo.
  */
 export function generateRandomDelay(base: number, range?: number) {
-    if (!isInteger(range)) range = 50;
+    if (typeof range !== 'number' || !Number.isInteger(range)) range = 50;
     return generateIntegerBetween(base - range, base + range);
 };
 
@@ -71,30 +78,9 @@ export function getContinentFromCoords(x: number, y: number, prefix?: string) {
 };
 
 /**
- * Transforma um número em uma string com o formato de data local.
- * @param raw Número representando a data. Se omitido, utiliza `Date.now()`.
- * @param includeTime Indica se a string resultante deve incluir a hora.
+ * Obtém o nome do jogador a partir do alias, decodificando-o.
+ * @param alias Alias do jogador.
  */
-export function getLocaleDateString(raw?: number, includeTime: boolean = false): string {
-    if (!isInteger(raw)) raw = Date.now();
-    
-    const dateObject = new Date(raw);
-    const date = dateObject.toLocaleDateString('pt-br', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    });
-
-    if (!includeTime) return date;
-
-    const time = dateObject.toLocaleTimeString('pt-br', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-
-    return `${date} ${time}`;
-};
-
 export function getPlayerNameFromAlias(alias: UserAlias): string {
     const encodedPlayerName = alias.replace(/^[a-z]+\d+__USERID__/, '');
     return decodeURIComponent(encodedPlayerName);

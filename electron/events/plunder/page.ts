@@ -1,3 +1,4 @@
+import { URL } from 'node:url';
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { MainProcessEventError } from '$electron/error';

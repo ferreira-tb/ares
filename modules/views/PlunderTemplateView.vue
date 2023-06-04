@@ -9,7 +9,7 @@ import ResultInfo from '$renderer/components/ResultInfo.vue';
 import PlunderTemplateCard from '$modules/components/PlunderTemplateCard.vue';
 
 const userAlias = await ipcInvoke('user-alias');
-const isArcherWorld = await ipcInvoke('is-archer-world');
+const isArcherWorld = await ipcInvoke('game:is-archer-world');
 const previousTemplates = await ipcInvoke('plunder:get-custom-templates');
 
 const showTemplateModal = ref<boolean>(false);

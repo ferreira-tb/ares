@@ -12,8 +12,7 @@
             "$electron/*": ["./*"],
             "$interface/*": ["./interface/*"],
             "$renderer/*": ["../renderer/*"],
-            "$shared/*": ["../shared/*"],
-            "$stores/*": ["./stores/*"]
+            "$shared/*": ["../shared/*"]
         },
         
         "alwaysStrict": true,
@@ -39,6 +38,11 @@
         "moduleResolution": "bundler",
         "esModuleInterop": true,
         "noEmitOnError": true,
-        "verbatimModuleSyntax": true
+        "verbatimModuleSyntax": true,
+
+        "types": [
+            "node",
+            "@tb-dev/prototype"
+        ]
     }
 }

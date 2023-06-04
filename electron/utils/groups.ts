@@ -1,36 +1,30 @@
-import { URL } from 'url';
-import { MessageChannelMain } from 'electron';
-import { assertInstanceOf } from '$shared/guards';
-import { createPhobos, destroyPhobos } from '$electron/app/phobos';
+import { URL } from 'node:url';
+import { TribalWorker } from '$electron/worker';
 import { getMainViewWebContents } from '$electron/utils/view';
 import { getPanelWindow } from '$electron/utils/helpers';
+import { GameSearchParams } from '$shared/constants';
 
 export function fetchVillageGroups(): Promise<Set<VillageGroup>> {
     return new Promise(async (resolve, reject) => {
-        // Cria o Phobos na tela de grupos manuais.
+        // Cria o Worker na tela de grupos manuais.
         // Lá é possível obter tanto os grupos manuais quanto os dinâmicos.
         const mainViewWebContents = getMainViewWebContents();
         const url = new URL(mainViewWebContents.getURL());
-        url.search = 'screen=overview_villages&&mode=groups&type=static';
-        const phobos = await createPhobos('get-village-groups', url, { override: true });
-        
-        const { port1, port2 } = new MessageChannelMain();
-        phobos.webContents.postMessage('port', null, [port2]);
-        port1.postMessage({ channel: 'get-village-groups' } satisfies PhobosPortMessage);
+        url.search = GameSearchParams.Groups;
 
-        port1.on('message', (e) => {
+        const worker = new TribalWorker('get-village-groups', url);
+        await worker.init((e) => {
             try {
-                assertInstanceOf<Set<VillageGroup>>(e.data, Set, 'Village groups must be a Set');
+                if (!(e.data instanceof Set)) {
+                    throw new Error('Village groups data must be a Set.');
+                };
                 resolve(e.data);
             } catch (err) {
                 reject(err);
             } finally {
-                port1.close();
-                destroyPhobos(phobos);
+                worker.destroy();
             };
         });
-
-        port1.start();
     });
 };
 

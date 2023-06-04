@@ -37,8 +37,8 @@ export function saveConfig(AppConfig: typeof AppConfigTable) {
     return async function<T extends OnlyConfig>(name: T, store: ConfigStoreByName<T>) {
         try {
             const json = { ...store };
-            await sequelize.transaction(async (transaction) => {
-                await AppConfig.upsert({ name, json }, { transaction });
+            await sequelize.transaction(async () => {
+                await AppConfig.upsert({ name, json });
             });
     
         } catch (err) {

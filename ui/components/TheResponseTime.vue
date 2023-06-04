@@ -34,18 +34,13 @@ useIpcRendererOn('response-time-did-update', (_e, time: number) => {
 </template>
 
 <style scoped lang="scss">
+@use '$ui/assets/main.scss' as ui;
+
 .response-time-tag {
-    width: max-content;
-    height: 100%;
+    @include ui.ui-tag;
 
     .tag-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: end;
-        
-        width: inherit;
-        height: inherit;
-        padding-right: 0.5rem;
+        @include ui.tag-wrapper;
     }
 }
 </style>

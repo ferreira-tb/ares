@@ -35,7 +35,9 @@ export const enum GameEndpoints {
 };
 
 export const enum GameSearchParams {
-    Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0'
+    Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0',
+    Groups = 'screen=overview_villages&&mode=groups&type=static',
+    Incomings = 'screen=overview_villages&mode=incomings&type=unignored&subtype=attacks&group=0&page=-1&subtype=attacks'
 };
 
 export const enum WebsiteUrl {
@@ -48,15 +50,6 @@ export const enum WebsiteUrl {
 
 export const enum Dimensions {
     TopContainerHeight = 80
-};
-
-export const enum Kronos {
-    Second = 1000,
-    Minute = 60 * Second,
-    Hour = 60 * Minute,
-    Day = 24 * Hour,
-    Week = 7 * Day,
-    Month = 30 * Day
 };
 
 export const enum ErrorLogFile {

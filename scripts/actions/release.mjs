@@ -65,7 +65,13 @@ const webhookClient = new WebhookClient({
 
 await webhookClient.send({ embeds: [embed] });
 
-// Atualiza o arquivo latest.json
+// Atualiza o arquivo latest.json.
 const docsDir = path.resolve(__dirname, '../../docs');
 const latestJson = path.join(docsDir, 'api/latest.json');
 await fs.writeFile(latestJson, JSON.stringify(latest, null, 4), 'utf-8');
+
+// Atualiza o botão de download no site.
+const siteIndex = path.join(docsDir, 'index.md');
+let indexContent = await fs.readFile(siteIndex, 'utf-8');
+indexContent = indexContent.replace(/https.*?\.zip/, latest.download);
+await fs.writeFile(siteIndex, indexContent, 'utf-8');

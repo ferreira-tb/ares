@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import semverGte from 'semver/functions/gte';
 import { shell } from 'electron';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { computedEager, useFetch, useWindowSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { NButton, NButtonGroup, NSpin, NProgress } from 'naive-ui';
@@ -9,8 +9,8 @@ import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { WebsiteUrl, AresAPI } from '$shared/constants';
 import { ModuleAppUpdateError } from '$modules/error';
 
-const appVersion = await ipcInvoke('app-version');
-const { isFetching, error, data } = useFetch(AresAPI.Latest).json<LatestVersion>();
+const appVersion = await ipcInvoke('app:version');
+const { isFetching, data, onFetchError } = useFetch(AresAPI.Latest).json<LatestVersion>();
 
 const { width: windowWidth, height: windowHeight } = useWindowSize();
 const wentWrong = ref(false);
@@ -29,14 +29,9 @@ const isLatest = computed(() => {
     return semverGte(appVersion, data.value.version);
 });
 
-watch(error, (err: unknown) => {
-    if (typeof err === 'string') {
-        const message = err.length > 0 ? err : 'Unknown error while fetching from server.';
-        err = new ModuleAppUpdateError(message);
-    };
-
-    wentWrong.value = err instanceof Error;
+onFetchError((err: unknown) => {
     ModuleAppUpdateError.catch(err);
+    wentWrong.value = err instanceof Error;
 });
 
 useIpcRendererOn('will-download-update', (_e, downloadProgress: DownloadProgressType) => {
