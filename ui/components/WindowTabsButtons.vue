@@ -26,7 +26,7 @@ async function maximizeOrRestore() {
 </template>
 
 <style scoped lang="scss">
-@use '$ui/assets/main.scss';
+@use '$ui/assets/main.scss' as ui;
 
 .main-window-button-area {
     display: flex;
@@ -39,7 +39,7 @@ async function maximizeOrRestore() {
 }
 
 .main-window-button-area > div {
-    @include main.display-flex-center;
+    @include ui.display-flex-center;
     padding-left: 1em;
     padding-right: 1em;
 }

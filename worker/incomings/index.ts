@@ -9,6 +9,8 @@ type LabeledAttack = Pick<IncomingAttack, 'arrivalTime' | 'id'>;
 
 export async function handleIncomingAttacks(port: MessagePort) {
     try {
+        ipcSend('tribal-worker:will-handle-incoming-attack');
+
         // Obtêm informações sobre os ataques que estão a caminho.
         const rowSelector = '#incomings_form #incomings_table tr:has(td span.quickedit[data-id])';
         const incomings: Map<Element, IncomingAttack> = Map.fromElements(rowSelector, (el) => el, (el) => {
@@ -47,11 +49,17 @@ export async function handleIncomingAttacks(port: MessagePort) {
                 throw new TribalWorkerError(`Invalid arrival time: ${arrivalTime}.`);
             };
 
-            return { id, target, origin, attacker, arrivalTime };
+
+            return { id, target, origin, attacker, arrivalTime, addedAt: Date.now() };
         });
 
         if (incomings.size === 0) return;
-        ipcSend('game:update-incomings-info', Array.from(incomings.values()));
+        const previousIncomings = await ipcInvoke('game:get-incomings-info');
+        ipcSend('game:update-incomings-info', previousIncomings.concat(
+            Array.from(incomings.values()).filter(({ id }) => {
+                return !previousIncomings.some((prev) => prev.id === id);
+            })
+        ));
 
         // Registra os ataques que já foram etiquetados.
         const playerName = await ipcInvoke('game:player-name');
@@ -75,12 +83,14 @@ export async function handleIncomingAttacks(port: MessagePort) {
         await nextTick();
         const responseTime = (await ipcInvoke('browser:get-response-time')) ?? 1000;
         setTimeout(() => {
-            labelButton.click();
+            ipcSend('tribal-worker:did-handle-incoming-attack');
             port.postMessage('destroy');
-        }, (Kronos.Second * 3) + responseTime);
+            labelButton.click();
+        }, Kronos.Second + responseTime);
 
     } catch (err) {
         TribalWorkerError.catch(err);
         port.postMessage('destroy');
+        ipcSend('tribal-worker:did-fail-to-handle-incoming-attack');
     };
 };

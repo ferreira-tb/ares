@@ -48,6 +48,7 @@ export async function ipcInvoke(channel: 'game:player-name'): Promise<string | n
 export async function ipcInvoke(channel: 'game:is-archer-world'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:get-village-groups'): Promise<Set<VillageGroup>>;
+export async function ipcInvoke(channel: 'game:get-incomings-info'): Promise<IncomingAttack[]>;
 
 // Erros
 export async function ipcInvoke(channel: 'error:export'): Promise<'canceled' | 'error' | 'sucess'>;
@@ -147,6 +148,11 @@ export function ipcSend(channel: 'plunder:open-demolition-config-window'): void;
 // IpcTribal
 export function ipcSend(channel: 'ipc-tribal:tag-is-ready'): void;
 export function ipcSend(channel: 'ipc-tribal:update-game-data', gameData: TribalWarsGameDataType): void;
+
+// Tribal Worker
+export function ipcSend(channel: 'tribal-worker:will-handle-incoming-attack'): void;
+export function ipcSend(channel: 'tribal-worker:did-handle-incoming-attack'): void;
+export function ipcSend(channel: 'tribal-worker:did-fail-to-handle-incoming-attack'): void;
 
 export function ipcSend(channel: string, ...args: any[]): void {
     ipcRenderer.send(channel, ...args);

@@ -5,9 +5,11 @@ import { useFetch } from '@vueuse/core';
 import { NTag } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { AresAPI } from '$shared/constants';
+import { MainWindowError } from '$ui/error';
 
 const appVersion = await ipcInvoke('app-version');
-const { data } = useFetch(AresAPI.Latest).json<LatestVersion>();
+const { data, onFetchError } = useFetch(AresAPI.Latest).json<LatestVersion>();
+onFetchError(MainWindowError.catch);
 
 const updateAvailable = computed(() => {
     if (!data.value) return false;
@@ -36,18 +38,13 @@ watchEffect(async () => {
 </template>
 
 <style scoped lang="scss">
+@use '$ui/assets/main.scss' as ui;
+
 .update-notification-tag {
-    width: max-content;
-    height: 100%;
+    @include ui.ui-tag;
 
     .tag-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: end;
-        
-        width: inherit;
-        height: inherit;
-        padding-right: 0.5rem;
+        @include ui.tag-wrapper;
         
         .version-tag {
             cursor: pointer;

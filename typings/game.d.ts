@@ -46,6 +46,8 @@ type IncomingAttack = {
     readonly attacker: number;
     /** Data de chegada do ataque. */
     readonly arrivalTime: number;
+    /** Data em que o ataque foi registrado. */
+    readonly addedAt: number;
 };
 
 // OUTROS

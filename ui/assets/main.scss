@@ -7,10 +7,23 @@
 @forward '$assets/scrollbar.scss';
 @forward '$assets/utils.scss';
 
-$tab-height: 40px;
-
 @mixin display-flex-center {
     display: flex;
     align-items: center;
     height: 100%;
+}
+
+@mixin ui-tag {
+    width: max-content;
+    height: 100%;
+}
+
+@mixin tag-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    
+    width: inherit;
+    height: inherit;
+    padding-right: 0.5rem;
 }

@@ -17,7 +17,10 @@ export function setIncomingAttacksEvents() {
 
     ipcMain.on('game:update-incomings-amount', (_e, newAmount: number | null) => {
         amount.value = newAmount;
+        mainWindow.webContents.send('game:incomings-amount-did-update', newAmount);
     });
+
+    ipcMain.handle('game:get-incomings-info', (): IncomingAttack[] => incomings.value);
 
     ipcMain.on('game:update-incomings-info', (_e, newIncomings: IncomingAttack[]) => {
         incomings.value = newIncomings;

@@ -82,8 +82,6 @@ function renderMainTab() {
 </template>
 
 <style scoped lang="scss">
-@use '$ui/assets/main.scss';
-
 .main-window-tabs-container {
     position: absolute;
     top: 0;
@@ -91,7 +89,7 @@ function renderMainTab() {
     right: 0;
 
     width: 100%;
-    height: main.$tab-height;
+    height: 40px;
     
     display: flex;
     align-items: center;
@@ -100,7 +98,7 @@ function renderMainTab() {
 
 .main-window-tab-area {
     width: v-bind("tabsWidth");
-    height: main.$tab-height;
+    height: 40px;
 }
 
 :global(.main-tab-icon) {
