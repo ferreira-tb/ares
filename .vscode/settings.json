@@ -19,5 +19,9 @@
     "conventionalCommits.scopes": [
         "browser"
     ],
-    "conventionalCommits.promptScopes": false
+    "conventionalCommits.promptScopes": false,
+    "files.exclude": {
+        "**/.cache": true,
+        "**/.temp": true
+    }
 }

@@ -14,6 +14,8 @@ dist-ssr
 coverage
 website
 *.local
+*.temp
+*.cache
 
 /cypress/videos/
 /cypress/screenshots/
