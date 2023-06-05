@@ -234,3 +234,14 @@ type PiniaIncomingAttacksStoreType = {
 type MechanusIncomingAttacksStoreType = {
     [K in keyof RemoveMethods<IncomingAttacksStore>]: MechanusRef<IncomingAttacksStore[K]>;
 };
+
+// SNOB
+type SnobConfigStore = SnobConfigType;
+
+type PiniaSnobConfigStoreType = {
+    [K in keyof SnobConfigStore]: import('vue').Ref<SnobConfigStore[K]>;
+};
+
+type MechanusSnobConfigStoreType = {
+    [K in keyof SnobConfigStore]: MechanusRef<SnobConfigStore[K]>;
+};

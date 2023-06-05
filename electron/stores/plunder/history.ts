@@ -14,7 +14,7 @@ const villages = new Proxy({} as PlunderHistoryType['villages'], {
 });
 
 export function definePlunderHistoryStore(mechanus: Mechanus) {
-    return mechanus.define('plunderHistory', {
+    return mechanus.define('plunder-history', {
         wood: ref<number>(0, positiveIntegerRef),
         stone: ref<number>(0, positiveIntegerRef),
         iron: ref<number>(0, positiveIntegerRef),

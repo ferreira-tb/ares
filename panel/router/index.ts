@@ -1,12 +1,13 @@
-import { createRouter, createMemoryHistory } from 'vue-router';
+import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
 import { getRouteNames } from '$renderer/utils/router';
 import HomeView from '$panel/views/HomeView.vue';
 import PlunderView from '$panel/views/PlunderView.vue';
+import SnobView from '$panel/views/SnobView.vue';
 
 // Os componentes devem ser passados diretamente.
 // Importá-los gera problemas ao compilar.
 
-const routes: import('vue-router').RouteRecordRaw[] = [
+const routes: RouteRecordRaw[] = [
     {
         path: '/',
         name: 'home',
@@ -16,6 +17,11 @@ const routes: import('vue-router').RouteRecordRaw[] = [
         path: '/am_farm',
         name: 'am_farm',
         component: PlunderView
+    },
+    {
+        path: '/snob',
+        name: 'snob',
+        component: SnobView
     }
 ];
 

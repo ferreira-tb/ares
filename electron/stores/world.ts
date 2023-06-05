@@ -3,7 +3,7 @@ import { finiteNumberRef, integerRef, booleanRef } from '$electron/utils/mechanu
 import { allUnits } from '$shared/constants';
 
 export function defineWorldConfigStore(mechanus: Mechanus) {
-    return mechanus.define('worldConfig', {
+    return mechanus.define('world-config', {
         speed: ref(1, finiteNumberRef),
         unitSpeed: ref(1, finiteNumberRef),
         tradeCancelTime: ref(300, integerRef),
@@ -17,7 +17,7 @@ export function defineWorldConfigStore(mechanus: Mechanus) {
 export function createWorldUnitStoresMap(mechanus: Mechanus) {
     const worldUnitMap = new Map<AllUnits, () => MechanusStore<UnitDetails>>();
     allUnits.forEach((unit) => {
-        worldUnitMap.set(unit, mechanus.define(`worldUnit-${unit}`, {
+        worldUnitMap.set(unit, mechanus.define(`world-unit-${unit}`, {
             buildTime: ref(0, integerRef),
             pop: ref(0, integerRef),
             speed: ref(0, finiteNumberRef),

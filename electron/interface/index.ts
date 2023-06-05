@@ -4,9 +4,9 @@ import { AppConfig } from '$database/config';
 import { ErrorLog, ElectronErrorLog } from '$database/error';
 import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
 import { getPlayersTable, getVillagesTable, WorldConfig, WorldUnits, WorldDataFetchHistory } from '$database/world';
-import { VillageGroups } from '$database/groups';
+import { SnobConfig, VillageGroups } from '$database/game';
 
-import { 
+import {
     createWorldUnitStoresMap,
     defineAppGeneralConfigStore,
     defineAppNotificationsStore,
@@ -22,6 +22,7 @@ import {
     definePlunderCacheStore,
     definePlunderConfigStore,
     definePlunderHistoryStore,
+    defineSnobConfigStore,
     defineUnitsStore,
     defineWorldConfigStore
 } from '$electron/stores';
@@ -48,6 +49,7 @@ export const usePlunderStore = definePlunderStore(mechanus);
 export const usePlunderConfigStore = definePlunderConfigStore(mechanus);
 export const usePlunderHistoryStore = definePlunderHistoryStore(mechanus);
 export const usePlunderCacheStore = definePlunderCacheStore(mechanus);
+export const useSnobConfigStore = defineSnobConfigStore(mechanus);
 export const useUnitsStore = defineUnitsStore(mechanus);
 export const useWorldConfigStore = defineWorldConfigStore(mechanus);
 export const worldUnitsMap = createWorldUnitStoresMap(mechanus);
@@ -103,6 +105,7 @@ export {
     PlunderConfig,
     CustomPlunderTemplate,
     DemolitionTemplate,
+    SnobConfig,
     WorldDataFetchHistory,
     WorldConfig,
     WorldUnits,

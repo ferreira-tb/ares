@@ -3,7 +3,7 @@ import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$shared/guards';
 import { DatabaseError } from '$electron/error';
 import { unitsToDestroyWall } from '$shared/constants';
-import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class DemolitionTemplate extends Model<
     InferAttributes<DemolitionTemplate>,
