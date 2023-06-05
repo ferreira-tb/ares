@@ -1,7 +1,6 @@
 import { useEventListener, useMutationObserver } from '@vueuse/core';
 import { assertInteger, isInstanceOf, assertString } from '$shared/guards';
-import { usePlunderConfigStore } from '$renderer/stores/plunder';
-import { useCurrentVillageStore } from '$renderer/stores/village';
+import { useCurrentVillageStore, usePlunderConfigStore } from '$renderer/stores';
 import { generateRandomDelay } from '$shared/helpers';
 import { wait } from '$browser/utils/helpers';
 import { unitsRegex } from '$shared/regex';

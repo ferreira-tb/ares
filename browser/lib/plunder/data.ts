@@ -1,7 +1,7 @@
 import { IpcTribal } from '$ipc/interface/ipc';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke } from '$renderer/ipc';
-import { usePlunderStore, usePlunderConfigStore } from '$renderer/stores/plunder';
+import { usePlunderStore, usePlunderConfigStore } from '$renderer/stores';
 
 export async function getPlunderInfo() {
     try {

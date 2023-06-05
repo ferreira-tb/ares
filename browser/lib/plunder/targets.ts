@@ -6,7 +6,7 @@ import { calcDistance } from '$shared/helpers';
 import { parseCoordsFromTextContentStrict, parseGameDate } from '$renderer/utils/parser';
 import { PlunderError } from '$browser/error';
 import { resources as resourceList } from '$shared/constants';
-import { useCurrentVillageStore } from '$renderer/stores/village';
+import { useCurrentVillageStore } from '$renderer/stores';
 import { assertWallLevel } from '$shared/guards';
 
 /** Informações sobre a aldeia-alvo. */

@@ -6,7 +6,7 @@ import { useUnitsStore } from '$renderer/stores/units';
 import { assertFarmUnit } from '$shared/guards';
 import { PlunderError } from '$browser/error';
 import { ipcInvoke } from '$renderer/ipc';
-import type { usePlunderConfigStore } from '$renderer/stores/plunder';
+import type { usePlunderConfigStore } from '$renderer/stores';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 class TemplateUnits implements FarmUnitsAmount {
