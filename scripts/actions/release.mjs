@@ -67,7 +67,7 @@ await webhookClient.send({ embeds: [embed] });
 
 // Atualiza o arquivo latest.json.
 const docsDir = path.resolve(__dirname, '../../docs');
-const latestJson = path.join(docsDir, '.vuepress/public/latest.json');
+const latestJson = path.join(docsDir, 'public/latest.json');
 await fs.writeFile(latestJson, JSON.stringify(latest, null, 4), 'utf-8');
 
 // Atualiza o botão de download no site.

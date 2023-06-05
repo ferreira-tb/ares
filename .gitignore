@@ -14,8 +14,8 @@ dist-ssr
 coverage
 website
 *.local
-*.temp
-*.cache
+**/.vitepress/temp
+**/.vitepress/cache
 
 /cypress/videos/
 /cypress/screenshots/

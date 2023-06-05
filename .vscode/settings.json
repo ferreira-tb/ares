@@ -21,7 +21,9 @@
     ],
     "conventionalCommits.promptScopes": false,
     "files.exclude": {
-        "**/.cache": true,
-        "**/.temp": true
+        "**/.vitepress/cache": true
+    },
+    "[markdown]": {
+        "editor.tabSize": 2
     }
 }
