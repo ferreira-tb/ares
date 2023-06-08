@@ -6,7 +6,7 @@ import { useIpcRendererOn } from '@vueuse/electron';
 import { NIcon } from 'naive-ui';
 import { DiscordSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
-import { WebsiteUrl } from '$shared/constants';
+import { WebsiteUrl } from '$common/constants';
 import TheIncomingHandler from '$ui/components/TheIncomingHandler.vue';
 import TheNextIncoming from '$ui/components/TheNextIncoming.vue';
 import TheResponseTime from '$ui/components/TheResponseTime.vue';

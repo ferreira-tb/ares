@@ -2,7 +2,7 @@
 import { h, computed, ref, reactive, watch } from 'vue';
 import { NDataTable, useMessage } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import { assertUserAlias } from '$shared/guards';
+import { assertUserAlias } from '$common/guards';
 import { ModuleConfigError } from '$modules/error';
 import ResultError from '$renderer/components/ResultError.vue';
 import TableCellNumber from '$renderer/components/TableCellNumber.vue';

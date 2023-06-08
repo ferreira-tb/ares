@@ -2,7 +2,7 @@ import { computed, effectScope, reactive, ref, type Ref } from 'vue';
 import { tryOnScopeDispose, watchDeep, watchImmediate } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
 import { ipcInvoke } from '$renderer/ipc';
-import { getContinentFromCoords } from '$shared/helpers';
+import { getContinentFromCoords } from '$common/helpers';
 
 export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, period: Ref<PlunderHistoryTimePeriod>) {
     const scope = effectScope();
@@ -113,10 +113,10 @@ function parseLogs(logs: PlunderHistoryVillageType[], period: Ref<PlunderHistory
     let destroyedWalls: number = 0;
 
     const now = Date.now();
-    const midnight = new Date().setUTCHours(0, 0, 0, 0);
-
     logs = logs.filter((log) => log.attackAmount > 0);
+
     if (period.value === 'day') {
+        const midnight = new Date().setUTCHours(0, 0, 0, 0);
         logs = logs.filter((log) => log.addedAt === midnight);
     } else if (period.value === 'week') {
         logs = logs.filter((log) => log.addedAt >= (now - Kronos.Week));

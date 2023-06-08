@@ -3,8 +3,10 @@
 @use '$assets/variables.scss';
 @use '$assets/base.scss';
 @use '$assets/transitions.scss';
+
 @forward '$assets/scrollbar.scss';
 @forward '$assets/utils.scss';
+@use '$assets/utils.scss';
 
 html {
     overflow: hidden;
@@ -19,12 +21,15 @@ main {
     text-align: center;
 }
 
-button {
+.n-button {
     -webkit-app-region: no-drag;
 }
 
-.browser-spin {
-    position: fixed;
-    bottom: 2px;
-    right: 5px;
+.labeled-switch-wrapper {
+    @include utils.flex-x-start-y-center($height: 100%);
+
+    .switch-label {
+        @include utils.flex-x-start-y-center($height: 100%);
+        padding-left: 0.5rem;
+    }
 }

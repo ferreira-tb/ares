@@ -1,18 +1,18 @@
+import * as path from 'node:path';
 import { BrowserView, MessageChannelMain } from 'electron';
 import { getMainWindow } from '$electron/utils/helpers';
-import { tribalWorkerJs } from '$electron/utils/files';
 import { MainProcessError } from '$electron/error';
+import type { TribalWorkerName } from '$common/constants';
 
 export class TribalWorker {
-    /** Nome da instância. */
-    readonly name: TribalWorkerName;
     /** URL que será carregada no Worker. */
     readonly url: import('node:url').URL;
     
     #browserView: BrowserView | null = null;
-    #messagePort: Electron.MessagePortMain | null = null;
-
     #isDestroyed: boolean = false;
+    #messagePort: Electron.MessagePortMain | null = null;
+    #name: TribalWorkerName | null = null;
+    #workerPath: string | null = null;
 
     constructor(name: TribalWorkerName, url: import('node:url').URL) {
         this.name = name;
@@ -21,6 +21,25 @@ export class TribalWorker {
 
     get isDestroyed(): boolean {
         return this.#isDestroyed;
+    };
+
+    get name(): TribalWorkerName {
+        if (!this.#name) {
+            throw new MainProcessError('TribalWorker name is not defined.');
+        };
+        return this.#name;
+    };
+
+    set name(name: TribalWorkerName) {
+        this.#name = name;
+        this.#workerPath = path.join(__dirname, `worker/${name}.js`);
+    };
+
+    get path(): string {
+        if (!this.#workerPath) {
+            throw new MainProcessError(`There is no path for TribalWorker "${this.name}".`);
+        };
+        return this.#workerPath;
     };
 
     get port(): Electron.MessagePortMain {
@@ -44,8 +63,7 @@ export class TribalWorker {
     #createMessageChannel(): void {
         const { port1, port2 } = new MessageChannelMain();
         this.view.webContents.postMessage('port', null, [port2]);
-        port1.postMessage({ channel: this.name } satisfies TribalWorkerPortMessage);
-
+        port1.postMessage({ channel: this.name });
         this.#messagePort = port1;
     };
 
@@ -86,7 +104,7 @@ export class TribalWorker {
 
         const webPreferences: Electron.WebPreferences = {
             spellcheck: false,
-            preload: tribalWorkerJs,
+            preload: this.path,
             nodeIntegration: false,
             contextIsolation: true,
             devTools: process.env.ARES_MODE === 'dev'
@@ -99,8 +117,8 @@ export class TribalWorker {
         tribalWorker.setBounds({ x: 0, y: 0, width: 0, height: 0 });
         tribalWorker.setAutoResize({ width: false, height: false, horizontal: false, vertical: false });
 
-        await tribalWorker.webContents.loadURL(this.url.href);
         tribalWorker.webContents.setAudioMuted(true);
+        await tribalWorker.webContents.loadURL(this.url.href);
         
         this.#browserView = tribalWorker;
         this.#createMessageChannel();

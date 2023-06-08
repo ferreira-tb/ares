@@ -1,6 +1,6 @@
 import { ref } from 'mechanus';
 import { finiteNumberRef, integerRef, booleanRef } from '$electron/utils/mechanus';
-import { allUnits } from '$shared/constants';
+import { allUnits } from '$common/constants';
 
 export function defineWorldConfigStore(mechanus: Mechanus) {
     return mechanus.define('world-config', {

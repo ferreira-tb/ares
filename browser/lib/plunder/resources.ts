@@ -1,6 +1,6 @@
-import { assertInteger } from '$shared/guards';
-import { resources } from '$shared/constants';
-import { PlunderAttack } from '$shared/objects/plunder';
+import { assertInteger } from '$common/guards';
+import { resources } from '$common/constants';
+import { PlunderAttack } from '$common/templates/plunder';
 import { usePlunderConfigStore } from '$renderer/stores';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 

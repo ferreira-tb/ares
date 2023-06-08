@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import { storeToRefs } from 'mechanus';
-import { isString } from '$shared/guards';
+import { isString } from '$common/guards';
 import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/modules';
 import { getMainWindow } from '$electron/utils/helpers';

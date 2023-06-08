@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { showDemolitionConfig } from '$electron/modules';
-import { isUserAlias } from '$shared/guards';
+import { isUserAlias } from '$common/guards';
 import { useCacheStore, usePlunderCacheStore, DemolitionTemplate } from '$electron/interface';
 
 export function setPlunderDemolitionEvents() {

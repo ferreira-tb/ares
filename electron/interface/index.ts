@@ -1,10 +1,21 @@
 import { Mechanus, watch, storeToRefs } from 'mechanus';
 
-import { AppConfig } from '$database/config';
-import { ErrorLog, ElectronErrorLog } from '$database/error';
-import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
-import { getPlayersTable, getVillagesTable, WorldConfig, WorldUnits, WorldDataFetchHistory } from '$database/world';
-import { SnobConfig, VillageGroups } from '$database/game';
+import { 
+    AppConfig,
+    ErrorLog,
+    ElectronErrorLog,
+    PlunderHistory,
+    PlunderConfig,
+    CustomPlunderTemplate,
+    DemolitionTemplate,
+    getPlayersTable,
+    getVillagesTable,
+    WorldConfig,
+    WorldUnits,
+    WorldDataFetchHistory,
+    SnobConfig,
+    VillageGroups
+} from '$electron/database/models';
 
 import {
     createWorldUnitStoresMap,
@@ -27,9 +38,9 @@ import {
     defineWorldConfigStore
 } from '$electron/stores';
 
-import { onAliasChange } from '$interface/alias';
-import { onWorldChange } from '$interface/world';
-import { catchError } from '$interface/error';
+import { onAliasChange } from '$electron/interface/alias';
+import { onWorldChange } from '$electron/interface/world';
+import { catchError } from '$electron/interface/error';
 
 import { MainProcessError } from '$electron/error';
 

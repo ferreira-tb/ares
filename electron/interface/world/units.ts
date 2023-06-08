@@ -1,8 +1,9 @@
 import { WorldInterfaceError } from '$electron/error';
 import { TribalWorker } from '$electron/worker';
-import { getWorldUnitInfoUrl } from '$shared/helpers';
+import { getWorldUnitInfoUrl } from '$common/helpers';
+import { TribalWorkerName } from '$common/constants';
 import { sequelize } from '$electron/database';
-import type { WorldUnits as WorldUnitsTable } from '$electron/database/world';
+import type { WorldUnits as WorldUnitsTable } from '$electron/database/models/world';
 import type { createWorldUnitStoresMap } from '$electron/stores/world';
 import type { defineCacheStore } from '$electron/stores/cache';
 
@@ -20,7 +21,7 @@ export async function patchWorldUnitsStoresState(
             // Se não houver informações sobre as unidades do mundo atual, cria um novo registro.
             const state = await new Promise<WorldUnitsType>(async (resolve, reject) => {
                 const url = getWorldUnitInfoUrl(world, cacheStore.region);
-                const worker = new TribalWorker('fetch-world-unit', url);
+                const worker = new TribalWorker(TribalWorkerName.FetchWorldUnits, url);
                 await worker.init((e) => {
                     try {
                         if (!e.data) throw new WorldInterfaceError(`No data received for world ${world}.`);

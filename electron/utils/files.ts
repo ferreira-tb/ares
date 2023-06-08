@@ -9,10 +9,9 @@ export const database = path.join(userData, 'ares.db');
 // JavaScript
 export const browserJs = path.join(__dirname, 'browser.js');
 export const ipcTribalJs = path.join(__dirname, 'ipc-tw.js');
-export const tribalWorkerJs = path.join(__dirname, 'worker-tw.js');
 
 export const childProcess = {
-    worldData: path.join(__dirname, 'child-process/world-data.js')
+    fetchWorldData: path.join(__dirname, 'child-process/fetch-world-data.js')
 } as const;
 
 // HTML

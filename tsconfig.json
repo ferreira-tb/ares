@@ -1,12 +1,12 @@
 {
     "include": [
-        "env.d.ts",
-        "global.d.ts",
-
         "browser.config.*",
         "modules.config.*",
         "panel.config.*",
         "ui.config.*",
+
+        "common/**/*",
+        "typings/**/*",
 
         "browser/**/*",
         "browser/**/*.vue",
@@ -16,8 +16,6 @@
         "panel/**/*.vue",
         "renderer/**/*",
         "renderer/**/*.vue",
-        "shared/**/*",
-        "typings/**/*",
         "ui/**/*",
         "ui/**/*.vue"
     ],
@@ -26,13 +24,13 @@
         "paths": {
             "$assets/*": ["./renderer/assets/*"],
             "$browser/*": ["./browser/*"],
+            "$common/*": ["./common/*"],
             "$icons/*": ["./renderer/components/icons/*"],
             "$ipc/*": ["./ipc/*"],
             "$lib/*": ["./browser/lib/*"],
             "$modules/*": ["./modules/*"],
             "$panel/*": ["./panel/*"],
             "$renderer/*": ["./renderer/*"],
-            "$shared/*": ["./shared/*"],
             "$ui/*": ["./ui/*"]
         },
 

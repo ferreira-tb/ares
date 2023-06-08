@@ -1,5 +1,5 @@
 import { MechanusStoreError } from '$electron/error';
-import { isFiniteNumber, isInteger, isString, isGameRegion, isWorld, isWallLevel } from '$shared/guards';
+import { isFiniteNumber, isInteger, isString, isGameRegion, isWorld, isWallLevel } from '$common/guards';
 
 export const arrayIncludesRef = <T>(array: T[]): MechanusRefOptions<T> => ({
     validator: (value: unknown): value is T => array.includes(value as T),

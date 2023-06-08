@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import { ipcMain } from 'electron';
 import { getVillagesTable, useCacheStore } from '$electron/interface';
-import { isWorld } from '$shared/guards';
+import { isWorld } from '$common/guards';
 
 export function setWorldDataEvents() {
     const cacheStore = useCacheStore();
@@ -19,6 +19,7 @@ export function setWorldDataEvents() {
         const villages = await VillagesTable.findAll({
             where: { [Op.or]: idList.map((id) => ({ id })) }
         });
+        
         return villages.map((v) => v.toJSON());
     });
 };

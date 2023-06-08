@@ -3,6 +3,7 @@ import { worldUnitsMap, useCacheStore, useWorldConfigStore } from '$electron/int
 import { extractWorldUnitsFromMap } from '$electron/utils/helpers';
 import { setGroupsEvents } from '$electron/events/game/groups';
 import { setIncomingAttacksEvents } from '$electron/events/game/incomings';
+import { setSnobEvents } from '$electron/events/game/snob';
 
 export function setGameEvents() {
     const cacheStore = useCacheStore();
@@ -17,4 +18,5 @@ export function setGameEvents() {
     // Outros eventos do jogo.
     setGroupsEvents();
     setIncomingAttacksEvents();
+    setSnobEvents();
 };

@@ -1,12 +1,12 @@
 import { storeToRefs } from 'mechanus';
 import { getPanelWindow } from '$electron/utils/helpers';
-import { isUserAlias } from '$shared/guards';
+import { isUserAlias } from '$common/guards';
 import { Kronos } from '@tb-dev/kronos';
 import { fetchVillageGroups, patchVillageGroups } from '$electron/utils/groups';
 import { AliasInterfaceError } from '$electron/error';
 import { sequelize } from '$electron/database';
-import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$database/plunder';
-import type { VillageGroups as VillageGroupsTable } from '$database/game';
+import type { PlunderConfig as PlunderConfigTable, PlunderHistory as PlunderHistoryTable } from '$electron/database/models/plunder';
+import type { VillageGroups as VillageGroupsTable } from '$electron/database/models/game';
 
 import type {
     useGroupsStore as useGroupsStoreType,

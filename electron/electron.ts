@@ -4,12 +4,12 @@ import { storeToRefs } from 'mechanus';
 import { setAppMenu } from '$electron/menu/menu';
 import { sequelize } from '$electron/database';
 import { setEvents } from '$electron/events/index';
-import { Dimensions } from '$shared/constants';
+import { Dimensions } from '$common/constants';
 import { appIcon, panelHtml, uiHtml, browserJs } from '$electron/utils/files';
 import { setBrowserViewAutoResize } from '$electron/utils/view';
 import { setEnv } from '$electron/env';
 import { MainProcessError } from '$electron/error';
-import { isUserAlias } from '$shared/guards';
+import { isUserAlias } from '$common/guards';
 
 import {
     AppConfig,

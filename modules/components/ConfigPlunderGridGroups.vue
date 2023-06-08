@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch, watchEffect } from 'vue';
-import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
-import { isInteger } from '$shared/guards';
-import { isDistance } from '$shared/guards';
+import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
+import { formatFields, parseFields, formatMilliseconds, parseMilliseconds } from '$modules/utils/input-parser';
 import { ipcInvoke } from '$renderer/ipc';
-import InputNumber from '$renderer/components/InputNumber.vue';
-import LabelPopover from '$renderer/components/LabelPopover.vue';
 import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
 
 const props = defineProps<{
@@ -48,51 +45,48 @@ watchEffect(() => {
         <NDivider title-placement="left" class="config-divider">Grupo</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Grupo de ataque</template>
-                    <span>Determina qual grupo será utilizado ao se atacar em grupo. Apenas grupos dinâmicos são permitidos.</span>
-                </LabelPopover>
+                <div class="config-label">Grupo de ataque</div>
             </NGridItem>
             <NGridItem>
-                <div class="plunder-config-select">
+                <div class="config-select">
                     <NSelect
                         v-model:value="plunderGroupId"
-                        :options="plunderGroupOptions"
                         placeholder="Selecione um grupo"
+                        :options="plunderGroupOptions"
                         :disabled="plunderGroupOptions.length === 0"
                     />
                 </div>
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Campos por onda</template>
-                    <span>
-                        Ao atacar em grupos, o Ares não envia todos os ataques de uma só vez.
-                        Em vez disso, ele envia uma onda de ataques de uma aldeia e então passa para a próxima,
-                        repetindo o processo até que todas as aldeias tenham enviado seus ataques.
-                    </span>
-                </LabelPopover>
+                <div class="config-label">Campos por onda</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="fieldsPerWave" :min="5" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
+                <NInputNumber
+                    v-model:value="fieldsPerWave"
+                    class="config-input"
+                    :min="5"
+                    :max="9999"
+                    :step="1"
+                    :validator="(v) => Number.isFinite(v) && v >= 1"
+                    :format="formatFields"
+                    :parse="parseFields"
+                />
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Delay entre troca de aldeias</template>
-                    <span>
-                        Determina quantos milissegundos o Ares deve esperar antes de trocar de aldeia ao atacar em grupo.
-                    </span>
-                </LabelPopover>
+                <div class="config-label">Delay entre troca de aldeias</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber
+                <NInputNumber
                     v-model:value="villageDelay"
+                    class="config-input"
                     :min="100"
                     :max="60000"
                     :step="100"
-                    :validator="(v) => isInteger(v) && v >= 100 && v <= 60000"
+                    :validator="(v) => Number.isInteger(v) && v >= 100 && v <= 60000"
+                    :format="formatMilliseconds"
+                    :parse="parseMilliseconds"
                 />
             </NGridItem>
 

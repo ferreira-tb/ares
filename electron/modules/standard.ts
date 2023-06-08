@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron';
-import { isInstanceOf } from '$shared/guards';
+import { isInstanceOf } from '$common/guards';
 import { appIcon, moduleHtml } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
 import { ModuleCreationError } from '$electron/error';

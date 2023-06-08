@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core';
 import { NButton, NButtonGroup, NPageHeader, NGrid, NGridItem, NStatistic } from 'naive-ui';
+import { ipcInvoke } from '$renderer/ipc';
 
 const props = defineProps<{
     average: number;
@@ -16,6 +17,7 @@ const emit = defineEmits<{
     (e: 'update:period', period: PlunderHistoryTimePeriod): void;
 }>();
 
+const locale = await ipcInvoke('app:locale');
 const timePeriod = useVModel(props, 'period', emit);
 </script>
 
@@ -23,22 +25,22 @@ const timePeriod = useVModel(props, 'period', emit);
     <NPageHeader title="Histórico">
         <NGrid :cols="6">
             <NGridItem>
-                <NStatistic label="Madeira" :value="wood.toLocaleString('pt-br')" />
+                <NStatistic label="Madeira" :value="wood.toLocaleString(locale)" />
             </NGridItem>
             <NGridItem>
-                <NStatistic label="Argila" :value="stone.toLocaleString('pt-br')" />
+                <NStatistic label="Argila" :value="stone.toLocaleString(locale)" />
             </NGridItem>
             <NGridItem>
-                <NStatistic label="Ferro" :value="iron.toLocaleString('pt-br')" />
+                <NStatistic label="Ferro" :value="iron.toLocaleString(locale)" />
             </NGridItem>
             <NGridItem>
-                <NStatistic label="Ataques" :value="attackAmount.toLocaleString('pt-br')" />
+                <NStatistic label="Ataques" :value="attackAmount.toLocaleString(locale)" />
             </NGridItem>
             <NGridItem>
-                <NStatistic label="Muralhas destruídas" :value="destroyedWalls.toLocaleString('pt-br')" />
+                <NStatistic label="Muralhas destruídas" :value="destroyedWalls.toLocaleString(locale)" />
             </NGridItem>
             <NGridItem>
-                <NStatistic label="Saque por aldeia" :value="average.toLocaleString('pt-br')" />
+                <NStatistic label="Saque por aldeia" :value="average.toLocaleString(locale)" />
             </NGridItem>
         </NGrid>
 

@@ -1,6 +1,6 @@
 import { ref } from 'mechanus';
 import { positiveIntegerRef } from '$electron/utils/mechanus';
-import { PlunderHistoryVillage } from '$shared/objects/plunder';
+import { PlunderHistoryVillage } from '$common/templates/plunder';
 
 const villages = new Proxy({} as PlunderHistoryType['villages'], {
     get(target, villageId): PlunderHistoryVillageType[] {

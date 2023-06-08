@@ -22,4 +22,5 @@ type IntRangeToString<F extends number, T extends number> = NumberToString<IntRa
 type NSelectPatternOption<T> = ReadonlyArray<{
     label: string;
     value: T;
+    disabled?: boolean;
 }>;

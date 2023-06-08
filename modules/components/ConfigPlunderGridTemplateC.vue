@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
-import { isDistance, isFiniteNumber, isInteger } from '$shared/guards';
-import InputNumber from '$renderer/components/InputNumber.vue';
-import LabelPopover from '$renderer/components/LabelPopover.vue';
+import { NDivider, NGrid, NGridItem, NSelect, NInputNumber } from 'naive-ui';
+import { formatFields, parseFields, formatHours, parseHours } from '$modules/utils/input-parser';
 
 const props = defineProps<{
     config: PlunderConfigType;
@@ -35,73 +33,58 @@ const useCOptions = [
         <NDivider title-placement="left" class="config-divider">Modelo C</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Padrão do modelo C</template>
-                    <span>
-                        Quanto o uso do modelo C está ativado, o Ares tentará enviar ataques usando-o.
-                        Se não conseguir, tentará com algum outro modelo.
-
-                        Você pode alterar esse comportamento de maneira a forçá-lo a usar somente o modelo C.
-                    </span>
-                </LabelPopover>
+                <div class="config-label">Padrão do modelo C</div>
             </NGridItem>
             <NGridItem>
-                <div class="plunder-config-select">
+                <div class="config-select">
                     <NSelect v-model:value="useCPattern" :options="useCOptions" />
                 </div>
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Distância máxima</template>
-                    <span>O Ares não atacará aldeias usando o modelo C quando a distância (em campos) for maior do que a indicada.</span>
-                </LabelPopover>
+                <div class="config-label">Distância máxima</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber
+                <NInputNumber
                     v-model:value="maxDistanceC"
+                    class="config-input"
                     :min="1"
                     :max="9999"
                     :step="1"
-                    :validator="(v) => isDistance(v)"
+                    :validator="(v) => Number.isFinite(v) && v >= 1"
+                    :format="formatFields"
+                    :parse="parseFields"
                 />
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Evitar mais antigos que</template>
-                    <span>
-                        O Ares não atacará usando o modelo C se o último ataque ocorreu a uma quantidade de horas superior a indicada.
-                    </span>
-                </LabelPopover>
+                <div class="config-label">Evitar mais antigos que</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber
+                <NInputNumber
                     v-model:value="ignoreOlderThanC"
+                    class="config-input"
                     :min="1"
                     :max="9999"
                     :step="1"
-                    :validator="(v) => isInteger(v) && v >= 1"
+                    :validator="(v) => Number.isInteger(v) && v >= 1"
+                    :format="formatHours"
+                    :parse="parseHours"
                 />
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Usar C se a razão for maior que</template>
-                    <span>
-                        Uma razão de saque alta indica que a aldeia tem recursos além do que os modelos podem saquear.
-                        Através dessa opção, é possível atacar essas aldeias com recursos em excesso usando o modelo C.
-                    </span>
-                </LabelPopover>
+                <div class="config-label">Usar C se a razão for maior que</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber
+                <NInputNumber
                     v-model:value="useCWhenResourceRatioIsBiggerThan"
+                    class="config-input"
                     :disabled="useCPattern !== 'excess'"
                     :min="1"
                     :max="9999"
                     :step="1"
-                    :validator="(v) => isFiniteNumber(v) && v >= 1"
+                    :validator="(v) => Number.isFinite(v) && v >= 1"
                 />
             </NGridItem>
         </NGrid>

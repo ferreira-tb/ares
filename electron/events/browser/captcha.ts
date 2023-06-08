@@ -1,6 +1,6 @@
 import { ipcMain, webContents } from 'electron';
 import { storeToRefs, watch } from 'mechanus';
-import { isUserAlias } from '$shared/guards';
+import { isUserAlias } from '$common/guards';
 import { MainProcessEventError } from '$electron/error';
 import { useAresStore, useCacheStore, usePlunderHistoryStore, PlunderHistory } from '$electron/interface';
 

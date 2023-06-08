@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed, watch, watchEffect } from 'vue';
-import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
+import { NButton, NButtonGroup, NGrid, NGridItem, NSwitch } from 'naive-ui';
 import { useFeaturesStore, useGroupsStore, usePlunderConfigStore } from '$renderer/stores';
 import { ipcSend } from '$renderer/ipc';
 import PlunderResources from '$panel/components/PlunderResources.vue';
-import SwitchPopover from '$renderer/components/SwitchPopover.vue';
 
 const config = usePlunderConfigStore();
 const features = useFeaturesStore();
@@ -19,6 +18,11 @@ const dynamicGroupsAmount = computed<number>(() => {
         if (group.type === 'dynamic') amount += 1;
         return amount;
     }, 0);
+});
+
+const canUseGroupAttack = computed<boolean>(() => {
+    if (features.premium === false) return false;
+    return dynamicGroupsAmount.value > 0;
 });
 
 watch(() => config.active, (isActive) => {
@@ -66,70 +70,55 @@ watchEffect(() => {
 
         <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
             <NGridItem>
-                <SwitchPopover v-model:value="config.ignoreWall">
-                    <template #trigger>Ignorar muralha</template>
-                    <span>
-                        Determina se o Ares deve evitar aldeias com muralha.
-                        Nas configurações, é possível determinar a partir de qual nível ele deve ignorar.
-                    </span>
-                </SwitchPopover>
+                <div class="labeled-switch-wrapper">
+                    <NSwitch v-model:value="config.ignoreWall" round size="small" />
+                    <div class="switch-label">Ignorar muralha</div>
+                </div>
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover
-                    v-model:value="config.groupAttack"
-                    :disabled="features.premium === false || dynamicGroupsAmount === 0"
-                >
-                    <template #trigger>Ataque em grupo</template>
-                    <span>Permite enviar ataques de mais de uma aldeia. Grupos manuais geram loops infinitos,
-                        que aumentam, e muito, a chance de surgirem captchas. Por causa disso, apenas grupos dinâmicos são permitidos.
-                        Não é possível utilizar essa opção sem uma conta premium ativa.</span>
-                </SwitchPopover>
+                <div class="labeled-switch-wrapper">
+                    <NSwitch v-model:value="config.groupAttack" round size="small" :disabled="!canUseGroupAttack" />
+                    <div class="switch-label">Ataque em grupo</div>
+                </div>
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover v-model:value="config.destroyWall">
-                    <template #trigger>Destruir muralha</template>
-                    <span>
-                        Determina se o Ares deve destruir as muralhas das aldeias.
-                        Nas configurações, é possível determinar a partir de qual nível ele deve destruir,
-                        assim como a quantidade de tropas que ele deve enviar.
-                    </span>
-                </SwitchPopover>
+                <div class="labeled-switch-wrapper">
+                    <NSwitch v-model:value="config.destroyWall" round size="small" />
+                    <div class="switch-label">Destruir muralha</div>
+                </div>
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover v-model:value="config.useC">
-                    <template #trigger>Usar modelo C</template>
-                    <span>Determina se o Ares deve usar o modelo C quando possível.</span>
-                </SwitchPopover>
+                <div class="labeled-switch-wrapper">
+                    <NSwitch v-model:value="config.useC" round size="small" />
+                    <div class="switch-label">Usar modelo C</div>
+                </div>
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover v-model:value="config.ignoreDelay">
-                    <template #trigger>Ignorar delay</template>
-                    <span>
-                        O jogo possui um limite de cinco ações por segundo.
-                        Sendo assim, o Ares impõe um pequeno atraso entre cada ataque.
-                        Caso essa opção esteja ativada, o Ares não irá ter esse comportamento.
-                    </span>
-                </SwitchPopover>
+                <div class="labeled-switch-wrapper">
+                    <NSwitch v-model:value="config.ignoreDelay" round size="small" />
+                    <div class="switch-label">Ignorar delay</div>
+                </div>
             </NGridItem>
 
             <NGridItem>
-                <SwitchPopover v-model:value="config.blindAttack">
-                    <template #trigger>Ataque às cegas</template>
-                    <span>Ataca mesmo se não houver informações sobre a aldeia.</span>
-                </SwitchPopover>
+                <div class="labeled-switch-wrapper">
+                    <NSwitch v-model:value="config.blindAttack" round size="small" />
+                    <div class="switch-label">Ataque às cegas</div>
+                </div>
             </NGridItem>
         </NGrid>
     </main>
 </template>
 
 <style scoped lang="scss">
+@use '$panel/assets/main.scss';
+
 .button-area {
-    display: flex;
-    justify-content: center;
+    @include main.flex-x-center-y-center;
     margin-bottom: 1em;
 }
 

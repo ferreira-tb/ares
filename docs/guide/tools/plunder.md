@@ -67,7 +67,7 @@ A lista de grupos não é atualizada automaticamente quando um grupo é criado o
 
 - **Destruir a partir de**: define o nível da muralha a partir do qual o Ares deve tentar destruí-la quando a opção `destruir muralha` estiver ativa.
 
-- **Distância máxima**: impede que o Ares tente destruir a muralha de aldeias que estejam a uma distância (em campos) superior à indicada. A opção `distância máxima` da seção `ataque` tem prioridade sobre essa.
+- **Distância máxima de demolição**: impede que o Ares tente destruir a muralha de aldeias que estejam a uma distância (em campos) superior à indicada. A opção `distância máxima` da seção `ataque` tem prioridade sobre essa.
 
 ## Outros
 - **Atualização automática**: determina o tempo (em minutos) até que a página seja atualizada automaticamente.

@@ -1,5 +1,5 @@
 import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
-import { setDeimosEvents } from '$ipc/events';
+import { setIpcTribalEvents } from '$ipc/events';
 
-setDeimosEvents();
+setIpcTribalEvents();

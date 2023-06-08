@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { NDivider, NGrid, NGridItem, NButton, NButtonGroup, useDialog, useMessage } from 'naive-ui';
-import { assertUserAlias, isDistance } from '$shared/guards';
+import { NButton, NButtonGroup, NDivider, NGrid, NGridItem, NInputNumber, useDialog, useMessage } from 'naive-ui';
+import { formatFields, parseFields, formatWallLevel, parseWallLevel } from '$modules/utils/input-parser';
+import { assertUserAlias } from '$common/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { ModuleConfigError } from '$modules/error';
-import InputWall from '$renderer/components/InputWall.vue';
-import InputNumber from '$renderer/components/InputNumber.vue';
-import LabelPopover from '$renderer/components/LabelPopover.vue';
 
 const props = defineProps<{
     config: PlunderConfigType;
@@ -58,48 +56,55 @@ function resetDemolitionConfig() {
         <NDivider title-placement="left" class="config-divider">Muralha</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Ignorar a partir de</template>
-                    <span>Determina a partir de qual nível de muralha o Ares deve ignorar aldeias.</span>
-                </LabelPopover>
+                <div class="config-label">Ignorar a partir de</div>
             </NGridItem>
             <NGridItem>
-                <InputWall v-model:value="wallLevelToIgnore" />
-            </NGridItem>
-
-            <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Demolir a partir de</template>
-                    <span>O Ares não demolirá muralhas cujo nível seja menor que o indicado.</span>
-                </LabelPopover>
-            </NGridItem>
-            <NGridItem>
-                <InputWall v-model:value="wallLevelToDestroy" />
-            </NGridItem>
-
-            <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Distância máxima</template>
-                    <span>O Ares não demolirá muralhas de aldeias cuja distância (em campos) é maior do que a
-                        indicada.</span>
-                </LabelPopover>
-            </NGridItem>
-            <NGridItem>
-                <InputNumber
-                    v-model:value="destroyWallMaxDistance"
+                <NInputNumber
+                    v-model:value="wallLevelToIgnore"
+                    class="config-input"
                     :min="1"
-                    :max="9999"
+                    :max="20"
                     :step="1"
-                    :validator="(v) => isDistance(v)"
+                    :validator="(v) => Number.isInteger(v) && (v >= 1 && v <= 20)"
+                    :format="formatWallLevel"
+                    :parse="parseWallLevel"
                 />
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Tropas de demolição</template>
-                    <span>Por padrão, o Ares envia bárbaros e aríetes para destruir as muralhas, mas você pode mudar
-                        isso!</span>
-                </LabelPopover>
+                <div class="config-label">Demolir a partir de</div>
+            </NGridItem>
+            <NGridItem>
+                <NInputNumber
+                    v-model:value="wallLevelToDestroy"
+                    class="config-input"
+                    :min="1"
+                    :max="20"
+                    :step="1"
+                    :validator="(v) => Number.isInteger(v) && (v >= 1 && v <= 20)"
+                    :format="formatWallLevel"
+                    :parse="parseWallLevel"
+                />
+            </NGridItem>
+
+            <NGridItem>
+                <div class="config-label">Distância máxima de demolição</div>
+            </NGridItem>
+            <NGridItem>
+                <NInputNumber
+                    v-model:value="destroyWallMaxDistance"
+                    class="config-input"
+                    :min="1"
+                    :max="9999"
+                    :step="1"
+                    :validator="(v) => Number.isFinite(v) && v >= 1"
+                    :format="formatFields"
+                    :parse="parseFields"
+                />
+            </NGridItem>
+
+            <NGridItem>
+                <div class="config-label">Tropas de demolição</div>
             </NGridItem>
             <NGridItem>
                 <NButtonGroup>

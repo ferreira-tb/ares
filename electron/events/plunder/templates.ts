@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
-import { isUserAlias } from '$shared/guards';
+import { isUserAlias } from '$common/guards';
 import { showCustomPlunderTemplate } from '$electron/modules';
 import { useCacheStore, useBrowserViewStore, CustomPlunderTemplate } from '$electron/interface';
 

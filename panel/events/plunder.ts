@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { assertInteger } from '$shared/guards';
+import { assertInteger } from '$common/guards';
 import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$renderer/stores';
 import { PanelPlunderError } from '$panel/error';
 

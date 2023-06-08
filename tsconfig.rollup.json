@@ -1,0 +1,37 @@
+{
+    "include": [
+        "rollup.config.*"
+    ],
+    
+    "compilerOptions": {
+        "target": "esnext",
+        "lib": ["esnext", "dom"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "removeComments": true,
+        "verbatimModuleSyntax": true,
+        "skipLibCheck": true,
+        
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "useUnknownInCatchVariables": true,
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "allowUnusedLabels": false,
+        "allowUnreachableCode": false,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "exactOptionalPropertyTypes": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmitOnError": true,
+
+        "types": ["node"]
+    }
+}

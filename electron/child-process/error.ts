@@ -1,7 +1,7 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
-import { AresError } from '$shared/error';
-import { ErrorLogFile } from '$shared/constants';
+import { AresError } from '$common/error';
+import { ErrorLogFile } from '$common/constants';
 
 export class ChildProcessError extends AresError {
     constructor(message: string) {

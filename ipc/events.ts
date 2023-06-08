@@ -1,7 +1,7 @@
 import { IpcTribal, IpcTribalError } from '$ipc/interface';
-import { PlunderInfo, TribalWarsGameData, TribalWarsTiming, Units } from '$ipc/models';
+import { PlunderInfo, TribalWarsGameData, TribalWarsTiming, Units } from '$ipc/templates';
 
-export function setDeimosEvents() {
+export function setIpcTribalEvents() {
     IpcTribal.on('show-ui-error-message', (message: string) => UI.ErrorMessage(message));
     IpcTribal.on('show-ui-info-message', (message: string) => UI.InfoMessage(message));
     IpcTribal.on('show-ui-success-message', (message: string) => UI.SuccessMessage(message));

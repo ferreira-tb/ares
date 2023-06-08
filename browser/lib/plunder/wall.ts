@@ -1,4 +1,4 @@
-import { assertInteger } from '$shared/guards';
+import { assertInteger } from '$common/guards';
 import { useCurrentVillageStore, useUnitsStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { openPlace } from '$lib/plunder/place';

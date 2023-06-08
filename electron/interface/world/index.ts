@@ -1,8 +1,8 @@
-import { isWorld } from '$shared/guards';
+import { isWorld } from '$common/guards';
 import { WorldInterfaceError } from '$electron/error';
-import { fetchWorldData } from '$interface/world/data';
-import { patchWorldConfigStoreState } from '$interface/world/config';
-import { patchWorldUnitsStoresState } from '$interface/world/units';
+import { fetchWorldData } from '$electron/interface/world/data';
+import { patchWorldConfigStoreState } from '$electron/interface/world/config';
+import { patchWorldUnitsStoresState } from '$electron/interface/world/units';
 import type { defineCacheStore, defineWorldConfigStore, createWorldUnitStoresMap } from '$electron/stores';
  
 import type {
@@ -11,7 +11,7 @@ import type {
     WorldDataFetchHistory as WorldDataFetchHistoryTable,
     getPlayersTable as getWorldPlayersTableType,
     getVillagesTable as getWorldVillagesTableType
-} from '$electron/database/world';
+} from '$electron/database/models/world';
 
 export function onWorldChange(
     WorldDataFetchHistory: typeof WorldDataFetchHistoryTable,

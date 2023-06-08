@@ -2,7 +2,7 @@
 import { ref, watchSyncEffect, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useMutationObserver } from '@vueuse/core';
-import { isInstanceOf } from '$shared/guards';
+import { isInstanceOf } from '$common/guards';
 import { useAresStore } from '$renderer/stores';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';

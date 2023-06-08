@@ -6,5 +6,5 @@ type SnobConfigType = {
     /** Aldeia onde cunhagens simples serão feitas. */
     village: number | null;
     /** Grupo onde cunhagens em grupo serão feitas. */
-    group: number | null;
+    group: number;
 };

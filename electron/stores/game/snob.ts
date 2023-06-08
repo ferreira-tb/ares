@@ -5,6 +5,6 @@ export function defineSnobConfigStore(mechanus: Mechanus) {
         active: ref<boolean>(false),
         mode: ref<'group' | 'single'>('single'),
         village: ref<number | null>(null),
-        group: ref<number | null>(null)
+        group: ref<number>(0)
     } satisfies MechanusSnobConfigStoreType);
 };

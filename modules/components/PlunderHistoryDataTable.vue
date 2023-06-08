@@ -2,6 +2,7 @@
 import { h, toRef } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { NDataTable, type DataTableColumns } from 'naive-ui';
+import { ipcInvoke } from '$renderer/ipc';
 import { usePlunderHistoryVillageData } from '$modules/composables/plunder-history';
 
 const props = defineProps<{
@@ -15,6 +16,7 @@ const emit = defineEmits<{
     (e: 'update:header', header: PlunderHistoryDataTableHeaderProps): void;
 }>();
 
+const locale = await ipcInvoke('app:locale');
 const header = useVModel(props, 'headerProps', emit);
 const villagesHistory = toRef(props, 'history');
 const timePeriod = toRef(props, 'period');
@@ -30,7 +32,7 @@ const columns: DataTableColumns<PlunderHistoryVillageData> = [
     { 
         title: 'Nome',
         key: 'name',
-        sorter: (a, b) => a.name.localeCompare(b.name, 'pt-br')
+        sorter: (a, b) => a.name.localeCompare(b.name, locale)
     },
     { 
         title: 'Desempenho',
@@ -43,19 +45,19 @@ const columns: DataTableColumns<PlunderHistoryVillageData> = [
         key: 'total',
         defaultSortOrder: 'descend',
         sorter: (a, b) => a.total - b.total,
-        render: (rowData) => h('span', rowData.total.toLocaleString('pt-br'))
+        render: (rowData) => h('span', rowData.total.toLocaleString(locale))
     },
     { 
         title: 'Ataques',
         key: 'attackAmount',
         sorter: (a, b) => a.attackAmount - b.attackAmount,
-        render: (rowData) => h('span', rowData.attackAmount.toLocaleString('pt-br'))
+        render: (rowData) => h('span', rowData.attackAmount.toLocaleString(locale))
     },
     { 
         title: 'Muralhas destruídas',
         key: 'destroyedWalls',
         sorter: (a, b) => a.destroyedWalls - b.destroyedWalls,
-        render: (rowData) => h('span', rowData.destroyedWalls.toLocaleString('pt-br'))
+        render: (rowData) => h('span', rowData.destroyedWalls.toLocaleString(locale))
     }
 ];
 </script>

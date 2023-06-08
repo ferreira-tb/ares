@@ -1,13 +1,13 @@
 import { storeToRefs } from 'pinia';
 import { useMutationObserver, useEventListener } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
-import { assertInteger } from '$shared/guards';
-import { calcDistance } from '$shared/helpers';
+import { assertInteger } from '$common/guards';
+import { calcDistance } from '$common/helpers';
 import { parseCoordsFromTextContentStrict, parseGameDate } from '$renderer/utils/parser';
 import { PlunderError } from '$browser/error';
-import { resources as resourceList } from '$shared/constants';
+import { resources as resourceList } from '$common/constants';
 import { useCurrentVillageStore } from '$renderer/stores';
-import { assertWallLevel } from '$shared/guards';
+import { assertWallLevel } from '$common/guards';
 
 /** Informações sobre a aldeia-alvo. */
 export class PlunderTargetInfo {

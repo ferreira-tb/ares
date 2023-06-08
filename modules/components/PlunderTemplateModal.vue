@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { computed, nextTick, reactive, ref, toRaw } from 'vue';
 import { useVModels } from '@vueuse/core';
-import { NModal, NForm, NFormItem, NFormItemGi, NGrid, NInput, NButton, NButtonGroup, NCheckbox } from 'naive-ui';
 import { useDialog, useMessage } from 'naive-ui';
-import { isString, isInteger } from '$shared/guards';
 import { ipcInvoke } from '$renderer/ipc';
 import { ModuleError } from '$modules/error';
-import InputNumber from '$renderer/components/InputNumber.vue';
 import ArcherIcon from '$icons/units/ArcherIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';
 import HeavyIcon from '$icons/units/HeavyIcon.vue';
@@ -15,7 +12,20 @@ import MarcherIcon from '$icons/units/MarcherIcon.vue';
 import SpearIcon from '$icons/units/SpearIcon.vue';
 import SpyIcon from '$icons/units/SpyIcon.vue';
 import SwordIcon from '$icons/units/SwordIcon.vue';
-import type { FormRules, FormItemRule } from 'naive-ui';
+import {
+    NModal,
+    NForm,
+    NFormItem,
+    NFormItemGi,
+    NGrid,
+    NInput,
+    NInputNumber,
+    NButton,
+    NButtonGroup,
+    NCheckbox,
+    type FormRules,
+    type FormItemRule
+} from 'naive-ui';
 
 interface Props {
     show: boolean;
@@ -74,8 +84,8 @@ const templateUnits: CustomPlunderTemplateType = reactive({
 
 const keepModalOpen = ref<boolean>(false);
 const saveDisabled = computed<boolean>(() => {
-    if (!isString(templateUnits.type)) return true;
-    if (Object.values(templateUnits.units).some((value) => !isInteger(value) || value < 0)) return true;
+    if (typeof templateUnits.type !== 'string' || templateUnits.type.length === 0) return true;
+    if (Object.values(templateUnits.units).some((value) => !Number.isInteger(value) || value < 0)) return true;
     if (Object.values(templateUnits.units).every((value) => value === 0)) return true;
     return false;
 });
@@ -84,7 +94,7 @@ const unitRule: FormItemRule = {
     type: 'number',
     trigger: ['input', 'blur'],
     validator(_rule, value: unknown) {
-        if (!isInteger(value)) {
+        if (typeof value !== 'number' || !Number.isInteger(value)) {
         return new Error('Valor inválido');
         } else if (value < 0) {
             return new Error('Valor inválido');
@@ -101,7 +111,7 @@ const rules: FormRules = {
         {
             required: true,
             validator(_rule, value: unknown) {
-                if (!isString(value)) {
+                if (typeof value !== 'string' || value.length === 0) {
                     return new Error('É preciso dar um nome ao modelo');
                 } else if (/^[aAbBcC]{1}$/.test(value)) {
                     return new Error('Nome inválido');
@@ -133,7 +143,12 @@ const numberInputProps = {
     arrowDown: true,
     step: 1,
     marginRight: 0,
-    validator: (value: unknown) => isInteger(value) && value >= 0
+    validator: (value: unknown) => {
+        if (typeof value !== 'number' || !Number.isInteger(value)) return false;
+        if (value < 0) return false;
+        if (value > 9999) return false;
+        return true;
+    }
 };
 
 async function save() {
@@ -212,56 +227,56 @@ async function resetTemplate() {
                         <template #label>
                             <SpearIcon />
                         </template>
-                        <InputNumber v-model:value="templateUnits.units.spear" v-bind="numberInputProps" />
+                        <NInputNumber v-model:value="templateUnits.units.spear" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.sword">
                         <template #label>
                             <SwordIcon />
                         </template>
-                        <InputNumber v-model:value="templateUnits.units.sword" v-bind="numberInputProps" />
+                        <NInputNumber v-model:value="templateUnits.units.sword" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.axe">
                         <template #label>
                             <AxeIcon />
                         </template>
-                        <InputNumber v-model:value="templateUnits.units.axe" v-bind="numberInputProps" />
+                        <NInputNumber v-model:value="templateUnits.units.axe" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi v-if="props.isArcherWorld" path="units.archer">
                         <template #label>
                             <ArcherIcon />
                         </template>
-                        <InputNumber v-model:value="templateUnits.units.archer" v-bind="numberInputProps" />
+                        <NInputNumber v-model:value="templateUnits.units.archer" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.spy">
                         <template #label>
                             <SpyIcon />
                         </template>
-                        <InputNumber v-model:value="templateUnits.units.spy" v-bind="numberInputProps" />
+                        <NInputNumber v-model:value="templateUnits.units.spy" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.light">
                         <template #label>
                             <LightIcon />
                         </template>
-                        <InputNumber v-model:value="templateUnits.units.light" v-bind="numberInputProps" />
+                        <NInputNumber v-model:value="templateUnits.units.light" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi v-if="props.isArcherWorld" path="units.marcher">
                         <template #label>
                             <MarcherIcon />
                         </template>
-                        <InputNumber v-model:value="templateUnits.units.marcher" v-bind="numberInputProps" />
+                        <NInputNumber v-model:value="templateUnits.units.marcher" v-bind="numberInputProps" />
                     </NFormItemGi>
 
                     <NFormItemGi path="units.heavy">
                         <template #label>
                             <HeavyIcon />
                         </template>
-                        <InputNumber v-model:value="templateUnits.units.heavy" v-bind="numberInputProps" />
+                        <NInputNumber v-model:value="templateUnits.units.heavy" v-bind="numberInputProps" />
                     </NFormItemGi>
                 </NGrid>
 

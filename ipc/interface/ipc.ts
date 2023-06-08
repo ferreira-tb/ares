@@ -1,6 +1,6 @@
-import { assertString, isString } from '$shared/guards';
+import { assertString, isString } from '$common/guards';
 import { IpcTribalError } from '$ipc/interface/error';
-import type { PlunderInfo, TribalWarsGameData, TribalWarsTiming, Units } from '$ipc/models';
+import type { PlunderInfo, TribalWarsGameData, TribalWarsTiming, Units } from '$ipc/templates';
 
 // Arquivos no diretório "interface" não podem importar de outras partes do IpcTribal.
 // Isso é para evitar que a importações dos protótipos feitas no index vazem para o resto do código.

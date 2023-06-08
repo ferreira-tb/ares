@@ -236,12 +236,19 @@ type MechanusIncomingAttacksStoreType = {
 };
 
 // SNOB
-type SnobConfigStore = SnobConfigType;
+interface SnobConfigStore extends SnobConfigType {
+    raw(): SnobConfigType;
+};
+
+type PiniaSnobConfigStoreActions = SnobConfigStore['raw'];
 
 type PiniaSnobConfigStoreType = {
-    [K in keyof SnobConfigStore]: import('vue').Ref<SnobConfigStore[K]>;
+    [K in keyof SnobConfigStore]:
+        SnobConfigStore[K] extends PiniaSnobConfigStoreActions ?
+        SnobConfigStore[K] :
+        import('vue').Ref<SnobConfigStore[K]>;
 };
 
 type MechanusSnobConfigStoreType = {
-    [K in keyof SnobConfigStore]: MechanusRef<SnobConfigStore[K]>;
+    [K in keyof RemoveMethods<SnobConfigStore>]: MechanusRef<SnobConfigStore[K]>;
 };

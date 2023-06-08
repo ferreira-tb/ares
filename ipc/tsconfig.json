@@ -10,14 +10,9 @@
         "target": "esnext",
         "lib": ["esnext", "DOM"],
         "paths": {
-            "$browser/*": ["../browser/*"],
+            "$common/*": ["../common/*"],
             "$ipc/*": ["./*"],
-            "$lib/*": ["../browser/lib/*"],
-            "$modules/*": ["../modules/*"],
-            "$panel/*": ["../panel/*"],
-            "$phobos/*": ["../phobos/*"],
-            "$renderer/*": ["../renderer/*"],
-            "$shared/*": ["../shared/*"]
+            "$renderer/*": ["../renderer/*"]
         },
         
         "alwaysStrict": true,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { NButton, useMessage } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
@@ -15,6 +15,11 @@ const emit = defineEmits<{
 const message = useMessage();
 const loading = ref(false);
 const groups = useVModel(props, 'groups', emit);
+
+const buttonText = computed(() => {
+    if (loading.value) return 'Atualizando grupos...';
+    return 'Atualizar grupos';
+});
 
 async function fetchVillageGroups() {
     loading.value = true;
@@ -33,7 +38,7 @@ async function fetchVillageGroups() {
 <template>
     <div class="btn-groups-update">
         <NButton :loading="loading" :disabled="loading" @click="fetchVillageGroups">
-            Atualizar grupos
+            {{ buttonText }}
         </NButton>
     </div>
 </template>

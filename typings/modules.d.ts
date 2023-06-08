@@ -24,7 +24,7 @@ type NestedModules = 'app-config' | 'error-log';
 type ModuleNames = NestedModules | SingleModules;
 
 type ConfigModuleRoutes =
-    'config-advanced' | 'config-general' | 'config-notifications' | 'config-plunder';
+    'config-advanced' | 'config-buildings-snob' | 'config-general' | 'config-notifications' | 'config-plunder';
 
 type ModuleRoutes = ConfigModuleRoutes | ModuleNames;
 

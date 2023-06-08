@@ -1,6 +1,6 @@
 import { ref, type Ref } from 'vue';
 import { until, useStyleTag, useMutationObserver } from '@vueuse/core';
-import { isInstanceOf, isInteger } from '$shared/guards';
+import { isInstanceOf, isInteger } from '$common/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useFeaturesStore } from '$renderer/stores';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';

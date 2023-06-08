@@ -1,10 +1,10 @@
-import { WebsiteUrl } from '$shared/constants';
+import { WebsiteUrl } from '$common/constants';
 import { createModule } from '$electron/modules/standard';
 import { createWebsiteModule } from '$electron/modules/website';
 
 // Padrão
 export const showAppSettings = createModule('app-config', 'app-config', {
-    width: 500,
+    width: 700,
     height: 600,
     title: 'Configurações'
 });

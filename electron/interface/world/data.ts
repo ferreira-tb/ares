@@ -7,7 +7,7 @@ import type {
     WorldDataFetchHistory as WorldDataFetchHistoryTable,
     getPlayersTable as getWorldPlayersTableType,
     getVillagesTable as getWorldVillagesTableType
-} from '$electron/database/world';
+} from '$electron/database/models/world';
 
 export async function fetchWorldData(
     world: World,
@@ -18,17 +18,18 @@ export async function fetchWorldData(
     try {
         const now = Date.now();
         const worldData = await WorldDataFetchHistory.findByPk(world);
+
         const request: WorldDataRequest = {
             ally: false,
-            player: (now - (worldData?.player ?? 0)) <= Kronos.Day,
-            village: (now - (worldData?.village ?? 0)) <= Kronos.Day,
+            player: worldData?.player ? (now - worldData.player) <= Kronos.Day : true,
+            village: worldData?.village ? (now - worldData.village) <= Kronos.Day : true,
             world
         };
 
         if (!Object.values(request).some((value) => value === true)) return;
         const newData = await new Promise<WorldDataType | null>((resolve, reject) => {
             const { port1, port2 } = new MessageChannelMain();
-            const child = utilityProcess.fork(childProcess.worldData);
+            const child = utilityProcess.fork(childProcess.fetchWorldData);
             child.postMessage(request, [port2]);
 
             port1.on('message', (e) => {
@@ -51,13 +52,19 @@ export async function fetchWorldData(
                 const history: PartialWorldDataFetchHistory = {};
                 if (newData.players.length > 0) {
                     const Players = await getPlayersTable(world);
-                    await Players.bulkCreate(newData.players, { updateOnDuplicate: ['name', 'ally', 'villages', 'points', 'rank'] });
+                    await Players.bulkCreate(newData.players, {
+                        updateOnDuplicate: ['name', 'ally', 'villages', 'points', 'rank']
+                    });
+
                     history.player = Date.now();
                 };
 
                 if (newData.villages.length > 0) {
                     const Villages = await getVillagesTable(world);
-                    await Villages.bulkCreate(newData.villages, { updateOnDuplicate: ['name', 'player', 'points'] });
+                    await Villages.bulkCreate(newData.villages, {
+                        updateOnDuplicate: ['name', 'player', 'points']
+                    });
+                    
                     history.village = Date.now();
                 };
                 

@@ -4,7 +4,7 @@ import { computed, storeToRefs, watch } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { TribalWorker } from '$electron/worker';
 import { useAresStore, useIncomingsStore } from '$electron/interface';
-import { GameSearchParams } from '$shared/constants';
+import { GameSearchParams, TribalWorkerName } from '$common/constants';
 import { getMainViewWebContents } from '$electron/utils/view';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessEventError } from '$electron/error';
@@ -54,7 +54,7 @@ function createIncomingsHandler() {
                 const url = new URL(mainViewWebContents.getURL());
                 url.search = GameSearchParams.Incomings;
                 
-                worker = new TribalWorker('handle-incoming-attacks', url);
+                worker = new TribalWorker(TribalWorkerName.HandleIncomings, url);
                 await worker.init((e) => {
                     if (e.data === 'destroy') {
                         setTimeout(() => worker?.destroy(), delay.value);

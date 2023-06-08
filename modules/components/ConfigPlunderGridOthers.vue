@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { NDivider, NGrid, NGridItem } from 'naive-ui';
-import { isInteger, isFiniteNumber } from '$shared/guards';
-import InputNumber from '$renderer/components/InputNumber.vue';
-import LabelPopover from '$renderer/components/LabelPopover.vue';
+import { NDivider, NGrid, NGridItem, NInputNumber } from 'naive-ui';
+import {
+    formatMinutes,
+    parseMinutes,
+    formatMilliseconds,
+    parseMilliseconds,
+    formatPercentage,
+    parsePercentage
+} from '$modules/utils/input-parser';
 
 const props = defineProps<{
     config: PlunderConfigType;
@@ -27,56 +32,50 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
         <NDivider title-placement="left" class="config-divider">Outros</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Atualização automática</template>
-                    <span>Tempo, em minutos, até que a página seja atualizada automaticamente durante o saque.</span>
-                </LabelPopover>
+                <div class="config-label">Atualização automática</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber
+                <NInputNumber
                     v-model:value="minutesUntilReload"
+                    class="config-input"
                     :min="1"
                     :max="60"
                     :step="1"
-                    :validator="(v) => isInteger(v) && v >= 1 && v <= 60"
+                    :validator="(v) => Number.isInteger(v) && v >= 1 && v <= 60"
+                    :format="formatMinutes"
+                    :parse="parseMinutes"
                 />
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Estimativa de saque</template>
-                    <span>
-                        Por padrão, o Ares sempre considera que o modelo atacante saqueará 100% de sua capacidade de carga.
-                        Você pode alterar isso para que ele considere uma porcentagem menor.
-                    </span>
-                </LabelPopover>
+                <div class="config-label">Estimativa de saque</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber
+                <NInputNumber
                     v-model:value="plunderedResourcesRatio"
+                    class="config-input"
                     :min="0.2"
                     :max="1"
                     :step="0.05"
-                    :validator="(v) => isFiniteNumber(v) && v >= 0.2 && v <= 1"
+                    :validator="(v) => Number.isFinite(v) && v >= 0.2 && v <= 1"
+                    :format="formatPercentage"
+                    :parse="parsePercentage"
                 />
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Delay entre troca de páginas</template>
-                    <span>
-                        Quando o Ares não encontra aldeias para atacar, ele tenta trocar de página.
-                        Esse delay determina quantos milissegundos o Ares deve esperar antes dessa tentativa.
-                    </span>
-                </LabelPopover>
+                <div class="config-label">Delay entre troca de páginas</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber
+                <NInputNumber
                     v-model:value="pageDelay"
+                    class="config-input"
                     :min="100"
                     :max="60000"
                     :step="100"
-                    :validator="(v) => isInteger(v) && v >= 100 && v <= 60000"
+                    :validator="(v) => Number.isInteger(v) && v >= 100 && v <= 60000"
+                    :format="formatMilliseconds"
+                    :parse="parseMilliseconds"
                 />
             </NGridItem>
         </NGrid>

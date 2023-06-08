@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { isInteger } from '$shared/guards';
+import { isInteger } from '$common/guards';
 
 export const useCurrentVillageStore = defineStore('current-village', () => {
     const x = ref<number | null>(null);

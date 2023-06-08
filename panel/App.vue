@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia';
 import { RouterView } from 'vue-router';
 import { useArrayIncludes, watchImmediate } from '@vueuse/core';
-import { NConfigProvider, darkTheme } from 'naive-ui';
+import { NConfigProvider, NMessageProvider, darkTheme } from 'naive-ui';
 import { routeNames, router } from '$panel/router';
 import { useAresStore } from '$renderer/stores';
 import { usePanelStore } from '$panel/stores';
@@ -34,16 +34,18 @@ watchImmediate(currentScreen, async (name) => {
                 
                 <div v-else class="app-container">
                     <RouterView #default="{ Component }">
-                        <template v-if="Component">
-                            <Transition name="tb-fade" mode="out-in">
-                                <Suspense>
-                                    <component :is="Component" />
-                                    <template #fallback>
-                                        <span class="bold-green to-center">Carregando...</span>
-                                    </template>
-                                </Suspense>
-                            </Transition>
-                        </template>
+                        <NMessageProvider>
+                            <template v-if="Component">
+                                <Transition name="tb-fade" mode="out-in">
+                                    <Suspense>
+                                        <component :is="Component" />
+                                        <template #fallback>
+                                            <span class="bold-green to-center">Carregando...</span>
+                                        </template>
+                                    </Suspense>
+                                </Transition>
+                            </template>
+                        </NMessageProvider>
                     </RouterView>
                 </div>
             </div>
