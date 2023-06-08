@@ -1,7 +1,6 @@
 import { Mechanus, watch, storeToRefs } from 'mechanus';
 
-import { 
-    AppConfig,
+import {
     ErrorLog,
     ElectronErrorLog,
     PlunderHistory,
@@ -19,8 +18,6 @@ import {
 
 import {
     createWorldUnitStoresMap,
-    defineAppGeneralConfigStore,
-    defineAppNotificationsStore,
     defineAresStore,
     defineBrowserViewStore,
     defineCacheStore,
@@ -46,8 +43,6 @@ import { MainProcessError } from '$electron/error';
 
 export const mechanus = new Mechanus();
 
-export const useAppGeneralConfigStore = defineAppGeneralConfigStore(mechanus);
-export const useAppNotificationsStore = defineAppNotificationsStore(mechanus);
 export const useAresStore = defineAresStore(mechanus);
 export const useBrowserViewStore = defineBrowserViewStore(mechanus);
 export const useCacheStore = defineCacheStore(mechanus);
@@ -87,7 +82,7 @@ const aliasArgs = [
 ] as const;
 
 // ERROS
-MainProcessError.catch = catchError(useAppNotificationsStore(), ElectronErrorLog);
+MainProcessError.catch = catchError(ElectronErrorLog);
 
 // WATCHERS
 // Essas funções retornam outras funções, que, por sua vez, são usadas como callbacks.
@@ -109,7 +104,6 @@ watch(screen, (newScreen) => {
 });
 
 export {
-    AppConfig,
     ErrorLog,
     ElectronErrorLog,
     PlunderHistory,

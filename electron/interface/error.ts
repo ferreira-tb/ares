@@ -1,18 +1,13 @@
 import { app, BrowserWindow } from 'electron';
-import { storeToRefs } from 'mechanus';
 import { isString } from '$common/guards';
 import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/modules';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessError } from '$electron/error';
-import type { useAppNotificationsStore } from '$electron/interface';
+import { appConfig } from '$electron/stores';
 import type { ElectronErrorLog as ElectronErrorLogTable } from '$electron/interface';
 
-export function catchError(
-    appNotificationsStore: ReturnType<typeof useAppNotificationsStore>,
-    ElectronErrorLog: typeof ElectronErrorLogTable
-) {
-    const { notifyOnError } = storeToRefs(appNotificationsStore);
+export function catchError(ElectronErrorLog: typeof ElectronErrorLogTable) {
     return async function(err: unknown) {
         if (!(err instanceof Error)) return;
         try {
@@ -36,7 +31,8 @@ export function catchError(
                 };
             });
 
-            if (notifyOnError.value) {
+            const shouldNotify = appConfig.get('notifications').notifyOnError;
+            if (shouldNotify) {
                 const mainWindow = getMainWindow();
                 mainWindow.webContents.send('notify-electron-error', errorLog);
             };

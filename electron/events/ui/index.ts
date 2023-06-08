@@ -2,16 +2,27 @@ import { ipcMain } from 'electron';
 import { setMainWindowDownloadEvents } from '$electron/events/ui/download';
 import { setMenuEvents } from '$electron/events/ui/menu';
 import { getMainWindow, maximizeOrRestoreWindow } from '$electron/utils/helpers';
+import { appConfig } from '$electron/stores';
 
 export function setMainWindowEvents() {
     const mainWindow = getMainWindow();
 
-    ipcMain.on('minimize-main-window', () => mainWindow.minimize());
-    ipcMain.on('close-main-window', () => mainWindow.close());
-    ipcMain.handle('maximize-or-restore-main-window', () => maximizeOrRestoreWindow(mainWindow));
+    ipcMain.on('ui:minimize', () => mainWindow.minimize());
+    ipcMain.on('ui:close', () => mainWindow.close());
+    ipcMain.handle('ui:maximize-or-restore', () => maximizeOrRestoreWindow(mainWindow));
 
-    ipcMain.handle('is-main-window-minimized', () => mainWindow.isMinimized());
-    ipcMain.handle('is-main-window-maximized', () => mainWindow.isMaximized());
+    ipcMain.handle('ui:is-minimized', () => mainWindow.isMinimized());
+    ipcMain.handle('ui:is-maximized', () => mainWindow.isMaximized());
+
+    mainWindow.on('moved', () => {
+        const rectangle = mainWindow.getBounds();
+        appConfig.set('ui', { bounds: rectangle });
+    });
+
+    mainWindow.on('resized', () => {
+        const rectangle = mainWindow.getBounds();
+        appConfig.set('ui', { bounds: rectangle });
+    });
 
     setMenuEvents();
     setMainWindowDownloadEvents();

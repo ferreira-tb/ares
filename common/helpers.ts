@@ -39,6 +39,7 @@ export const getPlayerDataUrl = (world: World, region: GameRegion) => getEndPoin
 export const getVillageDataUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'Village');
 
 export function getGameRegionUrl(region: unknown): GameUrl {
+    if (typeof region !== 'string') return GameUrl.Brazil;
     switch (region) {
         case 'br': return GameUrl.Brazil;
         case 'en': return GameUrl.Global;

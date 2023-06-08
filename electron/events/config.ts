@@ -2,20 +2,28 @@ import * as fs from 'node:fs/promises';
 import { ipcMain } from 'electron';
 import { showAppSettings } from '$electron/modules';
 import { sequelize } from '$electron/database';
-import { AppConfig, useAppGeneralConfigStore, useAppNotificationsStore } from '$electron/interface';
+import { appConfig } from '$electron/stores';
 import { MainProcessEventError } from '$electron/error';
 import { database } from '$electron/utils/files';
 import { restartAres } from '$electron/utils/helpers';
 
 export function setConfigEvents() {
-    const appGeneralConfigStore = useAppGeneralConfigStore();
-    const appNotificationsStore = useAppNotificationsStore();
+    ipcMain.on('config:open', (_e, route: ConfigModuleRoutes) => showAppSettings(route));
+    ipcMain.handle('config:general', () => ({ ...appConfig.get('general') }));
+    ipcMain.handle('config:notifications', () => ({ ...appConfig.get('notifications') }));
+    
+    ipcMain.handle('config:should-reload-after-captcha', () => appConfig.get('general').reloadAfterCaptcha);
+    ipcMain.handle('config:should-notify-on-error', () => appConfig.get('notifications').notifyOnError);
 
-    ipcMain.on('open-settings-window', (_e, route: ConfigModuleRoutes) => showAppSettings(route));
-    ipcMain.handle('get-app-general-config', () => ({ ...appGeneralConfigStore }));
-    ipcMain.handle('get-app-notifications-config', () => ({ ...appNotificationsStore }));
-    ipcMain.handle('should-reload-after-captcha', () => appGeneralConfigStore.reloadAfterCaptcha);
-    ipcMain.handle('should-notify-on-error', () => appNotificationsStore.notifyOnError);
+    ipcMain.on('config:update', <T extends keyof AppConfigType>(
+        _e: unknown, configType: T, value: AppConfigType[T]
+    ) => {
+        try {
+            appConfig.set(configType, value);
+        } catch (err) {
+            MainProcessEventError.catch(err);
+        };
+    });
 
     ipcMain.handle('db:clear-database', async () => {
         try {
@@ -27,24 +35,6 @@ export function setConfigEvents() {
         } catch (err) {
             MainProcessEventError.catch(err);
             return false;
-        };
-    });
-
-    ipcMain.on('update-app-general-config', async (_e, config: GeneralConfigType) => {
-        try {
-            await AppConfig.setConfig('config_general', appGeneralConfigStore, config);
-            await AppConfig.saveConfig('config_general', appGeneralConfigStore);
-        } catch (err) {
-            MainProcessEventError.catch(err);
-        };
-    });
-
-    ipcMain.on('update-app-notifications-config', async (_e, config: NotificationsConfigType) => {
-        try {
-            await AppConfig.setConfig('config_notifications', appNotificationsStore, config);
-            await AppConfig.saveConfig('config_notifications', appNotificationsStore);
-        } catch (err) {
-            MainProcessEventError.catch(err);
         };
     });
 };

@@ -3,14 +3,14 @@ import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$common/templates/plunder';
 
 // Janela
-export async function ipcInvoke(channel: 'maximize-or-restore-main-window'): Promise<boolean>;
-export async function ipcInvoke(channel: 'is-main-window-minimized'): Promise<boolean>;
-export async function ipcInvoke(channel: 'is-main-window-maximized'): Promise<boolean>;
+export async function ipcInvoke(channel: 'ui:maximize-or-restore'): Promise<boolean>;
+export async function ipcInvoke(channel: 'ui:is-minimized'): Promise<boolean>;
+export async function ipcInvoke(channel: 'ui:is-maximized'): Promise<boolean>;
 
 // Geral
 export async function ipcInvoke(channel: 'user-alias'): Promise<UserAlias | null>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
-export async function ipcInvoke(channel: 'is-ignored-app-version', version: string): Promise<boolean>;
+export async function ipcInvoke(channel: 'app-update:is-ignored-version', version: string): Promise<boolean>;
 
 // Aplicação
 export async function ipcInvoke(channel: 'app:name'): Promise<string>;
@@ -21,10 +21,10 @@ export async function ipcInvoke(channel: 'app:desktop-path'): Promise<string>;
 
 // Configurações
 export async function ipcInvoke(channel: 'db:clear-database'): Promise<boolean>;
-export async function ipcInvoke(channel: 'get-app-general-config'): Promise<GeneralConfigType>;
-export async function ipcInvoke(channel: 'get-app-notifications-config'): Promise<NotificationsConfigType>;
-export async function ipcInvoke(channel: 'should-reload-after-captcha'): Promise<boolean>;
-export async function ipcInvoke(channel: 'should-notify-on-error'): Promise<boolean>;
+export async function ipcInvoke(channel: 'config:general'): Promise<GeneralConfigType>;
+export async function ipcInvoke(channel: 'config:notifications'): Promise<NotificationsConfigType>;
+export async function ipcInvoke(channel: 'config:should-reload-after-captcha'): Promise<boolean>;
+export async function ipcInvoke(channel: 'config:should-notify-on-error'): Promise<boolean>;
 
 // Browser
 export async function ipcInvoke(channel: 'browser:get-response-time'): Promise<number | null>;
@@ -89,17 +89,17 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
 };
 
 // Janela
-export function ipcSend(channel: 'minimize-main-window'): void;
-export function ipcSend(channel: 'close-main-window'): void;
+export function ipcSend(channel: 'ui:minimize'): void;
+export function ipcSend(channel: 'ui:close'): void;
 
 // Geral
 export function ipcSend(channel: 'open-any-allowed-website', url: string): void;
 export function ipcSend(channel: 'open-ares-website'): void;
 export function ipcSend(channel: 'open-github-repo'): void;
 export function ipcSend(channel: 'open-github-issues'): void;
-export function ipcSend(channel: 'open-app-update-window'): void;
+export function ipcSend(channel: 'app-update:open'): void;
 export function ipcSend(channel: 'download-from-url', url: string): void;
-export function ipcSend(channel: 'show-update-available-dialog', newVersion: string): void;
+export function ipcSend(channel: 'app-update:update-available-dialog', newVersion: string): void;
 export function ipcSend(channel: 'electron:show-message-box', options: ElectronMessageBoxOptions): void;
 
 // Desenvolvedor
@@ -109,9 +109,8 @@ export function ipcSend(channel: 'dev:open-current-view-dev-tools'): void;
 export function ipcSend(channel: 'dev:open-main-view-dev-tools'): void;
 
 // Configurações
-export function ipcSend(channel: 'update-app-general-config', config: GeneralConfigType): void;
-export function ipcSend(channel: 'update-app-notifications-config', config: NotificationsConfigType): void;
-export function ipcSend(channel: 'open-settings-window', route: ConfigModuleRoutes): void;
+export function ipcSend(channel: 'config:open', route: ConfigModuleRoutes): void;
+export function ipcSend<T extends keyof AppConfigType>(channel: 'config:update', configType: T, value: AppConfigType[T]): void;
 
 // Menu
 export function ipcSend(channel: 'open-region-select-menu'): void;

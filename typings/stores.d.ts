@@ -4,18 +4,6 @@ type MechanusRefOptions<T> = import('mechanus').MechanusRefOptions<T>;
 type MechanusComputedRef<T> = import('mechanus').MechanusComputedRef<T>;
 type MechanusStore<T> = import('mechanus').MechanusStore<T>;
 
-// APP GENERAL CONFIG
-type AppGeneralConfigStore = GeneralConfigType;
-type MechanusAppGeneralConfigStoreType = {
-    [K in keyof AppGeneralConfigStore]: MechanusRef<AppGeneralConfigStore[K]>;
-};
-
-// APP NOTIFICATIONS CONFIG
-type AppNotificationsConfigStore = NotificationsConfigType;
-type MechanusAppNotificationsConfigStoreType = {
-    [K in keyof AppNotificationsConfigStore]: MechanusRef<AppNotificationsConfigStore[K]>;
-};
-
 // ARES
 type AresType = TribalWarsGameDataType['ares'];
 interface AresStore extends AresType {

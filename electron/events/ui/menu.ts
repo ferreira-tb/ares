@@ -3,7 +3,8 @@ import { storeToRefs } from 'mechanus';
 import { getMainWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
 import { showErrorLog, openIssuesWebsite } from '$electron/modules';
-import { AppConfig, useCacheStore } from '$electron/interface';
+import { useCacheStore } from '$electron/interface';
+import { appConfig } from '$electron/stores';
 import { MainProcessError } from '$electron/error';
 import { getGameRegionUrl } from '$common/helpers';
 
@@ -12,8 +13,7 @@ export function setMenuEvents() {
 
     const cacheStore = useCacheStore();
     const { region } = storeToRefs(cacheStore);
-
-    AppConfig.setGameRegion(cacheStore).catch(MainProcessError.catch);
+    region.value = appConfig.get('cache').lastRegion;
 
     ipcMain.on('open-region-select-menu', () => {
         const template: Electron.MenuItemConstructorOptions[] = [
@@ -71,7 +71,7 @@ async function setGameRegion(region: GameRegion, cachedRegion: MechanusRef<GameR
             if (response === 1) return;
         };
 
-        await AppConfig.saveGameRegion(region);
+        appConfig.set('cache', { lastRegion: region });
         cachedRegion.value = region;
 
         const regionUrl = getGameRegionUrl(region);

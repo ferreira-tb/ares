@@ -2,28 +2,24 @@ import { ipcMain, dialog } from 'electron';
 import semverLte from 'semver/functions/lte';
 import semverValid from 'semver/functions/valid';
 import { MainProcessEventError } from '$electron/error';
-import { AppConfig } from '$electron/interface';
+import { appConfig } from '$electron/stores';
 import { showAppUpdate } from '$electron/modules';
 
 export function setAppUpdateModuleEvents() {
-    ipcMain.on('open-app-update-window', () => showAppUpdate());
+    ipcMain.on('app-update:open', () => showAppUpdate());
 
-    ipcMain.handle('is-ignored-app-version', async (_e, version: string): Promise<boolean> => {
+    ipcMain.handle('app-update:is-ignored-version', (_e, version: string): boolean => {
         try {
-            const row = (await AppConfig.findByPk('app_update'))?.toJSON();
-            if (!row?.json) return false;
-            
-            const versionToIgnore = (row.json as UpdateConfigType).versionToIgnore;
-            if (!semverValid(versionToIgnore)) return false;
+            const versionToIgnore = appConfig.get('update').versionToIgnore;
+            if (!versionToIgnore || !semverValid(versionToIgnore)) return false;
             return semverLte(version, versionToIgnore);
-            
         } catch (err) {
             MainProcessEventError.catch(err);
             return false;
         };
     });
 
-    ipcMain.on('show-update-available-dialog', async (_e, newVersion: string) => {
+    ipcMain.on('app-update:update-available-dialog', async (_e, newVersion: string) => {
         try {
             if (!semverValid(newVersion)) {
                 throw new MainProcessEventError(`Invalid version: ${newVersion}.`);
@@ -42,14 +38,7 @@ export function setAppUpdateModuleEvents() {
             if (response === 0) {
                 showAppUpdate();
             } else if (response === 2) {
-                let updateConfig: UpdateConfigType | null = null;
-                const row = (await AppConfig.findByPk('app_update'))?.toJSON();
-                if (row?.json) {
-                    updateConfig = { ...row.json, versionToIgnore: newVersion };
-                };
-
-                updateConfig ??= { versionToIgnore: newVersion };
-                await AppConfig.upsert({ name: 'app_update', json: updateConfig });
+                appConfig.set('update', { versionToIgnore: newVersion });
             };
 
         } catch (err) {

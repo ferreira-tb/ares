@@ -7,6 +7,7 @@ import { usePlunderConfigStore, usePlunderHistoryStore } from '$renderer/stores'
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import StorageIcon from '$icons/buildings/StorageIcon.vue';
 
+const locale = await ipcInvoke('app:locale');
 const config = usePlunderConfigStore();
 const { active } = storeToRefs(config);
 
@@ -26,10 +27,6 @@ watchImmediate(active, async () => {
         :render-icon="() => h(StorageIcon)"
         @click="ipcSend('plunder:show-history')"
     >
-        <span>{{ total.toLocaleString('pt-br') }}</span>
+        <span>{{ total.toLocaleString(locale) }}</span>
     </NButton>
 </template>
-
-<style scoped lang="scss">
-
-</style>

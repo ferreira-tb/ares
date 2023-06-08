@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { assertWorld } from '$common/guards';
 import { MainProcessError } from '$electron/error';
+import { appConfig } from '$electron/stores/config';
 import type { createWorldUnitStoresMap } from '$electron/stores/world';
 
 export function restartAres() {
@@ -43,6 +44,7 @@ export function togglePanelWindow(): void {
     };
 
     panelWindow.webContents.send('panel:visibility-did-change', panelWindow.isVisible());
+    appConfig.set('panel', { isVisible: panelWindow.isVisible() });
 };
 
 /**

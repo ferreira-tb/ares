@@ -10,6 +10,7 @@ export class SnobConfig extends Model<InferAttributes<SnobConfig>, InferCreation
     declare readonly mode: 'group' | 'single';
     declare readonly village: CreationOptional<number>;
     declare readonly group: CreationOptional<number>;
+    declare readonly coins: number;
 };
 
 SnobConfig.init({
@@ -39,6 +40,11 @@ SnobConfig.init({
         allowNull: true
     },
     group: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    coins: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0

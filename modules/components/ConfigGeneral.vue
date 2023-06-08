@@ -3,9 +3,9 @@ import { reactive, watch, toRaw } from 'vue';
 import { NCheckbox, NDivider, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 
-const previous = await ipcInvoke('get-app-general-config');
+const previous = await ipcInvoke('config:general');
 const config = reactive(previous);
-watch(config, () => ipcSend('update-app-general-config', toRaw(config)));
+watch(config, () => ipcSend('config:update', 'general', toRaw(config)));
 </script>
 
 <template>

@@ -3,7 +3,7 @@ import { computed, watch, watchEffect } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem, NSwitch } from 'naive-ui';
 import { useFeaturesStore, useGroupsStore, usePlunderConfigStore } from '$renderer/stores';
 import { ipcSend } from '$renderer/ipc';
-import PlunderResources from '$panel/components/PlunderResources.vue';
+import ThePlunderedResources from '$panel/components/ThePlunderedResources.vue';
 
 const config = usePlunderConfigStore();
 const features = useFeaturesStore();
@@ -60,13 +60,13 @@ watchEffect(() => {
                 >
                     {{ plunderButtonText }}
                 </NButton>
-                <NButton round @click="ipcSend('open-settings-window', 'config-plunder')">
+                <NButton round @click="ipcSend('config:open', 'config-plunder')">
                     Configurações
                 </NButton>
             </NButtonGroup>
         </div>
 
-        <PlunderResources />
+        <ThePlunderedResources />
 
         <NGrid class="switch-area" :cols="2" :x-gap="12" :y-gap="10">
             <NGridItem>

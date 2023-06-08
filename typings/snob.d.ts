@@ -7,4 +7,6 @@ type SnobConfigType = {
     village: number | null;
     /** Grupo onde cunhagens em grupo serão feitas. */
     group: number;
+    /** Quantidade de moedas cunhadas. */
+    coins: number;
 };

@@ -1,22 +1,6 @@
-type AppConfigName =
-    'app_state' | 'app_update' | 'config_general' | 'config_notifications' | 'panel_bounds';
-
-type AppConfigJSON =
-    AppStateType | GeneralConfigType | NotificationsConfigType | PanelBoundsConfigType | UpdateConfigType;
-
-type AppConfigByName<T extends AppConfigName> =
-    T extends 'config_general' ? GeneralConfigType :
-    T extends 'config_notifications' ? NotificationsConfigType :
-    never;
-
-type AppStateType = {
+type AppCacheType = {
     /** Última região acessada pelo usuário. */
-    lastRegion?: GameRegion;
-};
-
-type UpdateConfigType = {
-    /** O Ares alertará o usuário apenas quando houver uma versão mais recente que a ignorada. */
-    versionToIgnore: string;
+    lastRegion: GameRegion;
 };
 
 type GeneralConfigType = {
@@ -29,4 +13,34 @@ type NotificationsConfigType = {
     notifyOnError: boolean;
 };
 
-type PanelBoundsConfigType = Electron.Rectangle;
+type PanelConfigType = {
+    /** Indica se o painel deve ser exibido. */
+    show: boolean;
+    /** Posição e tamanho do painel. */
+    bounds: Electron.Rectangle | null;
+};
+
+type UIConfigType = {
+    /** Posição e tamanho da janela principal. */
+    bounds: Electron.Rectangle | null;
+};
+
+type UpdateConfigType = {
+    /** O Ares alertará o usuário apenas quando houver uma versão mais recente que a ignorada. */
+    versionToIgnore: string | null;
+};
+
+interface AppConfigType {
+    /** Configurações de cache. */
+    cache: AppCacheType;
+    /** Configurações gerais. */
+    general: GeneralConfigType;
+    /** Configurações de notificações. */
+    notifications: NotificationsConfigType;
+    /** Configurações do painel. */
+    panel: PanelConfigType;
+    /** Configurações da interface do usuário. */
+    ui: UIConfigType;
+    /** Configurações de atualização. */
+    update: UpdateConfigType;
+};
