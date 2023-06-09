@@ -1,6 +1,7 @@
 import { ipcRenderer } from 'electron';
 import { usePanelStore } from '$panel/stores';
 import { setPlunderEvents } from '$panel/events/plunder';
+import { setSnobEvents } from '$panel/events/snob';
 import {
     useAresStore,
     useFeaturesStore,
@@ -44,4 +45,5 @@ export function setPanelEvents() {
     });
 
     setPlunderEvents();
+    setSnobEvents();
 };
