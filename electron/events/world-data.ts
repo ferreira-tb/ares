@@ -6,7 +6,9 @@ import { isWorld } from '$common/guards';
 export function setWorldDataEvents() {
     const cacheStore = useCacheStore();
 
-    ipcMain.handle('world-data:get-village', async (_e, villageId?: number[] | number, world: World | null = null) => {
+    // Obtêm informações sobre uma ou mais aldeias.
+    // Se o id da aldeia não for especificado, retorna todas as aldeias do mundo.
+    ipcMain.handle('world-data:get-villages', async (_e, villageId?: number[] | number, world: World | null = null) => {
         world ??= cacheStore.world;
         if (!isWorld(world)) return [];
 
@@ -20,6 +22,16 @@ export function setWorldDataEvents() {
             where: { [Op.or]: idList.map((id) => ({ id })) }
         });
         
+        return villages.map((v) => v.toJSON());
+    });
+
+    // Obtêm uma lista com todas as aldeias de um jogador.
+    ipcMain.handle('world-data:get-player-villages', async (_e, player: number, world: World | null = null) => {
+        world ??= cacheStore.world;
+        if (!isWorld(world)) return [];
+
+        const VillagesTable = await getVillagesTable(world);
+        const villages = await VillagesTable.findAll({ where: { player } });
         return villages.map((v) => v.toJSON());
     });
 };

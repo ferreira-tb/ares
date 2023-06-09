@@ -3,6 +3,7 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
 import { formatFields, parseFields, formatMilliseconds, parseMilliseconds } from '$modules/utils/input-parser';
 import { ipcInvoke } from '$renderer/ipc';
+import { decodeString } from '$common/helpers';
 import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
 
 const props = defineProps<{
@@ -20,7 +21,7 @@ const groups = ref(previousGroups);
 const plunderGroupOptions = computed(() => {
     const groupsArray = Array.from(groups.value).filter((group) => group.type === 'dynamic');
     const options = groupsArray.map((group) => ({
-        label: decodeURIComponent(group.name),
+        label: decodeString(group.name),
         value: group.id
     }));
 

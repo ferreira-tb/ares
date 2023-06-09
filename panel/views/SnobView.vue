@@ -6,6 +6,7 @@ import { computedAsync, watchDeep, whenever } from '@vueuse/core';
 import { useCurrentVillageStore, useGroupsStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { PanelSnobViewError } from '$panel/error';
+import { decodeString } from '$common/helpers';
 import TheCoinedAmount from '$panel/components/TheCoinedAmount.vue';
 
 const config = useSnobConfigStore();
@@ -17,14 +18,14 @@ const snobButtonText = computed(() => config.active ? 'Parar' : 'Cunhar');
 
 const village = computedAsync<WorldVillagesType | null>(async () => {
     if (!config.village) return null;
-    const data = await ipcInvoke('world-data:get-village', config.village);
+    const data = await ipcInvoke('world-data:get-villages', config.village);
     if (data.length === 0) return null;
     return data[0];
 }, null);
 
 const villageName = computed<string | null>(() => {
     if (!village.value) return null;
-    return decodeURIComponent(village.value.name.replace(/\+/g, ' '));
+    return decodeString(village.value.name);
 });
 
 const groupName = computedAsync<string | null>(async () => {
@@ -40,7 +41,7 @@ const groupName = computedAsync<string | null>(async () => {
             return null;
         };
 
-        return decodeURIComponent(group.name.replace(/\+/g, ' '));
+        return decodeString(group.name);
         
     } catch (err) {
         PanelSnobViewError.catch(err);
@@ -91,8 +92,8 @@ whenever(() => config.active, () => {
             <div v-else>
                 <div>Grupo selecionado</div>
                 <a
-                    v-if="groupName"
-                    @click="ipcSend('current-view:navigate-to-snob-train', config.group)"
+                    v-if="groupName && village"
+                    @click="ipcSend('current-view:navigate-to-snob-coin', village.id, config.group)"
                 >
                     {{ groupName }}
                 </a>

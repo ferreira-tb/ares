@@ -2,7 +2,7 @@ import { computed, effectScope, reactive, ref, type Ref } from 'vue';
 import { tryOnScopeDispose, watchDeep, watchImmediate } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
 import { ipcInvoke } from '$renderer/ipc';
-import { getContinentFromCoords } from '$common/helpers';
+import { decodeString, getContinentFromCoords } from '$common/helpers';
 
 export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, period: Ref<PlunderHistoryTimePeriod>) {
     const scope = effectScope();
@@ -33,7 +33,7 @@ export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, p
             const list = updatedList.filter((id) => !villageMap.has(id));
             if (list.length === 0) return;
         
-            const worldVillages = await ipcInvoke('world-data:get-village', list);
+            const worldVillages = await ipcInvoke('world-data:get-villages', list);
             for (const village of worldVillages) {
                 villageMap.set(village.id, village);
             };
@@ -62,7 +62,7 @@ export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, p
         
                 const data = {
                     coords: `${info.x.toString(10)}|${info.y.toString(10)} ${getContinentFromCoords(info.x, info.y, 'K')}`,
-                    name: decodeURIComponent(info.name.replace(/\+/g, ' ')),
+                    name: decodeString(info.name),
                     score: 0,
                     total: parsedLogs.wood + parsedLogs.stone + parsedLogs.iron,
                     attackAmount: parsedLogs.attackAmount,

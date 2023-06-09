@@ -75,7 +75,7 @@ export function createModule<T extends keyof ModuleConstructorOptions>(
             
             moduleWindow.once('ready-to-show', () => {
                 activeModules.set(moduleName, moduleWindow);
-                moduleWindow.webContents.send('set-module-route', route ?? defaultRoute);
+                moduleWindow.webContents.send('module:set-route', route ?? defaultRoute);
                 moduleWindow.show();
             });
 

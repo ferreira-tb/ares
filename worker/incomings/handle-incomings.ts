@@ -71,7 +71,7 @@ async function handleIncomings(port: MessagePort) {
         ipcSend('game:update-incomings-info', Array.from(incomings.values()));
 
         // Registra os ataques que já foram etiquetados.
-        const playerName = await ipcInvoke('game:player-name');
+        const playerName = await ipcInvoke('player:name');
         if (!playerName) throw new TribalWorkerError('Invalid player name.');
 
         const labeled = useLocalStorage<LabeledAttack[]>(`${playerName}:labeled-incomings`, []);

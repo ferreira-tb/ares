@@ -1,5 +1,5 @@
 import * as fs from 'node:fs/promises';
-import { ipcMain } from 'electron';
+import { ipcMain, webContents } from 'electron';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { ipcTribalJs } from '$electron/utils/files';
 import { MainProcessEventError } from '$electron/error';
@@ -47,7 +47,7 @@ export function setIpcTribalEvents() {
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
     ipcMain.on('ipc-tribal:update-game-data', <T extends keyof TribalWarsGameDataType>(
-        _e: Electron.IpcMainEvent, gameData: TribalWarsGameDataType
+        e: Electron.IpcMainEvent, gameData: TribalWarsGameDataType
     ) => {
         try {
             for (const key of Object.keys(gameData) as T[]) {
@@ -71,9 +71,12 @@ export function setIpcTribalEvents() {
                         throw new MainProcessEventError(`Could not update game data: ${key} is not a valid key.`);
                 };
             };
-
-            const panelWindow = getPanelWindow();
-            panelWindow.webContents.send('panel:patch-game-data', gameData);
+            
+            for (const contents of webContents.getAllWebContents()) {
+                if (contents !== e.sender) {
+                    contents.send('game:patch-game-data', gameData);
+                };
+            };
 
         } catch (err) {
             MainProcessEventError.catch(err);
@@ -101,15 +104,19 @@ export function setIpcTribalEvents() {
 
     // Recebe as informações referentes às unidades da aldeia atual, salva-as localmente e então envia-as ao painel.
     ipcMain.handle('ipc-tribal:update-current-village-units', <T extends keyof typeof unitsStore>(
-        _e: Electron.IpcMainEvent, units: UnitAmount
+        e: Electron.IpcMainEvent, units: UnitAmount
     ) => {
         try {
             for (const [key, value] of Object.entries(units) as [T, typeof unitsStore[T]][]) {
                 unitsStore[key] = value;
             };
     
-            const panelWindow = getPanelWindow();
-            panelWindow.webContents.send('panel:patch-current-village-units', units);
+            for (const contents of webContents.getAllWebContents()) {
+                if (contents !== e.sender) {
+                    contents.send('game:patch-current-village-units', units);
+                };
+            };
+
             return true;
 
         } catch (err) {

@@ -1,4 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
+import { Kronos } from '@tb-dev/kronos';
 import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$common/guards';
 import { DatabaseError } from '$electron/error';
@@ -8,9 +9,12 @@ export class SnobConfig extends Model<InferAttributes<SnobConfig>, InferCreation
     declare readonly id: UserAlias;
     declare readonly active: boolean;
     declare readonly mode: 'group' | 'single';
+    declare readonly delay: number;
+    declare readonly timeUnit: 'hours' | 'minutes' | 'seconds';
     declare readonly village: CreationOptional<number | null>;
     declare readonly group: CreationOptional<number>;
     declare readonly coins: number;
+    
 };
 
 SnobConfig.init({
@@ -34,6 +38,16 @@ SnobConfig.init({
         type: DataTypes.ENUM('group', 'single'),
         allowNull: false,
         defaultValue: 'single'
+    },
+    delay: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: Kronos.Minute * 5
+    },
+    timeUnit: {
+        type: DataTypes.ENUM('hours', 'minutes', 'seconds'),
+        allowNull: false,
+        defaultValue: 'minutes'
     },
     village: {
         type: DataTypes.INTEGER,

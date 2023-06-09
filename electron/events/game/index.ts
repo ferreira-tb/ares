@@ -3,6 +3,7 @@ import { worldUnitsMap, useCacheStore, useWorldConfigStore } from '$electron/int
 import { extractWorldUnitsFromMap } from '$electron/utils/helpers';
 import { setGroupsEvents } from '$electron/events/game/groups';
 import { setIncomingAttacksEvents } from '$electron/events/game/incomings';
+import { setPlayerEvents } from '$electron/events/game/player';
 import { setSnobEvents } from '$electron/events/game/snob';
 
 export function setGameEvents() {
@@ -13,10 +14,10 @@ export function setGameEvents() {
     ipcMain.handle('game:current-world-config', () => ({ ...worldConfigStore }));
     ipcMain.handle('game:current-world-units', () => extractWorldUnitsFromMap(worldUnitsMap));
     ipcMain.handle('game:is-archer-world', () => worldConfigStore.archer);
-    ipcMain.handle('game:player-name', () => cacheStore.player);
 
     // Outros eventos do jogo.
     setGroupsEvents();
     setIncomingAttacksEvents();
+    setPlayerEvents();
     setSnobEvents();
 };

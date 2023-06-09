@@ -3,6 +3,10 @@ import { GameUrl, GameEndpoints } from '$common/constants';
 import { aliasRegex } from '$common/regex';
 import type { AresError } from '$common/error';
 
+export function decodeString(str: string) {
+    return decodeURIComponent(str.replace(/\+/g, ' '));
+};
+
 /**
  * Obtém a região referente a um mundo.
  * @throws Se a região obtida não for válida.

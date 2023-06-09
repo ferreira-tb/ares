@@ -9,6 +9,18 @@ export function setSnobEvents() {
     const cacheStore = useCacheStore();
     const { userAlias } = storeToRefs(cacheStore);
 
+    ipcMain.handle('snob:get-config', async (): Promise<SnobConfigType | null> => {
+        try {
+            const alias = userAlias.value;
+            if (!isUserAlias(alias)) return null;
+            const snobConfig = (await SnobConfig.findByPk(alias))?.toJSON();
+            return snobConfig ?? null;
+        } catch (err) {
+            MainProcessEventError.catch(err);
+            return null;
+        };
+    });
+
     ipcMain.on('snob:update-config', async (e, config: SnobConfigType) => {
         try {
             const alias = userAlias.value;

@@ -10,7 +10,6 @@ export async function ipcInvoke(channel: 'ui:is-maximized'): Promise<boolean>;
 // Geral
 export async function ipcInvoke(channel: 'user-alias'): Promise<UserAlias | null>;
 export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
-export async function ipcInvoke(channel: 'app-update:is-ignored-version', version: string): Promise<boolean>;
 
 // Aplicação
 export async function ipcInvoke(channel: 'app:name'): Promise<string>;
@@ -18,6 +17,7 @@ export async function ipcInvoke(channel: 'app:version'): Promise<string>;
 export async function ipcInvoke(channel: 'app:locale'): Promise<string>;
 export async function ipcInvoke(channel: 'app:user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'app:desktop-path'): Promise<string>;
+export async function ipcInvoke(channel: 'app-update:is-ignored-version', version: string): Promise<boolean>;
 
 // Configurações
 export async function ipcInvoke(channel: 'db:clear-database'): Promise<boolean>;
@@ -42,17 +42,23 @@ export async function ipcInvoke(channel: 'current-view:can-go-forward'): Promise
 
 // World Data
 export async function ipcInvoke(
-    channel: 'world-data:get-village', id?: number[] | number, world?: World
+    channel: 'world-data:get-villages', id?: number[] | number, world?: World
+): Promise<WorldVillagesType[]>;
+export async function ipcInvoke(
+    channel: 'world-data:get-player-villages', player: number, world?: World
 ): Promise<WorldVillagesType[]>;
 
 // Jogo
 export async function ipcInvoke(channel: 'game:current-world'): Promise<World | null>;
 export async function ipcInvoke(channel: 'game:current-world-config'): Promise<WorldConfigType>;
 export async function ipcInvoke(channel: 'game:current-world-units'): Promise<WorldUnitsType>;
-export async function ipcInvoke(channel: 'game:player-name'): Promise<string | null>;
 export async function ipcInvoke(channel: 'game:is-archer-world'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:get-all-village-groups'): Promise<Set<VillageGroup>>;
+
+// Jogador
+export async function ipcInvoke(channel: 'player:name'): Promise<string | null>;
+export async function ipcInvoke(channel: 'player:get-store'): Promise<PlayerStore>;
 
 // Erros
 export async function ipcInvoke(channel: 'error:export'): Promise<'canceled' | 'error' | 'sucess'>;
@@ -77,6 +83,9 @@ export async function ipcInvoke(
 export async function ipcInvoke(channel: 'plunder:get-demolition-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
 export async function ipcInvoke(channel: 'plunder:save-demolition-config', template: DemolitionTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:destroy-demolition-config', alias: UserAlias): Promise<boolean>;
+
+// Academia
+export async function ipcInvoke(channel: 'snob:get-config'): Promise<SnobConfigType | null>;
 
 // IpcTribal
 export async function ipcInvoke(channel: 'ipc-tribal:get-file'): Promise<string | null>;

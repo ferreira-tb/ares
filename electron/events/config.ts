@@ -16,7 +16,7 @@ export function setConfigEvents() {
     ipcMain.handle('config:should-notify-on-error', () => appConfig.get('notifications').notifyOnError);
 
     ipcMain.on('config:update', <T extends keyof AppConfigType>(
-        _e: unknown, configType: T, value: AppConfigType[T]
+        _e: Electron.IpcMainEvent, configType: T, value: AppConfigType[T]
     ) => {
         try {
             appConfig.set(configType, value);

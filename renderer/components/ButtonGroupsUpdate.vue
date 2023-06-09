@@ -36,7 +36,7 @@ async function fetchVillageGroups() {
 </script>
 
 <template>
-    <div class="btn-groups-update">
+    <div class="button-groups-update">
         <NButton :loading="loading" :disabled="loading" @click="fetchVillageGroups">
             {{ buttonText }}
         </NButton>
@@ -44,8 +44,9 @@ async function fetchVillageGroups() {
 </template>
 
 <style scoped lang="scss">
-.btn-groups-update {
-    display: flex;
-    justify-content: center;
+@use '$renderer/assets/utils.scss';
+
+.button-groups-update {
+    @include utils.flex-x-center-y-center;
 }
 </style>
