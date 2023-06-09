@@ -43,6 +43,7 @@ function createIncomingsHandler() {
         try {
             if (worker?.isDestroyed) worker = null;
             if (worker) {
+                // O uso do timeout impede que o worker seja sobrecarregado quando houver muitas requisições.
                 if (timeout) {
                     timeout.refresh();
                 } else {
