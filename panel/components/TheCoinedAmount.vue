@@ -13,6 +13,7 @@ const { coins } = storeToRefs(config);
 
 <template>
     <NButton
+        class="coined-amount"
         quaternary
         :keyboard="false"
         :render-icon="() => h(CoinIcon)"
@@ -20,3 +21,9 @@ const { coins } = storeToRefs(config);
         <span>{{ coins.toLocaleString(locale) }}</span>
     </NButton>
 </template>
+
+<style scoped lang="scss">
+.coined-amount {
+    cursor: default;
+}
+</style>

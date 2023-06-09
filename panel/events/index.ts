@@ -24,6 +24,10 @@ export function setPanelEvents() {
         aresStore.captcha = thereIsCaptcha;
     });
 
+    ipcRenderer.on('game:patch-village-groups-set', (_e, groups: Set<VillageGroup>) => {
+        groupsStore.$patch({ all: groups });
+    });
+
     ipcRenderer.on('panel:visibility-did-change', (_e, isVisible: boolean) => {
         panelStore.isVisible = isVisible;
     });
@@ -38,10 +42,6 @@ export function setPanelEvents() {
     
     ipcRenderer.on('panel:patch-current-village-units', (_e, units: UnitAmount) => {
         unitStore.$patch(units);
-    });
-    
-    ipcRenderer.on('panel:patch-village-groups-set', (_e, groups: Set<VillageGroup>) => {
-        groupsStore.$patch({ all: groups });
     });
 
     setPlunderEvents();

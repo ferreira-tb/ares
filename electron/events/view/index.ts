@@ -5,12 +5,13 @@ import { useBrowserViewStore, useCacheStore } from '$electron/interface';
 import { isAllowedOrigin } from '$common/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { BrowserViewError } from '$electron/error';
+import { removePreviousViewEvents, setCurrentViewEvents } from '$electron/events/view/current-view';
+import { setCurrentViewNavigationEvents } from '$electron/events/view/navigation';
 
 import {
     insertViewCSS,
     setBrowserViewBounds,
     setBrowserViewAutoResize,
-    getBackForwardStatus,
     getMainViewWebContents,
     contentsGoBack,
     contentsGoForward,
@@ -67,23 +68,6 @@ export function setBrowserViewEvents() {
     ipcMain.on('current-view:back', () => contentsGoBack(currentView.value.webContents));
     ipcMain.on('current-view:forward', () => contentsGoForward(currentView.value.webContents));
 
-    ipcMain.on('current-view:navigate-to-place', async (_e, villageId: number) => {
-        try {
-            if (!Number.isInteger(villageId)) {
-                const errMessage = 'Cannot navigate to place: village id must be an integer.';
-                throw new BrowserViewError(errMessage);
-            };
-
-            const contents = currentView.value.webContents;
-            const url = new URL(contents.getURL());
-            url.search = `village=${villageId}&screen=place`;
-            await contents.loadURL(url.href);
-
-        } catch (err) {
-            BrowserViewError.catch(err);
-        };
-    });
-
     // BrowserViews específicas.
     ipcMain.on('view:destroy', (_e, webContentsId: number) => {
         try {
@@ -98,12 +82,13 @@ export function setBrowserViewEvents() {
     setViewSharedEvents(mainWindow, mainViewWebContents);
 
     // Define os eventos específicos da BrowserView atual.
-    setCurrentViewEvents(currentView.value.webContents, mainWindow);
+    setCurrentViewEvents(currentView.value.webContents);
+    setCurrentViewNavigationEvents(currentView);
 
     watch(currentView, (newView, oldView) => {
         // Remove os eventos da BrowserView anterior e define os eventos da nova BrowserView.
         removePreviousViewEvents(oldView.webContents);
-        setCurrentViewEvents(newView.webContents, mainWindow);
+        setCurrentViewEvents(newView.webContents);
 
         // Atualiza as dimensões de ambas as BrowserViews.
         setViewAsTopBrowserView(newView, currentAutoResize, mainWindow);
@@ -140,56 +125,6 @@ function setViewSharedEvents(
         // Adiciona o WebContents à lista de WebContents com eventos já registrados.
         registeredWebContents.value.add(contents);
     };
-};
-
-/**
- * Define os eventos específicos da BrowserView atual.
- * Esses eventos devem ser removidos quando a BrowserView for destruída.
- * 
- * Se um novo evento for adicionado, é preciso adicionar a remoção dele na função `removePreviousViewEvents`.
- * @param view WebContents da BrowserView atual.
- */
-function setCurrentViewEvents(view: Electron.WebContents, mainWindow: Electron.BrowserWindow = getMainWindow()) {
-    view.on('did-start-loading', () => {
-        mainWindow.webContents.send('current-view:did-start-loading');
-    });
-
-    view.on('did-stop-loading', () => {
-        mainWindow.webContents.send('current-view:did-stop-loading');
-    });
-
-    view.on('did-navigate', () => {
-        insertViewCSS(view).catch(BrowserViewError.catch);
-        updateCurrentViewBackForwardStatus(view);
-    });
-
-    view.on('did-navigate-in-page', () => {
-        updateCurrentViewBackForwardStatus(view);
-    });
-
-    view.on('did-frame-navigate', () => {
-        updateCurrentViewBackForwardStatus(view);
-    });
-
-    view.on('did-redirect-navigation', () => {
-        updateCurrentViewBackForwardStatus(view);
-    });
-};
-
-/**
- * Remove todos os eventos da BrowserView atual.
- * Essa função deve ser chamada quando a BrowserView atual for alterada.
- * 
- * Esses eventos são definidos na função `setCurrentViewEvents`.
- * @param view WebContents da BrowserView atual.
- */
-function removePreviousViewEvents(view: Electron.WebContents) {
-    view.removeAllListeners('did-start-loading');
-    view.removeAllListeners('did-stop-loading');
-    view.removeAllListeners('did-navigate');
-    view.removeAllListeners('did-navigate-in-page');
-    view.removeAllListeners('did-frame-navigate');
-    view.removeAllListeners('did-redirect-navigation');
 };
 
 /**
@@ -268,16 +203,6 @@ function destroyBrowserView(
         mainWindow.webContents.send('browser-view-did-fail-to-destroy');
         BrowserViewError.catch(err);
     };
-};
-
-/**
- * Envia à janela principal informações sobre a capacidade de voltar e avançar da BrowserView atual.
- * @param view WebContents da BrowserView atual.
- * @param mainWindow Janela principal.
- */
-function updateCurrentViewBackForwardStatus(view: Electron.WebContents, mainWindow: Electron.BrowserWindow = getMainWindow()) {
-    const backForwardStatus = getBackForwardStatus(view);
-    mainWindow.webContents.send('current-view-back-forward-status', backForwardStatus);
 };
 
 /**

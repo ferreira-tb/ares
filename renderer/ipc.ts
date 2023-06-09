@@ -52,7 +52,7 @@ export async function ipcInvoke(channel: 'game:current-world-units'): Promise<Wo
 export async function ipcInvoke(channel: 'game:player-name'): Promise<string | null>;
 export async function ipcInvoke(channel: 'game:is-archer-world'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
-export async function ipcInvoke(channel: 'game:get-village-groups'): Promise<Set<VillageGroup>>;
+export async function ipcInvoke(channel: 'game:get-all-village-groups'): Promise<Set<VillageGroup>>;
 
 // Erros
 export async function ipcInvoke(channel: 'error:export'): Promise<'canceled' | 'error' | 'sucess'>;
@@ -130,6 +130,8 @@ export function ipcSend(channel: 'current-view:back'): void;
 export function ipcSend(channel: 'current-view:forward'): void;
 export function ipcSend(channel: 'current-view:update', webContentsId: number): void;
 export function ipcSend(channel: 'current-view:navigate-to-place', villageId: number): void;
+export function ipcSend(channel: 'current-view:navigate-to-snob-train', villageId: number): void;
+export function ipcSend(channel: 'current-view:navigate-to-snob-coin', villageId: number, groupId?: number): void;
 export function ipcSend(channel: 'view:destroy', webContentsId: number): void;
 
 // Erros

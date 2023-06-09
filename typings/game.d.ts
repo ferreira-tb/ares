@@ -55,7 +55,7 @@ type DemolitionTroops = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
 type UnitsToDestroyWall = Record<StringWallLevel, DemolitionTroops>;
 
 type GameScreen =
-    'am_farm' | 'info_player' | 'market' | 'overview_villages' | 'overview' | 'place' | 'report';
+    'am_farm' | 'info_player' | 'market' | 'overview_villages' | 'overview' | 'place' | 'report' | 'snob';
 
 type Coords = {
     x: number;

@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import { assertInteger } from '$common/guards';
 import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$renderer/stores';
-import { PanelPlunderError } from '$panel/error';
+import { PanelPlunderViewError } from '$panel/error';
 
 export function setPlunderEvents() {
     const plunderStore = usePlunderStore();
@@ -28,7 +28,7 @@ export function setPlunderEvents() {
             };
             
         } catch (err) {
-            PanelPlunderError.catch(err);
+            PanelPlunderViewError.catch(err);
         };
     });
 

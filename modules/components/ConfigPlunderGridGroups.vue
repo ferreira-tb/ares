@@ -14,7 +14,7 @@ const emit = defineEmits<{
 }>();
 
 const locale = await ipcInvoke('app:locale');
-const previousGroups = await ipcInvoke('game:get-village-groups');
+const previousGroups = await ipcInvoke('game:get-all-village-groups');
 const groups = ref(previousGroups);
 
 const plunderGroupOptions = computed(() => {

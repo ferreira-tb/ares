@@ -1,26 +1,64 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { NButton, NButtonGroup, NGrid, NGridItem, NRadio, NRadioGroup } from 'naive-ui';
-import { computedAsync, watchDeep } from '@vueuse/core';
-import { useSnobConfigStore } from '$renderer/stores';
+import { storeToRefs } from 'pinia';
+import { NButton, NButtonGroup } from 'naive-ui';
+import { computedAsync, watchDeep, whenever } from '@vueuse/core';
+import { useCurrentVillageStore, useGroupsStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { PanelSnobViewError } from '$panel/error';
 import TheCoinedAmount from '$panel/components/TheCoinedAmount.vue';
 
 const config = useSnobConfigStore();
+const currentVillage = useCurrentVillageStore();
+const groups = useGroupsStore();
+
+const { all: allGroups } = storeToRefs(groups);
 const snobButtonText = computed(() => config.active ? 'Parar' : 'Cunhar');
 
-const village = computedAsync(async () => {
+const village = computedAsync<WorldVillagesType | null>(async () => {
     if (!config.village) return null;
     const data = await ipcInvoke('world-data:get-village', config.village);
     if (data.length === 0) return null;
     return data[0];
 }, null);
 
+const villageName = computed<string | null>(() => {
+    if (!village.value) return null;
+    return decodeURIComponent(village.value.name.replace(/\+/g, ' '));
+});
+
+const groupName = computedAsync<string | null>(async () => {
+    try {
+        if (config.group === 0) return 'Todas as aldeias';
+        const group = Array.from(allGroups.value).find((g) => g.id === config.group);
+
+        if (!group) {
+            const fetched = await ipcInvoke('game:fetch-village-groups');
+            if (!fetched) {
+                throw new PanelSnobViewError('Error fetching village groups');
+            };
+            return null;
+        };
+
+        return decodeURIComponent(group.name.replace(/\+/g, ' '));
+        
+    } catch (err) {
+        PanelSnobViewError.catch(err);
+        return null;
+    };
+}, null);
+
 watchDeep(config, () => {
     ipcSend('snob:update-config', config.raw());
 });
 
-console.log(village.value);
+// Quando a cunhagem é ativada, salva a aldeia atual como origem da cunhagem simples.
+// Como o watcher não é imediato, ele não irá alterar a aldeia caso a cunhagem já esteja ativa em outra.
+whenever(() => config.active, () => {
+    if (config.mode === 'single') {
+        config.village = currentVillage.id;
+    };
+});
 </script>
 
 <template>
@@ -30,7 +68,7 @@ console.log(village.value);
                 <NButton round @click="config.active = !config.active">
                     {{ snobButtonText }}
                 </NButton>
-                <NButton disabled round @click="ipcSend('config:open', 'config-buildings-snob')">
+                <NButton round @click="ipcSend('config:open', 'config-buildings-snob')">
                     Configurações
                 </NButton>
             </NButtonGroup>
@@ -38,14 +76,29 @@ console.log(village.value);
 
         <TheCoinedAmount />
 
-        <NGrid class="config-area" :cols="2" :x-gap="12" :y-gap="8">
-            <NGridItem :span="2">
-                <NRadioGroup v-model:value="config.mode" name="snob-mode">
-                    <NRadio value="single" label="Simples" />
-                    <NRadio value="group" label="Grupo" disabled />
-                </NRadioGroup>
-            </NGridItem>
-        </NGrid>
+        <div class="current-coin-location">
+            <div v-if="config.mode === 'single'">
+                <div class="location-label">Aldeia selecionada</div>
+                <a
+                    v-if="villageName && village"
+                    @click="ipcSend('current-view:navigate-to-snob-train', village.id)"
+                >
+                    {{ villageName }}
+                </a>
+                <div v-else>Nenhuma aldeia</div>
+            </div>
+
+            <div v-else>
+                <div>Grupo selecionado</div>
+                <a
+                    v-if="groupName"
+                    @click="ipcSend('current-view:navigate-to-snob-train', config.group)"
+                >
+                    {{ groupName }}
+                </a>
+                <div v-else>Nenhum grupo</div>
+            </div>
+        </div>
     </main>
 </template>
 
@@ -55,5 +108,19 @@ console.log(village.value);
 .button-area {
     @include main.flex-x-center-y-center;
     margin-bottom: 1em;
+}
+
+.current-coin-location {
+    @include main.flex-x-center-y-center;
+    margin-top: 1em;
+    
+    .location-label {
+        margin-bottom: 0.5em;
+        font-weight: bold;
+    }
+
+    a {
+        cursor: pointer;
+    }
 }
 </style>

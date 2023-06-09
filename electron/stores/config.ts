@@ -10,6 +10,19 @@ const schema: Schema<AppConfigType> = {
             reloadAfterCaptcha: { type: 'boolean', default: true }
         }
     },
+    moduleBounds: {
+        type: 'object',
+        additionalProperties: true,
+        default: {}
+    },
+    notifications: {
+        type: 'object',
+        additionalProperties: false,
+        default: {},
+        properties: {
+            notifyOnError: { type: 'boolean', default: true }
+        }
+    },
     panel: {
         type: 'object',
         additionalProperties: false,
@@ -27,14 +40,6 @@ const schema: Schema<AppConfigType> = {
                     height: { type: 'integer' }
                 }
             }
-        }
-    },
-    notifications: {
-        type: 'object',
-        additionalProperties: false,
-        default: {},
-        properties: {
-            notifyOnError: { type: 'boolean', default: true }
         }
     },
     ui: {

@@ -10,9 +10,10 @@ export function setGroupsEvents() {
     const groupsStore = useGroupsStore();
     const { all } = storeToRefs(groupsStore);
 
-    ipcMain.handle('game:get-village-groups', () => groupsStore.all);
+    // Retorna informações sobre todos os grupos de aldeias.
+    ipcMain.handle('game:get-all-village-groups', () => groupsStore.all);
 
-    ipcMain.handle('game:fetch-village-groups', async () => {
+    ipcMain.handle('game:fetch-village-groups', async (): Promise<boolean> => {
         try {
             if (!cacheStore.userAlias) return false;
             const userAlias = cacheStore.userAlias;

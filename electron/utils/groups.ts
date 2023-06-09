@@ -1,7 +1,7 @@
 import { URL } from 'node:url';
+import { webContents } from 'electron';
 import { TribalWorker } from '$electron/worker';
 import { getMainViewWebContents } from '$electron/utils/view';
-import { getPanelWindow } from '$electron/utils/helpers';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
 
 export function fetchVillageGroups(): Promise<Set<VillageGroup>> {
@@ -34,6 +34,7 @@ export function patchVillageGroups(groups: Set<VillageGroup>, all: MechanusRef<S
         all.value.add(group);
     });
 
-    const panelWindow = getPanelWindow();
-    panelWindow.webContents.send('panel:patch-village-groups-set', all.value);
+    for (const contents of webContents.getAllWebContents()) {
+        contents.send('game:patch-village-groups-set', all.value);
+    };
 };

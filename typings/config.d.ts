@@ -5,6 +5,13 @@ type GeneralConfigType = {
     reloadAfterCaptcha: boolean;
 };
 
+type ModuleBoundsConfigType = {
+    [name in ModuleNames]?: {
+        /** Posição e tamanho do módulo. */
+        bounds: Electron.Rectangle | null;
+    };
+};
+
 type NotificationsConfigType = {
     /** Indica se o usuário deve ser notificado quando ocorrer um erro. */
     notifyOnError: boolean;
@@ -30,6 +37,8 @@ type UpdateConfigType = {
 interface AppConfigType {
     /** Configurações gerais. */
     general: GeneralConfigType;
+    /** Configurações das dimensões dos módulos. */
+    moduleBounds: ModuleBoundsConfigType;
     /** Configurações de notificações. */
     notifications: NotificationsConfigType;
     /** Configurações do painel. */
