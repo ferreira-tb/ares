@@ -7,13 +7,13 @@ export function setPanelEvents() {
 
     ipcMain.handle('panel:is-visible', () => panelWindow.isVisible());
 
-    panelWindow.on('moved', () => {
-        const rectangle = panelWindow.getBounds();
-        appConfig.set('panel', { bounds: rectangle });
-    });
+    panelWindow.on('moved', saveBounds(panelWindow));
+    panelWindow.on('resized', saveBounds(panelWindow));
+};
 
-    panelWindow.on('resized', () => {
+function saveBounds(panelWindow: Electron.CrossProcessExports.BrowserWindow) {
+    return function() {
         const rectangle = panelWindow.getBounds();
         appConfig.set('panel', { bounds: rectangle });
-    });
+    };
 };

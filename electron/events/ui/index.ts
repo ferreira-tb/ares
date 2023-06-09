@@ -14,16 +14,16 @@ export function setMainWindowEvents() {
     ipcMain.handle('ui:is-minimized', () => mainWindow.isMinimized());
     ipcMain.handle('ui:is-maximized', () => mainWindow.isMaximized());
 
-    mainWindow.on('moved', () => {
-        const rectangle = mainWindow.getBounds();
-        appConfig.set('ui', { bounds: rectangle });
-    });
-
-    mainWindow.on('resized', () => {
-        const rectangle = mainWindow.getBounds();
-        appConfig.set('ui', { bounds: rectangle });
-    });
+    mainWindow.on('moved', saveBounds(mainWindow));
+    mainWindow.on('resized', saveBounds(mainWindow));
 
     setMenuEvents();
     setMainWindowDownloadEvents();
+};
+
+function saveBounds(mainWindow: Electron.CrossProcessExports.BrowserWindow) {
+    return function() {
+        const rectangle = mainWindow.getBounds();
+        appConfig.set('ui', { bounds: rectangle });
+    };
 };
