@@ -1,4 +1,4 @@
-type UserAlias = `${World}__USERID__${string}`;
+type UserAlias = `${World}_${string}`;
 type GameRegion = 'br' | 'en' | 'nl' | 'pt' | 'uk' | 'us';
 type World =
     // eslint-disable-next-line @typescript-eslint/sort-type-constituents

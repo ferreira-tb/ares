@@ -63,7 +63,7 @@ export function maximizeOrRestoreWindow(window: BrowserWindow): boolean {
 };
 
 /**
-* Retorna o alias do usuário, no padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`.
+* Retorna o alias do usuário, no padrão `/^[a-z]+\d+_{ nome do jogador }/`.
 
 * Ele é usado para diferenciar tanto diferentes jogadores quanto diferentes mundos do mesmo jogador.
 * @param playerName Nome do jogador.
@@ -71,7 +71,7 @@ export function maximizeOrRestoreWindow(window: BrowserWindow): boolean {
 export function generateUserAlias(world: World, playerName: string): UserAlias {
     playerName = encodeURIComponent(playerName);
     assertWorld(world, MainProcessError);
-    return `${world}__USERID__${playerName}`;
+    return `${world}_${playerName}`;
 };
 
 /**
