@@ -1,9 +1,6 @@
-type AppCacheType = {
+type GeneralConfigType = {
     /** Última região acessada pelo usuário. */
     lastRegion: GameRegion;
-};
-
-type GeneralConfigType = {
     /** Indica se a view deve ser atualizada após remoção de captchas. */
     reloadAfterCaptcha: boolean;
 };
@@ -31,8 +28,6 @@ type UpdateConfigType = {
 };
 
 interface AppConfigType {
-    /** Configurações de cache. */
-    cache: AppCacheType;
     /** Configurações gerais. */
     general: GeneralConfigType;
     /** Configurações de notificações. */

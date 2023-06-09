@@ -13,6 +13,7 @@ const emit = defineEmits<{
     <T extends keyof PlunderConfigType>(e: 'update:config', name: T, value: PlunderConfigType[T]): void;
 }>();
 
+const locale = await ipcInvoke('app:locale');
 const previousGroups = await ipcInvoke('game:get-village-groups');
 const groups = ref(previousGroups);
 
@@ -23,7 +24,7 @@ const plunderGroupOptions = computed(() => {
         value: group.id
     }));
 
-    return options.sort((a, b) => a.label.localeCompare(b.label, 'pt-br'));
+    return options.sort((a, b) => a.label.localeCompare(b.label, locale));
 });
 
 const plunderGroupId = ref<number | null>(props.config.plunderGroupId);

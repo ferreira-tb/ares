@@ -7,7 +7,7 @@ import type { WorldUnits as WorldUnitsTable } from '$electron/database/models/wo
 import type { createWorldUnitStoresMap } from '$electron/stores/world';
 import type { defineCacheStore } from '$electron/stores/cache';
 
-export async function patchWorldUnitsStoresState(
+export async function patchWorldUnits(
     world: World,
     WorldUnits: typeof WorldUnitsTable,
     useCacheStore: ReturnType<typeof defineCacheStore>,

@@ -47,7 +47,9 @@ function reloadMainView() {
 <template>
     <Teleport :to="plunderListTitle">
         <Transition name="tb-fade" mode="out-in">
-            <PlunderReloadMessage :active="props.active" :plunder-timeout="plunderTimeout" />
+            <Suspense>
+                <PlunderReloadMessage :active="props.active" :plunder-timeout="plunderTimeout" />
+            </Suspense>
         </Transition>
     </Teleport>
 </template>

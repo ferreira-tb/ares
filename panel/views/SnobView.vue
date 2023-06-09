@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue';
+import { computed } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem, NRadio, NRadioGroup } from 'naive-ui';
 import { computedAsync, watchDeep } from '@vueuse/core';
 import { useSnobConfigStore } from '$renderer/stores';
@@ -16,7 +16,7 @@ const village = computedAsync(async () => {
     return data[0];
 }, null);
 
-watchDeep(toRef(config), () => {
+watchDeep(config, () => {
     ipcSend('snob:update-config', config.raw());
 });
 

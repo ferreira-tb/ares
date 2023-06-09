@@ -1,3 +1,4 @@
+// O propósito dessa interface é impedir que surjam dependências circulares.
 import { Mechanus, watch, storeToRefs } from 'mechanus';
 
 import {
@@ -30,7 +31,6 @@ import {
     definePlunderCacheStore,
     definePlunderConfigStore,
     definePlunderHistoryStore,
-    defineSnobConfigStore,
     defineUnitsStore,
     defineWorldConfigStore
 } from '$electron/stores';
@@ -55,7 +55,6 @@ export const usePlunderStore = definePlunderStore(mechanus);
 export const usePlunderConfigStore = definePlunderConfigStore(mechanus);
 export const usePlunderHistoryStore = definePlunderHistoryStore(mechanus);
 export const usePlunderCacheStore = definePlunderCacheStore(mechanus);
-export const useSnobConfigStore = defineSnobConfigStore(mechanus);
 export const useUnitsStore = defineUnitsStore(mechanus);
 export const useWorldConfigStore = defineWorldConfigStore(mechanus);
 export const worldUnitsMap = createWorldUnitStoresMap(mechanus);

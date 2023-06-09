@@ -1,8 +1,8 @@
 import { isWorld } from '$common/guards';
 import { WorldInterfaceError } from '$electron/error';
 import { fetchWorldData } from '$electron/interface/world/data';
-import { patchWorldConfigStoreState } from '$electron/interface/world/config';
-import { patchWorldUnitsStoresState } from '$electron/interface/world/units';
+import { patchWorldConfig } from '$electron/interface/world/config';
+import { patchWorldUnits } from '$electron/interface/world/units';
 import type { defineCacheStore, defineWorldConfigStore, createWorldUnitStoresMap } from '$electron/stores';
  
 import type {
@@ -28,8 +28,8 @@ export function onWorldChange(
             if (!isWorld(world)) return;
             await Promise.all([
                 fetchWorldData(world, WorldDataFetchHistory, getPlayersTable, getVillagesTable),
-                patchWorldConfigStoreState(world, WorldConfig, useCacheStore, useWorldConfigStore),
-                patchWorldUnitsStoresState(world, WorldUnits, useCacheStore, worldUnitsMap)
+                patchWorldConfig(world, WorldConfig, useCacheStore, useWorldConfigStore),
+                patchWorldUnits(world, WorldUnits, useCacheStore, worldUnitsMap)
             ]);
         } catch (err) {
             WorldInterfaceError.catch(err);

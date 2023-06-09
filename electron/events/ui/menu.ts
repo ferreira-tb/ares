@@ -13,7 +13,7 @@ export function setMenuEvents() {
 
     const cacheStore = useCacheStore();
     const { region } = storeToRefs(cacheStore);
-    region.value = appConfig.get('cache').lastRegion;
+    region.value = appConfig.get('general').lastRegion;
 
     ipcMain.on('open-region-select-menu', () => {
         const template: Electron.MenuItemConstructorOptions[] = [
@@ -71,7 +71,7 @@ async function setGameRegion(region: GameRegion, cachedRegion: MechanusRef<GameR
             if (response === 1) return;
         };
 
-        appConfig.set('cache', { lastRegion: region });
+        appConfig.set('general', { lastRegion: region });
         cachedRegion.value = region;
 
         const regionUrl = getGameRegionUrl(region);

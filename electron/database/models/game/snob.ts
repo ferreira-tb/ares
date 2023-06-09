@@ -8,7 +8,7 @@ export class SnobConfig extends Model<InferAttributes<SnobConfig>, InferCreation
     declare readonly id: UserAlias;
     declare readonly active: boolean;
     declare readonly mode: 'group' | 'single';
-    declare readonly village: CreationOptional<number>;
+    declare readonly village: CreationOptional<number | null>;
     declare readonly group: CreationOptional<number>;
     declare readonly coins: number;
 };

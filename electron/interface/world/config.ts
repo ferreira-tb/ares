@@ -9,7 +9,7 @@ import type {
     useWorldConfigStore as useWorldConfigStoreType
 } from '$electron/interface';
 
-export async function patchWorldConfigStoreState<T extends keyof WorldConfigType>(
+export async function patchWorldConfig<T extends keyof WorldConfigType>(
     world: World,
     WorldConfig: typeof WorldConfigTable,
     useCacheStore: typeof useCacheStoreType,

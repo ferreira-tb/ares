@@ -44,7 +44,7 @@ export function togglePanelWindow(): void {
     };
 
     panelWindow.webContents.send('panel:visibility-did-change', panelWindow.isVisible());
-    appConfig.set('panel', { isVisible: panelWindow.isVisible() });
+    appConfig.set('panel', { show: panelWindow.isVisible() });
 };
 
 /**

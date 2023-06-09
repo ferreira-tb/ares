@@ -1,19 +1,12 @@
 import ElectronStore, { type Schema } from 'electron-store';
 
 const schema: Schema<AppConfigType> = {
-    cache: {
-        type: 'object',
-        additionalProperties: false,
-        default: {},
-        properties: {
-            lastRegion: { type: 'string', default: 'br' }
-        }
-    },
     general: {
         type: 'object',
         additionalProperties: false,
         default: {},
         properties: {
+            lastRegion: { type: 'string', default: 'br' },
             reloadAfterCaptcha: { type: 'boolean', default: true }
         }
     },
@@ -41,7 +34,7 @@ const schema: Schema<AppConfigType> = {
         additionalProperties: false,
         default: {},
         properties: {
-            notifyOnError: { type: 'boolean', default: process.env.ARES_MODE === 'dev' }
+            notifyOnError: { type: 'boolean', default: true }
         }
     },
     ui: {

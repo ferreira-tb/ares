@@ -236,7 +236,3 @@ type PiniaSnobConfigStoreType = {
         SnobConfigStore[K] :
         import('vue').Ref<SnobConfigStore[K]>;
 };
-
-type MechanusSnobConfigStoreType = {
-    [K in keyof RemoveMethods<SnobConfigStore>]: MechanusRef<SnobConfigStore[K]>;
-};

@@ -74,14 +74,13 @@ function createWindow() {
     process.env.PANEL_WINDOW_ID = panelWindow.id.toString(10);
     process.env.MAIN_VIEW_WEB_CONTENTS_ID = mainView.webContents.id.toString(10);
 
-    const gameUrl = getGameRegionUrl(appConfig.get('cache').lastRegion);
+    const gameUrl = getGameRegionUrl(appConfig.get('general').lastRegion);
     Promise.all([
         mainWindow.loadFile(uiHtml),
         panelWindow.loadFile(panelHtml),
         mainView.webContents.loadURL(gameUrl)
     ]).catch(MainProcessError.catch);
 
-    mainWindow.maximize();
     mainWindow.addBrowserView(mainView);
     mainWindow.setTopBrowserView(mainView);
 
