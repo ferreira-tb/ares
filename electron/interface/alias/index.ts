@@ -11,7 +11,7 @@ import type {
     usePlunderHistoryStore as usePlunderHistoryStoreType
 } from '$electron/interface';
 
-/** Entende-se como "alias" o padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`. */
+/** Entende-se como "alias" o padrão `/^[a-z]+\d+_{ nome do jogador }/`. */
 export function onAliasChange(
     PlunderConfig: typeof PlunderConfigTable,
     PlunderHistory: typeof PlunderHistoryTable,

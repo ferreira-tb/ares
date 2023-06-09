@@ -1,5 +1,6 @@
 import { assertGameRegion } from '$common/guards';
 import { GameUrl, GameEndpoints } from '$common/constants';
+import { aliasRegex } from '$common/regex';
 import type { AresError } from '$common/error';
 
 /**
@@ -80,9 +81,9 @@ export function getContinentFromCoords(x: number, y: number, prefix?: string) {
 
 /**
  * Obtém o nome do jogador a partir do alias, decodificando-o.
- * @param alias Alias do jogador.
+ * @param userAlias Alias do jogador.
  */
-export function getPlayerNameFromAlias(alias: UserAlias): string {
-    const encodedPlayerName = alias.replace(/^[a-z]+\d+__USERID__/, '');
+export function getPlayerNameFromAlias(userAlias: UserAlias): string {
+    const encodedPlayerName = userAlias.replace(aliasRegex, '');
     return decodeURIComponent(encodedPlayerName);
 };

@@ -73,6 +73,7 @@ export const allUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'mar
 export const months = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'] as const;
 
 // Mapas.
+// TO DO: transformar em JSON.
 export const unitsToDestroyWall = {
     '0': {
         spear: 0,
