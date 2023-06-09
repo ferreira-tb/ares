@@ -1,4 +1,4 @@
-import Store, { type Schema } from 'electron-store';
+import ElectronStore, { type Schema } from 'electron-store';
 
 const schema: Schema<AppConfigType> = {
     cache: {
@@ -72,7 +72,7 @@ const schema: Schema<AppConfigType> = {
     }
 };
 
-export const appConfig = new Store({
+export const appConfig = new ElectronStore({
     name: 'app-config',
     cwd: 'stores',
     accessPropertiesByDotNotation: true,
