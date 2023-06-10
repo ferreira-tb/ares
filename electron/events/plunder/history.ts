@@ -5,7 +5,7 @@ import { assertUserAlias } from '$common/guards';
 import { getPanelWindow } from '$electron/utils/helpers';
 import { showPlunderHistory, getActiveModuleWebContents } from '$electron/modules';
 import { usePlunderHistoryStore, PlunderHistory, useCacheStore } from '$electron/interface';
-import { PlunderHistoryVillage } from '$common/templates/plunder';
+import { PlunderHistoryVillage } from '$common/templates';
 
 export function setPlunderHistoryEvents() {
     const panelWindow = getPanelWindow();

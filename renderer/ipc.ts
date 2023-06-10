@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
 import { ipcRenderer } from 'electron';
-import type { PlunderAttack } from '$common/templates/plunder';
+import type { PlunderAttack } from '$common/templates';
 
 // Janela
 export async function ipcInvoke(channel: 'ui:maximize-or-restore'): Promise<boolean>;

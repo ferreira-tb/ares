@@ -6,7 +6,7 @@ import { wait } from '$browser/utils/helpers';
 import { unitsRegex } from '$common/regex';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
-import type { PlunderAttack } from '$common/templates/plunder';
+import type { PlunderAttack } from '$common/templates';
 
 export const eventTarget = new EventTarget();
 

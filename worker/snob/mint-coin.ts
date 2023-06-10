@@ -4,7 +4,7 @@ import { ipcRenderer } from 'electron';
 import { Kronos } from '@tb-dev/kronos';
 import { ipcSend } from '$renderer/ipc';
 import { TribalWorkerError } from '$worker/error';
-import { SnobHistoryEntry } from '$common/templates/snob';
+import { SnobHistoryEntry } from '$common/templates';
 
 ipcRenderer.on('tribal-worker:mint-coin', (_e, alias: UserAlias, config: SnobConfigType, history: SnobHistoryType | null) => {
     try {
