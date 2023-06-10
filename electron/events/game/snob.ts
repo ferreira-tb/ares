@@ -7,6 +7,7 @@ import { MainProcessEventError } from '$electron/error';
 import { assertUserAlias, isUserAlias } from '$common/guards';
 import { TribalWorker } from '$electron/worker';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
+import { DefaultSnobConfig } from '$common/templates';
 
 export function setSnobEvents() {
     const cacheStore = useCacheStore();
@@ -30,12 +31,7 @@ export function setSnobEvents() {
                 await SnobConfig.upsert({ id: alias, ...snobConfig });
             });
 
-            for (const contents of webContents.getAllWebContents()) {
-                if (contents !== e.sender) {
-                    contents.send('snob:patch-config', snobConfig);
-                };
-            };
-
+            patchAllWebContents('config', snobConfig, e.sender);
             isMinting.value = snobConfig.active;
         } catch (err) {
             MainProcessEventError.catch(err);
@@ -50,13 +46,7 @@ export function setSnobEvents() {
                 await SnobHistory.upsert({ id: alias, ...snobHistory });
             });
 
-            for (const contents of webContents.getAllWebContents()) {
-                if (contents !== e.sender) {
-                    contents.send('snob:patch-history', {
-                        coins: snobHistory.coins
-                    } satisfies SnobHistoryStore);
-                };
-            };
+            patchAllWebContents('history', snobHistory, e.sender);
 
             const baseDelay = getBaseDelay(snobConfig.timeUnit);
             const delay = snobConfig.delay * baseDelay;
@@ -82,11 +72,10 @@ export function setSnobEvents() {
             // Dessa maneira a store não reseta quando o usuário troca de mundo.
             const snobConfig = (await SnobConfig.findByPk(newAlias))?.toJSON();
             if (snobConfig) {
-                for (const contents of webContents.getAllWebContents()) {
-                    contents.send('snob:patch-config', snobConfig);
-                };
+                patchAllWebContents('config', snobConfig);
                 isMinting.value = snobConfig.active;
             } else {
+                patchAllWebContents('config', new DefaultSnobConfig());
                 isMinting.value = false;
             };
 
@@ -110,6 +99,18 @@ export function setSnobEvents() {
             MainProcessEventError.catch(err);
         };
     });
+};
+
+function patchAllWebContents<T extends 'config' | 'history'>(
+    dataType: T,
+    data: T extends 'config' ? SnobConfigType : T extends 'history' ? SnobHistoryStore : never,
+    sender?: Electron.WebContents
+) {
+    const channel = `snob:patch-${dataType}`;
+    for (const contents of webContents.getAllWebContents()) {
+        if (sender && contents === sender) continue;
+        contents.send(channel, data);
+    };
 };
 
 function getConfig(userAlias: MechanusComputedRef<UserAlias | null>) {
