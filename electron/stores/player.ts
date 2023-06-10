@@ -1,11 +1,10 @@
 import { ref } from 'mechanus';
-import { integerRef, integerOrNullRef, stringOrNullRef } from '$electron/utils/mechanus';
 
 export function definePlayerStore(mechanus: Mechanus) {
     return mechanus.define('player', {
-        name: ref<string | null>(null, stringOrNullRef),
-        id: ref<number | null>(null, integerOrNullRef),
-        points: ref<number>(0, integerRef),
-        villageAmount: ref<number>(0, integerRef)
+        name: ref<string | null>(null),
+        id: ref<number | null>(null),
+        points: ref<number>(0),
+        villageAmount: ref<number>(0)
     } satisfies MechanusPlayerStoreType);
 };

@@ -1,24 +1,16 @@
 import { ref } from 'mechanus';
 
-import {
-    stringOrNullRef,
-    worldOrNullRef,
-    booleanOrNullRef,
-    booleanRef,
-    integerOrNullRef
-} from '$electron/utils/mechanus';
-
 export function defineAresStore(mechanus: Mechanus) {
     return mechanus.define('ares', {
-        locale: ref<string | null>(null, stringOrNullRef),
-        world: ref<World | null>(null, worldOrNullRef),
-        majorVersion: ref<string | null>(null, stringOrNullRef),
+        locale: ref<string | null>(null),
+        world: ref<World | null>(null),
+        majorVersion: ref<string | null>(null),
 
-        screen: ref<string | null>(null, stringOrNullRef),
-        screenMode: ref<string | null>(null, stringOrNullRef),
-        pregame: ref<boolean | null>(null, booleanOrNullRef),
+        screen: ref<string | null>(null),
+        screenMode: ref<string | null>(null),
+        pregame: ref<boolean | null>(null),
 
-        captcha: ref<boolean>(false, booleanRef),
-        responseTime: ref<number | null>(null, integerOrNullRef)
+        captcha: ref<boolean>(false),
+        responseTime: ref<number | null>(null)
     } satisfies MechanusAresStoreType);
 };
