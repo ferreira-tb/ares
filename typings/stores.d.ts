@@ -223,7 +223,7 @@ type MechanusIncomingAttacksStoreType = {
     [K in keyof RemoveMethods<IncomingAttacksStore>]: MechanusRef<IncomingAttacksStore[K]>;
 };
 
-// SNOB
+// SNOB CONFIG
 interface SnobConfigStore extends SnobConfigType {
     raw(): SnobConfigType;
 };
@@ -235,4 +235,11 @@ type PiniaSnobConfigStoreType = {
         SnobConfigStore[K] extends PiniaSnobConfigStoreActions ?
         SnobConfigStore[K] :
         import('vue').Ref<SnobConfigStore[K]>;
+};
+
+// SNOB HISTORY
+type SnobHistoryStore = Omit<SnobHistoryType, 'villages'>;
+
+type PiniaSnobHistoryStoreType = {
+    [K in SnobHistoryStore]: import('vue').Ref<SnobHistoryStore[K]>;
 };

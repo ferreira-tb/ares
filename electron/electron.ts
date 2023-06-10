@@ -81,6 +81,10 @@ function createWindow() {
         mainView.webContents.loadURL(gameUrl)
     ]).catch(MainProcessError.catch);
 
+    const bounds = appConfig.get('ui').bounds;
+    if (bounds) mainWindow.setBounds(bounds);
+    mainWindow.maximize();
+
     mainWindow.addBrowserView(mainView);
     mainWindow.setTopBrowserView(mainView);
 
@@ -98,16 +102,11 @@ function createWindow() {
     mainWindow.on('system-context-menu', (e) => e.preventDefault());
     panelWindow.on('system-context-menu', (e) => e.preventDefault());
 
-    mainWindow.once('ready-to-show', () => {
-        const bounds = appConfig.get('ui').bounds;
-        if (bounds) mainWindow.setBounds(bounds);
-
-        mainWindow.show();
-    });
+    mainWindow.once('ready-to-show', () => mainWindow.show());
     
     panelWindow.once('ready-to-show', () => {
-        const bounds = appConfig.get('panel').bounds;
-        if (bounds) panelWindow.setBounds(bounds);
+        const panelBounds = appConfig.get('panel').bounds;
+        if (panelBounds) panelWindow.setBounds(panelBounds);
 
         const shouldShowPanel = appConfig.get('panel').show;
         if (shouldShowPanel) panelWindow.show();

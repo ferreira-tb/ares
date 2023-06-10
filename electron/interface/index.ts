@@ -14,6 +14,7 @@ import {
     WorldUnits,
     WorldDataFetchHistory,
     SnobConfig,
+    SnobHistory,
     VillageGroups
 } from '$electron/database/models';
 
@@ -110,6 +111,7 @@ export {
     CustomPlunderTemplate,
     DemolitionTemplate,
     SnobConfig,
+    SnobHistory,
     WorldDataFetchHistory,
     WorldConfig,
     WorldUnits,

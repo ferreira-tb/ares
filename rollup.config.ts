@@ -93,6 +93,12 @@ function workers(): RollupOptions[] {
             external: ['electron']
         },
         {
+            input: 'worker/snob/mint-coin.ts',
+            output: output('dist/worker/mint-coin.js'),
+            plugins: workerPlugins,
+            external: ['electron']
+        },
+        {
             input: 'worker/world/fetch-world-config.ts',
             output: output('dist/worker/fetch-world-config.js'),
             plugins: workerPlugins,

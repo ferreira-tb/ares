@@ -9,7 +9,6 @@ export const useSnobConfigStore = defineStore('snob-config', () => {
     const timeUnit = ref<'hours' | 'minutes' | 'seconds'>('minutes');
     const village = ref<number | null>(null);
     const group = ref<number>(0);
-    const coins = ref<number>(0);
 
     function raw() {
         return {
@@ -18,8 +17,7 @@ export const useSnobConfigStore = defineStore('snob-config', () => {
             delay: delay.value,
             timeUnit: timeUnit.value,
             village: village.value,
-            group: group.value,
-            coins: coins.value
+            group: group.value
         };
     };
 
@@ -30,8 +28,15 @@ export const useSnobConfigStore = defineStore('snob-config', () => {
         timeUnit,
         village,
         group,
-        coins,
 
         raw
     } satisfies PiniaSnobConfigStoreType;
+});
+
+export const useSnobHistoryStore = defineStore('snob-history', () => {
+    const coins = ref<number>(0);
+
+    return {
+        coins
+    } satisfies PiniaSnobHistoryStoreType;
 });

@@ -37,7 +37,9 @@ export const enum GameEndpoints {
 export const enum GameSearchParams {
     Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0',
     Groups = 'screen=overview_villages&&mode=groups&type=static',
-    Incomings = 'screen=overview_villages&mode=incomings&type=unignored&subtype=attacks&group=0&page=-1&subtype=attacks'
+    Incomings = 'screen=overview_villages&mode=incomings&type=unignored&subtype=attacks&group=0&page=-1&subtype=attacks',
+    SnobTrain = 'screen=snob&mode=train',
+    SnobCoin = 'screen=snob&mode=coin&from=-1'
 };
 
 export const enum WebsiteUrl {
@@ -62,7 +64,8 @@ export const enum TribalWorkerName {
     FetchWorldConfig = 'fetch-world-config',
     FetchWorldUnits = 'fetch-world-units',
     GetVillageGroups = 'get-village-groups',
-    HandleIncomings = 'handle-incomings'
+    HandleIncomings = 'handle-incomings',
+    MintCoin = 'mint-coin'
 };
 
 // Jogo.

@@ -86,6 +86,7 @@ export async function ipcInvoke(channel: 'plunder:destroy-demolition-config', al
 
 // Academia
 export async function ipcInvoke(channel: 'snob:get-config'): Promise<SnobConfigType | null>;
+export async function ipcInvoke(channel: 'snob:get-history'): Promise<SnobHistoryType | null>;
 
 // IpcTribal
 export async function ipcInvoke(channel: 'ipc-tribal:get-file'): Promise<string | null>;
@@ -175,6 +176,10 @@ export function ipcSend(channel: 'ipc-tribal:update-game-data', gameData: Tribal
 export function ipcSend(channel: 'tribal-worker:will-handle-incoming-attack'): void;
 export function ipcSend(channel: 'tribal-worker:did-handle-incoming-attack'): void;
 export function ipcSend(channel: 'tribal-worker:did-fail-to-handle-incoming-attack'): void;
+export function ipcSend(channel: 'tribal-worker:no-coin-to-mint'): void;
+export function ipcSend(
+    channel: 'tribal-worker:coin-minted', alias: UserAlias, config: SnobConfigType, history: SnobHistoryType
+): void;
 
 export function ipcSend(channel: string, ...args: any[]): void {
     ipcRenderer.send(channel, ...args);

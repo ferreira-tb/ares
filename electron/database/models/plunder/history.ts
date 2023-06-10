@@ -67,6 +67,7 @@ PlunderHistory.init({
     },
     villages: {
         type: DataTypes.JSON,
-        allowNull: true
+        allowNull: false,
+        defaultValue: {}
     }
 }, { sequelize, tableName: 'plunder_history', timestamps: false });

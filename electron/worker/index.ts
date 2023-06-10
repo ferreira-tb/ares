@@ -2,7 +2,13 @@ import * as path from 'node:path';
 import { BrowserView, MessageChannelMain } from 'electron';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessError } from '$electron/error';
+import { getMainViewWebContents } from '$electron/utils/view';
 import type { TribalWorkerName } from '$common/constants';
+
+type TribalWorkerEventChannel = 'did-create-worker' | 'did-destroy-worker';
+type TribalWorkerEvent = {
+    workerName: TribalWorkerName;
+};
 
 export class TribalWorker {
     /** URL que será carregada no Worker. */
@@ -17,6 +23,8 @@ export class TribalWorker {
     constructor(name: TribalWorkerName, url: import('node:url').URL) {
         this.name = name;
         this.url = url;
+
+        TribalWorker.triggerEvent('did-create-worker', { workerName: this.name });
     };
 
     get isDestroyed(): boolean {
@@ -35,6 +43,16 @@ export class TribalWorker {
         this.#workerPath = path.join(__dirname, `worker/${name}.js`);
     };
 
+    /** Equivalente a `webContents.on()`. */
+    get on(): Electron.WebContents['on'] {
+        return this.view.webContents.on.bind(this.view.webContents);
+    };
+
+    /** Equivalente a `webContents.once()`. */
+    get once(): Electron.WebContents['once'] {
+        return this.view.webContents.once.bind(this.view.webContents);
+    };
+
     get path(): string {
         if (!this.#workerPath) {
             throw new MainProcessError(`There is no path for TribalWorker "${this.name}".`);
@@ -47,6 +65,21 @@ export class TribalWorker {
             throw new MainProcessError(`There is no message port for TribalWorker "${this.name}".`);
         };
         return this.#messagePort;
+    };
+
+    /** Envia uma mensagem para o Worker através do MessageChannel. */
+    get postMessage(): Electron.MessagePortMain['postMessage'] {
+        return this.port.postMessage.bind(this.port);
+    };
+
+    /** Envia uma mensagem para o Worker através do WebContents. */
+    get postMessageToWebContents(): Electron.WebContents['postMessage'] {
+        return this.view.webContents.postMessage.bind(this.view.webContents);
+    };
+
+    /** Equivalente a `webContents.send()`. */
+    get send(): Electron.WebContents['send'] {
+        return this.view.webContents.send.bind(this.view.webContents);
     };
 
     get view(): BrowserView {
@@ -69,19 +102,30 @@ export class TribalWorker {
 
     /** Destroi a instância do Worker, removendo-a da janela mãe. */
     public destroy(): void {
-        if (this.#isDestroyed) return;
+        try {
+            if (this.#isDestroyed) return;
 
-        if (this.#messagePort) {
-            this.#messagePort.removeAllListeners().close();
-            this.#messagePort = null;
+            if (this.#messagePort) {
+                this.#messagePort.removeAllListeners().close();
+                this.#messagePort = null;
+            };
+
+            if (this.#browserView) {
+                this.#browserView.webContents.removeAllListeners();
+            };
+            
+            const mainWindow = getMainWindow();
+            mainWindow.removeBrowserView(this.view);
+            TribalWorker.deleteWorker(this.name);
+
+            this.#browserView = null;
+            this.#isDestroyed = true;
+
+            TribalWorker.triggerEvent('did-destroy-worker', { workerName: this.name });
+
+        } catch (err) {
+            MainProcessError.catch(err);
         };
-        
-        const mainWindow = getMainWindow();
-        mainWindow.removeBrowserView(this.view);
-        TribalWorker.deleteWorker(this.name);
-
-        this.#browserView = null;
-        this.#isDestroyed = true;
     };
 
     public hasView(): boolean {
@@ -133,10 +177,29 @@ export class TribalWorker {
     };
 
     static readonly #active = new Map<TribalWorkerName, TribalWorker>();
+    static readonly #listeners = new Map<TribalWorkerEventChannel, Set<(e: TribalWorkerEvent) => void>>();
+
     public static readonly deleteWorker = (name: TribalWorkerName) => TribalWorker.#active.delete(name);
     public static readonly getWorker = (name: TribalWorkerName) => TribalWorker.#active.get(name);
     public static readonly hasWorker = (name: TribalWorkerName) => TribalWorker.#active.has(name);
     public static readonly setWorker = (name: TribalWorkerName, worker: TribalWorker) => TribalWorker.#active.set(name, worker);
+
+    public static addListener(channel: TribalWorkerEventChannel, listener: (e: TribalWorkerEvent) => void) {
+        const listeners = this.#listeners.get(channel) ?? new Set();
+        listeners.add(listener);
+        TribalWorker.#listeners.set(channel, listeners);
+    };
+
+    /**
+     * Cria uma URL com base no URL do `webContents` da view principal.
+     * @param search String que será adicionada à query da URL.
+     */
+    public static createURL(search?: string): import('node:url').URL {
+        const mainViewWebContents = getMainViewWebContents();
+        const url = new URL(mainViewWebContents.getURL());
+        if (typeof search === 'string') url.search = search;
+        return url;
+    };
 
     /**
      * Destrói um Worker, não apenas removendo-o da lista de instâncias ativas, mas também da janela mãe.
@@ -147,11 +210,9 @@ export class TribalWorker {
             tribalWorker.destroy();
         } else {
             const worker = TribalWorker.getWorker(tribalWorker);
-            if (!(worker instanceof TribalWorker)) {
-                throw new MainProcessError('A valid TribalWorker instance or name must be provided.');
+            if (worker instanceof TribalWorker) {
+                worker.destroy();
             };
-
-            worker.destroy();
         };
     };
 
@@ -159,6 +220,33 @@ export class TribalWorker {
     public static destroyAllWorkers() {
         for (const worker of this.#active.values()) {
             worker.destroy();
+        };
+    };
+
+    public static removeListener(channel: TribalWorkerEventChannel, listener: (e: TribalWorkerEvent) => void) {
+        const listeners = this.#listeners.get(channel);
+        if (listeners instanceof Set) {
+            listeners.delete(listener);
+            if (listeners.size === 0) {
+                TribalWorker.#listeners.delete(channel);
+            };
+        };
+    };
+
+    public static removeAllListeners(channel?: TribalWorkerEventChannel) {
+        if (typeof channel === 'string') {
+            TribalWorker.#listeners.delete(channel);
+        } else {
+            TribalWorker.#listeners.clear();
+        };
+    };
+
+    public static triggerEvent(channel: TribalWorkerEventChannel, event: TribalWorkerEvent) {
+        const listeners = TribalWorker.#listeners.get(channel);
+        if (listeners instanceof Set) {
+            for (const listener of listeners) {
+                listener(event);
+            };
         };
     };
 };

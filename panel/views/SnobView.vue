@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import { storeToRefs } from 'pinia';
 import { NButton, NButtonGroup } from 'naive-ui';
-import { computedAsync, watchDeep, whenever } from '@vueuse/core';
+import { computedAsync, watchDeep, watchImmediate, whenever } from '@vueuse/core';
 import { useCurrentVillageStore, useGroupsStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { useVillage } from '$renderer/composables/village';
 import { PanelSnobViewError } from '$panel/error';
 import { decodeString } from '$common/helpers';
-import TheCoinedAmount from '$panel/components/TheCoinedAmount.vue';
+import TheMintedCoins from '$panel/components/TheMintedCoins.vue';
 
 const config = useSnobConfigStore();
 const currentVillage = useCurrentVillageStore();
@@ -16,13 +17,16 @@ const groups = useGroupsStore();
 const { all: allGroups } = storeToRefs(groups);
 const snobButtonText = computed(() => config.active ? 'Parar' : 'Cunhar');
 
-const village = computedAsync<WorldVillagesType | null>(async () => {
-    if (!config.village) return null;
-    const data = await ipcInvoke('world-data:get-villages', config.village);
-    if (data.length === 0) return null;
-    return data[0];
-}, null);
+const translatedTimeUnit = computed(() => {
+    switch (config.timeUnit) {
+        case 'seconds': return 'segundos';
+        case 'minutes': return 'minutos';
+        case 'hours': return 'horas';
+        default: throw new PanelSnobViewError('Invalid time unit');
+    };
+});
 
+const village = useVillage(toRef(() => config.village));
 const villageName = computed<string | null>(() => {
     if (!village.value) return null;
     return decodeString(village.value.name);
@@ -53,6 +57,12 @@ watchDeep(config, () => {
     ipcSend('snob:update-config', config.raw());
 });
 
+watchImmediate(() => config.active, (active) => {
+    if (active && config.mode === 'single' && !config.village) {
+        config.active = false;
+    };
+});
+
 // Quando a cunhagem é ativada, salva a aldeia atual como origem da cunhagem simples.
 // Como o watcher não é imediato, ele não irá alterar a aldeia caso a cunhagem já esteja ativa em outra.
 whenever(() => config.active, () => {
@@ -66,7 +76,11 @@ whenever(() => config.active, () => {
     <main>
         <div class="button-area">
             <NButtonGroup>
-                <NButton round @click="config.active = !config.active">
+                <NButton
+                    round
+                    :disabled="config.mode === 'single' && !config.village"
+                    @click="config.active = !config.active"
+                >
                     {{ snobButtonText }}
                 </NButton>
                 <NButton round @click="ipcSend('config:open', 'config-buildings-snob')">
@@ -75,9 +89,9 @@ whenever(() => config.active, () => {
             </NButtonGroup>
         </div>
 
-        <TheCoinedAmount />
+        <TheMintedCoins />
 
-        <div class="current-coin-location">
+        <div class="current-mint-location">
             <div v-if="config.mode === 'single'">
                 <div class="location-label">Aldeia selecionada</div>
                 <a
@@ -100,6 +114,11 @@ whenever(() => config.active, () => {
                 <div v-else>Nenhum grupo</div>
             </div>
         </div>
+
+        <div class="current-delay">
+            <div>Tempo de espera</div>
+            <div>{{ `${config.delay} ${translatedTimeUnit}` }}</div>
+        </div>
     </main>
 </template>
 
@@ -111,17 +130,30 @@ whenever(() => config.active, () => {
     margin-bottom: 1em;
 }
 
-.current-coin-location {
+.current-mint-location {
     @include main.flex-x-center-y-center;
     margin-top: 1em;
     
     .location-label {
-        margin-bottom: 0.5em;
+        margin-bottom: 0.3em;
         font-weight: bold;
     }
 
     a {
         cursor: pointer;
+    }
+}
+
+.current-delay {
+    margin-top: 0.5em;
+
+    & > div {
+        @include main.flex-x-center-y-center;
+    }
+
+    & > div:first-child {
+        margin-bottom: 0.3em;
+        font-weight: bold;
     }
 }
 </style>
