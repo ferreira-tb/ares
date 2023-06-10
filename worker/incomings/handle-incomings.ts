@@ -74,6 +74,8 @@ async function handleIncomings(port: MessagePort) {
         const playerName = await ipcInvoke('player:name');
         if (!playerName) throw new TribalWorkerError('Invalid player name.');
 
+        // Mundos diferentes possuem origens diferentes na URL.
+        // Sendo assim, apenas usar o nome do jogador como prefixo já é suficiente.
         const labeled = useLocalStorage<LabeledAttack[]>(`${playerName}:labeled-incomings`, []);
         labeled.value = labeled.value.filter(({ arrivalTime }) => arrivalTime < Date.now());
 
