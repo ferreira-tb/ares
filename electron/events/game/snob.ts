@@ -56,9 +56,8 @@ export function setSnobEvents() {
         };
     });
 
-    type ToNextMintParams = readonly [UserAlias, SnobConfigType, SnobHistoryType];
-    ipcMain.on('tribal-worker:no-coin-to-mint', (_e, ...args: ToNextMintParams) => toNextMint(...args));
-    ipcMain.on('tribal-worker:did-fail-to-mint-coin', (_e, ...args: ToNextMintParams) => toNextMint(...args));
+    ipcMain.on('tribal-worker:no-coin-to-mint', (_e, ...args: Parameters<typeof toNextMint>) => toNextMint(...args));
+    ipcMain.on('tribal-worker:did-fail-to-mint-coin', (_e, ...args: Parameters<typeof toNextMint>) => toNextMint(...args));
 
     watch(userAlias, async (newAlias) => {
         try {
