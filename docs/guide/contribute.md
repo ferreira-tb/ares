@@ -1,3 +1,7 @@
+<script setup>
+import FlexImage from '../components/FlexImage.vue';
+</script>
+
 # Contribua
 
 Devido a limitações de tempo, o desenvolvimento do Ares tem sido lento. Por isso, qualquer ajuda é muito bem-vinda, para que assim consigamos entregar novas funcionalidades mais rapidamente.
@@ -7,7 +11,7 @@ Sem sombra alguma de dúvida, a melhor forma de contribuir é testando o Ares e 
 
 Ao reportar um erro, é recomendado exportar o registro de erros e enviar o arquivo junto com a descrição do problema. Para isso, basta clicar no botão no mostrado na imagem abaixo e então em `Exportar`. O arquivo será salvo num local de sua preferência.
 
-![Registro de erros](/screenshots/error-log.png)
+<FlexImage src="/screenshots/error-log.png" alt="Registro de erros" />
 
 ## Tradução
 Atualmente o Ares só está disponível em português do Brasil, mas a ideia é que ele seja eventualmente traduzido para outras línguas. No entanto, não é suficiente apenas traduzir o texto, pois algumas funcionalidades são muito dependentes da região.

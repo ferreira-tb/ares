@@ -1,3 +1,7 @@
+<script setup>
+import FlexImage from '../../components/FlexImage.vue';
+</script>
+
 # Saque
 
 ::: warning Assistente de saque
@@ -10,7 +14,7 @@ A lógica de funcionamento do saque é bastante simples, mas essencialmente dife
 
 ## Painel
 
-![Saque - Painel](/screenshots/panel-plunder.png)
+<FlexImage src="/screenshots/panel-plunder.png" alt="Saque - Painel" />
 
 - **Ignorar muralha**: impede ataques contra aldeias que tenham muralha. É recomendado utilizar essa opção em conjunto com a opção `destruir muralha` (explicada mais adiante).
 

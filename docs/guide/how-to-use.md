@@ -1,5 +1,6 @@
 <script setup>
 import DownloadLink from '../components/DownloadLink.vue';
+import FlexImage from '../components/FlexImage.vue';
 </script>
 
 # Como usar
@@ -15,7 +16,7 @@ Antes de mais nada, faça download da <DownloadLink textContent="versão mais re
 ## Visão geral
 Ao abrir o Ares, você verá uma tela como esta:
 
-![Tela inicial do Ares](/screenshots/ares-home.png)
+<FlexImage src="/screenshots/ares-home.png" alt="Tela inicial do Ares" />
 
 ### Menu
 No canto superior esquerdo, é possível encontrar o menu principal. Nele há ferramentas comuns a qualquer navegador, como os botões de *voltar* e *atualizar*, que fazem exatamente o que você espera que eles façam.
