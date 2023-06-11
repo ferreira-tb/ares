@@ -91,8 +91,9 @@ function sidebarGuide() {
             text: 'Ferramentas',
             collapsed: false,
             items: [
-                { text: 'Saque', link: '/guide/tools/plunder' },
-                { text: 'Etiquetador', link: '/guide/tools/incomings' }
+                { text: 'Academia', link: '/guide/tools/snob' },
+                { text: 'Etiquetador', link: '/guide/tools/incomings' },
+                { text: 'Saque', link: '/guide/tools/plunder' }
             ]
         }
     ]

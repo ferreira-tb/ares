@@ -1,6 +1,6 @@
 # Etiquetador de ataques
 ::: warning Conta premium
-Para usar o etiquetador de ataques, é necessário ter uma conta premium ativa.
+Para usar o etiquetador de ataques, é necessário ter uma conta premium.
 :::
 
 Sempre que detectar ataques a caminho, o Ares os etiquetará automaticamente, de forma a indentificar a unidade mais lenta presente no ataque.

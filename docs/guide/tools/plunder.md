@@ -5,7 +5,7 @@ import FlexImage from '../../components/FlexImage.vue';
 # Saque
 
 ::: warning Assistente de saque
-Para usar essa funcionalidade, é preciso ter assistente de saque ativo.
+Para usar essa funcionalidade, é necessário ter assistente de saque ativo.
 :::
 
 Dentre todas as coisas que uma ferramenta como o Ares pode fazer, o saque com certeza está entre as mais importantes. Assim sendo, é natural que seja uma das funcionalidades que mais recebe atenção durante o desenvolvimento.
@@ -14,7 +14,7 @@ A lógica de funcionamento do saque é bastante simples, mas essencialmente dife
 
 ## Painel
 
-<FlexImage src="/screenshots/panel-plunder.png" alt="Saque - Painel" />
+<FlexImage src="/screenshots/panel-plunder.png" alt="Painel - Assistente de Saque" />
 
 - **Ignorar muralha**: impede ataques contra aldeias que tenham muralha. É recomendado utilizar essa opção em conjunto com a opção `destruir muralha` (explicada mais adiante).
 
@@ -41,9 +41,9 @@ A lógica de funcionamento do saque é bastante simples, mas essencialmente dife
 
 ## Modelo C
 - **Padrão do modelo C**: define a maneira como o Ares utilizará o modelo C quando `usar modelo C` estiver ativo.
-  - Normal: tentará utilizar o modelo C sempre que possível, mas, se não for, usará um modelo convencional.
-  - Somente C: se o Ares não puder utilizar o modelo C, ele não atacará a aldeia.
-  - Quando em excesso: como `normal`, mas a tentativa só ocorrerá se a quantidade de recursos prevista na aldeia for muito alta.
+  - `Normal`: tentará utilizar o modelo C sempre que possível, mas, se não for, usará um modelo convencional.
+  - `Somente C`: se o Ares não puder utilizar o modelo C, ele não atacará a aldeia.
+  - `Quando em excesso`: como `normal`, mas a tentativa só ocorrerá se a quantidade de recursos prevista na aldeia for muito alta.
 
 - **Distância máxima**: define a distância máxima (em campos) que o Ares deve atacar usando o modelo C. Aldeias mais distantes serão ignoradas.
 
@@ -53,11 +53,11 @@ A lógica de funcionamento do saque é bastante simples, mas essencialmente dife
 
 ## Grupo
 ::: warning Conta premium
-Para usar o ataque em grupo, é preciso ter uma conta premium ativa.
+Para usar o ataque em grupo, é necessário ter uma conta premium.
 :::
 
 ::: tip Dica
-A lista de grupos não é atualizada automaticamente quando um grupo é criado ou excluído. É preciso atualizar manualmente, clicando no botão `atualizar grupos`.
+A lista de grupos não é atualizada automaticamente quando um grupo é criado ou excluído. É preciso atualizá-la manualmente, clicando no botão `atualizar grupos`.
 :::
 
 - **Grupo de ataque**: define o grupo que será utilizado para atacar. Grupos manuais não são permitidos.
