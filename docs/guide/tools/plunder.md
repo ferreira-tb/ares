@@ -5,7 +5,7 @@ import FlexImage from '../../components/FlexImage.vue';
 # Saque
 
 ::: warning Assistente de saque
-Para usar essa funcionalidade, é preciso ter assistente de saque ativo.
+Para usar essa funcionalidade, é necessário ter assistente de saque ativo.
 :::
 
 Dentre todas as coisas que uma ferramenta como o Ares pode fazer, o saque com certeza está entre as mais importantes. Assim sendo, é natural que seja uma das funcionalidades que mais recebe atenção durante o desenvolvimento.
@@ -14,13 +14,13 @@ A lógica de funcionamento do saque é bastante simples, mas essencialmente dife
 
 ## Painel
 
-<FlexImage src="/screenshots/panel-plunder.png" alt="Saque - Painel" />
+<FlexImage src="/screenshots/panel-plunder.png" alt="Painel - Assistente de Saque" />
 
 - **Ignorar muralha**: impede ataques contra aldeias que tenham muralha. É recomendado utilizar essa opção em conjunto com a opção `destruir muralha` (explicada mais adiante).
 
 - **Destruir muralha**: instrui o Ares a tentar destruir a muralha das aldeias atacadas. Essa opção tem prioridade sobre `ignorar muralha`, ou seja, se ambas estiverem marcadas, o Ares tentará destruir a muralha. Se ele não conseguir e `ignorar muralha` estiver ativo, ele não atacará a aldeia. É bastante comum, e recomendado, utilizar essas duas opções em conjunto.
 
-- **Ignorar delay**: para tentar conter o uso de bots e outras ferramentas que automatizam o jogo, o Tribal Wars impõe um limite em quantas ações podem ser realizadas em um segundo. Para impedir que esse limite seja alcançado durante os ataques, o Ares adiciona um pequeno atraso entre cada ataque. Essa opção permite que você remova esse atraso.
+- **Ignorar delay**: o Tribal Wars impõe um limite em quantas ações podem ser realizadas em um segundo. Para impedir que esse limite seja alcançado durante os ataques, o Ares adiciona um pequeno atraso entre cada ataque. Essa opção permite que você remova esse atraso.
 
 - **Ataque em grupo**: permite que o Ares ataque a partir de várias aldeias, usando como base um grupo dinâmico. Grupos manuais não são permitidos.
 
@@ -41,9 +41,9 @@ A lógica de funcionamento do saque é bastante simples, mas essencialmente dife
 
 ## Modelo C
 - **Padrão do modelo C**: define a maneira como o Ares utilizará o modelo C quando `usar modelo C` estiver ativo.
-  - Normal: tentará utilizar o modelo C sempre que possível, mas, se não for, usará um modelo convencional.
-  - Somente C: se o Ares não puder utilizar o modelo C, ele não atacará a aldeia.
-  - Quando em excesso: como `normal`, mas a tentativa só ocorrerá se a quantidade de recursos prevista na aldeia for muito alta.
+  - `Normal`: tentará utilizar o modelo C sempre que possível, mas, se não for, usará um modelo convencional.
+  - `Somente C`: se o Ares não puder utilizar o modelo C, ele não atacará a aldeia.
+  - `Quando em excesso`: como `normal`, mas a tentativa só ocorrerá se a quantidade de recursos prevista na aldeia for muito alta.
 
 - **Distância máxima**: define a distância máxima (em campos) que o Ares deve atacar usando o modelo C. Aldeias mais distantes serão ignoradas.
 
@@ -53,11 +53,11 @@ A lógica de funcionamento do saque é bastante simples, mas essencialmente dife
 
 ## Grupo
 ::: warning Conta premium
-Para usar o ataque em grupo, é preciso ter uma conta premium ativa.
+Para usar o ataque em grupo, é necessário ter uma conta premium.
 :::
 
 ::: tip Dica
-A lista de grupos não é atualizada automaticamente quando um grupo é criado ou excluído. É preciso atualizar manualmente, clicando no botão `atualizar grupos`.
+A lista de grupos não é atualizada automaticamente quando um grupo é criado ou excluído. É preciso atualizá-la manualmente, clicando no botão `atualizar grupos`.
 :::
 
 - **Grupo de ataque**: define o grupo que será utilizado para atacar. Grupos manuais não são permitidos.
