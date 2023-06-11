@@ -144,18 +144,6 @@ type MechanusUnitsStoreType = {
     [K in keyof RemoveMethods<UnitsStore>]: MechanusRef<RemoveMethods<UnitsStore>[K]>;
 };
 
-// WORLD CONFIG
-type WorldConfigStore = WorldConfigType;
-type MechanusWorldConfigStoreType = {
-    [K in keyof WorldConfigStore]: MechanusRef<WorldConfigStore[K]>;
-};
-
-// WORLD UNIT
-type WorldUnitStoresMap = ReadonlyMap<AllUnits, () => MechanusStore<UnitDetails>>;
-type MechanusWorldUnitStoreType = {
-    [K in keyof UnitDetails]: MechanusRef<UnitDetails[K]>;
-};
-
 // CACHE
 interface CacheStore {
     readonly region: GameRegion;

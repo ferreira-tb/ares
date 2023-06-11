@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron';
+import { ref, storeToRefs, watchImmediate } from 'mechanus';
 import { isInteger, isWorld } from '$common/guards';
 import { MainProcessEventError } from '$electron/error';
-import { extractWorldUnitsFromMap } from '$electron/utils/helpers';
-import { useCacheStore, WorldUnits, worldUnitsMap } from '$electron/interface';
+import { useCacheStore, WorldUnits } from '$electron/interface';
 import { setPlunderGroupEvents } from '$electron/events/plunder/group';
 import { setPlunderPageEvents } from '$electron/events/plunder/page';
 import { setPlunderConfigEvents } from '$electron/events/plunder/config';
@@ -11,26 +11,50 @@ import { setPlunderDemolitionEvents } from '$electron/events/plunder/demolition'
 import { setPlunderTemplatesEvents } from '$electron/events/plunder/templates';
 
 export function setPlunderEvents() {
-    const cacheStore = useCacheStore();
-    
     // Calcula a capacidade de carga de um determinado conjunto de unidades.
-    ipcMain.handle('plunder:calc-carry-capacity', async (_e, units: Partial<UnitAmount>, world?: World | null) => {
+    ipcMain.handle('plunder:calc-carry-capacity', calcCarryCapacityHandler());
+
+    setPlunderConfigEvents();
+    setPlunderPageEvents();
+    setPlunderGroupEvents();
+    setPlunderHistoryEvents();
+    setPlunderDemolitionEvents();
+    setPlunderTemplatesEvents();
+};
+
+function calcCarryCapacityHandler() {
+    const cacheStore = useCacheStore();
+    const { world: cachedWorld } = storeToRefs(cacheStore);
+
+    const currentWorldUnitsInfo = ref<WorldUnitsType | null>(null);
+    watchImmediate(cachedWorld, async (world) => {
+        if (!isWorld(world)) {
+            currentWorldUnitsInfo.value = null;
+            return;
+        };
+
+        const worldUnitsRow = await WorldUnits.findByPk(world);
+        currentWorldUnitsInfo.value = worldUnitsRow?.toJSON() ?? null;
+    });
+
+    return async function(_e: unknown, unitsToCheck: Partial<UnitAmount>, world?: World | null) {
         try {
-            world ??= cacheStore.world;
+            world ??= cachedWorld.value;
             if (!isWorld(world)) return null;
 
-            let worldUnits: WorldUnitsType;
-            if (world === cacheStore.world) {
-                worldUnits = extractWorldUnitsFromMap(worldUnitsMap);
+            let units: WorldUnitsType;
+            if (world === cachedWorld.value) {
+                if (!currentWorldUnitsInfo.value) return null;
+                units = currentWorldUnitsInfo.value;
             } else {
                 const worldUnitsRow = await WorldUnits.findByPk(world);
                 if (!worldUnitsRow) return null;
-                worldUnits = worldUnitsRow.toJSON();
+                units = worldUnitsRow.toJSON();
             };
             
-            const entries = Object.entries(units) as [keyof UnitAmount, number][];
+            const entries = Object.entries(unitsToCheck) as [keyof UnitAmount, number][];
             return entries.reduce((carryCapacity, [unit, amount]) => {
-                const unitCapacity = worldUnits[unit]?.carry;
+                const unitCapacity = units[unit]?.carry;
                 if (isInteger(unitCapacity)) carryCapacity += unitCapacity * amount;
                 return carryCapacity;
             }, 0);
@@ -39,12 +63,5 @@ export function setPlunderEvents() {
             MainProcessEventError.catch(err);
             return null;
         };
-    });
-
-    setPlunderConfigEvents();
-    setPlunderPageEvents();
-    setPlunderGroupEvents();
-    setPlunderHistoryEvents();
-    setPlunderDemolitionEvents();
-    setPlunderTemplatesEvents();
+    };
 };

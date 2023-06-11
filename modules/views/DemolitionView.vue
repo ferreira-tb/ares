@@ -24,7 +24,7 @@ interface DemolitionData extends DemolitionTroops {
 
 const message = useMessage();
 
-const isArcherWorld = await ipcInvoke('game:is-archer-world');
+const isArcherWorld = await ipcInvoke('world:is-archer-world');
 const userAlias = await ipcInvoke('user-alias');
 const template = await ipcInvoke('plunder:get-demolition-config');
 const demolitionData = reactive<DemolitionData[]>([]);

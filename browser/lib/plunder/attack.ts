@@ -67,9 +67,12 @@ function sendAttack(button: HTMLAnchorElement) {
  */
 export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<boolean> {
     try {
-        const isArcherWorld = await ipcInvoke('game:is-archer-world');
+        const isArcherWorld = await ipcInvoke('world:is-archer-world');
+        if (typeof isArcherWorld !== 'boolean') {
+            throw new PlunderError('Could not determine if world is archer world.');
+        };
+        
         const commandForm = document.queryAndAssert('#command-data-form[action*="place" i]');
-
         for (const [key, value] of Object.entries(units)) {
             if (!isArcherWorld && /archer/.test(key)) continue;
             assertInteger(value, `Expected integer value for ${key}, but got ${value}.`);

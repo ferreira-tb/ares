@@ -20,7 +20,6 @@ import {
 } from '$electron/database/models';
 
 import {
-    createWorldUnitStoresMap,
     defineAresStore,
     defineBrowserViewStore,
     defineCacheStore,
@@ -33,12 +32,10 @@ import {
     definePlunderCacheStore,
     definePlunderConfigStore,
     definePlunderHistoryStore,
-    defineUnitsStore,
-    defineWorldConfigStore
+    defineUnitsStore
 } from '$electron/stores';
 
 import { onAliasChange } from '$electron/interface/alias';
-import { onWorldChange } from '$electron/interface/world';
 import { catchError } from '$electron/interface/error';
 
 import { MainProcessError } from '$electron/error';
@@ -58,16 +55,6 @@ export const usePlunderConfigStore = definePlunderConfigStore(mechanus);
 export const usePlunderHistoryStore = definePlunderHistoryStore(mechanus);
 export const usePlunderCacheStore = definePlunderCacheStore(mechanus);
 export const useUnitsStore = defineUnitsStore(mechanus);
-export const useWorldConfigStore = defineWorldConfigStore(mechanus);
-export const worldUnitsMap = createWorldUnitStoresMap(mechanus);
-
-const worldArgs = [
-    WorldConfig,
-    WorldUnits,
-    useCacheStore,
-    useWorldConfigStore,
-    worldUnitsMap
-] as const;
 
 const aliasArgs = [
     PlunderConfig,
@@ -84,8 +71,7 @@ MainProcessError.catch = catchError(ElectronErrorLog);
 
 // WATCHERS
 // Essas funções retornam outras funções, que, por sua vez, são usadas como callbacks.
-const { world, userAlias } = storeToRefs(useCacheStore());
-watch(world, onWorldChange(...worldArgs));
+const { userAlias } = storeToRefs(useCacheStore());
 watch(userAlias, onAliasChange(...aliasArgs));
 
 const { screen } = storeToRefs(useAresStore());

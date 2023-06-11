@@ -40,21 +40,21 @@ export async function ipcInvoke(channel: 'current-view:web-contents-id'): Promis
 export async function ipcInvoke(channel: 'current-view:can-go-back'): Promise<boolean>;
 export async function ipcInvoke(channel: 'current-view:can-go-forward'): Promise<boolean>;
 
-// World Data
+// Jogo
+export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
+export async function ipcInvoke(channel: 'game:get-all-village-groups'): Promise<Set<VillageGroup>>;
+
+// Mundo
+export async function ipcInvoke(channel: 'world:current'): Promise<World | null>;
+export async function ipcInvoke(channel: 'world:get-config', world?: World): Promise<WorldConfigType | null>;
+export async function ipcInvoke(channel: 'world:get-units-info', world?: World): Promise<WorldUnitsType | null>;
+export async function ipcInvoke(channel: 'world:is-archer-world'): Promise<boolean | null>;
 export async function ipcInvoke(
     channel: 'world-data:get-villages', id?: number[] | number, world?: World
 ): Promise<WorldVillageType[]>;
 export async function ipcInvoke(
     channel: 'world-data:get-player-villages', player: number, world?: World
 ): Promise<WorldVillageType[]>;
-
-// Jogo
-export async function ipcInvoke(channel: 'game:current-world'): Promise<World | null>;
-export async function ipcInvoke(channel: 'game:current-world-config'): Promise<WorldConfigType>;
-export async function ipcInvoke(channel: 'game:current-world-units'): Promise<WorldUnitsType>;
-export async function ipcInvoke(channel: 'game:is-archer-world'): Promise<boolean>;
-export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
-export async function ipcInvoke(channel: 'game:get-all-village-groups'): Promise<Set<VillageGroup>>;
 
 // Jogador
 export async function ipcInvoke(channel: 'player:name'): Promise<string | null>;

@@ -3,6 +3,7 @@ import { ref, watchEffect } from 'vue';
 import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 import { isUserAlias } from '$common/guards';
+import { ModuleError } from '$modules/error';
 import PlunderTemplateModal from '$modules/components/PlunderTemplateModal.vue';
 import ResultError from '$renderer/components/ResultError.vue';
 import ResultInfo from '$renderer/components/ResultInfo.vue';
@@ -10,8 +11,12 @@ import PlunderTemplateCard from '$modules/components/PlunderTemplateCard.vue';
 
 const locale = await ipcInvoke('app:locale');
 const userAlias = await ipcInvoke('user-alias');
-const isArcherWorld = await ipcInvoke('game:is-archer-world');
+const isArcherWorld = await ipcInvoke('world:is-archer-world');
 const previousTemplates = await ipcInvoke('plunder:get-custom-templates');
+
+if (typeof isArcherWorld !== 'boolean') {
+    throw new ModuleError('Could not determine if world is archer world.');
+};
 
 const showTemplateModal = ref<boolean>(false);
 const templates = ref<CustomPlunderTemplateType[]>(previousTemplates ?? []);

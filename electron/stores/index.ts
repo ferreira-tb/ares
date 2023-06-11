@@ -7,4 +7,3 @@ export * from '$electron/stores/plunder';
 export * from '$electron/stores/units';
 export * from '$electron/stores/view';
 export * from '$electron/stores/village';
-export * from '$electron/stores/world';
