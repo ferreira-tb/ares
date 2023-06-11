@@ -10,7 +10,7 @@ hero:
   actions:
     - theme: brand
       text: Baixar agora
-      link: https://github.com/ferreira-tb/ares/releases/download/1.0.0-alpha.32/ares-win32-x64-1.0.0-alpha.32.zip
+      link: https://github.com/ferreira-tb/ares/releases/download/1.0.0-alpha.33/ares-win32-x64-1.0.0-alpha.33.zip
     - theme: alt
       text: Conheça o projeto
       link: /guide/what-is-ares
