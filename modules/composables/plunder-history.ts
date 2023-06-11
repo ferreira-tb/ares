@@ -17,7 +17,7 @@ export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, p
     });
 
     const villageData = ref<PlunderHistoryVillageData[]>([]);
-    const villageMap = reactive(new Map<number, WorldVillagesType>());
+    const villageMap = reactive(new Map<number, WorldVillageType>());
 
     function onHeaderInfoUpdated(callback: (newProps: PlunderHistoryDataTableHeaderProps) => void) {
         const unwatch = watchDeep(headerProps, callback);

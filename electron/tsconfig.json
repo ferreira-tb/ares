@@ -8,8 +8,9 @@
         "target": "esnext",
         "lib": ["esnext", "dom"],
         "paths": {
-            "$electron/*": ["./*"],
-            "$common/*": ["../common/*"]
+            "$child-process/*": ["./child-process/*"],
+            "$common/*": ["../common/*"],
+            "$electron/*": ["./*"]
         },
         
         "alwaysStrict": true,

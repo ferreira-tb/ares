@@ -4,8 +4,8 @@ import csvParser from 'csv-parser';
 import { promisify } from 'node:util';
 import { Readable } from 'node:stream';
 import { assertWorld } from '$common/guards';
-import { getRegionFromWorld, getPlayerDataUrl, getVillageDataUrl } from '$common/helpers';
-import { ChildProcessError } from '$electron/child-process/error';
+import { getRegionFromWorld, getAllyDataUrl, getPlayerDataUrl, getVillageDataUrl } from '$common/helpers';
+import { ChildProcessError } from '$child-process/error';
 
 const gunzip = promisify(zlib.gunzip);
 
@@ -16,9 +16,10 @@ process.parentPort.once('message', async (e) => {
         assertWorld(request.world, ChildProcessError, `Invalid world: ${request.world}.`);
         const region = getRegionFromWorld(request.world, ChildProcessError);
         
+        const allies = request.ally ? await fetchAllies(request.world, region) : [];
         const players = request.player ? await fetchPlayers(request.world, region) : [];
         const villages = request.village ? await fetchVillages(request.world, region) : [];
-        port.postMessage({ players, villages } satisfies WorldDataType);
+        port.postMessage({ allies, players, villages } satisfies WorldDataType);
 
     } catch (err) {
         if (err instanceof Error) {
@@ -41,21 +42,58 @@ async function fetchDataCSV(url: URL, world: World): Promise<Buffer> {
     return csv;
 };
 
-async function fetchPlayers(world: World, region: GameRegion): Promise<WorldPlayersType[]> {
+async function fetchAllies(world: World, region: GameRegion): Promise<WorldAllyType[]> {
     try {
-        const url = getPlayerDataUrl(world, region);
+        const url = getAllyDataUrl(world, region);
         const csv = await fetchDataCSV(url, world);
 
-        const players: WorldPlayersType[] = [];
-        const headers: (keyof WorldPlayersType)[] = ['id', 'name', 'ally', 'villages', 'points', 'rank'];
+        const allies: WorldAllyType[] = [];
+        const headers: (keyof WorldAllyType)[] = ['id', 'name', 'tag', 'members', 'villages', 'points', 'allPoints', 'rank'];
         const stream = Readable.from(csv).pipe(csvParser({ headers }));
 
         await new Promise<void>((resolve, reject) => {
             stream.on('error', (err) => reject(err));
             stream.on('end', () => resolve());
 
-            stream.on('data', (data: { [key in keyof WorldPlayersType]: string }) => {
-                const player: WorldPlayersType = {
+            stream.on('data', (data: { [key in keyof WorldAllyType]: string }) => {
+                const ally: WorldAllyType = {
+                    id: data.id.toIntegerStrict(),
+                    name: data.name,
+                    tag: data.tag,
+                    members: data.members.toIntegerStrict(),
+                    villages: data.villages.toIntegerStrict(),
+                    points: data.points.toIntegerStrict(),
+                    allPoints: data.allPoints.toIntegerStrict(),
+                    rank: data.rank.toIntegerStrict()
+                };
+
+                allies.push(ally);
+            });
+        });
+
+        return allies;
+
+    } catch (err) {
+        await ChildProcessError.catch(err);
+        return [];
+    };
+};
+
+async function fetchPlayers(world: World, region: GameRegion): Promise<WorldPlayerType[]> {
+    try {
+        const url = getPlayerDataUrl(world, region);
+        const csv = await fetchDataCSV(url, world);
+
+        const players: WorldPlayerType[] = [];
+        const headers: (keyof WorldPlayerType)[] = ['id', 'name', 'ally', 'villages', 'points', 'rank'];
+        const stream = Readable.from(csv).pipe(csvParser({ headers }));
+
+        await new Promise<void>((resolve, reject) => {
+            stream.on('error', (err) => reject(err));
+            stream.on('end', () => resolve());
+
+            stream.on('data', (data: { [key in keyof WorldPlayerType]: string }) => {
+                const player: WorldPlayerType = {
                     id: data.id.toIntegerStrict(),
                     name: data.name,
                     ally: data.ally.toIntegerStrict(),
@@ -76,21 +114,21 @@ async function fetchPlayers(world: World, region: GameRegion): Promise<WorldPlay
     };
 };
 
-async function fetchVillages(world: World, region: GameRegion): Promise<WorldVillagesType[]> {
+async function fetchVillages(world: World, region: GameRegion): Promise<WorldVillageType[]> {
     try {
         const url = getVillageDataUrl(world, region);
         const csv = await fetchDataCSV(url, world);
 
-        const villages: WorldVillagesType[] = [];
-        const headers: (keyof WorldVillagesType)[] = ['id', 'name', 'x', 'y', 'player', 'points', 'type'];
+        const villages: WorldVillageType[] = [];
+        const headers: (keyof WorldVillageType)[] = ['id', 'name', 'x', 'y', 'player', 'points', 'type'];
         const stream = Readable.from(csv).pipe(csvParser({ headers }));
     
         await new Promise<void>((resolve, reject) => {
             stream.on('error', (err) => reject(err));
             stream.on('end', () => resolve());
 
-            stream.on('data', (data: { [key in keyof WorldVillagesType]: string }) => {
-                const village: WorldVillagesType = {
+            stream.on('data', (data: { [key in keyof WorldVillageType]: string }) => {
+                const village: WorldVillageType = {
                     id: data.id.toIntegerStrict(),
                     name: data.name,
                     x: data.x.toIntegerStrict(),

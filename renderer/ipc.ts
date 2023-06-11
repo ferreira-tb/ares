@@ -43,10 +43,10 @@ export async function ipcInvoke(channel: 'current-view:can-go-forward'): Promise
 // World Data
 export async function ipcInvoke(
     channel: 'world-data:get-villages', id?: number[] | number, world?: World
-): Promise<WorldVillagesType[]>;
+): Promise<WorldVillageType[]>;
 export async function ipcInvoke(
     channel: 'world-data:get-player-villages', player: number, world?: World
-): Promise<WorldVillagesType[]>;
+): Promise<WorldVillageType[]>;
 
 // Jogo
 export async function ipcInvoke(channel: 'game:current-world'): Promise<World | null>;

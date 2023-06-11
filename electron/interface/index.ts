@@ -8,6 +8,7 @@ import {
     PlunderConfig,
     CustomPlunderTemplate,
     DemolitionTemplate,
+    getAlliesTable,
     getPlayersTable,
     getVillagesTable,
     WorldConfig,
@@ -61,14 +62,11 @@ export const useWorldConfigStore = defineWorldConfigStore(mechanus);
 export const worldUnitsMap = createWorldUnitStoresMap(mechanus);
 
 const worldArgs = [
-    WorldDataFetchHistory,
     WorldConfig,
     WorldUnits,
     useCacheStore,
     useWorldConfigStore,
-    worldUnitsMap,
-    getPlayersTable,
-    getVillagesTable
+    worldUnitsMap
 ] as const;
 
 const aliasArgs = [
@@ -117,6 +115,7 @@ export {
     WorldUnits,
     VillageGroups,
 
+    getAlliesTable,
     getPlayersTable,
     getVillagesTable
 };

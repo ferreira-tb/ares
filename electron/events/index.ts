@@ -9,7 +9,7 @@ import { setBrowserViewEvents } from '$electron/events/view';
 import { setBrowserEvents } from '$electron/events/browser';
 import { setConfigEvents } from '$electron/events/config';
 import { setDevEvents } from '$electron/events/dev';
-import { setWorldDataEvents } from '$electron/events/world-data';
+import { setWorldEvents } from '$electron/events/world';
 import { setGameEvents } from '$electron/events/game';
 import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/modules';
 import { useCacheStore } from '$electron/interface';
@@ -54,5 +54,5 @@ export function setEvents() {
     setModuleEvents();
     setPanelEvents();
     setPlunderEvents();
-    setWorldDataEvents();
+    setWorldEvents();
 };
