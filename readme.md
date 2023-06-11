@@ -2,10 +2,11 @@
 
 Ares é um ambiente completo para se jogar Tribal Wars, que será sempre **gratuito** e **open source**.
 
-Até o momento, não há previsão para o lançamento da versão beta.
+Para entender como ele funciona, acesse nosso [site](https://tb.dev.br/ares/).
 
-Para entender como ele funciona, acesse nosso [guia](https://tb.dev.br/ares/guide/how-to-use.html).
+No momento, o Ares se encontra em suas primeiras versões alpha. A maior parte de suas funcionalidades ainda não está disponível.
 
 ## Links úteis
 
+- Documentação: https://tb.dev.br/ares/
 - Discord: https://discord.gg/tNQbrqbmdK
