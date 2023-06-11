@@ -3,13 +3,13 @@ import { ref } from 'vue';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 
 const maximized = ref<boolean>(true);
-maximized.value = await ipcInvoke('is-main-window-maximized');
+maximized.value = await ipcInvoke('ui:is-maximized');
 
-const minimize = () => ipcSend('minimize-main-window');
-const close = () => ipcSend('close-main-window');
+const minimize = () => ipcSend('ui:minimize');
+const close = () => ipcSend('ui:close');
 
 async function maximizeOrRestore() {
-    const status = await ipcInvoke('maximize-or-restore-main-window');
+    const status = await ipcInvoke('ui:maximize-or-restore');
     maximized.value = status;
 };
 </script>

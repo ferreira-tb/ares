@@ -4,8 +4,7 @@ import { getAllTemplates } from '$lib/plunder/templates';
 import { queryAvailableUnits } from '$lib/plunder/units';
 import { getPlunderTargets } from '$lib/plunder/targets';
 import { PlunderError } from '$browser/error';
-import { usePlunderConfigStore } from '$renderer/stores/plunder';
-import { useCurrentVillageStore } from '$renderer/stores/village';
+import { usePlunderConfigStore, useCurrentVillageStore } from '$renderer/stores';
 import type { PlunderTargetInfo } from '$lib/plunder/targets';
 
 export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {

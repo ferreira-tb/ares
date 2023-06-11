@@ -35,7 +35,7 @@ function dropDatabase() {
         <NDivider title-placement="left" class="config-divider">Banco de dados</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
-                <div class="flex-center-y"><span>Excluir banco de dados</span></div>
+                <div class="config-label">Excluir banco de dados</div>
             </NGridItem>
             <NGridItem>
                 <NButton @click="dropDatabase">Excluir</NButton>
@@ -45,13 +45,7 @@ function dropDatabase() {
 </template>
 
 <style scoped lang="scss">
-@use '$modules/assets/main.scss';
-
 .advanced-config {
     padding: 0.5em;
-
-    .flex-center-y {
-        @include main.flex-center-y;
-    }
 }
 </style>

@@ -24,9 +24,22 @@
     transform: translate(-50%, -50%);
 }
 
-@mixin flex-center-y {
+@mixin flex-x-start-y-center($height: null) {
     display: flex;
+    justify-content: start;
     align-items: center;
-    justify-content: flex-start;
-    height: 100%;
+    
+    @if $height {
+        height: $height;
+    }
+}
+
+@mixin flex-x-center-y-center($height: null) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    @if $height {
+        height: $height;
+    }
 }

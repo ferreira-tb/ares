@@ -1,6 +1,5 @@
 import { ref } from 'mechanus';
-import { positiveIntegerRef } from '$electron/utils/mechanus';
-import { PlunderHistoryVillage } from '$shared/objects/plunder';
+import { PlunderHistoryVillage } from '$common/templates';
 
 const villages = new Proxy({} as PlunderHistoryType['villages'], {
     get(target, villageId): PlunderHistoryVillageType[] {
@@ -14,12 +13,12 @@ const villages = new Proxy({} as PlunderHistoryType['villages'], {
 });
 
 export function definePlunderHistoryStore(mechanus: Mechanus) {
-    return mechanus.define('plunderHistory', {
-        wood: ref<number>(0, positiveIntegerRef),
-        stone: ref<number>(0, positiveIntegerRef),
-        iron: ref<number>(0, positiveIntegerRef),
-        destroyedWalls: ref<number>(0, positiveIntegerRef),
-        attackAmount: ref<number>(0, positiveIntegerRef),
+    return mechanus.define('plunder-history', {
+        wood: ref<number>(0),
+        stone: ref<number>(0),
+        iron: ref<number>(0),
+        destroyedWalls: ref<number>(0),
+        attackAmount: ref<number>(0),
         villages: ref(villages)
     } satisfies MechanusPlunderHistoryStoreType);
 };

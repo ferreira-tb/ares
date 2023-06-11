@@ -1,7 +1,7 @@
-import { assertInteger } from '$shared/guards';
-import { resources } from '$shared/constants';
-import { PlunderAttack } from '$shared/objects/plunder';
-import { usePlunderConfigStore } from '$renderer/stores/plunder';
+import { assertInteger } from '$common/guards';
+import { resources } from '$common/constants';
+import { PlunderAttack } from '$common/templates';
+import { usePlunderConfigStore } from '$renderer/stores';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 export class PlunderAttackWithLoot extends PlunderAttack {

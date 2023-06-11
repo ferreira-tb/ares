@@ -1,6 +1,7 @@
 import { WorldInterfaceError } from '$electron/error';
 import { TribalWorker } from '$electron/worker';
-import { getWorldConfigUrl } from '$shared/helpers';
+import { getWorldConfigUrl } from '$common/helpers';
+import { TribalWorkerName } from '$common/constants';
 import { sequelize } from '$electron/database';
 import type {
     WorldConfig as WorldConfigTable,
@@ -8,7 +9,7 @@ import type {
     useWorldConfigStore as useWorldConfigStoreType
 } from '$electron/interface';
 
-export async function patchWorldConfigStoreState<T extends keyof WorldConfigType>(
+export async function patchWorldConfig<T extends keyof WorldConfigType>(
     world: World,
     WorldConfig: typeof WorldConfigTable,
     useCacheStore: typeof useCacheStoreType,
@@ -23,7 +24,7 @@ export async function patchWorldConfigStoreState<T extends keyof WorldConfigType
             // Se não houver configurações para o mundo atual, cria um novo registro.
             const state = await new Promise<WorldConfigType>(async (resolve, reject) => {
                 const url = getWorldConfigUrl(world, cacheStore.region);
-                const worker = new TribalWorker('fetch-world-config', url);
+                const worker = new TribalWorker(TribalWorkerName.FetchWorldConfig, url);
                 await worker.init((e) => {
                     try {
                         if (!e.data) throw new WorldInterfaceError(`No data received for world ${world}.`);

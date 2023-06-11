@@ -8,7 +8,7 @@ import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/modules';
 import { ErrorLog, ElectronErrorLog, useAresStore } from '$electron/interface';
 import { getMainWindow } from '$electron/utils/helpers';
-import { ErrorLogFile } from '$shared/constants';
+import { ErrorLogFile } from '$common/constants';
 
 export function setErrorEvents() {
     const mainWindow = getMainWindow();

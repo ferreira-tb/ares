@@ -1,8 +1,8 @@
 import { URL } from 'node:url';
+import { webContents } from 'electron';
 import { TribalWorker } from '$electron/worker';
 import { getMainViewWebContents } from '$electron/utils/view';
-import { getPanelWindow } from '$electron/utils/helpers';
-import { GameSearchParams } from '$shared/constants';
+import { GameSearchParams, TribalWorkerName } from '$common/constants';
 
 export function fetchVillageGroups(): Promise<Set<VillageGroup>> {
     return new Promise(async (resolve, reject) => {
@@ -12,7 +12,7 @@ export function fetchVillageGroups(): Promise<Set<VillageGroup>> {
         const url = new URL(mainViewWebContents.getURL());
         url.search = GameSearchParams.Groups;
 
-        const worker = new TribalWorker('get-village-groups', url);
+        const worker = new TribalWorker(TribalWorkerName.GetVillageGroups, url);
         await worker.init((e) => {
             try {
                 if (!(e.data instanceof Set)) {
@@ -34,6 +34,7 @@ export function patchVillageGroups(groups: Set<VillageGroup>, all: MechanusRef<S
         all.value.add(group);
     });
 
-    const panelWindow = getPanelWindow();
-    panelWindow.webContents.send('panel:patch-village-groups-set', all.value);
+    for (const contents of webContents.getAllWebContents()) {
+        contents.send('game:patch-village-groups-set', all.value);
+    };
 };

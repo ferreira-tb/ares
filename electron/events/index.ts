@@ -11,7 +11,6 @@ import { setConfigEvents } from '$electron/events/config';
 import { setDevEvents } from '$electron/events/dev';
 import { setWorldDataEvents } from '$electron/events/world-data';
 import { setGameEvents } from '$electron/events/game';
-import { setTribalWorkerEvents } from '$electron/events/worker';
 import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/modules';
 import { useCacheStore } from '$electron/interface';
 import { getMainWindow } from '$electron/utils/helpers';
@@ -55,6 +54,5 @@ export function setEvents() {
     setModuleEvents();
     setPanelEvents();
     setPlunderEvents();
-    setTribalWorkerEvents();
     setWorldDataEvents();
 };

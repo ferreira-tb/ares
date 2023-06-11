@@ -1,11 +1,9 @@
-import { URL } from 'node:url';
 import { ipcMain } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { TribalWorker } from '$electron/worker';
 import { useAresStore, useIncomingsStore } from '$electron/interface';
-import { GameSearchParams } from '$shared/constants';
-import { getMainViewWebContents } from '$electron/utils/view';
+import { GameSearchParams, TribalWorkerName } from '$common/constants';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessEventError } from '$electron/error';
 
@@ -25,6 +23,18 @@ export function setIncomingAttacksEvents() {
         mainWindow.webContents.send('game:incomings-info-did-update', newIncomings);
     });
 
+    ipcMain.on('tribal-worker:will-handle-incoming-attack', () => {
+        mainWindow.webContents.send('tribal-worker:will-handle-incoming-attack');
+    });
+
+    ipcMain.on('tribal-worker:did-handle-incoming-attack', () => {
+        mainWindow.webContents.send('tribal-worker:did-handle-incoming-attack');
+    });
+
+    ipcMain.on('tribal-worker:did-fail-to-handle-incoming-attack', () => {
+        mainWindow.webContents.send('tribal-worker:did-fail-to-handle-incoming-attack');
+    });
+
     watch(amount, createIncomingsHandler());
 };
 
@@ -40,30 +50,23 @@ function createIncomingsHandler() {
     let timeout: NodeJS.Timeout | null = null;
 
     async function createWorker() {
-        try {
-            if (worker?.isDestroyed) worker = null;
-            if (worker) {
-                if (timeout) {
-                    timeout.refresh();
-                } else {
-                    timeout = setTimeout(createWorker, Kronos.Second * 5);
-                };
-
+        if (worker?.isDestroyed) worker = null;
+        if (worker) {
+            // O uso do timeout impede que o worker seja sobrecarregado quando houver muitas requisições.
+            if (timeout) {
+                timeout.refresh();
             } else {
-                const mainViewWebContents = getMainViewWebContents();
-                const url = new URL(mainViewWebContents.getURL());
-                url.search = GameSearchParams.Incomings;
-                
-                worker = new TribalWorker('handle-incoming-attacks', url);
-                await worker.init((e) => {
-                    if (e.data === 'destroy') {
-                        setTimeout(() => worker?.destroy(), delay.value);
-                    };
-                });
+                timeout = setTimeout(createWorker, Kronos.Second * 5);
             };
 
-        } catch (err) {
-            MainProcessEventError.catch(err);
+        } else {
+            const url = TribalWorker.createURL(GameSearchParams.Incomings);
+            worker = new TribalWorker(TribalWorkerName.HandleIncomings, url);
+            await worker.init((e) => {
+                if (e.data === 'destroy') {
+                    setTimeout(() => worker?.destroy(), delay.value);
+                };
+            });
         };
     };
 

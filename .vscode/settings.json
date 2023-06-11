@@ -5,6 +5,12 @@
             "extensions": ["browser.config.ts", "modules.config.ts", "panel.config.ts", "ui.config.ts"],
             "filename": true,
             "format": "svg"
+        },
+        {
+            "icon": "tsconfig",
+            "extensions": ["tsconfig.rollup.json"],
+            "filename": true,
+            "format": "svg"
         }
     ],
     "vsicons.associations.folders": [
@@ -21,7 +27,9 @@
     ],
     "conventionalCommits.promptScopes": false,
     "files.exclude": {
-        "**/.cache": true,
-        "**/.temp": true
+        "**/.vitepress/cache": true
+    },
+    "[markdown]": {
+        "editor.tabSize": 2
     }
 }

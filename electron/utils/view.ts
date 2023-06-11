@@ -2,7 +2,7 @@ import * as fs from 'node:fs/promises';
 import { webContents } from 'electron';
 import { browserCss } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
-import { Dimensions, GameUrl } from '$shared/constants';
+import { Dimensions, GameUrl } from '$common/constants';
 import { BrowserViewError } from '$electron/error';
 
 export function getMainViewWebContents(): Electron.WebContents {
@@ -16,7 +16,12 @@ export function setBrowserViewBounds(
     view: Electron.BrowserView, mainWindow: Electron.BrowserWindow = getMainWindow()
 ): void {
     const { width, height } = mainWindow.getContentBounds();
-    view.setBounds({ x: 0, y: Dimensions.TopContainerHeight, width, height: height - Dimensions.TopContainerHeight });
+    view.setBounds({
+        x: 0,
+        y: Dimensions.TopContainerHeight,
+        width,
+        height: height - Dimensions.TopContainerHeight
+    });
 };
 
 /**
@@ -33,7 +38,12 @@ export function setBrowserViewAutoResize(
         timeout = setImmediate(() => {
             if (timeout) clearImmediate(timeout);
             const { width, height } = mainWindow.getContentBounds();
-            view.setBounds({ x: 0, y: Dimensions.TopContainerHeight, width, height: height - Dimensions.TopContainerHeight });
+            view.setBounds({
+                x: 0,
+                y: Dimensions.TopContainerHeight,
+                width,
+                height: height - Dimensions.TopContainerHeight
+            });
         });
     };
 

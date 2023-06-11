@@ -1,5 +1,5 @@
 import { useMutationObserver } from '@vueuse/core';
-import { isInstanceOf, assertInstanceOf } from '$shared/guards';
+import { isInstanceOf, assertInstanceOf } from '$common/guards';
 import { wait } from '$browser/utils/helpers';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 

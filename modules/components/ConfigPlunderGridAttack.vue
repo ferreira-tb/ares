@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { NDivider, NGrid, NGridItem, NSelect } from 'naive-ui';
-import { isInteger, isFiniteNumber } from '$shared/guards';
-import { isDistance } from '$shared/guards';
-import InputNumber from '$renderer/components/InputNumber.vue';
-import LabelPopover from '$renderer/components/LabelPopover.vue';
+import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
+import {
+    formatFields,
+    parseFields,
+    formatHours,
+    parseHours,
+    formatMilliseconds,
+    parseMilliseconds
+} from '$modules/utils/input-parser';
 
 const props = defineProps<{
     config: PlunderConfigType;
@@ -37,82 +41,72 @@ const blindAttackOptions = [
         <NDivider title-placement="left" class="config-divider">Ataque</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Distância máxima</template>
-                    <span>O Ares não atacará aldeias cuja distância (em campos) é maior do que a indicada.</span>
-                </LabelPopover>
+                <div class="config-label">Distância máxima</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber v-model:value="maxDistance" :min="1" :max="9999" :step="1" :validator="(v) => isDistance(v)" />
-            </NGridItem>
-
-            <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Evitar mais antigos que</template>
-                    <span>
-                        Se o último ataque ocorreu a uma quantidade de horas superior a indicada, o Ares não atacará a
-                        aldeia.
-                    </span>
-                </LabelPopover>
-            </NGridItem>
-            <NGridItem>
-                <InputNumber
-                    v-model:value="ignoreOlderThan"
+                <NInputNumber
+                    v-model:value="maxDistance"
+                    class="config-input"
                     :min="1"
                     :max="9999"
                     :step="1"
-                    :validator="(v) => isInteger(v) && v >= 1"
+                    :validator="(v) => Number.isFinite(v) && v >= 1"
+                    :format="formatFields"
+                    :parse="parseFields"
                 />
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Delay entre ataques</template>
-                    <span>
-                        O jogo possui um limite de cinco ações por segundo, então o Ares dá uma atrasadinha em cada ataque.
-                    </span>
-                </LabelPopover>
+                <div class="config-label">Evitar mais antigos que</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber
+                <NInputNumber
+                    v-model:value="ignoreOlderThan"
+                    class="config-input"
+                    :min="1"
+                    :max="9999"
+                    :step="1"
+                    :validator="(v) => Number.isInteger(v) && v >= 1"
+                    :format="formatHours"
+                    :parse="parseHours"
+                />
+            </NGridItem>
+
+            <NGridItem>
+                <div class="config-label">Delay entre ataques</div>
+            </NGridItem>
+            <NGridItem>
+                <NInputNumber
                     v-model:value="attackDelay"
+                    class="config-input"
                     :min="100"
                     :max="60000"
                     :step="10"
-                    :validator="(v) => isInteger(v) && v >= 100 && v <= 60000"
+                    :validator="(v) => Number.isInteger(v) && v >= 100 && v <= 60000"
+                    :format="formatMilliseconds"
+                    :parse="parseMilliseconds"
                 />
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Razão de saque</template>
-                    <span>
-                        Corresponde à razão entre a quantidade de recursos na aldeia e a capacidade de carga do modelo
-                        atacante.
-                        Quanto menor for a razão, maior a chance de tropas serem enviadas desnecessariamente.
-                    </span>
-                </LabelPopover>
+                <div class="config-label">Razão de saque</div>
             </NGridItem>
             <NGridItem>
-                <InputNumber
+                <NInputNumber
                     v-model:value="resourceRatio"
+                    class="config-input"
                     :min="0.2"
                     :max="1"
                     :step="0.05"
-                    :validator="(v) => isFiniteNumber(v) && v >= 0.2 && v <= 1"
+                    :validator="(v) => Number.isFinite(v) && v >= 0.2 && v <= 1"
                 />
             </NGridItem>
 
             <NGridItem>
-                <LabelPopover>
-                    <template #trigger>Padrão do ataque às cegas</template>
-                    <span>
-                        Determina como o Ares escolherá o modelo para atacar quando não houver informações de exploradores.
-                    </span>
-                </LabelPopover>
+                <div class="config-label">Padrão do ataque às cegas</div>
             </NGridItem>
             <NGridItem>
-                <div class="plunder-config-select">
+                <div class="config-select">
                     <NSelect v-model:value="blindAttackPattern" :options="blindAttackOptions" />
                 </div>
             </NGridItem>

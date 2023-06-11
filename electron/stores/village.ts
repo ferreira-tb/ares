@@ -1,18 +1,17 @@
 import { computed, ref } from 'mechanus';
-import { integerOrNullRef, stringOrNullRef } from '$electron/utils/mechanus';
 
 export function defineCurrentVillageStore(mechanus: Mechanus) {
-    const x = ref<number | null>(null, integerOrNullRef);
-    const y = ref<number | null>(null, integerOrNullRef);
-    const id = ref<number | null>(null, integerOrNullRef);
-    const name = ref<string | null>(null, stringOrNullRef);
-    const population = ref<number | null>(null, integerOrNullRef);
-    const maxPopulation = ref<number | null>(null, integerOrNullRef);
-    const points = ref<number | null>(null, integerOrNullRef);
-    const wood = ref<number | null>(null, integerOrNullRef);
-    const stone = ref<number | null>(null, integerOrNullRef);
-    const iron = ref<number | null>(null, integerOrNullRef);
-    const maxStorage = ref<number | null>(null, integerOrNullRef);
+    const x = ref<number | null>(null);
+    const y = ref<number | null>(null);
+    const id = ref<number | null>(null);
+    const name = ref<string | null>(null);
+    const population = ref<number | null>(null);
+    const maxPopulation = ref<number | null>(null);
+    const points = ref<number | null>(null);
+    const wood = ref<number | null>(null);
+    const stone = ref<number | null>(null);
+    const iron = ref<number | null>(null);
+    const maxStorage = ref<number | null>(null);
 
     const coords: MechanusComputedRef<[number | null, number | null]> = computed([x, y], () => [x.value, y.value]);
     const totalResources = computed([wood, stone, iron], () => {

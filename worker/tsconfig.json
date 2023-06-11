@@ -1,9 +1,8 @@
 {
     "include": [
         "./**/*",
-        "../global/**/*",
-        "../typings/**/*",
-        "../global.d.ts"
+        "../common/**/*",
+        "../typings/**/*"
     ],
 
     "compilerOptions": {
@@ -11,12 +10,8 @@
         "lib": ["esnext", "dom"],
         "paths": {
             "$browser/*": ["../browser/*"],
-            "$ipc/*": ["../ipc/*"],
-            "$lib/*": ["../browser/lib/*"],
-            "$modules/*": ["../modules/*"],
-            "$panel/*": ["../panel/*"],
+            "$common/*": ["../common/*"],
             "$renderer/*": ["../renderer/*"],
-            "$shared/*": ["../shared/*"],
             "$worker/*": ["./*"]
         },
         

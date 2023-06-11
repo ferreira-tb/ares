@@ -14,9 +14,16 @@ export class PanelRouterError extends PanelError {
     };
 };
 
-export class PanelPlunderError extends PanelError {
+export class PanelPlunderViewError extends PanelError {
     constructor(message: string) {
         super(message);
-        this.name = 'PanelPlunderError';
+        this.name = 'PanelPlunderViewError';
+    };
+};
+
+export class PanelSnobViewError extends PanelError {
+    constructor(message: string) {
+        super(message);
+        this.name = 'PanelSnobViewError';
     };
 };

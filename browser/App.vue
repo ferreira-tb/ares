@@ -7,7 +7,7 @@ import { routeNames, router } from '$browser/router';
 import { useAresStore } from '$renderer/stores';
 import { useBrowserStore } from '$browser/stores';
 import { ipcSend } from '$renderer/ipc';
-import { gameOriginRegex } from '$shared/regex';
+import { gameOriginRegex } from '$common/regex';
 import TheIpcTribalTag from '$browser/components/TheIpcTribalTag.vue';
 import TheCaptchaObserver from '$browser/components/TheCaptchaObserver.vue';
 import TheIncomingsObserver from '$browser/components/TheIncomingsObserver.vue';

@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { IpcTribal } from '$ipc/interface/ipc';
 import { useUnitsStore } from '$renderer/stores/units';
-import { assertUnit } from '$shared/guards';
+import { assertUnit } from '$common/guards';
 import { ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
 

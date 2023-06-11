@@ -2,7 +2,7 @@
 import { ref, watchSyncEffect, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useMutationObserver } from '@vueuse/core';
-import { isInstanceOf } from '$shared/guards';
+import { isInstanceOf } from '$common/guards';
 import { useAresStore } from '$renderer/stores';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
@@ -49,7 +49,7 @@ function isBotCheck(node: Node) {
 };
 
 async function reloadMainView() {
-    const shouldReload = await ipcInvoke('should-reload-after-captcha');
+    const shouldReload = await ipcInvoke('config:should-reload-after-captcha');
     if (shouldReload) {
         await nextTick();
         ipcSend('main-view:reload');
@@ -60,7 +60,3 @@ async function reloadMainView() {
 <template>
     <div></div>
 </template>
-
-<style scoped lang="scss">
-
-</style>

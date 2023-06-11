@@ -1,15 +1,25 @@
+// O propósito dessa interface é impedir que surjam dependências circulares.
 import { Mechanus, watch, storeToRefs } from 'mechanus';
 
-import { AppConfig } from '$database/config';
-import { ErrorLog, ElectronErrorLog } from '$database/error';
-import { PlunderHistory, PlunderConfig, CustomPlunderTemplate, DemolitionTemplate } from '$database/plunder';
-import { getPlayersTable, getVillagesTable, WorldConfig, WorldUnits, WorldDataFetchHistory } from '$database/world';
-import { VillageGroups } from '$database/groups';
+import {
+    ErrorLog,
+    ElectronErrorLog,
+    PlunderHistory,
+    PlunderConfig,
+    CustomPlunderTemplate,
+    DemolitionTemplate,
+    getPlayersTable,
+    getVillagesTable,
+    WorldConfig,
+    WorldUnits,
+    WorldDataFetchHistory,
+    SnobConfig,
+    SnobHistory,
+    VillageGroups
+} from '$electron/database/models';
 
-import { 
+import {
     createWorldUnitStoresMap,
-    defineAppGeneralConfigStore,
-    defineAppNotificationsStore,
     defineAresStore,
     defineBrowserViewStore,
     defineCacheStore,
@@ -26,16 +36,14 @@ import {
     defineWorldConfigStore
 } from '$electron/stores';
 
-import { onAliasChange } from '$interface/alias';
-import { onWorldChange } from '$interface/world';
-import { catchError } from '$interface/error';
+import { onAliasChange } from '$electron/interface/alias';
+import { onWorldChange } from '$electron/interface/world';
+import { catchError } from '$electron/interface/error';
 
 import { MainProcessError } from '$electron/error';
 
 export const mechanus = new Mechanus();
 
-export const useAppGeneralConfigStore = defineAppGeneralConfigStore(mechanus);
-export const useAppNotificationsStore = defineAppNotificationsStore(mechanus);
 export const useAresStore = defineAresStore(mechanus);
 export const useBrowserViewStore = defineBrowserViewStore(mechanus);
 export const useCacheStore = defineCacheStore(mechanus);
@@ -74,7 +82,7 @@ const aliasArgs = [
 ] as const;
 
 // ERROS
-MainProcessError.catch = catchError(useAppNotificationsStore(), ElectronErrorLog);
+MainProcessError.catch = catchError(ElectronErrorLog);
 
 // WATCHERS
 // Essas funções retornam outras funções, que, por sua vez, são usadas como callbacks.
@@ -96,13 +104,14 @@ watch(screen, (newScreen) => {
 });
 
 export {
-    AppConfig,
     ErrorLog,
     ElectronErrorLog,
     PlunderHistory,
     PlunderConfig,
     CustomPlunderTemplate,
     DemolitionTemplate,
+    SnobConfig,
+    SnobHistory,
     WorldDataFetchHistory,
     WorldConfig,
     WorldUnits,

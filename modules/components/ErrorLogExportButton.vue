@@ -42,8 +42,8 @@ async function exportLog() {
     top: v-bind("top");
     bottom: 0;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     width: 100%;
 }
 </style>

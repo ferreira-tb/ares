@@ -1,4 +1,4 @@
-type UserAlias = `${World}__USERID__${string}`;
+type UserAlias = `${World}_${string}`;
 type GameRegion = 'br' | 'en' | 'nl' | 'pt' | 'uk' | 'us';
 type World =
     // eslint-disable-next-line @typescript-eslint/sort-type-constituents
@@ -55,7 +55,7 @@ type DemolitionTroops = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
 type UnitsToDestroyWall = Record<StringWallLevel, DemolitionTroops>;
 
 type GameScreen =
-    'am_farm' | 'info_player' | 'market' | 'overview_villages' | 'overview' | 'place' | 'report';
+    'am_farm' | 'info_player' | 'market' | 'overview_villages' | 'overview' | 'place' | 'report' | 'snob';
 
 type Coords = {
     x: number;

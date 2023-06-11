@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
-import { assertWorld } from '$shared/guards';
+import { assertWorld } from '$common/guards';
 import { MainProcessError } from '$electron/error';
+import { appConfig } from '$electron/stores/config';
 import type { createWorldUnitStoresMap } from '$electron/stores/world';
 
 export function restartAres() {
@@ -43,6 +44,7 @@ export function togglePanelWindow(): void {
     };
 
     panelWindow.webContents.send('panel:visibility-did-change', panelWindow.isVisible());
+    appConfig.set('panel', { show: panelWindow.isVisible() });
 };
 
 /**
@@ -61,7 +63,7 @@ export function maximizeOrRestoreWindow(window: BrowserWindow): boolean {
 };
 
 /**
-* Retorna o alias do usuário, no padrão `/^[a-z]+\d+__USERID__{ nome do jogador }/`.
+* Retorna o alias do usuário, no padrão `/^[a-z]+\d+_{ nome do jogador }/`.
 
 * Ele é usado para diferenciar tanto diferentes jogadores quanto diferentes mundos do mesmo jogador.
 * @param playerName Nome do jogador.
@@ -69,7 +71,7 @@ export function maximizeOrRestoreWindow(window: BrowserWindow): boolean {
 export function generateUserAlias(world: World, playerName: string): UserAlias {
     playerName = encodeURIComponent(playerName);
     assertWorld(world, MainProcessError);
-    return `${world}__USERID__${playerName}`;
+    return `${world}_${playerName}`;
 };
 
 /**

@@ -6,7 +6,7 @@ import { computedEager, useFetch, useWindowSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { NButton, NButtonGroup, NSpin, NProgress } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { WebsiteUrl, AresAPI } from '$shared/constants';
+import { WebsiteUrl, AresAPI } from '$common/constants';
 import { ModuleAppUpdateError } from '$modules/error';
 
 const appVersion = await ipcInvoke('app:version');
@@ -105,6 +105,8 @@ function openChangelog() {
 </template>
 
 <style scoped lang="scss">
+@use '$modules/assets/main.scss';
+
 @mixin area-style($margin-top) {
     width: inherit;
     height: max-content;
@@ -139,9 +141,7 @@ function openChangelog() {
 
     .download-area {
         @include area-style(1rem);
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        @include main.flex-x-center-y-center;
     }
 }
 </style>

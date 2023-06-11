@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { AppConfig } from '$electron/interface';
+import { appConfig } from '$electron/stores';
 import { getPanelWindow } from '$electron/utils/helpers';
 
 export function setPanelEvents() {
@@ -7,13 +7,13 @@ export function setPanelEvents() {
 
     ipcMain.handle('panel:is-visible', () => panelWindow.isVisible());
 
-    panelWindow.on('moved', async () => {
-        const rectangle = panelWindow.getBounds();
-        await AppConfig.savePanelBounds(rectangle);
-    });
+    panelWindow.on('moved', saveBounds(panelWindow));
+    panelWindow.on('resized', saveBounds(panelWindow));
+};
 
-    panelWindow.on('resized', async () => {
+function saveBounds(panelWindow: Electron.CrossProcessExports.BrowserWindow) {
+    return function() {
         const rectangle = panelWindow.getBounds();
-        await AppConfig.savePanelBounds(rectangle);
-    });
+        appConfig.set('panel', { bounds: rectangle });
+    };
 };

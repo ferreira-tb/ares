@@ -1,75 +1,42 @@
 import { ref } from 'mechanus';
-import { Kronos } from '@tb-dev/kronos';
-import { isInteger, isFiniteNumber } from '$shared/guards';
-
-import {
-    booleanRef,
-    positiveIntegerRef,
-    positiveNumberRef,
-    arrayIncludesRef,
-    wallLevelRef,
-    positiveIntegerOrNullRef
-} from '$electron/utils/mechanus';
-
-// Patterns.
-const blindAttackPatterns: BlindAttackPattern[] = ['smaller', 'bigger'];
-const useCPatterns: UseCPattern[] = ['excess', 'normal', 'only'];
 
 export function definePlunderConfigStore(mechanus: Mechanus) {
-    const finiteValidator = (min: number, max: number | null = null): MechanusRefOptions<number> => {
-        const refOptions = { ...positiveNumberRef };
-        refOptions.validator = (value: unknown): value is number => {
-            if (max) return isFiniteNumber(value) && value >= min && value <= max;
-            return isFiniteNumber(value) && value >= min;
-        };
-        return refOptions;
-    };
-
-    const integerValidator = (min: number, max: number | null = null): MechanusRefOptions<number> => {
-        const refOptions = { ...positiveIntegerRef };
-        refOptions.validator = (value: unknown): value is number => {
-            if (max) return isInteger(value) && value >= min && value <= max;
-            return isInteger(value) && value >= min;
-        };
-        return refOptions;
-    };
-
     // Painel
-    const active = ref<boolean>(false, booleanRef);
-    const ignoreWall = ref<boolean>(false, booleanRef);
-    const destroyWall = ref<boolean>(false, booleanRef);
-    const groupAttack = ref<boolean>(false, booleanRef);
-    const useC = ref<boolean>(false, booleanRef);
-    const ignoreDelay = ref<boolean>(false, booleanRef);
-    const blindAttack = ref<boolean>(false, booleanRef);
+    const active = ref<boolean>(false);
+    const ignoreWall = ref<boolean>(false);
+    const destroyWall = ref<boolean>(false);
+    const groupAttack = ref<boolean>(false);
+    const useC = ref<boolean>(false);
+    const ignoreDelay = ref<boolean>(false);
+    const blindAttack = ref<boolean>(false);
 
     // Ataque
-    const maxDistance = ref<number>(20, finiteValidator(1));
-    const ignoreOlderThan = ref<number>(10, positiveIntegerRef);
-    const attackDelay = ref<number>(200, integerValidator(100, Kronos.Minute));
-    const resourceRatio = ref<number>(0.8, finiteValidator(0.2, 1));
-    const blindAttackPattern = ref<BlindAttackPattern>('smaller', arrayIncludesRef(blindAttackPatterns));
+    const maxDistance = ref<number>(20);
+    const ignoreOlderThan = ref<number>(10);
+    const attackDelay = ref<number>(200);
+    const resourceRatio = ref<number>(0.8);
+    const blindAttackPattern = ref<BlindAttackPattern>('smaller');
 
     // Modelo C
-    const useCPattern = ref<UseCPattern>('normal', arrayIncludesRef(useCPatterns));
-    const maxDistanceC = ref<number>(10, finiteValidator(1));
-    const ignoreOlderThanC = ref<number>(5, positiveIntegerRef);
-    const useCWhenResourceRatioIsBiggerThan = ref<number>(3, finiteValidator(1));
+    const useCPattern = ref<UseCPattern>('normal');
+    const maxDistanceC = ref<number>(10);
+    const ignoreOlderThanC = ref<number>(5);
+    const useCWhenResourceRatioIsBiggerThan = ref<number>(3);
 
     // Grupo
-    const plunderGroupId = ref<number | null>(null, positiveIntegerOrNullRef);
-    const fieldsPerWave = ref<number>(10, finiteValidator(5));
-    const villageDelay = ref<number>(2000, integerValidator(100, Kronos.Minute));
+    const plunderGroupId = ref<number | null>(null);
+    const fieldsPerWave = ref<number>(10);
+    const villageDelay = ref<number>(2000);
 
     // Muralha
-    const wallLevelToIgnore = ref<WallLevel>(1, wallLevelRef);
-    const wallLevelToDestroy = ref<WallLevel>(1, wallLevelRef);
-    const destroyWallMaxDistance = ref<number>(20, finiteValidator(1));
+    const wallLevelToIgnore = ref<WallLevel>(1);
+    const wallLevelToDestroy = ref<WallLevel>(1);
+    const destroyWallMaxDistance = ref<number>(20);
     
     // Outros
-    const minutesUntilReload = ref<number>(10, integerValidator(1, 60));
-    const plunderedResourcesRatio = ref<number>(1, finiteValidator(0.2, 1));
-    const pageDelay = ref<number>(2000, integerValidator(100, Kronos.Minute));
+    const minutesUntilReload = ref<number>(10);
+    const plunderedResourcesRatio = ref<number>(1);
+    const pageDelay = ref<number>(2000);
     
     return mechanus.define('plunderConfig', {
         active,

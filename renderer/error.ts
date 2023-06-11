@@ -1,6 +1,6 @@
-import { isString } from '$shared/guards';
+import { isString } from '$common/guards';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
-import { AresError } from '$shared/error';
+import { AresError } from '$common/error';
 
 export class RendererProcessError extends AresError {
     constructor(message: string) {
@@ -17,7 +17,7 @@ export class RendererProcessError extends AresError {
             };
 
             ipcSend('error:create-log', errorLog);
-            const shouldNotify = await ipcInvoke('should-notify-on-error');
+            const shouldNotify = await ipcInvoke('config:should-notify-on-error');
             if (shouldNotify) {
                 new Notification(err.name, { body: err.message });
             };

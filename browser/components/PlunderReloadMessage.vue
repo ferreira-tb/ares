@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { ipcInvoke } from '$renderer/ipc';
 
 const props = defineProps<{
     /** Indica se o Plunder está ativo. */
@@ -7,6 +8,8 @@ const props = defineProps<{
     /** Milisegundos entre cada recarregamento automático da página. */
     plunderTimeout: number;
 }>();
+
+const locale = await ipcInvoke('app:locale');
 
 /** Data do próximo recarregamento automático. */
 const nextAutoReload = computed(() => {
@@ -16,9 +19,10 @@ const nextAutoReload = computed(() => {
 
 /** Mensagem exibida para o usuário acima da tabela. */
 const autoReloadMessage = computed(() => {
-    if (nextAutoReload.value === null) return null;
-    const date = nextAutoReload.value.toLocaleDateString('pt-br', { year: 'numeric', month: '2-digit', day: '2-digit' });
-    const time = nextAutoReload.value.toLocaleTimeString('pt-br', { hour: '2-digit', minute: '2-digit' });
+    const next = nextAutoReload.value;
+    if (next === null) return null;
+    const date = next.toLocaleDateString(locale, { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const time = next.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
     return `A página será atualizada automaticamente em ${date} às ${time}`;
 });
 </script>

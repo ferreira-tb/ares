@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { NButton, useMessage } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
@@ -16,11 +16,16 @@ const message = useMessage();
 const loading = ref(false);
 const groups = useVModel(props, 'groups', emit);
 
+const buttonText = computed(() => {
+    if (loading.value) return 'Atualizando grupos...';
+    return 'Atualizar grupos';
+});
+
 async function fetchVillageGroups() {
     loading.value = true;
     const fetched = await ipcInvoke('game:fetch-village-groups');
     if (fetched) {
-        groups.value = await ipcInvoke('game:get-village-groups');
+        groups.value = await ipcInvoke('game:get-all-village-groups');
         message.success('Lista de grupos atualizada');
     } else {
         message.error('Erro ao atualizar a lista de grupos');
@@ -31,16 +36,17 @@ async function fetchVillageGroups() {
 </script>
 
 <template>
-    <div class="btn-groups-update">
+    <div class="button-groups-update">
         <NButton :loading="loading" :disabled="loading" @click="fetchVillageGroups">
-            Atualizar grupos
+            {{ buttonText }}
         </NButton>
     </div>
 </template>
 
 <style scoped lang="scss">
-.btn-groups-update {
-    display: flex;
-    justify-content: center;
+@use '$renderer/assets/utils.scss';
+
+.button-groups-update {
+    @include utils.flex-x-center-y-center;
 }
 </style>

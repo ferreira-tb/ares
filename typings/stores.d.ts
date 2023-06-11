@@ -4,18 +4,6 @@ type MechanusRefOptions<T> = import('mechanus').MechanusRefOptions<T>;
 type MechanusComputedRef<T> = import('mechanus').MechanusComputedRef<T>;
 type MechanusStore<T> = import('mechanus').MechanusStore<T>;
 
-// APP GENERAL CONFIG
-type AppGeneralConfigStore = GeneralConfigType;
-type MechanusAppGeneralConfigStoreType = {
-    [K in keyof AppGeneralConfigStore]: MechanusRef<AppGeneralConfigStore[K]>;
-};
-
-// APP NOTIFICATIONS CONFIG
-type AppNotificationsConfigStore = NotificationsConfigType;
-type MechanusAppNotificationsConfigStoreType = {
-    [K in keyof AppNotificationsConfigStore]: MechanusRef<AppNotificationsConfigStore[K]>;
-};
-
 // ARES
 type AresType = TribalWarsGameDataType['ares'];
 interface AresStore extends AresType {
@@ -233,4 +221,25 @@ type PiniaIncomingAttacksStoreType = {
 
 type MechanusIncomingAttacksStoreType = {
     [K in keyof RemoveMethods<IncomingAttacksStore>]: MechanusRef<IncomingAttacksStore[K]>;
+};
+
+// SNOB CONFIG
+interface SnobConfigStore extends SnobConfigType {
+    raw(): SnobConfigType;
+};
+
+type PiniaSnobConfigStoreActions = SnobConfigStore['raw'];
+
+type PiniaSnobConfigStoreType = {
+    [K in keyof SnobConfigStore]:
+        SnobConfigStore[K] extends PiniaSnobConfigStoreActions ?
+        SnobConfigStore[K] :
+        import('vue').Ref<SnobConfigStore[K]>;
+};
+
+// SNOB HISTORY
+type SnobHistoryStore = Omit<SnobHistoryType, 'villages'>;
+
+type PiniaSnobHistoryStoreType = {
+    [K in SnobHistoryStore]: import('vue').Ref<SnobHistoryStore[K]>;
 };

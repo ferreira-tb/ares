@@ -48,10 +48,7 @@ function updateConfig<T extends keyof PlunderConfigType>(name: T, value: Plunder
 
 <style scoped lang="scss">
 .plunder-config {
+    padding-right: 10px;
     padding-bottom: 2em;
-
-    :deep(.plunder-config-select) {
-        margin-right: 0.5em;
-    }
 }
 </style>

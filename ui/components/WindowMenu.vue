@@ -6,8 +6,9 @@ import { useIpcRendererOn } from '@vueuse/electron';
 import { NIcon } from 'naive-ui';
 import { DiscordSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
-import { WebsiteUrl } from '$shared/constants';
+import { WebsiteUrl } from '$common/constants';
 import TheIncomingHandler from '$ui/components/TheIncomingHandler.vue';
+import TheMintingStatus from '$ui/components/TheMintingStatus.vue';
 import TheNextIncoming from '$ui/components/TheNextIncoming.vue';
 import TheResponseTime from '$ui/components/TheResponseTime.vue';
 import TheUpdateNotification from '$ui/components/TheUpdateNotification.vue';
@@ -55,7 +56,7 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
             <div class="menu-icon" @click="ipcSend('current-view:home')">
                 <NIcon :size="22" :depth="3" :component="HomeSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('open-settings-window', 'config-general')">
+            <div class="menu-icon" @click="ipcSend('config:open', 'config-general')">
                 <NIcon :size="22" :depth="3" :component="SettingsSharp" />
             </div>
             <div class="menu-icon" @click="ipcSend('open-region-select-menu')">
@@ -72,12 +73,15 @@ useIpcRendererOn('current-view-back-forward-status', (_e, status: BackForwardSta
             </div>
         </div>
 
-        <div v-show="!isSmallScreen" class="menu-tag-area">
-            <TheIncomingHandler />
-            <Suspense><TheNextIncoming /></Suspense>
-            <Suspense><TheUpdateNotification /></Suspense>
-            <Suspense><TheResponseTime /></Suspense>
-        </div>
+        <Suspense>
+            <div v-show="!isSmallScreen" class="menu-tag-area">
+                <TheIncomingHandler />
+                <TheNextIncoming />
+                <TheUpdateNotification />
+                <TheMintingStatus />
+                <TheResponseTime />
+            </div>
+        </Suspense>
     </div>
 </template>
 

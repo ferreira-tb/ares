@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { reactive, watch, toRaw } from 'vue';
-import { NDivider, NGrid, NGridItem } from 'naive-ui';
+import { NCheckbox, NDivider, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import SwitchPopover from '$renderer/components/SwitchPopover.vue';
 
-const previous = await ipcInvoke('get-app-general-config');
+const previous = await ipcInvoke('config:general');
 const config = reactive(previous);
-watch(config, () => ipcSend('update-app-general-config', toRaw(config)));
+watch(config, () => ipcSend('config:update', 'general', toRaw(config)));
 </script>
 
 <template>
@@ -14,14 +13,9 @@ watch(config, () => ipcSend('update-app-general-config', toRaw(config)));
         <NDivider class="config-divider" title-placement="left">Captcha</NDivider>
         <NGrid class="switch-area" :cols="1" :y-gap="10">
             <NGridItem>
-                <SwitchPopover v-model:value="config.reloadAfterCaptcha" size="medium">
-                    <template #trigger>Atualizar página após remoção de captcha</template>
-                    <span>
-                        Um coisa ou outra pode não funcionar corretamente após a remoção de um captcha.
-                        Sendo assim, o Ares atualiza a página para garantir que tudo funcione como deveria.
-                        É recomendado que essa opção permaneça ativada.
-                    </span>
-                </SwitchPopover>
+                <NCheckbox v-model:checked="config.reloadAfterCaptcha" size="large">
+                    Atualizar página após remoção de captcha
+                </NCheckbox>
             </NGridItem>
         </NGrid>
     </section>

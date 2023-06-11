@@ -1,7 +1,6 @@
 export * from '$electron/stores/ares';
 export * from '$electron/stores/cache';
 export * from '$electron/stores/config';
-export * from '$electron/stores/features';
 export * from '$electron/stores/game';
 export * from '$electron/stores/player';
 export * from '$electron/stores/plunder';

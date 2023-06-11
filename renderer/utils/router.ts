@@ -1,4 +1,4 @@
-import { isString } from '$shared/guards';
+import { isString } from '$common/guards';
 import type { RouteRecordRaw } from 'vue-router';
 
 export function getRouteNames<T extends string>(routes: RouteRecordRaw[]): T[] {

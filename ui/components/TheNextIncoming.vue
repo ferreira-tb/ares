@@ -37,10 +37,10 @@ whenever(amount, () => filteredIncomings.trigger());
                 class="tag-wrapper"
             >
                 <NTag
+                    round
                     class="next-incoming-tag"
                     type="info"
                     size="small"
-                    round
                     @click="ipcSend('current-view:navigate-to-place', nextIncoming.target)"
                 >
                     {{ `Próximo ataque: ${getLocaleDateString(locale, nextIncoming.arrivalTime)}` }}

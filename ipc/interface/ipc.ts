@@ -1,6 +1,6 @@
-import { assertString, isString } from '$shared/guards';
+import { assertString, isString } from '$common/guards';
 import { IpcTribalError } from '$ipc/interface/error';
-import type { PlunderInfo, TribalWarsGameData, TribalWarsTiming, Units } from '$ipc/models';
+import type { PlunderInfo, TribalWarsGameData, TribalWarsTiming, Units } from '$ipc/templates';
 
 // Arquivos no diretório "interface" não podem importar de outras partes do IpcTribal.
 // Isso é para evitar que a importações dos protótipos feitas no index vazem para o resto do código.
@@ -24,8 +24,8 @@ export class IpcTribal {
     public static send(channel: string, ...args: unknown[]) {
         channel = this.#handleKey(channel);
         const uuid = this.#generateUUID('send');
-        const deimos = new IpcTribal(channel, uuid, ...args);
-        window.postMessage(deimos, '*');
+        const ipc = new IpcTribal(channel, uuid, ...args);
+        window.postMessage(ipc, '*');
     };
 
     public static invoke(channel: 'get-current-village-units'): Promise<Units | null>;
@@ -40,7 +40,7 @@ export class IpcTribal {
 
             // Usa o UUID para identificar a requisição.
             const uuid = this.#generateUUID('invoke');
-            const deimos = new IpcTribal(channel, uuid, ...args);
+            const ipc = new IpcTribal(channel, uuid, ...args);
 
             const request = (e: MessageEvent<IpcTribal>) => {
                 const handlerUUID = uuid.replace(/^invoke/, 'handle');
@@ -52,7 +52,7 @@ export class IpcTribal {
             };
 
             window.addEventListener('message', request);
-            window.postMessage(deimos, '*');
+            window.postMessage(ipc, '*');
         });
     };
 
@@ -77,8 +77,8 @@ export class IpcTribal {
                     const result = await Promise.resolve().then(() => listener(...e.data.message));
 
                     const handlerUUID = uuid.replace(/^invoke/, 'handle');
-                    const deimos = new IpcTribal(channel, handlerUUID, result);
-                    window.postMessage(deimos, '*');
+                    const ipc = new IpcTribal(channel, handlerUUID, result);
+                    window.postMessage(ipc, '*');
 
                 } catch (err) {
                     IpcTribalError.catch(err);
@@ -112,6 +112,6 @@ export class IpcTribal {
 
     static #handleKey(channel: string) {
         assertString(channel, 'IpcTribal channel must be a string.');
-        return `deimos-${channel}`;
+        return `ipc-${channel}`;
     };
 };

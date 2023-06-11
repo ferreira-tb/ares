@@ -5,7 +5,7 @@ import DefaultView from '$renderer/views/DefaultView.vue';
 import AppUpdateView from '$modules/views/AppUpdateView.vue';
 import DemolitionView from '$modules/views/DemolitionView.vue';
 import ErrorLogView from '$modules/views/ErrorLogView.vue';
-import PlunderHistory from '$modules/views/PlunderHistoryView.vue';
+import PlunderHistoryView from '$modules/views/PlunderHistoryView.vue';
 import PlunderTemplateView from '$modules/views/PlunderTemplateView.vue';
 
 // Os componentes devem ser passados diretamente.
@@ -35,7 +35,7 @@ const singleRoutes: ModuleRouteRecordRaw[] = [
     {
         path: '/plunder-history',
         name: 'plunder-history',
-        component: PlunderHistory
+        component: PlunderHistoryView
     },
     {
         path: '/plunder-template',

@@ -1,18 +1,78 @@
-import { app } from 'electron';
-import { ref } from 'mechanus';
-import { booleanRef } from '$electron/utils/mechanus';
+import ElectronStore, { type Schema } from 'electron-store';
 
-export function defineAppGeneralConfigStore(mechanus: Mechanus) {
-    return mechanus.define('appGeneralConfig', {
-        reloadAfterCaptcha: ref<boolean>(true, booleanRef)
-    } satisfies MechanusAppGeneralConfigStoreType);
+const schema: Schema<AppConfigType> = {
+    general: {
+        type: 'object',
+        additionalProperties: false,
+        default: {},
+        properties: {
+            lastRegion: { type: 'string', default: 'br' },
+            reloadAfterCaptcha: { type: 'boolean', default: true }
+        }
+    },
+    moduleBounds: {
+        type: 'object',
+        additionalProperties: true,
+        default: {}
+    },
+    notifications: {
+        type: 'object',
+        additionalProperties: false,
+        default: {},
+        properties: {
+            notifyOnError: { type: 'boolean', default: true }
+        }
+    },
+    panel: {
+        type: 'object',
+        additionalProperties: false,
+        default: {},
+        properties: {
+            show: { type: 'boolean', default: true },
+            bounds: {
+                type: ['object', 'null'],
+                additionalProperties: false,
+                default: null,
+                properties: {
+                    x: { type: 'integer' },
+                    y: { type: 'integer' },
+                    width: { type: 'integer' },
+                    height: { type: 'integer' }
+                }
+            }
+        }
+    },
+    ui: {
+        type: 'object',
+        additionalProperties: false,
+        default: {},
+        properties: {
+            bounds: {
+                type: ['object', 'null'],
+                additionalProperties: false,
+                default: null,
+                properties: {
+                    x: { type: 'integer' },
+                    y: { type: 'integer' },
+                    width: { type: 'integer' },
+                    height: { type: 'integer' }
+                }
+            }
+        }
+    },
+    update: {
+        type: 'object',
+        additionalProperties: false,
+        default: {},
+        properties: {
+            versionToIgnore: { type: ['string', 'null'], default: null }
+        }
+    }
 };
 
-export function defineAppNotificationsStore(mechanus: Mechanus) {
-    const isAlpha = app.getVersion().includes('alpha');
-    const isDev = process.env.ARES_MODE === 'dev';
-
-    return mechanus.define('appNotifications', {
-        notifyOnError: ref<boolean>(isAlpha || isDev, booleanRef)
-    } satisfies MechanusAppNotificationsConfigStoreType);
-};
+export const appConfig = new ElectronStore({
+    name: 'app-config',
+    cwd: 'stores',
+    accessPropertiesByDotNotation: true,
+    schema
+});

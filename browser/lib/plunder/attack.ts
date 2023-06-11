@@ -1,13 +1,12 @@
 import { useEventListener, useMutationObserver } from '@vueuse/core';
-import { assertInteger, isInstanceOf, assertString } from '$shared/guards';
-import { usePlunderConfigStore } from '$renderer/stores/plunder';
-import { useCurrentVillageStore } from '$renderer/stores/village';
-import { generateRandomDelay } from '$shared/helpers';
+import { assertInteger, isInstanceOf, assertString } from '$common/guards';
+import { useCurrentVillageStore, usePlunderConfigStore } from '$renderer/stores';
+import { generateRandomDelay } from '$common/helpers';
 import { wait } from '$browser/utils/helpers';
-import { unitsRegex } from '$shared/regex';
+import { unitsRegex } from '$common/regex';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
-import type { PlunderAttack } from '$shared/objects/plunder';
+import type { PlunderAttack } from '$common/templates';
 
 export const eventTarget = new EventTarget();
 

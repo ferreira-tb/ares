@@ -1,27 +1,15 @@
-type AppConfigName =
-    'app_state' | 'app_update' | 'config_general' | 'config_notifications' | 'panel_bounds';
-
-type AppConfigJSON =
-    AppStateType | GeneralConfigType | NotificationsConfigType | PanelBoundsConfigType | UpdateConfigType;
-
-type AppConfigByName<T extends AppConfigName> =
-    T extends 'config_general' ? GeneralConfigType :
-    T extends 'config_notifications' ? NotificationsConfigType :
-    never;
-
-type AppStateType = {
-    /** Última região acessada pelo usuário. */
-    lastRegion?: GameRegion;
-};
-
-type UpdateConfigType = {
-    /** O Ares alertará o usuário apenas quando houver uma versão mais recente que a ignorada. */
-    versionToIgnore: string;
-};
-
 type GeneralConfigType = {
+    /** Última região acessada pelo usuário. */
+    lastRegion: GameRegion;
     /** Indica se a view deve ser atualizada após remoção de captchas. */
     reloadAfterCaptcha: boolean;
+};
+
+type ModuleBoundsConfigType = {
+    [name in ModuleNames]?: {
+        /** Posição e tamanho do módulo. */
+        bounds: Electron.Rectangle | null;
+    };
 };
 
 type NotificationsConfigType = {
@@ -29,4 +17,34 @@ type NotificationsConfigType = {
     notifyOnError: boolean;
 };
 
-type PanelBoundsConfigType = Electron.Rectangle;
+type PanelConfigType = {
+    /** Indica se o painel deve ser exibido. */
+    show: boolean;
+    /** Posição e tamanho do painel. */
+    bounds: Electron.Rectangle | null;
+};
+
+type UIConfigType = {
+    /** Posição e tamanho da janela principal. */
+    bounds: Electron.Rectangle | null;
+};
+
+type UpdateConfigType = {
+    /** O Ares alertará o usuário apenas quando houver uma versão mais recente que a ignorada. */
+    versionToIgnore: string | null;
+};
+
+interface AppConfigType {
+    /** Configurações gerais. */
+    general: GeneralConfigType;
+    /** Configurações das dimensões dos módulos. */
+    moduleBounds: ModuleBoundsConfigType;
+    /** Configurações de notificações. */
+    notifications: NotificationsConfigType;
+    /** Configurações do painel. */
+    panel: PanelConfigType;
+    /** Configurações da interface do usuário. */
+    ui: UIConfigType;
+    /** Configurações de atualização. */
+    update: UpdateConfigType;
+};
