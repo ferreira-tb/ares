@@ -39,11 +39,12 @@ function mintSingle(alias: UserAlias, config: SnobConfigType, history: SnobHisto
     history = proxify(history);
     let village: SnobHistoryEntryType[] = history.villages[config.village.toString(10)];
 
-    // Remove entradas antigas do histórico.
     const now = Date.now();
+    const midnight = new Date().setUTCHours(0, 0, 0, 0);
+
+    // Remove entradas antigas do histórico.
     village = village.filter((entry) => entry.addedAt >= (now - Kronos.Month));
 
-    const midnight = new Date().setUTCHours(0, 0, 0, 0);
     let today = village.find((entry) => entry.addedAt === midnight);
     if (!today) {
         today = new SnobHistoryEntry();
@@ -81,7 +82,7 @@ function mintGroup(alias: UserAlias, config: SnobConfigType, history: SnobHistor
     const cellSelector = `td:has(${mintButtonSelector}):has(${amountSpanSelector})`;
     const coinButtonTableCell = coinTable.queryAndAssert<HTMLTableCellElement>(cellSelector);
 
-    const amountSpan = coinButtonTableCell.queryAndAssert<HTMLSpanElement>('span[id*="selectedBunches_top" i]');
+    const amountSpan = coinButtonTableCell.queryAndAssert<HTMLSpanElement>(amountSpanSelector);
     const totalCoinAmount = amountSpan.parseIntStrict();
 
     if (totalCoinAmount > 0 && villages.size === 0) {
@@ -98,6 +99,8 @@ function mintGroup(alias: UserAlias, config: SnobConfigType, history: SnobHistor
     
     for (const [villageId, amount] of villages.entries()) {
         let village: SnobHistoryEntryType[] = history.villages[villageId.toString(10)];
+
+        // Remove entradas antigas do histórico.
         village = village.filter((entry) => entry.addedAt >= (now - Kronos.Month));
 
         let today = village.find((entry) => entry.addedAt === midnight);
