@@ -13,6 +13,7 @@ import SpyIcon from '$icons/units/SpyIcon.vue';
 import SwordIcon from '$icons/units/SwordIcon.vue';
 
 const props = defineProps<{
+    locale: string;
     template: CustomPlunderTemplateType;
 }>();
 
@@ -61,28 +62,28 @@ function destroyTemplate() {
     >
         <NSpace>
             <span v-if="template.units.spear > 0">
-                <SpearIcon />{{ template.units.spear.toLocaleString('pt-br') }}
+                <SpearIcon />{{ template.units.spear.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.sword > 0">
-                <SwordIcon />{{ template.units.sword.toLocaleString('pt-br') }}
+                <SwordIcon />{{ template.units.sword.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.axe > 0">
-                <AxeIcon />{{ template.units.axe.toLocaleString('pt-br') }}
+                <AxeIcon />{{ template.units.axe.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.archer > 0">
-                <ArcherIcon />{{ template.units.archer.toLocaleString('pt-br') }}
+                <ArcherIcon />{{ template.units.archer.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.spy > 0">
-                <SpyIcon />{{ template.units.spy.toLocaleString('pt-br') }}
+                <SpyIcon />{{ template.units.spy.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.light > 0">
-                <LightIcon />{{ template.units.light.toLocaleString('pt-br') }}
+                <LightIcon />{{ template.units.light.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.marcher > 0">
-                <MarcherIcon />{{ template.units.marcher.toLocaleString('pt-br') }}
+                <MarcherIcon />{{ template.units.marcher.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.heavy > 0">
-                <HeavyIcon />{{ template.units.heavy.toLocaleString('pt-br') }}
+                <HeavyIcon />{{ template.units.heavy.toLocaleString(locale) }}
             </span>
         </NSpace>
     </NCard>

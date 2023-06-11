@@ -4,6 +4,8 @@ import { useIpcRendererOn } from '@vueuse/electron';
 import { NTag } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 
+const locale = await ipcInvoke('app:locale');
+
 const responseTime = ref<number | null>(null);
 responseTime.value = await ipcInvoke('browser:get-response-time');
 
@@ -26,7 +28,7 @@ useIpcRendererOn('response-time-did-update', (_e, time: number) => {
         <Transition name="tb-fade" mode="out-in">
             <div v-if="responseTime" :key="responseTimeTagType" class="tag-wrapper">
                 <NTag round :type="responseTimeTagType" size="small">
-                    {{ `${responseTime}ms` }}
+                    {{ `${responseTime.toLocaleString(locale)}ms` }}
                 </NTag>
             </div>
         </Transition>
