@@ -20,7 +20,7 @@ A lógica de funcionamento do saque é bastante simples, mas essencialmente dife
 
 - **Destruir muralha**: instrui o Ares a tentar destruir a muralha das aldeias atacadas. Essa opção tem prioridade sobre `ignorar muralha`, ou seja, se ambas estiverem marcadas, o Ares tentará destruir a muralha. Se ele não conseguir e `ignorar muralha` estiver ativo, ele não atacará a aldeia. É bastante comum, e recomendado, utilizar essas duas opções em conjunto.
 
-- **Ignorar delay**: para tentar conter o uso de bots e outras ferramentas que automatizam o jogo, o Tribal Wars impõe um limite em quantas ações podem ser realizadas em um segundo. Para impedir que esse limite seja alcançado durante os ataques, o Ares adiciona um pequeno atraso entre cada ataque. Essa opção permite que você remova esse atraso.
+- **Ignorar delay**: o Tribal Wars impõe um limite em quantas ações podem ser realizadas em um segundo. Para impedir que esse limite seja alcançado durante os ataques, o Ares adiciona um pequeno atraso entre cada ataque. Essa opção permite que você remova esse atraso.
 
 - **Ataque em grupo**: permite que o Ares ataque a partir de várias aldeias, usando como base um grupo dinâmico. Grupos manuais não são permitidos.
 
