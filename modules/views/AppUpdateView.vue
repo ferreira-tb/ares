@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import semverGte from 'semver/functions/gte';
-import { shell } from 'electron';
 import { computed, ref } from 'vue';
 import { computedEager, useFetch, useWindowSize } from '@vueuse/core';
 import { useIpcRendererOn } from '@vueuse/electron';
 import { NButton, NButtonGroup, NSpin, NProgress } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { WebsiteUrl, AresAPI } from '$common/constants';
+import { AresAPI } from '$common/constants';
 import { ModuleAppUpdateError } from '$modules/error';
 
 const appVersion = await ipcInvoke('app:version');
@@ -88,10 +87,7 @@ function openChangelog() {
                     Download
                 </NButton>
                 <NButton round :disabled="!data?.notes" @click="openChangelog">
-                    Changelog
-                </NButton>
-                <NButton round @click="shell.openExternal(WebsiteUrl.Discord)">
-                    Discord
+                    Novidades
                 </NButton>
             </NButtonGroup>
         </div>
