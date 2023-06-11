@@ -8,6 +8,7 @@ import ResultError from '$renderer/components/ResultError.vue';
 import ResultInfo from '$renderer/components/ResultInfo.vue';
 import PlunderTemplateCard from '$modules/components/PlunderTemplateCard.vue';
 
+const locale = await ipcInvoke('app:locale');
 const userAlias = await ipcInvoke('user-alias');
 const isArcherWorld = await ipcInvoke('game:is-archer-world');
 const previousTemplates = await ipcInvoke('plunder:get-custom-templates');
@@ -47,7 +48,11 @@ function removeTemplate(template: CustomPlunderTemplateType) {
             <div v-if="templates.length > 0" class="tb-scrollbar template-grid">
                 <NGrid :cols="4" :x-gap="8" :y-gap="10">
                     <NGridItem v-for="template of templates" :key="uuid(template.type)">
-                        <PlunderTemplateCard :template="template" @template-destroyed="removeTemplate" />
+                        <PlunderTemplateCard
+                            :locale="locale"
+                            :template="template"
+                            @template-destroyed="removeTemplate"
+                        />
                     </NGridItem>
                 </NGrid>
             </div>
