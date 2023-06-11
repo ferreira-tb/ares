@@ -18,8 +18,9 @@ type WorldConfigType = {
 };
 
 type WorldDataType = {
-    readonly players: ReadonlyArray<WorldPlayersType>;
-    readonly villages: ReadonlyArray<WorldVillagesType>;
+    readonly allies: ReadonlyArray<WorldAllyType>;
+    readonly players: ReadonlyArray<WorldPlayerType>;
+    readonly villages: ReadonlyArray<WorldVillageType>;
 };
 
 type WorldDataFetchHistoryType = {
@@ -54,17 +55,18 @@ type WorldUnitsType = {
     [key in AllUnits]: key extends 'archer' | 'marcher' ? UnitDetails | null : UnitDetails
 };
 
-interface WorldVillagesModel extends SequelizeModel {
+interface WorldAlliesModel extends SequelizeModel {
     readonly id: number;
     readonly name: string;
-    readonly x: number;
-    readonly y: number;
-    readonly player: number;
+    readonly tag: string;
+    readonly members: number;
+    readonly villages: number;
     readonly points: number;
-    readonly type: number;
+    readonly allPoints: number;
+    readonly rank: number;
 };
 
-type WorldVillagesType = Omit<WorldVillagesModel, keyof import('sequelize').Model>;
+type WorldAllyType = Omit<WorldAlliesModel, keyof import('sequelize').Model>;
 
 interface WorldPlayersModel extends SequelizeModel {
     readonly id: number;
@@ -75,4 +77,16 @@ interface WorldPlayersModel extends SequelizeModel {
     readonly rank: number;
 };
 
-type WorldPlayersType = Omit<WorldPlayersModel, keyof import('sequelize').Model>;
+type WorldPlayerType = Omit<WorldPlayersModel, keyof import('sequelize').Model>;
+
+interface WorldVillagesModel extends SequelizeModel {
+    readonly id: number;
+    readonly name: string;
+    readonly x: number;
+    readonly y: number;
+    readonly player: number;
+    readonly points: number;
+    readonly type: number;
+};
+
+type WorldVillageType = Omit<WorldVillagesModel, keyof import('sequelize').Model>;

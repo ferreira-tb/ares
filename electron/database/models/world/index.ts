@@ -1,3 +1,4 @@
+export * from '$electron/database/models/world/allies';
 export * from '$electron/database/models/world/config';
 export * from '$electron/database/models/world/history';
 export * from '$electron/database/models/world/players';

@@ -5,7 +5,7 @@ import type { Ref } from 'vue';
 
 export function useVillage(villageId: Ref<number | null>) {
     const scope = effectScope();
-    const village = ref<WorldVillagesType | null>(null);
+    const village = ref<WorldVillageType | null>(null);
 
     scope.run(() => {
         watchEffect(async () => {
