@@ -1,7 +1,7 @@
 import { ipcMain, webContents } from 'electron';
 import { ref, storeToRefs, watch, type MechanusRef } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
-import { useCacheStore, SnobConfig, SnobHistory } from '$electron/interface';
+import { useAresStore, useCacheStore, SnobConfig, SnobHistory } from '$electron/interface';
 import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
 import { TribalWorker } from '$electron/worker';
@@ -19,7 +19,7 @@ export function setSnobEvents() {
     const mintWorker = ref<TribalWorker | null>(null);
 
     const stopMinting = mintingStopper(mintTimeout, mintWorker);
-    const toNextMint = onMint(userAlias, mintTimeout, mintWorker);
+    const toNextMint = onMint(mintTimeout, mintWorker);
 
     ipcMain.handle('snob:get-config', getConfig(userAlias));
     ipcMain.handle('snob:get-history', getHistory(userAlias));
@@ -178,10 +178,15 @@ async function mint(alias: UserAlias): Promise<TribalWorker> {
 };
 
 function onMint(
-    userAlias: MechanusComputedRef<UserAlias | null>,
     timeout: MechanusRef<NodeJS.Timeout | null>,
     worker: MechanusRef<TribalWorker | null>
 ) {
+    const aresStore = useAresStore();
+    const { captcha } = storeToRefs(aresStore);
+
+    const cacheStore = useCacheStore();
+    const { userAlias } = storeToRefs(cacheStore);
+
     return function(alias: UserAlias, snobConfig: SnobConfigType, snobHistory: SnobHistoryType | null) {
         const baseDelay = getBaseDelay(snobConfig.timeUnit);
         const delay = snobConfig.delay * baseDelay;
@@ -189,6 +194,13 @@ function onMint(
         timeout.value = setTimeout(async () => {
             try {
                 if (alias !== userAlias.value || !worker.value) return;
+
+                // Se hover um captcha ativo no momento, adia o envio de uma nova requisição.
+                if (captcha.value && timeout.value) {
+                    timeout.value.refresh();
+                    return;
+                };
+
                 worker.value.reload();
                 await worker.value.toBeReady();
                 worker.value.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
@@ -205,7 +217,10 @@ function getBaseDelay(timeUnit: SnobConfigType['timeUnit']): Kronos {
     return Kronos.Hour;
 };
 
-function mintingStopper(timeout: MechanusRef<NodeJS.Timeout | null>, worker: MechanusRef<TribalWorker | null>) {
+function mintingStopper(
+    timeout: MechanusRef<NodeJS.Timeout | null>,
+    worker: MechanusRef<TribalWorker | null>
+) {
     return function(): void {
         if (timeout.value) {
             clearTimeout(timeout.value);
