@@ -1,4 +1,5 @@
-import ElectronStore, { type Schema } from 'electron-store';
+import ElectronStore from 'electron-store';
+import type { Schema } from 'electron-store';
 
 const schema: Schema<AppConfigType> = {
     general: {
