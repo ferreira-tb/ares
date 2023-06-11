@@ -196,8 +196,8 @@ function onMint(
                 if (alias !== userAlias.value || !worker.value) return;
 
                 // Se hover um captcha ativo no momento, adia o envio de uma nova requisição.
-                if (captcha.value && timeout.value) {
-                    timeout.value.refresh();
+                if (captcha.value) {
+                    timeout.value?.refresh();
                     return;
                 };
 
