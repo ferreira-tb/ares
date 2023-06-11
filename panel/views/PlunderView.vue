@@ -1,28 +1,32 @@
 <script setup lang="ts">
-import { computed, watch, watchEffect } from 'vue';
+import { computed, nextTick, ref, watch, watchEffect } from 'vue';
+import { useIpcRendererOn } from '@vueuse/electron';
 import { NButton, NButtonGroup, NGrid, NGridItem, NSwitch } from 'naive-ui';
-import { useFeaturesStore, useGroupsStore, usePlunderConfigStore } from '$renderer/stores';
-import { ipcSend } from '$renderer/ipc';
+import { useFeaturesStore, usePlunderConfigStore } from '$renderer/stores';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import ThePlunderedResources from '$panel/components/ThePlunderedResources.vue';
 
 const config = usePlunderConfigStore();
 const features = useFeaturesStore();
-const groups = useGroupsStore();
+
+const previousConfig = await ipcInvoke('plunder:get-config');
+if (previousConfig) {
+    config.$patch(previousConfig);
+    await nextTick();
+};
 
 const plunderButtonText = computed(() => config.active ? 'Parar' : 'Saquear');
 
 // Não deve ser possível ativar o ataque em grupo se não houver grupos dinâmicos.
-const dynamicGroupsAmount = computed<number>(() => {
-    const allGroups = Array.from(groups.all);
-    return allGroups.reduce((amount, group) => {
-        if (group.type === 'dynamic') amount += 1;
-        return amount;
-    }, 0);
+const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
+const hasDynamicGroup = computed<boolean>(() => {
+    const groups = Array.from(allGroups.value);
+    return groups.some((group) => group.type === 'dynamic');
 });
 
 const canUseGroupAttack = computed<boolean>(() => {
     if (features.premium === false) return false;
-    return dynamicGroupsAmount.value > 0;
+    return hasDynamicGroup.value;
 });
 
 watch(() => config.active, (isActive) => {
@@ -38,11 +42,15 @@ watch(() => config.ignoreDelay, (v) => ipcSend('plunder:update-config', 'ignoreD
 watch(() => config.blindAttack, (v) => ipcSend('plunder:update-config', 'blindAttack', v));
 
 watchEffect(() => {
-    if (features.premium === false || dynamicGroupsAmount.value === 0) {
+    if (features.premium === false || !hasDynamicGroup.value) {
         config.groupAttack = false;
     } else if (features.farmAssistant === false) {
         config.active = false;
     };
+});
+
+useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
+    allGroups.value = groups;
 });
 </script>
 

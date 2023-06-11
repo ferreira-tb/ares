@@ -10,6 +10,7 @@ export const useAresStore = defineStore('ares', () => {
     const screen = ref<string | null>(null);
     const screenMode = ref<string | null>(null);
     const pregame = ref<boolean | null>(null);
+    const groupId = ref<number | null>(null);
 
     const captcha = ref<boolean>(false);
     const responseTime = ref<number | null>(null);
@@ -22,6 +23,7 @@ export const useAresStore = defineStore('ares', () => {
         screen,
         screenMode,
         pregame,
+        groupId,
 
         captcha,
         responseTime

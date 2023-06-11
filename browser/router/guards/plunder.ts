@@ -2,21 +2,21 @@ import { nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { until } from '@vueuse/core';
 import { getPlunderInfo, updatePlunderConfig } from '$browser/lib/plunder/data';
-import { useCurrentVillageStore, usePlunderStore, usePlunderConfigStore, useGroupsStore } from '$renderer/stores';
+import { useAresStore, useCurrentVillageStore, usePlunderStore, usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { BrowserRouterError } from '$browser/error';
 import type { Router } from 'vue-router';
 
 export function setPlunderNavigationGuards(router: Router) {
+    const aresStore = useAresStore();
     const plunderStore = usePlunderStore();
     const plunderConfigStore = usePlunderConfigStore();
     const currentVillageStore = useCurrentVillageStore();
-    const groupsStore = useGroupsStore();
 
+    const { groupId: currentGroupId } = storeToRefs(aresStore);
     const { page: plunderPage } = storeToRefs(plunderStore);
     const { active: isPlunderActive, plunderGroupId, groupAttack } = storeToRefs(plunderConfigStore);
     const { id: currentVillageId } = storeToRefs(currentVillageStore);
-    const { groupId: currentGroupId } = storeToRefs(groupsStore);
 
     router.beforeEach(async (to) => {
         try {

@@ -6,7 +6,7 @@ import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class VillageGroups extends Model<InferAttributes<VillageGroups>, InferCreationAttributes<VillageGroups>> implements VillageGroupsType {
     declare readonly id: UserAlias;
-    declare allGroups: VillageGroup[];
+    declare readonly allGroups: VillageGroup[];
 };
 
 VillageGroups.init({
@@ -24,6 +24,7 @@ VillageGroups.init({
 
     allGroups: {
         type: DataTypes.JSON,
-        allowNull: false
+        allowNull: false,
+        defaultValue: []
     }
 }, { sequelize, tableName: 'village_groups', timestamps: true });

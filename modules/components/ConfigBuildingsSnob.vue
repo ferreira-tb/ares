@@ -2,7 +2,8 @@
 import { computed, nextTick, ref } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
 import { watchDeep } from '@vueuse/core';
-import { useGroupsStore, usePlayerStore, useSnobConfigStore } from '$renderer/stores';
+import { useIpcRendererOn } from '@vueuse/electron';
+import { usePlayerStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { decodeString } from '$common/helpers';
 import { ModuleConfigError } from '$modules/error';
@@ -14,18 +15,14 @@ const config = useSnobConfigStore();
 const previousConfig = await ipcInvoke('snob:get-config');
 if (previousConfig) config.$patch(previousConfig);
 
-const groupsStore = useGroupsStore();
-const allGroups = await ipcInvoke('game:get-all-village-groups');
-if (allGroups.size > 0) groupsStore.$patch({ all: allGroups });
-
 const playerStore = usePlayerStore();
 const playerDataFromMainProcess = await ipcInvoke('player:get-store');
 playerStore.$patch(playerDataFromMainProcess);
 
 await nextTick();
 if (!playerStore.id) throw new ModuleConfigError('Missing player id.');
-const villages = ref(await ipcInvoke('world-data:get-player-villages', playerStore.id));
 
+const villages = ref(await ipcInvoke('world-data:get-player-villages', playerStore.id));
 const villageOptions = computed(() => {
     const options = villages.value.map(({ id: villageId, name: villageName }) => {
         return { label: decodeString(villageName), value: villageId };
@@ -35,8 +32,9 @@ const villageOptions = computed(() => {
     return options;
 });
 
+const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
 const groupOptions = computed(() => {
-    const options = Array.from(groupsStore.all).map(({ id: groupId, name: groupName }) => {
+    const options = Array.from(allGroups.value).map(({ id: groupId, name: groupName }) => {
         return { label: decodeString(groupName), value: groupId };
     });
 
@@ -58,6 +56,10 @@ const timeUnitOptions = [
 
 watchDeep(config, () => {
     ipcSend('snob:update-config', config.raw());
+});
+
+useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
+    allGroups.value = groups;
 });
 </script>
 
@@ -124,7 +126,7 @@ watchDeep(config, () => {
             </NGridItem>
 
             <NGridItem :span="2">
-                <ButtonGroupsUpdate v-model:groups="groupsStore.all" />
+                <ButtonGroupsUpdate />
             </NGridItem>
         </NGrid>
     </div>

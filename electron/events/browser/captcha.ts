@@ -15,7 +15,7 @@ export function setCaptchaEvents() {
         captcha.value = status;
         for (const contents of webContents.getAllWebContents()) {
             if (contents !== e.sender) {
-                contents.send('captcha:status-did-update', status);
+                contents.send('captcha:did-update-status', status);
             };
         };
     });

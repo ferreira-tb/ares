@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue';
-import { storeToRefs } from 'pinia';
+import { computed, ref, toRef } from 'vue';
 import { NButton, NButtonGroup } from 'naive-ui';
 import { computedAsync, watchDeep, watchImmediate, whenever } from '@vueuse/core';
-import { useCurrentVillageStore, useGroupsStore, useSnobConfigStore } from '$renderer/stores';
+import { useIpcRendererOn } from '@vueuse/electron';
+import { useCurrentVillageStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useVillage } from '$renderer/composables/village';
 import { PanelSnobViewError } from '$panel/error';
@@ -12,11 +12,8 @@ import TheMintedCoins from '$panel/components/TheMintedCoins.vue';
 
 const config = useSnobConfigStore();
 const currentVillage = useCurrentVillageStore();
-const groups = useGroupsStore();
 
-const { all: allGroups } = storeToRefs(groups);
 const snobButtonText = computed(() => config.active ? 'Parar' : 'Cunhar');
-
 const translatedTimeUnit = computed(() => {
     switch (config.timeUnit) {
         case 'seconds': return 'segundos';
@@ -32,6 +29,7 @@ const villageName = computed<string | null>(() => {
     return decodeString(village.value.name);
 });
 
+const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
 const groupName = computedAsync<string | null>(async () => {
     try {
         if (config.group === 0) return 'Todas as aldeias';
@@ -69,6 +67,10 @@ whenever(() => config.active, () => {
     if (config.mode === 'single') {
         config.village = currentVillage.id;
     };
+});
+
+useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
+    allGroups.value = groups;
 });
 </script>
 

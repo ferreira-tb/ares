@@ -5,7 +5,6 @@ import {
     useAresStore,
     useCurrentVillageStore,
     useFeaturesStore,
-    useGroupsStore,
     usePlayerStore,
     useSnobConfigStore,
     useUnitsStore
@@ -15,7 +14,6 @@ export function setModuleEvents() {
     const aresStore = useAresStore();
     const currentVillageStore = useCurrentVillageStore();
     const featuresStore = useFeaturesStore();
-    const groupsStore = useGroupsStore();
     const playerStore = usePlayerStore();
     const snobConfigStore = useSnobConfigStore();
     const unitStore = useUnitsStore();
@@ -32,7 +30,6 @@ export function setModuleEvents() {
     });
 
     ipcRenderer.on('game:patch-current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
-    ipcRenderer.on('game:patch-village-groups-set', (_e, all: Set<VillageGroup>) => groupsStore.$patch({ all }));
     ipcRenderer.on('snob:patch-config', (_e, config: SnobConfigType) => snobConfigStore.$patch(config));
 
     ipcRenderer.on('game:patch-game-data', (_e, data: TribalWarsGameDataType) => {
@@ -40,6 +37,5 @@ export function setModuleEvents() {
         featuresStore.$patch(data.features);
         playerStore.$patch(data.player);
         currentVillageStore.$patch(data.currentVillage);
-        groupsStore.$patch(data.groups);
     });
 };

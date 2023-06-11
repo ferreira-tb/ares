@@ -9,6 +9,7 @@ export function defineAresStore(mechanus: Mechanus) {
         screen: ref<string | null>(null),
         screenMode: ref<string | null>(null),
         pregame: ref<boolean | null>(null),
+        groupId: ref<number | null>(null),
 
         captcha: ref<boolean>(false),
         responseTime: ref<number | null>(null)

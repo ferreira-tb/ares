@@ -37,19 +37,6 @@ type MechanusFeaturesStoreType = {
     [K in keyof FeaturesStore]: MechanusRef<FeaturesStore[K]>;
 };
 
-// GROUPS
-type GameDataGroups = TribalWarsGameDataType['groups'];
-interface GroupsStore extends GameDataGroups {
-    /** Todos os grupos de aldeias referentes ao alias atual. */
-    readonly all: Set<VillageGroup>;
-};
-type PiniaGroupsStoreType = {
-    [K in keyof GroupsStore]: import('vue').Ref<GroupsStore[K]>;
-};
-type MechanusGroupsStoreType = {
-    [K in keyof GroupsStore]: MechanusRef<GroupsStore[K]>;
-};
-
 // CURRENT VILLAGE
 type CurrentVillageType = TribalWarsGameDataType['currentVillage'];
 interface CurrentVillageStore extends CurrentVillageType {

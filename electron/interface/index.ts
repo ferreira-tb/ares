@@ -25,7 +25,6 @@ import {
     defineCacheStore,
     defineCurrentVillageStore,
     defineFeaturesStore,
-    defineGroupsStore,
     defineIncomingsStore,
     definePlayerStore,
     definePlunderStore,
@@ -47,7 +46,6 @@ export const useBrowserViewStore = defineBrowserViewStore(mechanus);
 export const useCacheStore = defineCacheStore(mechanus);
 export const useCurrentVillageStore = defineCurrentVillageStore(mechanus);
 export const useFeaturesStore = defineFeaturesStore(mechanus);
-export const useGroupsStore = defineGroupsStore(mechanus);
 export const useIncomingsStore = defineIncomingsStore(mechanus);
 export const usePlayerStore = definePlayerStore(mechanus);
 export const usePlunderStore = definePlunderStore(mechanus);
@@ -60,10 +58,7 @@ const aliasArgs = [
     PlunderConfig,
     PlunderHistory,
     usePlunderConfigStore,
-    usePlunderHistoryStore,
-
-    VillageGroups,
-    useGroupsStore
+    usePlunderHistoryStore
 ] as const;
 
 // ERROS

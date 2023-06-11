@@ -7,8 +7,7 @@ import {
     useFeaturesStore,
     usePlayerStore,
     useCurrentVillageStore,
-    useUnitsStore,
-    useGroupsStore
+    useUnitsStore
 } from '$renderer/stores';
 
 export function setPanelEvents() {
@@ -18,9 +17,8 @@ export function setPanelEvents() {
     const playerStore = usePlayerStore();
     const currentVillageStore = useCurrentVillageStore();
     const unitStore = useUnitsStore();
-    const groupsStore = useGroupsStore();
 
-    ipcRenderer.on('captcha:status-did-update', (_e, thereIsCaptcha: boolean) => {
+    ipcRenderer.on('captcha:did-update-status', (_e, thereIsCaptcha: boolean) => {
         aresStore.captcha = thereIsCaptcha;
     });
 
@@ -33,11 +31,6 @@ export function setPanelEvents() {
         featuresStore.$patch(data.features);
         playerStore.$patch(data.player);
         currentVillageStore.$patch(data.currentVillage);
-        groupsStore.$patch(data.groups);
-    });
-
-    ipcRenderer.on('game:patch-village-groups-set', (_e, groups: Set<VillageGroup>) => {
-        groupsStore.$patch({ all: groups });
     });
 
     ipcRenderer.on('panel:visibility-did-change', (_e, isVisible: boolean) => {

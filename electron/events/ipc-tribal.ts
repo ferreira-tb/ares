@@ -11,8 +11,7 @@ import {
     useFeaturesStore,
     usePlunderStore,
     useCurrentVillageStore,
-    useCacheStore,
-    useGroupsStore
+    useCacheStore
 } from '$electron/interface';
 
 export function setIpcTribalEvents() {
@@ -22,7 +21,6 @@ export function setIpcTribalEvents() {
     const featuresStore = useFeaturesStore();
     const plunderStore = usePlunderStore();
     const currentVillageStore = useCurrentVillageStore();
-    const groupsStore = useGroupsStore();
 
     /** Conteúdo do arquivo `ipc-tw.js`. */
     let ipcTribal: string | null = null;
@@ -63,9 +61,6 @@ export function setIpcTribalEvents() {
                         break;
                     case 'currentVillage':
                         patchGameData('currentVillage', currentVillageStore, gameData);
-                        break;
-                    case 'groups':
-                        patchGameData('groups', groupsStore, gameData);
                         break;
                     default:
                         throw new MainProcessEventError(`Could not update game data: ${key} is not a valid key.`);
@@ -128,7 +123,6 @@ export function setIpcTribalEvents() {
 
 function patchGameData(dataType: 'ares', store: ReturnType<typeof useAresStore>, gameData: TribalWarsGameDataType): void;
 function patchGameData(dataType: 'features', store: ReturnType<typeof useFeaturesStore>, gameData: TribalWarsGameDataType): void;
-function patchGameData(dataType: 'groups', store: ReturnType<typeof useGroupsStore>, gameData: TribalWarsGameDataType): void;
 function patchGameData(dataType: 'player', store: ReturnType<typeof usePlayerStore>, gameData: TribalWarsGameDataType): void;
 function patchGameData(dataType: 'currentVillage', store: ReturnType<typeof useCurrentVillageStore>, gameData: TribalWarsGameDataType): void;
 function patchGameData<T extends keyof TribalWarsGameDataType, U extends keyof TribalWarsGameDataType[T]>(

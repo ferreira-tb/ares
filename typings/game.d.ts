@@ -88,6 +88,8 @@ interface TribalWarsGameDataType {
         readonly screenMode: string | null;
         /** Indica se está no modo de pré-jogo. */
         readonly pregame: boolean | null;
+        /** ID do grupo de aldeias atual. */
+        readonly groupId: number | null;
     };
 
     readonly features: {
@@ -97,11 +99,6 @@ interface TribalWarsGameDataType {
         readonly accountManager: boolean | null;
         /** Assistente de saque. */
         readonly farmAssistant: boolean | null;
-    };
-
-    readonly groups: {
-        /** ID do grupo de aldeias atual. */
-        readonly groupId: number | null;
     };
 
     readonly player: {

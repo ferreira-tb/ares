@@ -5,18 +5,22 @@ import { isWorld } from '$common/guards';
 export class TribalWarsGameData implements TribalWarsGameDataType {
     public readonly ares: TribalWarsGameDataType['ares'];
     public readonly features: TribalWarsGameDataType['features'];
-    public readonly groups: TribalWarsGameDataType['groups'];
     public readonly player: TribalWarsGameDataType['player'];
     public readonly currentVillage: TribalWarsGameDataType['currentVillage'];
 
     constructor(rawGameData: RawTribalWarsGameData) {
+        // O valor de group_id pode ser uma string ou um número.
+        const groupId = isInteger(rawGameData.group_id) ? rawGameData.group_id :
+            isString(rawGameData.group_id) ? Number.parseIntStrict(rawGameData.group_id) : null;
+        
         this.ares = {
             locale: isString(rawGameData.locale) ? rawGameData.locale : null,
             world: isWorld(rawGameData.world) ? rawGameData.world : null,
             majorVersion: isString(rawGameData.majorVersion) ? rawGameData.majorVersion : null,
             screen: isString(rawGameData.screen) ? rawGameData.screen : null,
             screenMode: isString(rawGameData.mode) ? rawGameData.mode : null,
-            pregame: typeof rawGameData.pregame === 'boolean' ? rawGameData.pregame : null
+            pregame: typeof rawGameData.pregame === 'boolean' ? rawGameData.pregame : null,
+            groupId
         };
 
         const premium = rawGameData.features.Premium.active;
@@ -29,12 +33,6 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
             // No jogo consta como FarmAssistent, mas no IpcTribal está como FarmAssistant.
             farmAssistant: typeof farmAssistant === 'boolean' ? farmAssistant : null
         };
-
-        // O valor de group_id pode ser uma string ou um número.
-        const groupId = isInteger(rawGameData.group_id) ? rawGameData.group_id :
-            isString(rawGameData.group_id) ? Number.parseIntStrict(rawGameData.group_id) : null;
-
-        this.groups = { groupId };
 
         this.player = {
             name: isString(rawGameData.player.name) ? rawGameData.player.name : null,
