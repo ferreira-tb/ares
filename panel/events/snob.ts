@@ -6,5 +6,5 @@ export function setSnobEvents() {
     const snobHistoryStore = useSnobHistoryStore();
 
     ipcRenderer.on('snob:patch-config', (_e, config: SnobConfigType) => snobConfigStore.$patch(config));
-    ipcRenderer.on('snob:patch-history', (_e, history: SnobHistoryStore) => snobHistoryStore.$patch(history));
+    ipcRenderer.on('snob:patch-history', (_e, history: SnobHistoryType) => snobHistoryStore.$patch(history));
 };

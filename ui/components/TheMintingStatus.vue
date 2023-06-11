@@ -2,13 +2,18 @@
 import { toRef } from 'vue';
 import { storeToRefs } from 'pinia';
 import { NTag } from 'naive-ui';
-import { useSnobConfigStore } from '$renderer/stores';
+import { useSnobConfigStore, useSnobHistoryStore } from '$renderer/stores';
 import { useVillage } from '$renderer/composables/village';
-import { ipcSend } from '$renderer/ipc';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
+
+const locale = await ipcInvoke('app:locale');
 
 const config = useSnobConfigStore();
 const { active, group, mode } = storeToRefs(config);
 const village = useVillage(toRef(() => config.village));
+
+const history = useSnobHistoryStore();
+const { coins } = storeToRefs(history);
 
 function navigateToSnob() {
     if (!village.value) return;
@@ -23,7 +28,7 @@ function navigateToSnob() {
 <template>
     <div class="minting-status-tag-container">
         <Transition name="tb-fade" mode="out-in">
-            <div v-if="active" class="tag-wrapper">
+            <div v-if="active" :key="coins" class="tag-wrapper">
                 <NTag
                     round
                     class="minting-status-tag"
@@ -31,7 +36,7 @@ function navigateToSnob() {
                     size="small"
                     @click="navigateToSnob"
                 >
-                    Cunhando
+                    {{ `Cunhando (${coins.toLocaleString(locale)})` }}
                 </NTag>
             </div>
         </Transition>

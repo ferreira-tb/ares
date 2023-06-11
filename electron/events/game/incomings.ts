@@ -23,6 +23,18 @@ export function setIncomingAttacksEvents() {
         mainWindow.webContents.send('game:incomings-info-did-update', newIncomings);
     });
 
+    ipcMain.on('tribal-worker:will-handle-incoming-attack', () => {
+        mainWindow.webContents.send('tribal-worker:will-handle-incoming-attack');
+    });
+
+    ipcMain.on('tribal-worker:did-handle-incoming-attack', () => {
+        mainWindow.webContents.send('tribal-worker:did-handle-incoming-attack');
+    });
+
+    ipcMain.on('tribal-worker:did-fail-to-handle-incoming-attack', () => {
+        mainWindow.webContents.send('tribal-worker:did-fail-to-handle-incoming-attack');
+    });
+
     watch(amount, createIncomingsHandler());
 };
 

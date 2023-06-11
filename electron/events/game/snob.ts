@@ -7,7 +7,7 @@ import { MainProcessEventError } from '$electron/error';
 import { TribalWorker } from '$electron/worker';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
 import { assertUserAlias, isUserAlias } from '$common/guards';
-import { DefaultSnobConfig } from '$common/templates';
+import { DefaultSnobConfig, DefaultSnobHistory } from '$common/templates';
 
 export function setSnobEvents() {
     const cacheStore = useCacheStore();
@@ -67,7 +67,6 @@ export function setSnobEvents() {
                 return;
             };
 
-            // Dessa maneira a store não reseta quando o usuário troca de mundo.
             const snobConfig = (await SnobConfig.findByPk(newAlias))?.toJSON();
             if (snobConfig) {
                 patchAllWebContents('config', snobConfig);
@@ -75,6 +74,13 @@ export function setSnobEvents() {
             } else {
                 patchAllWebContents('config', new DefaultSnobConfig());
                 isMinting.value = false;
+            };
+
+            const snobHistory = (await SnobHistory.findByPk(newAlias))?.toJSON();
+            if (snobHistory) {
+                patchAllWebContents('history', snobHistory);
+            } else {
+                patchAllWebContents('history', new DefaultSnobHistory());
             };
 
         } catch (err) {
