@@ -1,46 +1,46 @@
 import * as path from 'node:path';
 import { BrowserView, MessageChannelMain } from 'electron';
+import { computed, ref, until, watchImmediate, type UntilOptions } from 'mechanus';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessError } from '$electron/error';
 import { getMainViewWebContents } from '$electron/utils/view';
 import type { TribalWorkerName } from '$common/constants';
 
-type TribalWorkerEventChannel = 'did-create-worker' | 'did-destroy-worker';
-type TribalWorkerEvent = {
-    workerName: TribalWorkerName;
-};
-
 export class TribalWorker {
+    /** Nome do Worker. */
+    public readonly name: TribalWorkerName;
     /** URL que será carregada no Worker. */
-    readonly url: import('node:url').URL;
+    public readonly url: import('node:url').URL;
+    /** Caminho do arquivo que contém o Worker. */
+    public readonly path: string;
     
-    #browserView: BrowserView | null = null;
-    #isDestroyed: boolean = false;
-    #messagePort: Electron.MessagePortMain | null = null;
-    #name: TribalWorkerName | null = null;
-    #workerPath: string | null = null;
+    readonly #browserView = ref<BrowserView | null>(null);
+    readonly #isDestroyed = ref(false);
+    readonly #isLoading = ref(false);
+    readonly #messagePort = ref<Electron.MessagePortMain | null>(null);
+    readonly #watchers = new Set<() => void>();
 
+    /** Indica se o webContents do Worker está pronto. */
+    public readonly isReady = computed(
+        [this.#browserView, this.#messagePort, this.#isDestroyed, this.#isLoading],
+    () => {
+        if (!this.#browserView.value) return false;
+        if (!this.#messagePort.value) return false;
+        if (this.#isDestroyed.value) return false;
+        if (this.#isLoading.value) return false;
+        return true;
+    });
+    
     constructor(name: TribalWorkerName, url: import('node:url').URL) {
         this.name = name;
+        this.path = path.join(__dirname, `worker/${name}.js`);
         this.url = url;
 
-        TribalWorker.triggerEvent('did-create-worker', { workerName: this.name });
+        this.#watchers.add(this.#setBrowserViewWatcher());
     };
 
     get isDestroyed(): boolean {
-        return this.#isDestroyed;
-    };
-
-    get name(): TribalWorkerName {
-        if (!this.#name) {
-            throw new MainProcessError('TribalWorker name is not defined.');
-        };
-        return this.#name;
-    };
-
-    set name(name: TribalWorkerName) {
-        this.#name = name;
-        this.#workerPath = path.join(__dirname, `worker/${name}.js`);
+        return this.#isDestroyed.value;
     };
 
     /** Equivalente a `webContents.on()`. */
@@ -53,18 +53,12 @@ export class TribalWorker {
         return this.view.webContents.once.bind(this.view.webContents);
     };
 
-    get path(): string {
-        if (!this.#workerPath) {
-            throw new MainProcessError(`There is no path for TribalWorker "${this.name}".`);
-        };
-        return this.#workerPath;
-    };
-
+    /** Porta do MessageChannel usado pelo Worker. */
     get port(): Electron.MessagePortMain {
-        if (!this.#messagePort) {
+        if (!this.#messagePort.value) {
             throw new MainProcessError(`There is no message port for TribalWorker "${this.name}".`);
         };
-        return this.#messagePort;
+        return this.#messagePort.value;
     };
 
     /** Envia uma mensagem para o Worker através do MessageChannel. */
@@ -77,18 +71,25 @@ export class TribalWorker {
         return this.view.webContents.postMessage.bind(this.view.webContents);
     };
 
+    /** Equivalente a `webContents.reload()`. */
+    get reload(): Electron.WebContents['reload'] {
+        return this.view.webContents.reload.bind(this.view.webContents);
+    };
+
     /** Equivalente a `webContents.send()`. */
     get send(): Electron.WebContents['send'] {
         return this.view.webContents.send.bind(this.view.webContents);
     };
 
+    /** BrowserView do Worker. */
     get view(): BrowserView {
-        if (!(this.#browserView instanceof BrowserView)) {
+        if (!(this.#browserView.value instanceof BrowserView)) {
             throw new MainProcessError(`TribalWorker "${this.name}" is not initialized.`);
         };
-        return this.#browserView;
+        return this.#browserView.value;
     };
 
+    /** WebContents do Worker. */
     get webContents(): Electron.WebContents {
         return this.view.webContents;
     };
@@ -97,39 +98,54 @@ export class TribalWorker {
         const { port1, port2 } = new MessageChannelMain();
         this.view.webContents.postMessage('port', null, [port2]);
         port1.postMessage({ channel: this.name });
-        this.#messagePort = port1;
+        this.#messagePort.value = port1;
+    };
+
+    #setBrowserViewWatcher(): () => void {
+        return watchImmediate(this.#browserView, (view) => {
+            if (!(view instanceof BrowserView)) return;
+            const contents = view.webContents;
+            contents.on('did-start-loading', () => (this.#isLoading.value = contents.isLoading()));
+            contents.on('did-stop-loading', () => (this.#isLoading.value = contents.isLoading()));
+            contents.on('did-finish-load', () => (this.#isLoading.value = contents.isLoading()));
+            contents.on('did-fail-load', () => (this.#isLoading.value = contents.isLoading()));
+            contents.on('did-fail-provisional-load', () => (this.#isLoading.value = contents.isLoading()));
+            contents.on('dom-ready', () => (this.#isLoading.value = contents.isLoading()));
+        });
     };
 
     /** Destroi a instância do Worker, removendo-a da janela mãe. */
     public destroy(): void {
         try {
-            if (this.#isDestroyed) return;
+            if (this.#isDestroyed.value) return;
 
-            if (this.#messagePort) {
-                this.#messagePort.removeAllListeners().close();
-                this.#messagePort = null;
+            if (this.#messagePort.value) {
+                this.#messagePort.value.removeAllListeners().close();
+                this.#messagePort.value = null;
             };
 
-            if (this.#browserView) {
-                this.#browserView.webContents.removeAllListeners();
+            if (this.#browserView.value) {
+                this.#browserView.value.webContents.removeAllListeners();
             };
+
+            this.#watchers.forEach((stop) => stop());
+            this.#watchers.clear();
             
             const mainWindow = getMainWindow();
             mainWindow.removeBrowserView(this.view);
             TribalWorker.deleteWorker(this.name);
 
-            this.#browserView = null;
-            this.#isDestroyed = true;
-
-            TribalWorker.triggerEvent('did-destroy-worker', { workerName: this.name });
+            this.#browserView.value = null;
+            this.#isDestroyed.value = true;
 
         } catch (err) {
             MainProcessError.catch(err);
         };
     };
 
-    public hasView(): boolean {
-        return this.#browserView instanceof BrowserView;
+    /** Indica se o Worker possui uma BrowserView associada a ele. */
+    public hasBrowserView(): boolean {
+        return this.#browserView.value instanceof BrowserView;
     };
 
     /**
@@ -137,7 +153,7 @@ export class TribalWorker {
      * Se já houver uma instância ativa usando o nome escolhido, ela será destruída.
      */
     public async init(listener?: (event: Electron.MessageEvent) => void): Promise<void> {
-        if (this.#isDestroyed) {
+        if (this.#isDestroyed.value) {
             throw new MainProcessError(`TribalWorker "${this.name}" is destroyed.`);
         };
 
@@ -160,11 +176,11 @@ export class TribalWorker {
 
         tribalWorker.setBounds({ x: 0, y: 0, width: 0, height: 0 });
         tribalWorker.setAutoResize({ width: false, height: false, horizontal: false, vertical: false });
-
         tribalWorker.webContents.setAudioMuted(true);
+
+        this.#browserView.value = tribalWorker;
         await tribalWorker.webContents.loadURL(this.url.href);
-        
-        this.#browserView = tribalWorker;
+
         this.#createMessageChannel();
         TribalWorker.setWorker(this.name, this);
 
@@ -176,19 +192,21 @@ export class TribalWorker {
         this.view.webContents.openDevTools({ mode: 'detach' });
     };
 
-    static readonly #active = new Map<TribalWorkerName, TribalWorker>();
-    static readonly #listeners = new Map<TribalWorkerEventChannel, Set<(e: TribalWorkerEvent) => void>>();
+    /** Aguarda até que o webContents do Worker esteja carregado. */
+    public toBeReady(
+        timeout: UntilOptions['timeout'] = 10000,
+        throwOnTimeout: UntilOptions['throwOnTimeout'] = true,
+        timeoutReason: UntilOptions['timeoutReason'] = `Worker "${this.name}" took too long to load.`
+    ): Promise<void> {
+        this.#isLoading.value = this.webContents.isLoading();
+        return until(this.isReady).toBe(true, { timeout, throwOnTimeout, timeoutReason });
+    };
 
+    static readonly #active = new Map<TribalWorkerName, TribalWorker>();
     public static readonly deleteWorker = (name: TribalWorkerName) => TribalWorker.#active.delete(name);
     public static readonly getWorker = (name: TribalWorkerName) => TribalWorker.#active.get(name);
     public static readonly hasWorker = (name: TribalWorkerName) => TribalWorker.#active.has(name);
     public static readonly setWorker = (name: TribalWorkerName, worker: TribalWorker) => TribalWorker.#active.set(name, worker);
-
-    public static addListener(channel: TribalWorkerEventChannel, listener: (e: TribalWorkerEvent) => void) {
-        const listeners = this.#listeners.get(channel) ?? new Set();
-        listeners.add(listener);
-        TribalWorker.#listeners.set(channel, listeners);
-    };
 
     /**
      * Cria uma URL com base no URL do `webContents` da view principal.
@@ -220,33 +238,6 @@ export class TribalWorker {
     public static destroyAllWorkers() {
         for (const worker of this.#active.values()) {
             worker.destroy();
-        };
-    };
-
-    public static removeListener(channel: TribalWorkerEventChannel, listener: (e: TribalWorkerEvent) => void) {
-        const listeners = this.#listeners.get(channel);
-        if (listeners instanceof Set) {
-            listeners.delete(listener);
-            if (listeners.size === 0) {
-                TribalWorker.#listeners.delete(channel);
-            };
-        };
-    };
-
-    public static removeAllListeners(channel?: TribalWorkerEventChannel) {
-        if (typeof channel === 'string') {
-            TribalWorker.#listeners.delete(channel);
-        } else {
-            TribalWorker.#listeners.clear();
-        };
-    };
-
-    public static triggerEvent(channel: TribalWorkerEventChannel, event: TribalWorkerEvent) {
-        const listeners = TribalWorker.#listeners.get(channel);
-        if (listeners instanceof Set) {
-            for (const listener of listeners) {
-                listener(event);
-            };
         };
     };
 };

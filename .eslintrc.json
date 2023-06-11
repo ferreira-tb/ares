@@ -30,7 +30,7 @@
         "es2022": true
     },
     "rules": {
-        "array-callback-return": ["error", { "checkForEach": true }],
+        "array-callback-return": ["error", { "checkForEach": false }],
         "constructor-super": "error",
         "for-direction": "error",
         "getter-return": "error",

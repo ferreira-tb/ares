@@ -176,9 +176,14 @@ export function ipcSend(channel: 'ipc-tribal:update-game-data', gameData: Tribal
 export function ipcSend(channel: 'tribal-worker:will-handle-incoming-attack'): void;
 export function ipcSend(channel: 'tribal-worker:did-handle-incoming-attack'): void;
 export function ipcSend(channel: 'tribal-worker:did-fail-to-handle-incoming-attack'): void;
-export function ipcSend(channel: 'tribal-worker:no-coin-to-mint'): void;
+export function ipcSend(
+    channel: 'tribal-worker:no-coin-to-mint', alias: UserAlias, config: SnobConfigType, history: SnobHistoryType
+): void;
 export function ipcSend(
     channel: 'tribal-worker:coin-minted', alias: UserAlias, config: SnobConfigType, history: SnobHistoryType
+): void;
+export function ipcSend(
+    channel: 'tribal-worker:did-fail-to-mint-coin', alias: UserAlias, config: SnobConfigType, history: SnobHistoryType | null
 ): void;
 
 export function ipcSend(channel: string, ...args: any[]): void {

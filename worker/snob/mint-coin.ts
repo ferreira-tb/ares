@@ -4,24 +4,27 @@ import { ipcRenderer } from 'electron';
 import { Kronos } from '@tb-dev/kronos';
 import { ipcSend } from '$renderer/ipc';
 import { TribalWorkerError } from '$worker/error';
-import { SnobHistoryEntry } from '$common/templates';
+import { DefaultSnobHistory, SnobHistoryEntry } from '$common/templates';
 
-ipcRenderer.on('tribal-worker:mint-coin', (_e, alias: UserAlias, config: SnobConfigType, history: SnobHistoryType | null) => {
+ipcRenderer.on('tribal-worker:mint-coin', async (_e, alias: UserAlias, config: SnobConfigType, history: SnobHistoryType | null) => {
     try {
+        history ??= new DefaultSnobHistory();
         if (config.mode === 'single') {
             mintSingle(alias, config, history);
         } else {
             mintGroup();
         };
+        
     } catch (err) {
-        TribalWorkerError.catch(err);
+        await TribalWorkerError.catch(err);
+        ipcSend('tribal-worker:did-fail-to-mint-coin', alias, config, history);
     };
 });
 
-function mintSingle(alias: UserAlias, config: SnobConfigType, history: SnobHistoryType | null) {
+function mintSingle(alias: UserAlias, config: SnobConfigType, history: SnobHistoryType) {
     const coinForm = document.querySelector<HTMLFormElement>('form[action*="action=coin" i]');
     if (!coinForm) {
-        ipcSend('tribal-worker:no-coin-to-mint');
+        ipcSend('tribal-worker:no-coin-to-mint', alias, config, history);
         return;
     };
 
@@ -63,8 +66,7 @@ function mintGroup() {
 };
 
 /** Envolve a propriedade `villages` em um proxy para que seja possível acessar uma vila que ainda não foi registrada. */
-function proxify(history: SnobHistoryType | null): SnobHistoryType {
-    if (!history) history = { coins: 0, villages: {} } satisfies SnobHistoryType;
+function proxify(history: SnobHistoryType): SnobHistoryType {
     const villages = new Proxy(history.villages, {
         get(target, villageId): SnobHistoryEntryType[] {
             if (typeof villageId !== 'string') villageId = String(villageId);

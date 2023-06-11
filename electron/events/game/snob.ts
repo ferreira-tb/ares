@@ -1,12 +1,12 @@
 import { ipcMain, webContents } from 'electron';
-import { ref, storeToRefs, watch } from 'mechanus';
+import { ref, storeToRefs, watch, type MechanusRef } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { useCacheStore, SnobConfig, SnobHistory } from '$electron/interface';
 import { sequelize } from '$electron/database';
 import { MainProcessEventError } from '$electron/error';
-import { assertUserAlias, isUserAlias } from '$common/guards';
 import { TribalWorker } from '$electron/worker';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
+import { assertUserAlias, isUserAlias } from '$common/guards';
 import { DefaultSnobConfig } from '$common/templates';
 
 export function setSnobEvents() {
@@ -17,7 +17,9 @@ export function setSnobEvents() {
     const isMinting = ref(false);
     const mintTimeout = ref<NodeJS.Timeout | null>(null);
     const mintWorker = ref<TribalWorker | null>(null);
-    const stopMinting = createMintingStopper(mintTimeout, mintWorker);
+
+    const stopMinting = mintingStopper(mintTimeout, mintWorker);
+    const toNextMint = onMint(userAlias, mintTimeout, mintWorker);
 
     ipcMain.handle('snob:get-config', getConfig(userAlias));
     ipcMain.handle('snob:get-history', getHistory(userAlias));
@@ -47,19 +49,16 @@ export function setSnobEvents() {
             });
 
             patchAllWebContents('history', snobHistory, e.sender);
-
-            const baseDelay = getBaseDelay(snobConfig.timeUnit);
-            const delay = snobConfig.delay * baseDelay;
-
-            mintTimeout.value = setTimeout(() => {
-                if (alias !== userAlias.value || !mintWorker.value) return;
-                mintWorker.value.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
-            }, delay);
+            toNextMint(alias, snobConfig, snobHistory);
 
         } catch (err) {
             MainProcessEventError.catch(err);
         };
     });
+
+    type ToNextMintParams = readonly [UserAlias, SnobConfigType, SnobHistoryType];
+    ipcMain.on('tribal-worker:no-coin-to-mint', (_e, ...args: ToNextMintParams) => toNextMint(...args));
+    ipcMain.on('tribal-worker:did-fail-to-mint-coin', (_e, ...args: ToNextMintParams) => toNextMint(...args));
 
     watch(userAlias, async (newAlias) => {
         try {
@@ -154,6 +153,8 @@ async function mint(alias: UserAlias): Promise<TribalWorker> {
     const search = mode === 'single' ? GameSearchParams.SnobTrain : GameSearchParams.SnobCoin;
     const url = TribalWorker.createURL(search);
 
+    const snobHistory = (await SnobHistory.findByPk(alias))?.toJSON() ?? null;
+
     if (mode === 'single') {
         if (!village) {
             throw new MainProcessEventError('Cannot mint coins on single mode without a village being set.');
@@ -166,9 +167,31 @@ async function mint(alias: UserAlias): Promise<TribalWorker> {
     const worker = new TribalWorker(TribalWorkerName.MintCoin, url);
     await worker.init();
 
-    const snobHistory = (await SnobHistory.findByPk(alias))?.toJSON() ?? null;
+    await worker.toBeReady();
     worker.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
     return worker;
+};
+
+function onMint(
+    userAlias: MechanusComputedRef<UserAlias | null>,
+    timeout: MechanusRef<NodeJS.Timeout | null>,
+    worker: MechanusRef<TribalWorker | null>
+) {
+    return function(alias: UserAlias, snobConfig: SnobConfigType, snobHistory: SnobHistoryType | null) {
+        const baseDelay = getBaseDelay(snobConfig.timeUnit);
+        const delay = snobConfig.delay * baseDelay;
+
+        timeout.value = setTimeout(async () => {
+            try {
+                if (alias !== userAlias.value || !worker.value) return;
+                worker.value.reload();
+                await worker.value.toBeReady();
+                worker.value.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
+            } catch (err) {
+                MainProcessEventError.catch(err);
+            };
+        }, delay);
+    };
 };
 
 function getBaseDelay(timeUnit: SnobConfigType['timeUnit']): Kronos {
@@ -177,7 +200,7 @@ function getBaseDelay(timeUnit: SnobConfigType['timeUnit']): Kronos {
     return Kronos.Hour;
 };
 
-function createMintingStopper(timeout: MechanusRef<NodeJS.Timeout | null>, worker: MechanusRef<TribalWorker | null>) {
+function mintingStopper(timeout: MechanusRef<NodeJS.Timeout | null>, worker: MechanusRef<TribalWorker | null>) {
     return function(): void {
         if (timeout.value) {
             clearTimeout(timeout.value);
