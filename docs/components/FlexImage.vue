@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress';
+
 defineProps<{
     readonly src: string;
     readonly alt: string;
@@ -7,7 +9,7 @@ defineProps<{
 
 <template>
     <div :class="$style['flex-image']">
-        <img :src="src" :alt="alt">
+        <img :src="withBase(src)" :alt="alt">
     </div>
 </template>
 
