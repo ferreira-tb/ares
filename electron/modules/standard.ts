@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron';
-import { appIcon, moduleHtml } from '$electron/utils/files';
+import { appIcon, windowsHtml } from '$electron/utils/files';
 import { getMainWindow } from '$electron/utils/helpers';
 import { ModuleCreationError } from '$electron/error';
 import { setModuleDevMenu } from '$electron/menu/dev';
@@ -66,7 +66,7 @@ export function createModule<T extends keyof ModuleConstructorOptions>(
 
             const moduleWindow = new BrowserWindow(windowOptions);
             setModuleDevMenu(moduleWindow);
-            moduleWindow.loadFile(moduleHtml).catch(ModuleCreationError.catch);
+            moduleWindow.loadFile(windowsHtml).catch(ModuleCreationError.catch);
             moduleWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
             moduleWindow.webContents.setAudioMuted(true);
             moduleWindow.on('system-context-menu', (e) => e.preventDefault());

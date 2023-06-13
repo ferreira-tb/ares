@@ -14,7 +14,7 @@ export function useVillage(villageId: Ref<number | null>) {
                 return;
             };
             
-            const data = await ipcInvoke('world-data:get-villages', villageId.value);
+            const data = await ipcInvoke('world-data:get-village', villageId.value);
             if (data.length === 0) {
                 village.value = null;
                 return;

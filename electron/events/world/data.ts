@@ -16,7 +16,7 @@ import {
 export function setWorldDataEvents(cachedWorld: MechanusRef<World | null>) {
     // Obtêm informações sobre uma ou mais aldeias.
     // Se o id da aldeia não for especificado, retorna todas as aldeias do mundo.
-    ipcMain.handle('world-data:get-villages', async (_e, villageId?: number[] | number, world: World | null = null) => {
+    ipcMain.handle('world-data:get-village', async (_e, villageId?: number[] | number, world: World | null = null) => {
         world ??= cachedWorld.value;
         if (!isWorld(world)) return [];
 

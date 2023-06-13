@@ -71,7 +71,7 @@ export async function ipcInvoke(channel: 'world:get-config', world?: World): Pro
 export async function ipcInvoke(channel: 'world:get-units-info', world?: World): Promise<WorldUnitsType | null>;
 export async function ipcInvoke(channel: 'world:is-archer-world'): Promise<boolean | null>;
 export async function ipcInvoke(
-    channel: 'world-data:get-villages', id?: number[] | number, world?: World
+    channel: 'world-data:get-village', id?: number[] | number, world?: World
 ): Promise<WorldVillageType[]>;
 export async function ipcInvoke(
     channel: 'world-data:get-player-villages', player: number, world?: World

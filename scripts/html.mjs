@@ -14,8 +14,8 @@ try {
     const panelHtml = path.join(distDir, 'panel.html');
     await fixHtmlFile(panelHtml);
 
-    const modulesHtml = path.join(distDir, 'modules.html');
-    await fixHtmlFile(modulesHtml);
+    const windowsHtml = path.join(distDir, 'windows.html');
+    await fixHtmlFile(windowsHtml);
 
     const uiHtml = path.join(distDir, 'ui.html');
     await fixHtmlFile(uiHtml);
