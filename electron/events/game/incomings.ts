@@ -49,7 +49,7 @@ function createIncomingsHandler() {
     let worker: TribalWorker | null = null;
     let timeout: NodeJS.Timeout | null = null;
 
-    async function createWorker() {
+    function createWorker() {
         if (worker?.isDestroyed) worker = null;
         if (worker) {
             // O uso do timeout impede que o worker seja sobrecarregado quando houver muitas requisições.
@@ -62,16 +62,17 @@ function createIncomingsHandler() {
         } else {
             const url = TribalWorker.createURL(GameSearchParams.Incomings);
             worker = new TribalWorker(TribalWorkerName.HandleIncomings, url);
-            await worker.init((e) => {
-                if (e.data === 'destroy') {
+            worker.once('port:message', (message) => {
+                if (message === 'destroy') {
                     setTimeout(() => worker?.destroy(), delay.value);
                 };
             });
+
+            worker.init().catch(MainProcessEventError.catch);
         };
     };
 
     return function(value: number | null) {
-        if (value === null) return;
-        createWorker().catch(MainProcessEventError.catch);
+        if (value !== null) createWorker();
     };
 };

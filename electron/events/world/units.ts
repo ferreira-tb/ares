@@ -19,29 +19,32 @@ function fetchWorldUnits() {
     return async function(world: World | null) {
         if (!isWorld(world)) return;
         try {
-            const worldUnit = await WorldUnits.findByPk(world);
-            if (!worldUnit) {
+            const previous = await WorldUnits.findByPk(world);
+            if (!previous) {
                 // Se não houver informações sobre as unidades do mundo atual, cria um novo registro.
-                const newInfo = await new Promise<WorldUnitsType>(async (resolve, reject) => {
-                    const url = getWorldUnitInfoUrl(world, region.value);
-                    const worker = new TribalWorker(TribalWorkerName.FetchWorldUnits, url);
-                    await worker.init((e) => {
+                const url = getWorldUnitInfoUrl(world, region.value);
+                const worker = new TribalWorker(TribalWorkerName.FetchWorldUnits, url);
+                const info = await new Promise<WorldUnitsType>((resolve, reject) => {
+                    worker.once('destroyed', reject);
+                    worker.once('port:message', (message: WorldUnitsType | null) => {
                         try {
-                            if (!e.data) {
-                                throw new MainProcessEventError(`No data received for world ${world}.`);
+                            if (!message) {
+                                throw new MainProcessEventError(`Could not fetch world units for ${world}.`);
                             };
-                            resolve(e.data);             
+                            resolve(message);
                         } catch (err) {
                             reject(err);
                         } finally {
                             worker.destroy();
                         };
                     });
+
+                    worker.init().catch(reject);
                 });
     
                 // Salva o registro no banco de dados.
                 await sequelize.transaction(async () => {
-                    await WorldUnits.create({ id: world, ...newInfo });
+                    await WorldUnits.create({ id: world, ...info });
                 });
             };
     

@@ -53,8 +53,8 @@ export function setGroupsEvents() {
     });
 };
 
-function fetchGroups(): Promise<Set<VillageGroup>> {
-    return new Promise(async (resolve, reject) => {
+function fetchGroups() {
+    return new Promise<Set<VillageGroup>>((resolve, reject) => {
         // Cria o Worker na tela de grupos manuais.
         // Lá é possível obter tanto os grupos manuais quanto os dinâmicos.
         const mainViewWebContents = getMainViewWebContents();
@@ -62,18 +62,19 @@ function fetchGroups(): Promise<Set<VillageGroup>> {
         url.search = GameSearchParams.Groups;
 
         const worker = new TribalWorker(TribalWorkerName.GetVillageGroups, url);
-        await worker.init((e) => {
+        worker.once('destroyed', reject);
+        worker.once('port:message', (message: Set<VillageGroup> | null) => {
             try {
-                if (!(e.data instanceof Set)) {
-                    throw new Error('Village groups data must be a Set.');
-                };
-                resolve(e.data);
+                if (!message) throw new Error('Could not fetch village groups.');
+                resolve(message);
             } catch (err) {
                 reject(err);
             } finally {
                 worker.destroy();
             };
         });
+
+        worker.init().catch(reject);
     });
 };
 

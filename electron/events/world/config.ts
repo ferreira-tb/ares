@@ -19,29 +19,32 @@ function fetchWorldConfig() {
     return async function(world: World | null) {
         if (!isWorld(world)) return;
         try {
-            const worldConfig = await WorldConfig.findByPk(world);
-            if (!worldConfig) {
+            const previous = await WorldConfig.findByPk(world);
+            if (!previous) {
                 // Se não houver configurações para o mundo atual, cria um novo registro.
-                const newConfig = await new Promise<WorldConfigType>(async (resolve, reject) => {
-                    const url = getWorldConfigUrl(world, region.value);
-                    const worker = new TribalWorker(TribalWorkerName.FetchWorldConfig, url);
-                    await worker.init((e) => {
+                const url = getWorldConfigUrl(world, region.value);
+                const worker = new TribalWorker(TribalWorkerName.FetchWorldConfig, url);
+                const config = await new Promise<WorldConfigType>((resolve, reject) => {
+                    worker.once('destroyed', reject);
+                    worker.once('port:message', (message: WorldConfigType | null) => {
                         try {
-                            if (!e.data) {
-                                throw new MainProcessEventError(`No data received for world ${world}.`);
+                            if (!message) {
+                                throw new MainProcessEventError(`Could not fetch world config for ${world}.`);
                             };
-                            resolve(e.data);
+                            resolve(message);
                         } catch (err) {
                             reject(err);
                         } finally {
                             worker.destroy();
                         };
                     });
+
+                    worker.init().catch(reject);
                 });
-    
+                
                 // Salva o registro no banco de dados.
                 await sequelize.transaction(async () => {
-                    await WorldConfig.create({ id: world, ...newConfig });
+                    await WorldConfig.create({ id: world, ...config });
                 });
             };
     

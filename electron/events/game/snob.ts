@@ -171,10 +171,11 @@ async function mint(alias: UserAlias): Promise<TribalWorker> {
     };
 
     const worker = new TribalWorker(TribalWorkerName.MintCoin, url);
+    worker.once('ready', (contents) => {
+        contents.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
+    });
+    
     await worker.init();
-
-    await worker.toBeReady();
-    worker.webContents.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
     return worker;
 };
 

@@ -1,13 +1,36 @@
+/* eslint-disable @typescript-eslint/unified-signatures */
 import * as path from 'node:path';
 import { EventEmitter } from 'node:events';
 import { BrowserView, MessageChannelMain } from 'electron';
-import { computed, ref, until, watchImmediate, type UntilOptions } from 'mechanus';
+import { computed, ref, until, watchImmediate, wheneverAsync } from 'mechanus';
 import { getMainWindow } from '$electron/utils/helpers';
 import { TribalWorkerError } from '$electron/error';
 import { getMainViewWebContents } from '$electron/utils/view';
+import type { UntilOptions, WatchStopHandle } from 'mechanus';
 import type { TribalWorkerName } from '$common/constants';
 
 export class TribalWorker extends EventEmitter {
+    public override emit(event: 'destroyed'): boolean;
+    public override emit(event: 'ready', webContents: Electron.WebContents): boolean;
+    public override emit(event: 'port:message', message: unknown): boolean;
+    public override emit(event: string, ...args: any[]): boolean {
+        return super.emit(event, ...args);
+    };
+
+    public override on(event: 'destroyed', listener: () => void): this;
+    public override on(event: 'ready', listener: (webContents: Electron.WebContents) => void): this;
+    public override on(event: 'port:message', listener: (message: unknown) => void): this;
+    public override on(event: string, listener: (...args: any[]) => void): this {
+        return super.on(event, listener);
+    };
+
+    public override once(event: 'destroyed', listener: () => void): this;
+    public override once(event: 'ready', listener: (webContents: Electron.WebContents) => void): this;
+    public override once(event: 'port:message', listener: (message: unknown) => void): this;
+    public override once(event: string, listener: (...args: any[]) => void): this {
+        return super.once(event, listener);
+    };
+
     /** Nome do Worker. */
     public readonly name: TribalWorkerName;
     /** URL que será carregada no Worker. */
@@ -19,7 +42,7 @@ export class TribalWorker extends EventEmitter {
     readonly #isDestroyed = ref(false);
     readonly #isLoading = ref(false);
     readonly #messagePort = ref<Electron.MessagePortMain | null>(null);
-    readonly #watchers = new Set<() => void>();
+    readonly #watchers: Set<WatchStopHandle>;
 
     /** Indica se o webContents do Worker está pronto. */
     public readonly isReady = computed(
@@ -39,7 +62,14 @@ export class TribalWorker extends EventEmitter {
         this.path = path.join(__dirname, `worker/${name}.js`);
         this.url = url;
 
-        this.#watchers.add(this.#setBrowserViewWatcher());
+        const readyWatcher = wheneverAsync(this.isReady, () => {
+            this.emit('ready', this.webContents);
+        });
+
+        this.#watchers = new Set([
+            readyWatcher,
+            this.#setBrowserViewWatcher()
+        ]);
     };
 
     get isDestroyed(): boolean {
@@ -63,13 +93,6 @@ export class TribalWorker extends EventEmitter {
         return this.#browserView.value.webContents;
     };
 
-    #createMessageChannel(): void {
-        const { port1, port2 } = new MessageChannelMain();
-        this.webContents.postMessage('port', null, [port2]);
-        port1.postMessage({ channel: this.name });
-        this.#messagePort.value = port1;
-    };
-
     #setBrowserViewWatcher(): () => void {
         return watchImmediate(this.#browserView, (view) => {
             if (!(view instanceof BrowserView)) return;
@@ -81,6 +104,19 @@ export class TribalWorker extends EventEmitter {
             contents.on('did-fail-provisional-load', () => (this.#isLoading.value = contents.isLoading()));
             contents.on('dom-ready', () => (this.#isLoading.value = contents.isLoading()));
         });
+    };
+
+    #setupMessageChannel(): void {
+        const { port1, port2 } = new MessageChannelMain();
+        this.webContents.postMessage('port', null, [port2]);
+        port1.postMessage({ channel: this.name });
+
+        port1.on('message', (e: Electron.MessageEvent) => {
+            this.emit('port:message', e.data);
+        });
+
+        this.#messagePort.value = port1;
+        port1.start();
     };
 
     /** Destroi a instância do Worker, removendo-a da janela mãe. */
@@ -119,7 +155,7 @@ export class TribalWorker extends EventEmitter {
      * Inicializa uma instância do Worker, anexando-a à janela mãe.
      * Se já houver uma instância ativa usando o nome escolhido, ela será destruída.
      */
-    public async init(listener?: (event: Electron.MessageEvent) => void): Promise<void> {
+    public async init(): Promise<void> {
         if (this.#isDestroyed.value) {
             throw new TribalWorkerError(`TribalWorker "${this.name}" is destroyed.`);
         };
@@ -148,11 +184,8 @@ export class TribalWorker extends EventEmitter {
         this.#browserView.value = tribalWorker;
         await tribalWorker.webContents.loadURL(this.url.href);
 
-        this.#createMessageChannel();
         TribalWorker.setWorker(this.name, this);
-
-        if (listener) this.port.on('message', listener);
-        this.port.start();
+        this.#setupMessageChannel();
     };
 
     public openDevTools() {
