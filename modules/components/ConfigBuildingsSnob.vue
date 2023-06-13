@@ -25,7 +25,7 @@ const villages = computedAsync<WorldVillageType[]>(async () => {
     if (!userAlias.value || typeof playerStore.id !== 'number') return [];
     const playerVillages = await ipcInvoke('world-data:get-player-villages', playerStore.id);
     return playerVillages;
-});
+}, []);
 
 const villageOptions = computed(() => {
     const options = villages.value.map(({ id: villageId, name: villageName }) => {
