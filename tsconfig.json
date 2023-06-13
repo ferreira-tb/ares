@@ -5,6 +5,8 @@
         "panel.config.*",
         "ui.config.*",
 
+        "taze.config.*",
+
         "common/**/*",
         "typings/**/*",
 

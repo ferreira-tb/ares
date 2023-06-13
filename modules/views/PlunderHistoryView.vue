@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, type ComponentPublicInstance } from 'vue';
 import { useElementSize, useWindowSize } from '@vueuse/core';
-import { useIpcRendererOn } from '@vueuse/electron';
 import { ipcInvoke } from '$renderer/ipc';
+import { useIpcOn } from '$renderer/composables';
 import PlunderHistoryHeader from '$modules/components/PlunderHistoryHeader.vue';
 import PlunderHistoryDataTable from '$modules/components/PlunderHistoryDataTable.vue';
 
@@ -24,7 +24,7 @@ const { height } = useWindowSize();
 const { height: headerHeight } = useElementSize(header);
 const tableMaxHeight = computed(() => (height.value - headerHeight.value) - 100);
 
-useIpcRendererOn('plunder:history-did-update', (_e, updatedHistory: PlunderHistoryType) => {
+useIpcOn('plunder:history-did-update', (_e, updatedHistory: PlunderHistoryType) => {
     history.value = updatedHistory;
 });
 </script>

@@ -1,6 +1,5 @@
-import { ipcRenderer } from 'electron';
 import { BrowserError } from '$browser/error';
-import { ipcSend } from '$renderer/ipc';
+import { ipcOn, ipcSend } from '$renderer/ipc';
 import { IpcTribal } from '$ipc/interface';
 import {
     useAresStore,
@@ -15,12 +14,12 @@ export function setIpcTribalEvents() {
     const playerStore = usePlayerStore();
     const currentVillageStore = useCurrentVillageStore();
 
-    ipcRenderer.on('get-game-data', async () => {
+    ipcOn('get-game-data', async () => {
         try {
             const gameData = await IpcTribal.invoke('get-game-data');
-            if (!gameData) return;
-    
             ipcSend('ipc-tribal:update-game-data', gameData);
+            if (!gameData) return;
+            
             aresStore.$patch(gameData.ares);
             featuresStore.$patch(gameData.features);
             playerStore.$patch(gameData.player);

@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { TribalWorker } from '$electron/worker';
-import { useAresStore, useIncomingsStore } from '$electron/interface';
+import { useAresStore, useIncomingsStore } from '$electron/stores';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessEventError } from '$electron/error';

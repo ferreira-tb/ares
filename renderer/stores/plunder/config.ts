@@ -1,43 +1,46 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
+import { DefaultPlunderConfig } from '$common/templates';
 
 export const usePlunderConfigStore = defineStore('plunder-config', () => {
+    const config = new DefaultPlunderConfig();
+
     // Painel
-    const active = ref<boolean>(false);
-    const ignoreWall = ref<boolean>(false);
-    const destroyWall = ref<boolean>(false);
-    const groupAttack = ref<boolean>(false);
-    const useC = ref<boolean>(false);
-    const ignoreDelay = ref<boolean>(false);
-    const blindAttack = ref<boolean>(false);
+    const active = ref<boolean>(config.active);
+    const ignoreWall = ref<boolean>(config.ignoreWall);
+    const destroyWall = ref<boolean>(config.destroyWall);
+    const groupAttack = ref<boolean>(config.groupAttack);
+    const useC = ref<boolean>(config.useC);
+    const ignoreDelay = ref<boolean>(config.ignoreDelay);
+    const blindAttack = ref<boolean>(config.blindAttack);
 
     // Ataque
-    const maxDistance = ref<number>(20);
-    const ignoreOlderThan = ref<number>(10);
-    const attackDelay = ref<number>(200);
-    const resourceRatio = ref<number>(0.8);
-    const blindAttackPattern = ref<BlindAttackPattern>('smaller');
+    const maxDistance = ref<number>(config.maxDistance);
+    const ignoreOlderThan = ref<number>(config.ignoreOlderThan);
+    const attackDelay = ref<number>(config.attackDelay);
+    const resourceRatio = ref<number>(config.resourceRatio);
+    const blindAttackPattern = ref<BlindAttackPattern>(config.blindAttackPattern);
 
     // Modelo C
-    const useCPattern = ref<UseCPattern>('normal');
-    const maxDistanceC = ref<number>(10);
-    const ignoreOlderThanC = ref<number>(5);
-    const useCWhenResourceRatioIsBiggerThan = ref<number>(3);
+    const useCPattern = ref<UseCPattern>(config.useCPattern);
+    const maxDistanceC = ref<number>(config.maxDistanceC);
+    const ignoreOlderThanC = ref<number>(config.ignoreOlderThanC);
+    const useCWhenResourceRatioIsBiggerThan = ref<number>(config.useCWhenResourceRatioIsBiggerThan);
 
     // Grupo
-    const plunderGroupId = ref<number | null>(null);
-    const fieldsPerWave = ref<number>(10);
-    const villageDelay = ref<number>(2000);
+    const plunderGroupId = ref<number | null>(config.plunderGroupId);
+    const fieldsPerWave = ref<number>(config.fieldsPerWave);
+    const villageDelay = ref<number>(config.villageDelay);
 
     // Muralha
-    const wallLevelToIgnore = ref<WallLevel>(1);
-    const wallLevelToDestroy = ref<WallLevel>(1);
-    const destroyWallMaxDistance = ref<number>(20);
+    const wallLevelToIgnore = ref<WallLevel>(config.wallLevelToIgnore);
+    const wallLevelToDestroy = ref<WallLevel>(config.wallLevelToDestroy);
+    const destroyWallMaxDistance = ref<number>(config.destroyWallMaxDistance);
     
     // Outros
-    const minutesUntilReload = ref<number>(10);
-    const plunderedResourcesRatio = ref<number>(1);
-    const pageDelay = ref<number>(2000);
+    const minutesUntilReload = ref<number>(config.minutesUntilReload);
+    const plunderedResourcesRatio = ref<number>(config.plunderedResourcesRatio);
+    const pageDelay = ref<number>(config.pageDelay);
     
     function raw(): PlunderConfigType {
         return {

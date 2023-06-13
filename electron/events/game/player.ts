@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { useCacheStore, usePlayerStore } from '$electron/interface';
+import { useCacheStore, usePlayerStore } from '$electron/stores';
 
 export function setPlayerEvents() {
     const cacheStore = useCacheStore();

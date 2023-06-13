@@ -6,6 +6,10 @@ import { useSnobConfigStore, useSnobHistoryStore } from '$renderer/stores';
 import { useVillage } from '$renderer/composables/village';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 
+defineProps<{
+    userAlias: UserAlias | null;
+}>();
+
 const locale = await ipcInvoke('app:locale');
 
 const config = useSnobConfigStore();
@@ -28,7 +32,7 @@ function navigateToSnob() {
 <template>
     <div class="minting-status-tag-container">
         <Transition name="tb-fade" mode="out-in">
-            <div v-if="active" :key="coins" class="tag-wrapper">
+            <div v-if="userAlias && active" :key="coins" class="tag-wrapper">
                 <NTag
                     round
                     class="minting-status-tag"

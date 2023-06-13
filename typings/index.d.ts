@@ -1,3 +1,12 @@
+type AppDebugInfo = {
+    readonly uuid: string;
+    readonly channel: string;
+    readonly from: string;
+    readonly to: string;
+    readonly time: number;
+    readonly data: unknown[];
+};
+
 type SequelizeModel = import('sequelize').Model<T, U>;
 type WindowOpenHandler = ReturnType<Parameters<Electron.WebContents['setWindowOpenHandler']>[0]>;
 

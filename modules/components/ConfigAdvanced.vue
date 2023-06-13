@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { NDivider, NGrid, NGridItem, NButton, useDialog, useMessage } from 'naive-ui';
-import { ipcInvoke } from '$renderer/ipc';
+import { reactive, toRaw, toRef, watch } from 'vue';
+import { watchDeep } from '@vueuse/core';
+import { NCheckbox, NDivider, NGrid, NGridItem, NButton, useDialog, useMessage } from 'naive-ui';
+import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { ModuleConfigError } from '$modules/error';
 
 const dialog = useDialog();
 const message = useMessage();
+
+const config = reactive(await ipcInvoke('config:advanced'));
+watchDeep(config, (newValue) => ipcSend('config:update', 'advanced', toRaw(newValue)));
+
+const isDebugModeEnabled = toRef(config, 'debug');
+watch(isDebugModeEnabled, (newValue) => ipcSend('debug:toggle', newValue));
 
 function dropDatabase() {
     const status = dialog.warning({
@@ -32,10 +40,19 @@ function dropDatabase() {
 
 <template>
     <section class="advanced-config">
+        <NDivider title-placement="left" class="config-divider">Desenvolvedor</NDivider>
+        <NGrid :cols="2" :x-gap="6" :y-gap="10">
+            <NGridItem :span="2">
+                <NCheckbox v-model:checked="config.debug" size="large">
+                    Habilitar modo de depuração
+                </NCheckbox>
+            </NGridItem>
+        </NGrid>
+
         <NDivider title-placement="left" class="config-divider">Banco de dados</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
-                <div class="config-label">Excluir banco de dados</div>
+                <div>Excluir banco de dados</div>
             </NGridItem>
             <NGridItem>
                 <NButton @click="dropDatabase">Excluir</NButton>

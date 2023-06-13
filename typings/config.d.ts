@@ -1,3 +1,8 @@
+type AdvancedConfigType = {
+    /** Habilita o modo de depuração. */
+    debug: boolean;
+};
+
 type GeneralConfigType = {
     /** Última região acessada pelo usuário. */
     lastRegion: GameRegion;
@@ -35,6 +40,8 @@ type UpdateConfigType = {
 };
 
 interface AppConfigType {
+    /** Configurações avançadas. */
+    advanced: AdvancedConfigType;
     /** Configurações gerais. */
     general: GeneralConfigType;
     /** Configurações das dimensões dos módulos. */

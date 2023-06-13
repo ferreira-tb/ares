@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue';
-import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
-import { watchDeep } from '@vueuse/core';
-import { useIpcRendererOn } from '@vueuse/electron';
+import { NDivider, NGrid, NGridItem, NInputNumber, NResult, NSelect } from 'naive-ui';
+import { computedAsync, watchDeep } from '@vueuse/core';
+import { useIpcOn, useUserAlias } from '$renderer/composables';
 import { usePlayerStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { decodeString } from '$common/helpers';
-import { ModuleConfigError } from '$modules/error';
 import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
 
+const userAlias = useUserAlias();
 const locale = await ipcInvoke('app:locale');
 
 const config = useSnobConfigStore();
@@ -20,9 +20,13 @@ const playerDataFromMainProcess = await ipcInvoke('player:get-store');
 playerStore.$patch(playerDataFromMainProcess);
 
 await nextTick();
-if (!playerStore.id) throw new ModuleConfigError('Missing player id.');
 
-const villages = ref(await ipcInvoke('world-data:get-player-villages', playerStore.id));
+const villages = computedAsync<WorldVillageType[]>(async () => {
+    if (!userAlias.value || typeof playerStore.id !== 'number') return [];
+    const playerVillages = await ipcInvoke('world-data:get-player-villages', playerStore.id);
+    return playerVillages;
+});
+
 const villageOptions = computed(() => {
     const options = villages.value.map(({ id: villageId, name: villageName }) => {
         return { label: decodeString(villageName), value: villageId };
@@ -58,13 +62,13 @@ watchDeep(config, () => {
     ipcSend('snob:update-config', config.raw());
 });
 
-useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
+useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
     allGroups.value = groups;
 });
 </script>
 
 <template>
-    <div>
+    <div v-if="userAlias" class="config-buildings-snob">
         <NDivider title-placement="left" class="config-divider">Cunhagem</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
@@ -130,4 +134,18 @@ useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageG
             </NGridItem>
         </NGrid>
     </div>
+
+    <div v-else class="result-info">
+        <NResult
+            status="info"
+            title="Você está logado?"
+            description="É necessário estar logado para acessar as configurações da academia."
+        />
+    </div>
 </template>
+
+<style scoped lang="scss">
+.config-buildings-snob {
+    padding: 0.5em;
+}
+</style>

@@ -1,9 +1,9 @@
 import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
-import { ipcRenderer } from 'electron';
+import { ipcOn } from '$renderer/ipc';
 import { TribalWorkerError } from '$worker/error';
 
-ipcRenderer.on('port', (e) => {
+ipcOn('port', (e) => {
     const port = e.ports[0];
     port.onmessage = () => fetchWorldUnits(port);
     port.onmessageerror = TribalWorkerError.onMessageError;

@@ -1,25 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NSelect, NInputNumber } from 'naive-ui';
+import { usePlunderConfigStore } from '$renderer/stores';
 import { formatFields, parseFields, formatHours, parseHours } from '$modules/utils/input-parser';
 
-const props = defineProps<{
-    config: PlunderConfigType;
-}>();
-
-const emit = defineEmits<{
-    <T extends keyof PlunderConfigType>(e: 'update:config', name: T, value: PlunderConfigType[T]): void;
-}>();
-
-const useCPattern = ref<UseCPattern>(props.config.useCPattern);
-const maxDistanceC = ref<number>(props.config.maxDistanceC);
-const ignoreOlderThanC = ref<number>(props.config.ignoreOlderThanC);
-const useCWhenResourceRatioIsBiggerThan = ref<number>(props.config.useCWhenResourceRatioIsBiggerThan);
-
-watch(useCPattern, (v) => emit('update:config', 'useCPattern', v));
-watch(maxDistanceC, (v) => emit('update:config', 'maxDistanceC', v));
-watch(ignoreOlderThanC, (v) => emit('update:config', 'ignoreOlderThanC', v));
-watch(useCWhenResourceRatioIsBiggerThan, (v) => emit('update:config', 'useCWhenResourceRatioIsBiggerThan', v));
+const config = usePlunderConfigStore();
 
 const useCOptions = [
     { label: 'Normal', value: 'normal' },
@@ -37,7 +21,7 @@ const useCOptions = [
             </NGridItem>
             <NGridItem>
                 <div class="config-select">
-                    <NSelect v-model:value="useCPattern" :options="useCOptions" />
+                    <NSelect v-model:value="config.useCPattern" :options="useCOptions" />
                 </div>
             </NGridItem>
 
@@ -46,7 +30,7 @@ const useCOptions = [
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="maxDistanceC"
+                    v-model:value="config.maxDistanceC"
                     class="config-input"
                     :min="1"
                     :max="9999"
@@ -62,7 +46,7 @@ const useCOptions = [
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="ignoreOlderThanC"
+                    v-model:value="config.ignoreOlderThanC"
                     class="config-input"
                     :min="1"
                     :max="9999"
@@ -78,9 +62,9 @@ const useCOptions = [
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="useCWhenResourceRatioIsBiggerThan"
+                    v-model:value="config.useCWhenResourceRatioIsBiggerThan"
                     class="config-input"
-                    :disabled="useCPattern !== 'excess'"
+                    :disabled="config.useCPattern !== 'excess'"
                     :min="1"
                     :max="9999"
                     :step="1"

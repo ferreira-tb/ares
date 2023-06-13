@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { reactive, watch, toRaw } from 'vue';
+import { ref } from 'vue';
+import { watchDeep } from '@vueuse/core';
 import { NCheckbox, NDivider, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 
-const previous = await ipcInvoke('config:general');
-const config = reactive(previous);
-watch(config, () => ipcSend('config:update', 'general', toRaw(config)));
+const config = ref(await ipcInvoke('config:general'));
+watchDeep(config, (newValue) => ipcSend('config:update', 'general', newValue));
 </script>
 
 <template>

@@ -1,17 +1,31 @@
 import { ref } from 'mechanus';
 
 export function defineAresStore(mechanus: Mechanus) {
-    return mechanus.define('ares', {
-        locale: ref<string | null>(null),
-        world: ref<World | null>(null),
-        majorVersion: ref<string | null>(null),
+    return mechanus.define('ares', () => {
+        const locale = ref<string | null>(null);
+        const world = ref<World | null>(null);
+        const majorVersion = ref<string | null>(null);
 
-        screen: ref<string | null>(null),
-        screenMode: ref<string | null>(null),
-        pregame: ref<boolean | null>(null),
-        groupId: ref<number | null>(null),
+        const screen = ref<string | null>(null);
+        const screenMode = ref<string | null>(null);
+        const pregame = ref<boolean | null>(null);
+        const groupId = ref<number | null>(null);
 
-        captcha: ref<boolean>(false),
-        responseTime: ref<number | null>(null)
-    } satisfies MechanusAresStoreType);
+        const captcha = ref<boolean>(false);
+        const responseTime = ref<number | null>(null);
+
+        return {
+            locale,
+            world,
+            majorVersion,
+
+            screen,
+            screenMode,
+            pregame,
+            groupId,
+
+            captcha,
+            responseTime
+        } satisfies MechanusAresStoreType;
+    });
 };

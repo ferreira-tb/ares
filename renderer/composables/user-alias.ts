@@ -1,0 +1,33 @@
+import { effectScope, readonly, ref } from 'vue';
+import { tryOnScopeDispose, watchImmediate } from '@vueuse/core';
+import { ipcInvoke } from '$renderer/ipc';
+import { useIpcOn } from '$renderer/composables';
+import { RendererProcessError } from '$renderer/error';
+
+/**
+ * Cria uma referência reativa para o alias do usuário.
+ * Ela é atualizada automaticamente quando ele é alterado.
+ */
+export function useUserAlias() {
+    const scope = effectScope();
+    const userAlias = ref<UserAlias | null>(null);
+
+    ipcInvoke('user:get-alias').then(
+        (newAlias) => (userAlias.value = newAlias),
+        (err: unknown) => RendererProcessError.catch(err)
+    );
+
+    watchImmediate(userAlias, (newAlias) => {
+        console.log('userAlias', newAlias);
+    });
+
+    scope.run(() => {
+        useIpcOn('user:did-change-alias', (_e, newAlias: UserAlias | null) => {
+            userAlias.value = newAlias;
+        });
+    });
+
+    tryOnScopeDispose(() => scope.stop());
+
+    return readonly(userAlias);
+};

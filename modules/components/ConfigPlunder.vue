@@ -1,54 +1,56 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useIpcRendererOn } from '@vueuse/electron';
+import { nextTick } from 'vue';
+import { watchDeep } from '@vueuse/core';
+import { NResult } from 'naive-ui';
+import { useIpcOn, useUserAlias } from '$renderer/composables';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { ModuleConfigError } from '$modules/error';
-import ResultInfo from '$renderer/components/ResultInfo.vue';
+import { usePlunderConfigStore } from '$renderer/stores';
 import ConfigPlunderGridAttack from '$modules/components/ConfigPlunderGridAttack.vue';
 import ConfigPlunderGridGroups from '$modules/components/ConfigPlunderGridGroups.vue';
 import ConfigPlunderGridTemplateC from '$modules/components/ConfigPlunderGridTemplateC.vue';
 import ConfigPlunderGridWall from '$modules/components/ConfigPlunderGridWall.vue';
 import ConfigPlunderGridOthers from '$modules/components/ConfigPlunderGridOthers.vue';
 
+const userAlias = useUserAlias();
+
+// Sincroniza a configuração com o processo principal.
+const config = usePlunderConfigStore();
 const previousConfig = await ipcInvoke('plunder:get-config');
-const config = ref<PlunderConfigType | null>(previousConfig);
+if (previousConfig) {
+    config.$patch(previousConfig);
+    await nextTick();
+};
 
 // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
-useIpcRendererOn('plunder:config-updated', <T extends keyof PlunderConfigType>(_e: unknown, name: T, value: PlunderConfigType[T]) => {
-    try {
-        if (!config.value) return;
-        config.value[name] = value;
-    } catch (err) {
-        ModuleConfigError.catch(err);
-    };
+useIpcOn('plunder:patch-config', (_e: unknown, newConfig: PlunderConfigType) => {
+    config.$patch(newConfig);
 });
 
-function updateConfig<T extends keyof PlunderConfigType>(name: T, value: PlunderConfigType[T]) {
-    if (!config.value) return;
-    config.value[name] = value;
-    ipcSend('plunder:update-config', name, value);
-};
+watchDeep(config, () => {
+    ipcSend('plunder:update-config', config.raw());
+});
 </script>
 
 <template>
-    <section v-if="config" class="plunder-config">
-        <ConfigPlunderGridAttack :config="config" @update:config="updateConfig" />
-        <ConfigPlunderGridTemplateC :config="config" @update:config="updateConfig" />
-        <ConfigPlunderGridGroups :config="config" @update:config="updateConfig" />
-        <ConfigPlunderGridWall :config="config" @update:config="updateConfig" />
-        <ConfigPlunderGridOthers :config="config" @update:config="updateConfig" />
+    <section v-if="userAlias" class="plunder-config">
+        <ConfigPlunderGridAttack />
+        <ConfigPlunderGridTemplateC />
+        <ConfigPlunderGridGroups />
+        <ConfigPlunderGridWall :user-alias="userAlias" />
+        <ConfigPlunderGridOthers />
     </section>
 
-    <ResultInfo
-        v-else
-        title="Você está logado?"
-        description="É necessário estar logado para acessar as configurações do assistente de saque."
-    />
+    <div v-else class="result-info">
+        <NResult
+            status="info"
+            title="Você está logado?"
+            description="É necessário estar logado para acessar as configurações do assistente de saque."
+        />
+    </div>
 </template>
 
 <style scoped lang="scss">
 .plunder-config {
-    padding-right: 10px;
-    padding-bottom: 2em;
+    padding: 0.5em;
 }
 </style>

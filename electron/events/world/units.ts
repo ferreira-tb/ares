@@ -1,7 +1,7 @@
 import { storeToRefs, watch } from 'mechanus';
 import { sequelize } from '$electron/database';
 import { WorldUnits } from '$electron/database/models';
-import { useCacheStore } from '$electron/interface';
+import { useCacheStore } from '$electron/stores';
 import { TribalWorker } from '$electron/worker';
 import { TribalWorkerName } from '$common/constants';
 import { isWorld } from '$common/guards';

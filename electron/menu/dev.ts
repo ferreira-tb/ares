@@ -2,7 +2,7 @@ import { Menu, MenuItem, webContents } from 'electron';
 import { computed, storeToRefs } from 'mechanus';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
-import type { useBrowserViewStore } from '$electron/interface';
+import type { useBrowserViewStore } from '$electron/stores';
 
 function getDevOptions(browserViewStore: ReturnType<typeof useBrowserViewStore>): Electron.MenuItemConstructorOptions[] {
     const { webContents: mainContents } = getMainWindow();

@@ -2,8 +2,8 @@ import { app, dialog, ipcMain, Menu } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { getMainWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
-import { showErrorLog, openIssuesWebsite } from '$electron/modules';
-import { useCacheStore } from '$electron/interface';
+import { showDebug, showErrorLog, openIssuesWebsite } from '$electron/modules';
+import { useCacheStore } from '$electron/stores';
 import { appConfig } from '$electron/stores';
 import { MainProcessError } from '$electron/error';
 import { getGameRegionUrl } from '$common/helpers';
@@ -41,6 +41,11 @@ export function setMenuEvents() {
             { label: 'Problemas conhecidos', click: () => openIssuesWebsite() }
         ];
 
+        if (appConfig.get('advanced').debug) {
+            template.push({ type: 'separator' });
+            template.push({ label: 'Depurar', click: () => showDebug() });
+        };
+
         const menu = Menu.buildFromTemplate(template);
         menu.popup({ window: mainWindow });
     });
@@ -77,6 +82,7 @@ async function setGameRegion(region: GameRegion, cachedRegion: MechanusRef<GameR
         const regionUrl = getGameRegionUrl(region);
         const contents = getMainViewWebContents();
         await contents.loadURL(regionUrl);
+        
     } catch (err) {
         MainProcessError.catch(err);
     };

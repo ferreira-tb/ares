@@ -1,7 +1,6 @@
 import { app, BrowserWindow } from 'electron';
-import { assertWorld } from '$common/guards';
 import { MainProcessError } from '$electron/error';
-import { appConfig } from '$electron/stores/config';
+import { appConfig } from '$electron/stores';
 
 export function restartAres() {
     app.relaunch();
@@ -59,16 +58,4 @@ export function maximizeOrRestoreWindow(window: BrowserWindow): boolean {
     };
 
     return window.isMaximized();
-};
-
-/**
-* Retorna o alias do usuário, no padrão `/^[a-z]+\d+_{ nome do jogador }/`.
-
-* Ele é usado para diferenciar tanto diferentes jogadores quanto diferentes mundos do mesmo jogador.
-* @param playerName Nome do jogador.
-*/
-export function generateUserAlias(world: World, playerName: string): UserAlias {
-    playerName = encodeURIComponent(playerName);
-    assertWorld(world, MainProcessError);
-    return `${world}_${playerName}`;
 };

@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch, watchEffect } from 'vue';
-import { useIpcRendererOn } from '@vueuse/electron';
+import { computed, nextTick, ref, watchEffect } from 'vue';
+import { watchDeep } from '@vueuse/core';
 import { NButton, NButtonGroup, NGrid, NGridItem, NSwitch } from 'naive-ui';
 import { useFeaturesStore, usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { useIpcOn } from '$renderer/composables';
 import ThePlunderedResources from '$panel/components/ThePlunderedResources.vue';
 
 const config = usePlunderConfigStore();
 const features = useFeaturesStore();
 
+// Sincroniza a configuração com o processo principal.
 const previousConfig = await ipcInvoke('plunder:get-config');
 if (previousConfig) {
     config.$patch(previousConfig);
@@ -29,17 +31,9 @@ const canUseGroupAttack = computed<boolean>(() => {
     return hasDynamicGroup.value;
 });
 
-watch(() => config.active, (isActive) => {
-    ipcSend('plunder:update-config', 'active', isActive);
-    if (!isActive) ipcSend('plunder:save-history');
+watchDeep(config, () => {
+    ipcSend('plunder:update-config', config.raw());
 });
-
-watch(() => config.ignoreWall, (v) => ipcSend('plunder:update-config', 'ignoreWall', v));
-watch(() => config.destroyWall, (v) => ipcSend('plunder:update-config', 'destroyWall', v));
-watch(() => config.groupAttack, (v) => ipcSend('plunder:update-config', 'groupAttack', v));
-watch(() => config.useC, (v) => ipcSend('plunder:update-config', 'useC', v));
-watch(() => config.ignoreDelay, (v) => ipcSend('plunder:update-config', 'ignoreDelay', v));
-watch(() => config.blindAttack, (v) => ipcSend('plunder:update-config', 'blindAttack', v));
 
 watchEffect(() => {
     if (features.premium === false || !hasDynamicGroup.value) {
@@ -49,7 +43,7 @@ watchEffect(() => {
     };
 });
 
-useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
+useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
     allGroups.value = groups;
 });
 </script>

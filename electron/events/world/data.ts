@@ -3,10 +3,15 @@ import { ipcMain, MessageChannelMain, utilityProcess } from 'electron';
 import { watch } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { sequelize } from '$electron/database';
-import { getAlliesTable, getPlayersTable, getVillagesTable, WorldDataFetchHistory } from '$electron/interface';
 import { childProcess } from '$electron/utils/files';
 import { MainProcessEventError } from '$electron/error';
 import { isWorld } from '$common/guards';
+import {
+    getAlliesTable,
+    getPlayersTable,
+    getVillagesTable,
+    WorldDataFetchHistory
+} from '$electron/database/models';
 
 export function setWorldDataEvents(cachedWorld: MechanusRef<World | null>) {
     // Obtêm informações sobre uma ou mais aldeias.

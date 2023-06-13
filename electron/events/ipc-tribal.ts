@@ -6,21 +6,22 @@ import { MainProcessEventError } from '$electron/error';
 
 import {
     useAresStore,
-    usePlayerStore,
-    useUnitsStore,
-    useFeaturesStore,
-    usePlunderStore,
+    useCacheStore,
     useCurrentVillageStore,
-    useCacheStore
-} from '$electron/interface';
+    useFeaturesStore,
+    usePlayerStore,
+    usePlunderStore,
+    useUnitsStore
+} from '$electron/stores';
 
 export function setIpcTribalEvents() {
     const aresStore = useAresStore();
-    const playerStore = usePlayerStore();
-    const unitsStore = useUnitsStore();
-    const featuresStore = useFeaturesStore();
-    const plunderStore = usePlunderStore();
+    const cacheStore = useCacheStore();
     const currentVillageStore = useCurrentVillageStore();
+    const featuresStore = useFeaturesStore();
+    const playerStore = usePlayerStore();
+    const plunderStore = usePlunderStore();
+    const unitsStore = useUnitsStore();
 
     /** Conteúdo do arquivo `ipc-tw.js`. */
     let ipcTribal: string | null = null;
@@ -45,9 +46,19 @@ export function setIpcTribalEvents() {
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
     ipcMain.on('ipc-tribal:update-game-data', <T extends keyof TribalWarsGameDataType>(
-        e: Electron.IpcMainEvent, gameData: TribalWarsGameDataType
+        e: Electron.IpcMainEvent, gameData: TribalWarsGameDataType | null
     ) => {
         try {
+            // Até então, quando o IpcTribal não conseguia obter os dados, ele simplesmente não avisava ao processo principal.
+            // Isso agora foi alterado, permitindo-o a enviar um objeto nulo, que deverá ser tratado aqui.
+            // No entanto, todos esses eventos precisam ser revisados.
+            // Por hora, apenas o cache será atualizado, para que o alias se torne também nulo.
+            if (!gameData) {
+                cacheStore.player = null;
+                cacheStore.world = null;
+                return;
+            };
+
             for (const key of Object.keys(gameData) as T[]) {
                 switch (key) {
                     case 'ares':
@@ -88,7 +99,7 @@ export function setIpcTribalEvents() {
             };
     
             const panelWindow = getPanelWindow();
-            panelWindow.webContents.send('panel:patch-plunder-info', plunderInfo);
+            panelWindow.webContents.send('plunder:patch-info', plunderInfo);
             return true;
 
         } catch (err) {

@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useIpcRendererOn } from '@vueuse/electron';
 import { NTag } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
+import { useIpcOn } from '$renderer/composables';
+
+defineProps<{
+    userAlias: UserAlias | null;
+}>();
 
 const locale = await ipcInvoke('app:locale');
 
@@ -18,7 +22,7 @@ const responseTimeTagType = computed(() => {
     return 'error';
 });
 
-useIpcRendererOn('response-time-did-update', (_e, time: number) => {
+useIpcOn('response-time-did-update', (_e, time: number) => {
     responseTime.value = time;
 });
 </script>
@@ -26,7 +30,7 @@ useIpcRendererOn('response-time-did-update', (_e, time: number) => {
 <template>
     <div class="response-time-tag">
         <Transition name="tb-fade" mode="out-in">
-            <div v-if="responseTime" :key="responseTimeTagType" class="tag-wrapper">
+            <div v-if="userAlias && responseTime" :key="responseTimeTagType" class="tag-wrapper">
                 <NTag round :type="responseTimeTagType" size="small">
                     {{ `${responseTime.toLocaleString(locale)}ms` }}
                 </NTag>

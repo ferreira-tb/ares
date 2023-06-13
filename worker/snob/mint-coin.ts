@@ -1,12 +1,11 @@
 import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
-import { ipcRenderer } from 'electron';
 import { Kronos } from '@tb-dev/kronos';
-import { ipcSend } from '$renderer/ipc';
+import { ipcOn, ipcSend } from '$renderer/ipc';
 import { TribalWorkerError } from '$worker/error';
 import { DefaultSnobHistory, SnobHistoryEntry } from '$common/templates';
 
-ipcRenderer.on('tribal-worker:mint-coin', async (_e, alias: UserAlias, config: SnobConfigType, history: SnobHistoryType | null) => {
+ipcOn('tribal-worker:mint-coin', async (_e, alias: UserAlias, config: SnobConfigType, history: SnobHistoryType | null) => {
     try {
         history ??= new DefaultSnobHistory();
         if (config.mode === 'single') {

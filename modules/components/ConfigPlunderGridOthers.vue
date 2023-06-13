@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber } from 'naive-ui';
+import { usePlunderConfigStore } from '$renderer/stores';
 import {
     formatMinutes,
     parseMinutes,
@@ -10,21 +10,7 @@ import {
     parsePercentage
 } from '$modules/utils/input-parser';
 
-const props = defineProps<{
-    config: PlunderConfigType;
-}>();
-
-const emit = defineEmits<{
-    <T extends keyof PlunderConfigType>(e: 'update:config', name: T, value: PlunderConfigType[T]): void;
-}>();
-
-const minutesUntilReload = ref<number>(props.config.minutesUntilReload);
-const plunderedResourcesRatio = ref<number>(props.config.plunderedResourcesRatio);
-const pageDelay = ref<number>(props.config.pageDelay);
-
-watch(minutesUntilReload, (v) => emit('update:config', 'minutesUntilReload', v));
-watch(plunderedResourcesRatio, (v) => emit('update:config', 'plunderedResourcesRatio', v));
-watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
+const config = usePlunderConfigStore();
 </script>
 
 <template>
@@ -36,7 +22,7 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="minutesUntilReload"
+                    v-model:value="config.minutesUntilReload"
                     class="config-input"
                     :min="1"
                     :max="60"
@@ -52,7 +38,7 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="plunderedResourcesRatio"
+                    v-model:value="config.plunderedResourcesRatio"
                     class="config-input"
                     :min="0.2"
                     :max="1"
@@ -68,7 +54,7 @@ watch(pageDelay, (v) => emit('update:config', 'pageDelay', v));
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="pageDelay"
+                    v-model:value="config.pageDelay"
                     class="config-input"
                     :min="100"
                     :max="60000"

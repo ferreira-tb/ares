@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { ref, storeToRefs, watchImmediate } from 'mechanus';
-import { useCacheStore } from '$electron/interface';
+import { useCacheStore } from '$electron/stores';
 import { setWorldConfigEvents } from '$electron/events/world/config';
 import { setWorldDataEvents } from '$electron/events/world/data';
 import { setWorldUnitsEvents } from '$electron/events/world/units';

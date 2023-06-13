@@ -1,18 +1,32 @@
 import { ipcMain } from 'electron';
-import { ref, storeToRefs, watchImmediate } from 'mechanus';
+import { ref, storeToRefs, watch, watchImmediate } from 'mechanus';
 import { isInteger, isWorld } from '$common/guards';
 import { MainProcessEventError } from '$electron/error';
-import { useCacheStore, WorldUnits } from '$electron/interface';
-import { setPlunderGroupEvents } from '$electron/events/plunder/group';
-import { setPlunderPageEvents } from '$electron/events/plunder/page';
-import { setPlunderConfigEvents } from '$electron/events/plunder/config';
-import { setPlunderHistoryEvents } from '$electron/events/plunder/history';
-import { setPlunderDemolitionEvents } from '$electron/events/plunder/demolition';
-import { setPlunderTemplatesEvents } from '$electron/events/plunder/templates';
+import { useAresStore, useCacheStore, usePlunderCacheStore } from '$electron/stores';
+import { WorldUnits } from '$electron/database/models';
+import { setPlunderGroupEvents } from '$electron/events/game/plunder/group';
+import { setPlunderPageEvents } from '$electron/events/game/plunder/page';
+import { setPlunderConfigEvents } from '$electron/events/game/plunder/config';
+import { setPlunderHistoryEvents } from '$electron/events/game/plunder/history';
+import { setPlunderDemolitionEvents } from '$electron/events/game/plunder/demolition';
+import { setPlunderTemplatesEvents } from '$electron/events/game/plunder/templates';
 
 export function setPlunderEvents() {
+    const aresStore = useAresStore();
+    const { screen } = storeToRefs(aresStore);
+
+    const plunderCacheStore = usePlunderCacheStore();
+    const { pages: plunderPages, plunderGroup } = storeToRefs(plunderCacheStore);
+
     // Calcula a capacidade de carga de um determinado conjunto de unidades.
     ipcMain.handle('plunder:calc-carry-capacity', calcCarryCapacityHandler());
+
+    watch(screen, (newScreen) => {
+        if (newScreen !== 'am_farm') {
+            if (plunderPages.value) plunderPages.value = null;
+            if (plunderGroup.value) plunderGroup.value = null;
+        };
+    });
 
     setPlunderConfigEvents();
     setPlunderPageEvents();

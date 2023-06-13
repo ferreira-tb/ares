@@ -1,29 +1,19 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import { NButton, NButtonGroup, NDivider, NGrid, NGridItem, NInputNumber, useDialog, useMessage } from 'naive-ui';
-import { formatFields, parseFields, formatWallLevel, parseWallLevel } from '$modules/utils/input-parser';
+import { usePlunderConfigStore } from '$renderer/stores';
 import { assertUserAlias } from '$common/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { ModuleConfigError } from '$modules/error';
+import { formatFields, parseFields, formatWallLevel, parseWallLevel } from '$modules/utils/input-parser';
 
 const props = defineProps<{
-    config: PlunderConfigType;
-}>();
-
-const emit = defineEmits<{
-    <T extends keyof PlunderConfigType>(e: 'update:config', name: T, value: PlunderConfigType[T]): void;
+    userAlias: UserAlias | null;
 }>();
 
 const dialog = useDialog();
 const message = useMessage();
 
-const wallLevelToIgnore = ref<WallLevel>(props.config.wallLevelToIgnore);
-const wallLevelToDestroy = ref<WallLevel>(props.config.wallLevelToDestroy);
-const destroyWallMaxDistance = ref<number>(props.config.destroyWallMaxDistance);
-
-watch(wallLevelToIgnore, (v) => emit('update:config', 'wallLevelToIgnore', v));
-watch(wallLevelToDestroy, (v) => emit('update:config', 'wallLevelToDestroy', v));
-watch(destroyWallMaxDistance, (v) => emit('update:config', 'destroyWallMaxDistance', v));
+const config = usePlunderConfigStore();
 
 function resetDemolitionConfig() {
     const status = dialog.warning({
@@ -34,9 +24,8 @@ function resetDemolitionConfig() {
         onPositiveClick: async () => {
             status.loading = true;
             try {
-                const userAlias = await ipcInvoke('user-alias');
-                assertUserAlias(userAlias, ModuleConfigError);
-                const destroyed = await ipcInvoke('plunder:destroy-demolition-config', userAlias);
+                assertUserAlias(props.userAlias, ModuleConfigError);
+                const destroyed = await ipcInvoke('plunder:destroy-demolition-config', props.userAlias);
                 if (destroyed) {
                     message.success('Resetado com sucesso!');
                 } else {
@@ -60,7 +49,7 @@ function resetDemolitionConfig() {
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="wallLevelToIgnore"
+                    v-model:value="config.wallLevelToIgnore"
                     class="config-input"
                     :min="1"
                     :max="20"
@@ -76,7 +65,7 @@ function resetDemolitionConfig() {
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="wallLevelToDestroy"
+                    v-model:value="config.wallLevelToDestroy"
                     class="config-input"
                     :min="1"
                     :max="20"
@@ -92,7 +81,7 @@ function resetDemolitionConfig() {
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="destroyWallMaxDistance"
+                    v-model:value="config.destroyWallMaxDistance"
                     class="config-input"
                     :min="1"
                     :max="9999"

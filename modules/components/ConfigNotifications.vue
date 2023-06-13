@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { reactive, watch, toRaw } from 'vue';
+import { ref } from 'vue';
+import { watchDeep } from '@vueuse/core';
 import { NCheckbox, NDivider, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 
-const previous = await ipcInvoke('config:notifications');
-const config = reactive(previous);
-watch(config, () => ipcSend('config:update', 'notifications', toRaw(config)));
+const config = ref(await ipcInvoke('config:notifications'));
+watchDeep(config, (newValue) => ipcSend('config:update', 'notifications', newValue));
 </script>
 
 <template>
     <section class="notifications-config">
-        <NDivider class="config-divider" title-placement="left">Geral</NDivider>
+        <NDivider class="config-divider" title-placement="left">Notificações</NDivider>
         <NGrid class="switch-area" :cols="1" :y-gap="10">
             <NGridItem>
                 <NCheckbox v-model:checked="config.notifyOnError" size="large">

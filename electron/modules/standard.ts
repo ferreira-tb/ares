@@ -12,6 +12,13 @@ export function getActiveModuleWebContents(name: ModuleNames) {
     return moduleWindow?.webContents ?? null;
 };
 
+export function getModuleNameByWebContentsId(id: number): ModuleNames | null {
+    for (const [name, browserWindow] of activeModules.entries()) {
+        if (browserWindow.webContents.id === id) return name;
+    };
+    return null;
+};
+
 export function createModule<T extends keyof ModuleConstructorOptions>(
     moduleName: ModuleNames,
     defaultRoute: ModuleRoutes,

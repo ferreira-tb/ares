@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useIpcRendererOn } from '@vueuse/electron';
 import { NConfigProvider, NLoadingBarProvider, darkTheme } from 'naive-ui';
+import { useIpcOn } from '$renderer/composables';
 import TheTopContainer from '$ui/components/TheTopContainer.vue';
 import TheLoadingBar from '$ui/components/TheLoadingBar.vue';
 
-useIpcRendererOn('notify-electron-error', (_e, err: ElectronErrorLogType) => {
+useIpcOn('notify-electron-error', (_e, err: ElectronErrorLogType) => {
     new Notification(err.name, { body: err.message });
 });
 </script>

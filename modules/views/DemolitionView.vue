@@ -2,6 +2,7 @@
 import { h, computed, ref, reactive, watch } from 'vue';
 import { NDataTable, useMessage } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
+import { useUserAlias } from '$renderer/composables';
 import { assertUserAlias } from '$common/guards';
 import { ModuleConfigError } from '$modules/error';
 import ResultError from '$renderer/components/ResultError.vue';
@@ -24,8 +25,8 @@ interface DemolitionData extends DemolitionTroops {
 
 const message = useMessage();
 
+const userAlias = useUserAlias();
 const isArcherWorld = await ipcInvoke('world:is-archer-world');
-const userAlias = await ipcInvoke('user-alias');
 const template = await ipcInvoke('plunder:get-demolition-config');
 const demolitionData = reactive<DemolitionData[]>([]);
 

@@ -1,7 +1,7 @@
-import { ipcRenderer } from 'electron';
 import { usePanelStore } from '$panel/stores';
 import { setPlunderEvents } from '$panel/events/plunder';
 import { setSnobEvents } from '$panel/events/snob';
+import { ipcOn } from '$renderer/ipc';
 import {
     useAresStore,
     useFeaturesStore,
@@ -18,22 +18,22 @@ export function setPanelEvents() {
     const currentVillageStore = useCurrentVillageStore();
     const unitStore = useUnitsStore();
 
-    ipcRenderer.on('captcha:did-update-status', (_e, thereIsCaptcha: boolean) => {
+    ipcOn('captcha:did-update-status', (_e, thereIsCaptcha: boolean) => {
         aresStore.captcha = thereIsCaptcha;
     });
 
-    ipcRenderer.on('game:patch-current-village-units', (_e, units: UnitAmount) => {
+    ipcOn('game:patch-current-village-units', (_e, units: UnitAmount) => {
         unitStore.$patch(units);
     });
 
-    ipcRenderer.on('game:patch-game-data', (_e, data: TribalWarsGameDataType) => {
+    ipcOn('game:patch-game-data', (_e, data: TribalWarsGameDataType) => {
         aresStore.$patch(data.ares);
         featuresStore.$patch(data.features);
         playerStore.$patch(data.player);
         currentVillageStore.$patch(data.currentVillage);
     });
 
-    ipcRenderer.on('panel:visibility-did-change', (_e, isVisible: boolean) => {
+    ipcOn('panel:visibility-did-change', (_e, isVisible: boolean) => {
         panelStore.isVisible = isVisible;
     });
 

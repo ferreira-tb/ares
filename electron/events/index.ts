@@ -1,5 +1,5 @@
-import { app, dialog, ipcMain } from 'electron';
-import { setPlunderEvents } from '$electron/events/plunder';
+import { app, dialog, ipcMain, webContents } from 'electron';
+import { storeToRefs, watch } from 'mechanus';
 import { setErrorEvents } from '$electron/events/error';
 import { setPanelEvents } from '$electron/events/panel';
 import { setIpcTribalEvents } from '$electron/events/ipc-tribal';
@@ -12,17 +12,18 @@ import { setDevEvents } from '$electron/events/dev';
 import { setWorldEvents } from '$electron/events/world';
 import { setGameEvents } from '$electron/events/game';
 import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/modules';
-import { useCacheStore } from '$electron/interface';
+import { useCacheStore } from '$electron/stores';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessEventError } from '$electron/error';
 
 export function setEvents() {
     const mainWindow = getMainWindow();
     const cacheStore = useCacheStore();
+    const { userAlias } = storeToRefs(cacheStore);
     
     // Geral
-    ipcMain.handle('user-alias', () => cacheStore.userAlias);
-    ipcMain.handle('is-dev', () => process.env.ARES_MODE === 'dev');
+    ipcMain.handle('user:get-alias', () => userAlias.value);
+    ipcMain.handle('app:is-dev', () => process.env.ARES_MODE === 'dev');
 
     // Aplicação
     ipcMain.handle('app:name', () => app.getName());
@@ -42,6 +43,12 @@ export function setEvents() {
     ipcMain.on('open-github-repo', () => openRepoWebsite());
     ipcMain.on('open-github-issues', () => openIssuesWebsite());
 
+    watch(userAlias, (value) => {
+        for (const contents of webContents.getAllWebContents()) {
+            contents.send('user:did-change-alias', value);
+        };
+    });
+
     // Outros eventos
     setBrowserEvents();
     setBrowserViewEvents();
@@ -53,6 +60,5 @@ export function setEvents() {
     setMainWindowEvents();
     setModuleEvents();
     setPanelEvents();
-    setPlunderEvents();
     setWorldEvents();
 };

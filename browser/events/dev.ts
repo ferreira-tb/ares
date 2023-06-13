@@ -1,19 +1,18 @@
-import { ipcRenderer } from 'electron';
 import { RendererProcessError } from '$renderer/error';
-import { ipcInvoke } from '$renderer/ipc';
+import { ipcInvoke, ipcOn } from '$renderer/ipc';
 
 export async function setDevEvents() {
-    const isDev = await ipcInvoke('is-dev');
+    const isDev = await ipcInvoke('app:is-dev');
     if (!isDev) return;
     
     // A callback desse evento varia conforme o que está sendo testado no momento.
-    ipcRenderer.on('dev:magic', () => {
+    ipcOn('dev:magic', () => {
         console.log('It\'s dev magic!');
         mockRendererProcessError();
     });
 
-    ipcRenderer.on('dev:mock-captcha', () => mockCaptcha());
-    ipcRenderer.on('dev:mock-error', () => mockRendererProcessError());
+    ipcOn('dev:mock-captcha', () => mockCaptcha());
+    ipcOn('dev:mock-error', () => mockRendererProcessError());
 };
 
 function mockCaptcha() {

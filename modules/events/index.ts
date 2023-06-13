@@ -1,6 +1,6 @@
-import { ipcRenderer } from 'electron';
 import { routeNames, router } from '$modules/router'; 
 import { ModuleRouterError } from '$modules/error';
+import { ipcOn, ipcOnce } from '$renderer/ipc';
 import {
     useAresStore,
     useCurrentVillageStore,
@@ -18,7 +18,7 @@ export function setModuleEvents() {
     const snobConfigStore = useSnobConfigStore();
     const unitStore = useUnitsStore();
 
-    ipcRenderer.once('module:set-route', async (_e, name: ModuleRoutes) => {
+    ipcOnce('module:set-route', async (_e, name: ModuleRoutes) => {
         try {
             if (!routeNames.includes(name)) {
                 throw new ModuleRouterError(`${name} is not a valid route name.`);
@@ -29,10 +29,10 @@ export function setModuleEvents() {
         };
     });
 
-    ipcRenderer.on('game:patch-current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
-    ipcRenderer.on('snob:patch-config', (_e, config: SnobConfigType) => snobConfigStore.$patch(config));
+    ipcOn('game:patch-current-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
+    ipcOn('snob:patch-config', (_e, config: SnobConfigType) => snobConfigStore.$patch(config));
 
-    ipcRenderer.on('game:patch-game-data', (_e, data: TribalWarsGameDataType) => {
+    ipcOn('game:patch-game-data', (_e, data: TribalWarsGameDataType) => {
         aresStore.$patch(data.ares);
         featuresStore.$patch(data.features);
         playerStore.$patch(data.player);

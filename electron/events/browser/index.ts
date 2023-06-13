@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { useAresStore } from '$electron/interface';
+import { useAresStore } from '$electron/stores';
 import { getMainWindow } from '$electron/utils/helpers';
 import { setCaptchaEvents } from '$electron/events/browser/captcha';
 

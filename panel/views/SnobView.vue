@@ -2,9 +2,9 @@
 import { computed, ref, toRef } from 'vue';
 import { NButton, NButtonGroup } from 'naive-ui';
 import { computedAsync, watchDeep, watchImmediate, whenever } from '@vueuse/core';
-import { useIpcRendererOn } from '@vueuse/electron';
 import { useCurrentVillageStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { useIpcOn } from '$renderer/composables';
 import { useVillage } from '$renderer/composables/village';
 import { PanelSnobViewError } from '$panel/error';
 import { decodeString } from '$common/helpers';
@@ -69,7 +69,7 @@ whenever(() => config.active, () => {
     };
 });
 
-useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
+useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
     allGroups.value = groups;
 });
 </script>
@@ -106,7 +106,7 @@ useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageG
             </div>
 
             <div v-else>
-                <div>Grupo selecionado</div>
+                <div class="location-label">Grupo selecionado</div>
                 <a
                     v-if="groupName && village"
                     @click="ipcSend('current-view:navigate-to-snob-coin', village.id, config.group)"
@@ -127,6 +127,11 @@ useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageG
 <style scoped lang="scss">
 @use '$panel/assets/main.scss';
 
+@mixin title {
+    margin-bottom: 0.3em;
+    font-weight: bold;
+}
+
 .button-area {
     @include main.flex-x-center-y-center;
     margin-bottom: 1em;
@@ -137,8 +142,7 @@ useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageG
     margin-top: 1em;
     
     .location-label {
-        margin-bottom: 0.3em;
-        font-weight: bold;
+        @include title;
     }
 
     a {
@@ -154,8 +158,7 @@ useIpcRendererOn('game:did-update-village-groups-set', (_e, groups: Set<VillageG
     }
 
     & > div:first-child {
-        margin-bottom: 0.3em;
-        font-weight: bold;
+        @include title;
     }
 }
 </style>

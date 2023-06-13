@@ -4,7 +4,7 @@ import { showAppSettings } from '$electron/modules';
 import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { appendDevMenu } from '$electron/menu/dev';
 import { getMainViewWebContents, contentsGoBack, contentsGoForward, contentsGoHome } from '$electron/utils/view';
-import type { useBrowserViewStore, useCacheStore } from '$electron/interface';
+import type { useBrowserViewStore, useCacheStore } from '$electron/stores';
 
 export function setAppMenu(
     browserViewStore: ReturnType<typeof useBrowserViewStore>,

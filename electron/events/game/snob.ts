@@ -1,8 +1,9 @@
 import { ipcMain, webContents } from 'electron';
 import { ref, storeToRefs, watch, type MechanusRef } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
-import { useAresStore, useCacheStore, SnobConfig, SnobHistory } from '$electron/interface';
+import { useAresStore, useCacheStore } from '$electron/stores';
 import { sequelize } from '$electron/database';
+import { SnobConfig, SnobHistory } from '$electron/database/models';
 import { MainProcessEventError } from '$electron/error';
 import { TribalWorker } from '$electron/worker';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
@@ -67,10 +68,10 @@ export function setSnobEvents() {
                 return;
             };
 
-            const snobConfig = (await SnobConfig.findByPk(newAlias))?.toJSON();
-            if (snobConfig) {
-                patchAllWebContents('config', snobConfig);
-                isMinting.value = snobConfig.active;
+            const previousConfig = (await SnobConfig.findByPk(newAlias))?.toJSON();
+            if (previousConfig) {
+                patchAllWebContents('config', previousConfig);
+                isMinting.value = previousConfig.active;
             } else {
                 patchAllWebContents('config', new DefaultSnobConfig());
                 isMinting.value = false;
