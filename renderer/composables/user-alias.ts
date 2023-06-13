@@ -1,5 +1,5 @@
 import { effectScope, readonly, ref } from 'vue';
-import { tryOnScopeDispose, watchImmediate } from '@vueuse/core';
+import { tryOnScopeDispose } from '@vueuse/core';
 import { ipcInvoke } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
 import { RendererProcessError } from '$renderer/error';
@@ -16,10 +16,6 @@ export function useUserAlias() {
         (newAlias) => (userAlias.value = newAlias),
         (err: unknown) => RendererProcessError.catch(err)
     );
-
-    watchImmediate(userAlias, (newAlias) => {
-        console.log('userAlias', newAlias);
-    });
 
     scope.run(() => {
         useIpcOn('user:did-change-alias', (_e, newAlias: UserAlias | null) => {
