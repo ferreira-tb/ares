@@ -3,7 +3,7 @@ import semverLte from 'semver/functions/lte';
 import semverValid from 'semver/functions/valid';
 import { MainProcessEventError } from '$electron/error';
 import { appConfig } from '$electron/stores';
-import { showAppUpdate } from '$electron/modules';
+import { showAppUpdate } from '$electron/windows';
 
 export function setAppUpdateModuleEvents() {
     ipcMain.on('app-update:open', () => showAppUpdate());

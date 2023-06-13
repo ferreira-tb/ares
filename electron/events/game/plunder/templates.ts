@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { isUserAlias } from '$common/guards';
-import { showCustomPlunderTemplate } from '$electron/modules';
+import { showCustomPlunderTemplate } from '$electron/windows';
 import { useCacheStore, useBrowserViewStore } from '$electron/stores';
 import { CustomPlunderTemplate } from '$electron/database/models';
 

@@ -2,7 +2,7 @@ import * as path from 'node:path';
 import { ipcMain, shell } from 'electron';
 import { isString } from '$common/guards';
 import { getMainWindow } from '$electron/utils/helpers';
-import { getActiveModuleWebContents } from '$electron/modules';
+import { getActiveModuleWebContents } from '$electron/windows';
 import { DownloadError } from '$electron/error';
 
 class DownloadProgress implements DownloadProgressType {

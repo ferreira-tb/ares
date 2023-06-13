@@ -2,10 +2,10 @@ import { randomUUID } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
 import { ipcMain, Menu, webContents } from 'electron';
 import { appConfig } from '$electron/stores';
-import { getActiveModuleWebContents } from '$electron/modules';
+import { getActiveModuleWebContents } from '$electron/windows';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
-import { getModuleNameByWebContentsId } from '$electron/modules';
+import { getModuleNameByWebContentsId } from '$electron/windows';
 import { TribalWorker } from '$electron/worker';
 import { MainProcessEventError } from '$electron/error';
 

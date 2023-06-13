@@ -11,7 +11,7 @@ import { setConfigEvents } from '$electron/events/config';
 import { setDevEvents } from '$electron/events/dev';
 import { setWorldEvents } from '$electron/events/world';
 import { setGameEvents } from '$electron/events/game';
-import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/modules';
+import { openAnyAllowedWebsite, openAresWebsite, openIssuesWebsite, openRepoWebsite } from '$electron/windows';
 import { useCacheStore } from '$electron/stores';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessEventError } from '$electron/error';

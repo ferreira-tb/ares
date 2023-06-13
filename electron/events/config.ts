@@ -1,6 +1,6 @@
 import * as fs from 'node:fs/promises';
 import { ipcMain } from 'electron';
-import { showAppSettings } from '$electron/modules';
+import { showAppSettings } from '$electron/windows';
 import { sequelize } from '$electron/database';
 import { appConfig } from '$electron/stores';
 import { MainProcessEventError } from '$electron/error';

@@ -5,7 +5,7 @@ import { assertInteger } from '$common/guards';
 import { MainProcessEventError } from '$electron/error';
 import { isUserAlias, assertUserAlias } from '$common/guards';
 import { getPanelWindow } from '$electron/utils/helpers';
-import { showPlunderHistory, getActiveModuleWebContents } from '$electron/modules';
+import { showPlunderHistory, getActiveModuleWebContents } from '$electron/windows';
 import { usePlunderHistoryStore, useCacheStore } from '$electron/stores';
 import { PlunderHistory } from '$electron/database/models';
 import { DefaultPlunderHistory, PlunderHistoryVillage } from '$common/templates';

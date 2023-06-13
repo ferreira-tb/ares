@@ -15,7 +15,7 @@ import { useBrowserViewStore, useCacheStore } from '$electron/stores';
 import { PlunderHistory } from '$electron/database/models';
 import { MainProcessError } from '$electron/error';
 import { errorHandler } from '$electron/utils/error-handler';
-import { showDebug } from '$electron/modules';
+import { showDebug } from '$electron/windows';
 
 MainProcessError.catch = errorHandler;
 setEnv();

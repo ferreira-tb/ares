@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { isString } from '$common/guards';
 import { sequelize } from '$electron/database';
-import { getActiveModule } from '$electron/modules';
+import { getActiveModule } from '$electron/windows';
 import { getMainWindow } from '$electron/utils/helpers';
 import { MainProcessError } from '$electron/error';
 import { appConfig } from '$electron/stores';

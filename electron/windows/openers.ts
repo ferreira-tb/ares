@@ -1,6 +1,6 @@
 import { WebsiteUrl } from '$common/constants';
-import { createModule } from '$electron/modules/standard';
-import { createWebsiteModule } from '$electron/modules/website';
+import { createModule } from '$electron/windows/standard';
+import { createWebsiteModule } from '$electron/windows/website';
 
 // Padrão
 export const showAppSettings = createModule('app-config', 'app-config', {

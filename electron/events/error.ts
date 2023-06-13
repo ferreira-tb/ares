@@ -5,7 +5,7 @@ import { Op } from 'sequelize';
 import { app, dialog, ipcMain, BrowserWindow } from 'electron';
 import { MainProcessEventError } from '$electron/error';
 import { sequelize } from '$electron/database';
-import { getActiveModule } from '$electron/modules';
+import { getActiveModule } from '$electron/windows';
 import { useAresStore } from '$electron/stores';
 import { ErrorLog, ElectronErrorLog } from '$electron/database/models';
 import { getMainWindow } from '$electron/utils/helpers';

@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
-import { showDemolitionConfig } from '$electron/modules';
+import { showDemolitionConfig } from '$electron/windows';
 import { isUserAlias } from '$common/guards';
 import { useCacheStore, usePlunderCacheStore } from '$electron/stores';
 import { DemolitionTemplate } from '$electron/database/models';
