@@ -23,7 +23,7 @@ export class TribalWorker extends EventEmitter {
 
     /** Indica se o webContents do Worker está pronto. */
     public readonly isReady = computed(
-        [this.#browserView, this.#messagePort, this.#isDestroyed, this.#isLoading],
+        [this.#browserView, this.#isDestroyed, this.#isLoading, this.#messagePort],
     () => {
         if (!this.#browserView.value) return false;
         if (!this.#messagePort.value) return false;
