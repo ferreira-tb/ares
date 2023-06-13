@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
-import { useIpcRendererOn } from '@vueuse/electron';
-import { NCard } from 'naive-ui';
+import { NCard, NResult } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
+import { useIpcOn } from '$renderer/composables';
 import { getLocaleDateString } from '$renderer/utils/helpers';
 import ErrorLogExportButton from '$modules/components/ErrorLogExportButton.vue';
-import ResultSucess from '$renderer/components/ResultSucess.vue';
 
 const locale = await ipcInvoke('app:locale');
 
@@ -37,8 +36,8 @@ function updateErrorList(err: ElectronErrorLogType | ErrorLogType, type: 'electr
     errors.value.push(newError);
 };
 
-useIpcRendererOn('error:log-did-update', (_e, err: ErrorLogType) => updateErrorList(err, 'general'));
-useIpcRendererOn('error:electron-log-did-update', (_e, err: ErrorLogType) => updateErrorList(err, 'electron'));
+useIpcOn('error:did-create-log', (_e, err: ErrorLogType) => updateErrorList(err, 'general'));
+useIpcOn('error:did-create-electron-log', (_e, err: ErrorLogType) => updateErrorList(err, 'electron'));
 </script>
 
 <template>
@@ -56,7 +55,14 @@ useIpcRendererOn('error:electron-log-did-update', (_e, err: ErrorLogType) => upd
 
             <ErrorLogExportButton :top="contentHeight" @export="errors = []" />
         </template>
-        <ResultSucess v-else description="Nenhum erro registrado :)" />
+
+        <div v-else class="result-sucess">
+            <NResult
+                status="success"
+                title="Tudo certo!"
+                description="Nenhum erro registrado :)"
+            />
+        </div>
     </section>
 </template>
 

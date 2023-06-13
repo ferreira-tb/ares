@@ -2,7 +2,7 @@ import { URL } from 'node:url';
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { MainProcessEventError } from '$electron/error';
-import { usePlunderStore, usePlunderConfigStore, usePlunderCacheStore } from '$electron/interface';
+import { usePlunderStore, usePlunderConfigStore, usePlunderCacheStore } from '$electron/stores';
 import { GameSearchParams } from '$common/constants';
 import { generateRandomDelay } from '$common/helpers';
 

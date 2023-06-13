@@ -1,8 +1,9 @@
 import { createRouter, createMemoryHistory } from 'vue-router';
 import { getRouteNames, getChildrenRoutes } from '$renderer/utils/router';
 import { configRoutes } from '$modules/router/config';
-import DefaultView from '$renderer/views/DefaultView.vue';
 import AppUpdateView from '$modules/views/AppUpdateView.vue';
+import DebugView from '$modules/views/DebugView.vue';
+import DefaultView from '$renderer/views/DefaultView.vue';
 import DemolitionView from '$modules/views/DemolitionView.vue';
 import ErrorLogView from '$modules/views/ErrorLogView.vue';
 import PlunderHistoryView from '$modules/views/PlunderHistoryView.vue';
@@ -21,6 +22,11 @@ const singleRoutes: ModuleRouteRecordRaw[] = [
         path: '/app-update',
         name: 'app-update',
         component: AppUpdateView
+    },
+    {
+        path: '/debug',
+        name: 'debug',
+        component: DebugView
     },
     {
         path: '/demolition',

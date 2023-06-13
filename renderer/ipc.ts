@@ -2,25 +2,46 @@
 import { ipcRenderer } from 'electron';
 import type { PlunderAttack } from '$common/templates';
 
+const debug = {
+    enabled: false
+};
+
+ipcRenderer.invoke('debug:is-enabled').then(
+    (isEnabled) => void (debug.enabled = isEnabled),
+    (err: unknown) => console.error(err)
+);
+
+ipcRenderer.on('debug:did-update-status', (_e, isEnabled: boolean) => {
+    debug.enabled = isEnabled;
+});
+
+function report(processType: 'main' | 'renderer', channel: string, ...args: unknown[]): void {
+    ipcRenderer.send('debug:report', processType, channel, ...args);
+};
+
 // Janela
 export async function ipcInvoke(channel: 'ui:maximize-or-restore'): Promise<boolean>;
 export async function ipcInvoke(channel: 'ui:is-minimized'): Promise<boolean>;
 export async function ipcInvoke(channel: 'ui:is-maximized'): Promise<boolean>;
 
 // Geral
-export async function ipcInvoke(channel: 'user-alias'): Promise<UserAlias | null>;
-export async function ipcInvoke(channel: 'is-dev'): Promise<boolean>;
+export async function ipcInvoke(channel: 'user:get-alias'): Promise<UserAlias | null>;
 
 // Aplicação
 export async function ipcInvoke(channel: 'app:name'): Promise<string>;
 export async function ipcInvoke(channel: 'app:version'): Promise<string>;
 export async function ipcInvoke(channel: 'app:locale'): Promise<string>;
+export async function ipcInvoke(channel: 'app:is-dev'): Promise<boolean>;
 export async function ipcInvoke(channel: 'app:user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'app:desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'app-update:is-ignored-version', version: string): Promise<boolean>;
 
+// Desenvolvedor
+export async function ipcInvoke(channel: 'debug:is-enabled'): Promise<boolean>;
+
 // Configurações
 export async function ipcInvoke(channel: 'db:clear-database'): Promise<boolean>;
+export async function ipcInvoke(channel: 'config:advanced'): Promise<AdvancedConfigType>;
 export async function ipcInvoke(channel: 'config:general'): Promise<GeneralConfigType>;
 export async function ipcInvoke(channel: 'config:notifications'): Promise<NotificationsConfigType>;
 export async function ipcInvoke(channel: 'config:should-reload-after-captcha'): Promise<boolean>;
@@ -40,21 +61,21 @@ export async function ipcInvoke(channel: 'current-view:web-contents-id'): Promis
 export async function ipcInvoke(channel: 'current-view:can-go-back'): Promise<boolean>;
 export async function ipcInvoke(channel: 'current-view:can-go-forward'): Promise<boolean>;
 
-// World Data
+// Jogo
+export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
+export async function ipcInvoke(channel: 'game:get-all-village-groups'): Promise<Set<VillageGroup>>;
+
+// Mundo
+export async function ipcInvoke(channel: 'world:current'): Promise<World | null>;
+export async function ipcInvoke(channel: 'world:get-config', world?: World): Promise<WorldConfigType | null>;
+export async function ipcInvoke(channel: 'world:get-units-info', world?: World): Promise<WorldUnitsType | null>;
+export async function ipcInvoke(channel: 'world:is-archer-world'): Promise<boolean | null>;
 export async function ipcInvoke(
     channel: 'world-data:get-villages', id?: number[] | number, world?: World
 ): Promise<WorldVillageType[]>;
 export async function ipcInvoke(
     channel: 'world-data:get-player-villages', player: number, world?: World
 ): Promise<WorldVillageType[]>;
-
-// Jogo
-export async function ipcInvoke(channel: 'game:current-world'): Promise<World | null>;
-export async function ipcInvoke(channel: 'game:current-world-config'): Promise<WorldConfigType>;
-export async function ipcInvoke(channel: 'game:current-world-units'): Promise<WorldUnitsType>;
-export async function ipcInvoke(channel: 'game:is-archer-world'): Promise<boolean>;
-export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
-export async function ipcInvoke(channel: 'game:get-all-village-groups'): Promise<Set<VillageGroup>>;
 
 // Jogador
 export async function ipcInvoke(channel: 'player:name'): Promise<string | null>;
@@ -94,6 +115,7 @@ export async function ipcInvoke(channel: 'ipc-tribal:update-plunder-info', plund
 export async function ipcInvoke(channel: 'ipc-tribal:update-current-village-units', units: UnitAmount): Promise<boolean>;
 
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
+    if (debug.enabled) report('renderer', channel, ...args);
     const response: unknown = await ipcRenderer.invoke(channel, ...args);
     return response;
 };
@@ -113,6 +135,8 @@ export function ipcSend(channel: 'app-update:update-available-dialog', newVersio
 export function ipcSend(channel: 'electron:show-message-box', options: ElectronMessageBoxOptions): void;
 
 // Desenvolvedor
+export function ipcSend(channel: 'debug:toggle', status: boolean): void;
+export function ipcSend(channel: 'debug:show-context-menu', isOptionsVisible: boolean): void;
 export function ipcSend(channel: 'dev:open-main-window-dev-tools'): void;
 export function ipcSend(channel: 'dev:open-panel-window-dev-tools'): void;
 export function ipcSend(channel: 'dev:open-current-view-dev-tools'): void;
@@ -154,7 +178,7 @@ export function ipcSend(channel: 'game:update-incomings-info', incomingAttacks: 
 
 // Plunder
 export function ipcSend(channel: 'plunder:open-custom-template-window'): void;
-export function ipcSend<T extends keyof PlunderConfigType>(channel: 'plunder:update-config', key: T, value: PlunderConfigType[T]): void;
+export function ipcSend(channel: 'plunder:update-config', config: PlunderConfigType): void;
 export function ipcSend(channel: 'plunder:attack-sent', currentVillageId: number | null, plunderAttack: PlunderAttack): void;
 export function ipcSend(channel: 'plunder:save-history'): void;
 export function ipcSend(channel: 'plunder:show-history'): void;
@@ -170,7 +194,7 @@ export function ipcSend(channel: 'snob:update-config', config: SnobConfigType): 
 
 // IpcTribal
 export function ipcSend(channel: 'ipc-tribal:tag-is-ready'): void;
-export function ipcSend(channel: 'ipc-tribal:update-game-data', gameData: TribalWarsGameDataType): void;
+export function ipcSend(channel: 'ipc-tribal:update-game-data', gameData: TribalWarsGameDataType | null): void;
 
 // Tribal Worker
 export function ipcSend(channel: 'tribal-worker:will-handle-incoming-attack'): void;
@@ -187,5 +211,26 @@ export function ipcSend(
 ): void;
 
 export function ipcSend(channel: string, ...args: any[]): void {
+    if (debug.enabled) report('renderer', channel, ...args);
     ipcRenderer.send(channel, ...args);
+};
+
+export function ipcOn(channel: string, listener: Parameters<typeof Electron.ipcRenderer.on>[1]): void {
+    if (debug.enabled) {
+        ipcRenderer.on(channel, (_e, ...args) => {
+            report('main', channel, ...args);
+        });
+    };
+
+    ipcRenderer.on(channel, listener);
+};
+
+export function ipcOnce(channel: string, listener: Parameters<typeof Electron.ipcRenderer.once>[1]): void {
+    if (debug.enabled) {
+        ipcRenderer.once(channel, (_e, ...args) => {
+            report('main', channel, ...args);
+        });
+    };
+
+    ipcRenderer.once(channel, listener);
 };

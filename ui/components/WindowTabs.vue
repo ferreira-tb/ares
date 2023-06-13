@@ -2,9 +2,9 @@
 import { h, computed, ref, reactive, watch } from 'vue';
 import { NTabs, NTab } from 'naive-ui';
 import { useElementSize } from '@vueuse/core';
-import { useIpcRendererOn } from '@vueuse/electron';
 import { assertInteger } from '$common/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { useIpcOn } from '$renderer/composables';
 import WindowTabsButtons from '$ui/components/WindowTabsButtons.vue';
 import LightIcon from '$icons/units/LightIcon.vue';
 
@@ -17,13 +17,13 @@ const mainViewWebContentsId = await ipcInvoke('main-view:web-contents-id');
 const activeView = ref<Electron.WebContents['id']>(mainViewWebContentsId);
 watch(activeView, (webContentsId) => ipcSend('current-view:update', webContentsId));
 
-useIpcRendererOn('focus-main-view', () => (activeView.value = mainViewWebContentsId));
+useIpcOn('focus-main-view', () => (activeView.value = mainViewWebContentsId));
 
-useIpcRendererOn('browser-view-created', (_e, webContentsId: number, viewTitle: string) => {
+useIpcOn('browser-view-created', (_e, webContentsId: number, viewTitle: string) => {
     allTabs.set(webContentsId, viewTitle);
 });
 
-useIpcRendererOn('browser-view-destroyed', (_e, webContentsId: number) => {
+useIpcOn('browser-view-destroyed', (_e, webContentsId: number) => {
     // Se a aba que foi fechada era a ativa, a aba principal tomará seu lugar.
     if (webContentsId === activeView.value) {
         activeView.value = mainViewWebContentsId;
@@ -32,7 +32,7 @@ useIpcRendererOn('browser-view-destroyed', (_e, webContentsId: number) => {
     allTabs.delete(webContentsId);
 });
 
-useIpcRendererOn('browser-view-title-updated', (_e, webContentsId: number, viewTitle: string) => {
+useIpcOn('browser-view-title-updated', (_e, webContentsId: number, viewTitle: string) => {
     if (webContentsId === mainViewWebContentsId) return;
     allTabs.set(webContentsId, viewTitle);
 });

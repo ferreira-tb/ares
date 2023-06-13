@@ -1,30 +1,31 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue';
-import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
-import { watchDeep } from '@vueuse/core';
-import { useGroupsStore, usePlayerStore, useSnobConfigStore } from '$renderer/stores';
+import { NDivider, NGrid, NGridItem, NInputNumber, NResult, NSelect } from 'naive-ui';
+import { computedAsync, watchDeep } from '@vueuse/core';
+import { useIpcOn, useUserAlias } from '$renderer/composables';
+import { usePlayerStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { decodeString } from '$common/helpers';
-import { ModuleConfigError } from '$modules/error';
 import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
 
+const userAlias = useUserAlias();
 const locale = await ipcInvoke('app:locale');
 
 const config = useSnobConfigStore();
 const previousConfig = await ipcInvoke('snob:get-config');
 if (previousConfig) config.$patch(previousConfig);
 
-const groupsStore = useGroupsStore();
-const allGroups = await ipcInvoke('game:get-all-village-groups');
-if (allGroups.size > 0) groupsStore.$patch({ all: allGroups });
-
 const playerStore = usePlayerStore();
 const playerDataFromMainProcess = await ipcInvoke('player:get-store');
 playerStore.$patch(playerDataFromMainProcess);
 
 await nextTick();
-if (!playerStore.id) throw new ModuleConfigError('Missing player id.');
-const villages = ref(await ipcInvoke('world-data:get-player-villages', playerStore.id));
+
+const villages = computedAsync<WorldVillageType[]>(async () => {
+    if (!userAlias.value || typeof playerStore.id !== 'number') return [];
+    const playerVillages = await ipcInvoke('world-data:get-player-villages', playerStore.id);
+    return playerVillages;
+});
 
 const villageOptions = computed(() => {
     const options = villages.value.map(({ id: villageId, name: villageName }) => {
@@ -35,8 +36,9 @@ const villageOptions = computed(() => {
     return options;
 });
 
+const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
 const groupOptions = computed(() => {
-    const options = Array.from(groupsStore.all).map(({ id: groupId, name: groupName }) => {
+    const options = Array.from(allGroups.value).map(({ id: groupId, name: groupName }) => {
         return { label: decodeString(groupName), value: groupId };
     });
 
@@ -59,10 +61,14 @@ const timeUnitOptions = [
 watchDeep(config, () => {
     ipcSend('snob:update-config', config.raw());
 });
+
+useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
+    allGroups.value = groups;
+});
 </script>
 
 <template>
-    <div>
+    <div v-if="userAlias" class="config-buildings-snob">
         <NDivider title-placement="left" class="config-divider">Cunhagem</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
@@ -124,8 +130,22 @@ watchDeep(config, () => {
             </NGridItem>
 
             <NGridItem :span="2">
-                <ButtonGroupsUpdate v-model:groups="groupsStore.all" />
+                <ButtonGroupsUpdate />
             </NGridItem>
         </NGrid>
     </div>
+
+    <div v-else class="result-info">
+        <NResult
+            status="info"
+            title="Você está logado?"
+            description="É necessário estar logado para acessar as configurações da academia."
+        />
+    </div>
 </template>
+
+<style scoped lang="scss">
+.config-buildings-snob {
+    padding: 0.5em;
+}
+</style>

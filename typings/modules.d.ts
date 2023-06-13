@@ -18,7 +18,7 @@ type ModuleRouteRecordRawStrict<T> = Omit<ModuleRouteRecordRaw, 'children' | 'na
 };
 
 type SingleModules =
-    'app-update' | 'default' | 'demolition' | 'plunder-history' | 'plunder-template';
+    'app-update' | 'debug' | 'default' | 'demolition' | 'plunder-history' | 'plunder-template';
 
 type NestedModules = 'app-config' | 'error-log';
 type ModuleNames = NestedModules | SingleModules;

@@ -1,10 +1,17 @@
 import { ref } from 'mechanus';
 
 export function definePlayerStore(mechanus: Mechanus) {
-    return mechanus.define('player', {
-        name: ref<string | null>(null),
-        id: ref<number | null>(null),
-        points: ref<number>(0),
-        villageAmount: ref<number>(0)
-    } satisfies MechanusPlayerStoreType);
+    return mechanus.define('player', () => {
+        const name = ref<string | null>(null);
+        const id = ref<number | null>(null);
+        const points = ref<number>(0);
+        const villageAmount = ref<number>(0);
+
+        return {
+            name,
+            id,
+            points,
+            villageAmount
+        } satisfies MechanusPlayerStoreType;
+    });
 };

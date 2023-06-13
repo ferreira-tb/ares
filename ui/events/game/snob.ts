@@ -1,10 +1,10 @@
-import { ipcRenderer } from 'electron';
 import { useSnobConfigStore, useSnobHistoryStore } from '$renderer/stores';
+import { ipcOn } from '$renderer/ipc';
 
 export function setSnobEvents() {
     const snobConfigStore = useSnobConfigStore();
     const snobHistoryStore = useSnobHistoryStore();
 
-    ipcRenderer.on('snob:patch-config', (_e, config: SnobConfigType) => snobConfigStore.$patch(config));
-    ipcRenderer.on('snob:patch-history', (_e, history: SnobHistoryType) => snobHistoryStore.$patch(history));
+    ipcOn('snob:patch-config', (_e, config: SnobConfigType) => snobConfigStore.$patch(config));
+    ipcOn('snob:patch-history', (_e, history: SnobHistoryType) => snobHistoryStore.$patch(history));
 };

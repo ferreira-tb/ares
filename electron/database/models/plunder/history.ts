@@ -2,8 +2,8 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$common/guards';
 import { DatabaseError } from '$electron/error';
+import { usePlunderHistoryStore } from '$electron/stores';
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import type { usePlunderHistoryStore } from '$electron/interface';
 
 export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, InferCreationAttributes<PlunderHistory>> implements PlunderHistoryType {
     declare readonly id: UserAlias;
@@ -14,12 +14,16 @@ export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, Infer
     declare readonly destroyedWalls: number;
     declare readonly villages: CreationOptional<PlunderHistoryType['villages']>;
 
-    public static async saveHistory(alias: UserAlias, plunderHistoryStore: ReturnType<typeof usePlunderHistoryStore>) {
+    public static async saveHistory(alias: UserAlias) {
         try {
-            // Na store, `villages` é um proxy, então é necessário clonar o objeto antes de salvá-lo.
-            const villages = { ...plunderHistoryStore.villages };
+            const plunderHistoryStore = usePlunderHistoryStore();
+            const villages = plunderHistoryStore.unproxifyVillages();
             await sequelize.transaction(async () => {
-                await PlunderHistory.upsert({ id: alias, ...plunderHistoryStore, villages });
+                await PlunderHistory.upsert({
+                    id: alias,
+                    ...plunderHistoryStore.$raw({ actions: false }),
+                    villages
+                });
             });
 
         } catch (err) {

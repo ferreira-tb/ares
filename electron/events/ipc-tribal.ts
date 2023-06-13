@@ -6,23 +6,22 @@ import { MainProcessEventError } from '$electron/error';
 
 import {
     useAresStore,
-    usePlayerStore,
-    useUnitsStore,
-    useFeaturesStore,
-    usePlunderStore,
-    useCurrentVillageStore,
     useCacheStore,
-    useGroupsStore
-} from '$electron/interface';
+    useCurrentVillageStore,
+    useFeaturesStore,
+    usePlayerStore,
+    usePlunderStore,
+    useUnitsStore
+} from '$electron/stores';
 
 export function setIpcTribalEvents() {
     const aresStore = useAresStore();
-    const playerStore = usePlayerStore();
-    const unitsStore = useUnitsStore();
-    const featuresStore = useFeaturesStore();
-    const plunderStore = usePlunderStore();
+    const cacheStore = useCacheStore();
     const currentVillageStore = useCurrentVillageStore();
-    const groupsStore = useGroupsStore();
+    const featuresStore = useFeaturesStore();
+    const playerStore = usePlayerStore();
+    const plunderStore = usePlunderStore();
+    const unitsStore = useUnitsStore();
 
     /** Conteúdo do arquivo `ipc-tw.js`. */
     let ipcTribal: string | null = null;
@@ -47,9 +46,19 @@ export function setIpcTribalEvents() {
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
     ipcMain.on('ipc-tribal:update-game-data', <T extends keyof TribalWarsGameDataType>(
-        e: Electron.IpcMainEvent, gameData: TribalWarsGameDataType
+        e: Electron.IpcMainEvent, gameData: TribalWarsGameDataType | null
     ) => {
         try {
+            // Até então, quando o IpcTribal não conseguia obter os dados, ele simplesmente não avisava ao processo principal.
+            // Isso agora foi alterado, permitindo-o a enviar um objeto nulo, que deverá ser tratado aqui.
+            // No entanto, todos esses eventos precisam ser revisados.
+            // Por hora, apenas o cache será atualizado, para que o alias se torne também nulo.
+            if (!gameData) {
+                cacheStore.player = null;
+                cacheStore.world = null;
+                return;
+            };
+
             for (const key of Object.keys(gameData) as T[]) {
                 switch (key) {
                     case 'ares':
@@ -63,9 +72,6 @@ export function setIpcTribalEvents() {
                         break;
                     case 'currentVillage':
                         patchGameData('currentVillage', currentVillageStore, gameData);
-                        break;
-                    case 'groups':
-                        patchGameData('groups', groupsStore, gameData);
                         break;
                     default:
                         throw new MainProcessEventError(`Could not update game data: ${key} is not a valid key.`);
@@ -93,7 +99,7 @@ export function setIpcTribalEvents() {
             };
     
             const panelWindow = getPanelWindow();
-            panelWindow.webContents.send('panel:patch-plunder-info', plunderInfo);
+            panelWindow.webContents.send('plunder:patch-info', plunderInfo);
             return true;
 
         } catch (err) {
@@ -128,7 +134,6 @@ export function setIpcTribalEvents() {
 
 function patchGameData(dataType: 'ares', store: ReturnType<typeof useAresStore>, gameData: TribalWarsGameDataType): void;
 function patchGameData(dataType: 'features', store: ReturnType<typeof useFeaturesStore>, gameData: TribalWarsGameDataType): void;
-function patchGameData(dataType: 'groups', store: ReturnType<typeof useGroupsStore>, gameData: TribalWarsGameDataType): void;
 function patchGameData(dataType: 'player', store: ReturnType<typeof usePlayerStore>, gameData: TribalWarsGameDataType): void;
 function patchGameData(dataType: 'currentVillage', store: ReturnType<typeof useCurrentVillageStore>, gameData: TribalWarsGameDataType): void;
 function patchGameData<T extends keyof TribalWarsGameDataType, U extends keyof TribalWarsGameDataType[T]>(

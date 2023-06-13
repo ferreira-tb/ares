@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { DefaultPlunderHistory } from '$common/templates';
 
 export * from '$renderer/stores/plunder/config';
 
@@ -18,11 +19,13 @@ export const usePlunderStore = defineStore('plunder', () => {
 });
 
 export const usePlunderHistoryStore = defineStore('plunder-history', () => {
-    const wood = ref<number>(0);
-    const stone = ref<number>(0);
-    const iron = ref<number>(0);
-    const attackAmount = ref<number>(0);
-    const destroyedWalls = ref<number>(0);
+    const history = new DefaultPlunderHistory();
+
+    const wood = ref<number>(history.wood);
+    const stone = ref<number>(history.stone);
+    const iron = ref<number>(history.iron);
+    const attackAmount = ref<number>(history.attackAmount);
+    const destroyedWalls = ref<number>(history.destroyedWalls);
 
     function useTotal() {
         return computed(() => wood.value + stone.value + iron.value);

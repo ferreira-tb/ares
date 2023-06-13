@@ -2,7 +2,8 @@ import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { showDemolitionConfig } from '$electron/modules';
 import { isUserAlias } from '$common/guards';
-import { useCacheStore, usePlunderCacheStore, DemolitionTemplate } from '$electron/interface';
+import { useCacheStore, usePlunderCacheStore } from '$electron/stores';
+import { DemolitionTemplate } from '$electron/database/models';
 
 export function setPlunderDemolitionEvents() {
     const cacheStore = useCacheStore();

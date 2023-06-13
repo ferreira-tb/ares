@@ -2,6 +2,14 @@ import ElectronStore from 'electron-store';
 import type { Schema } from 'electron-store';
 
 const schema: Schema<AppConfigType> = {
+    advanced: {
+        type: 'object',
+        additionalProperties: false,
+        default: {},
+        properties: {
+            debug: { type: 'boolean', default: false }
+        }
+    },
     general: {
         type: 'object',
         additionalProperties: false,

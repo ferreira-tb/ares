@@ -29,3 +29,8 @@ html {
 .config-input, .config-select {
     margin-right: 0.5rem;
 }
+
+.result-info, .result-sucess {
+    padding: 1em;
+    user-select: none;
+}

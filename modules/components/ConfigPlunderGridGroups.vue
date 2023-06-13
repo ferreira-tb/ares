@@ -1,25 +1,19 @@
 <script setup lang="ts">
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
-import { formatFields, parseFields, formatMilliseconds, parseMilliseconds } from '$modules/utils/input-parser';
+import { usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke } from '$renderer/ipc';
+import { useIpcOn } from '$renderer/composables';
 import { decodeString } from '$common/helpers';
+import { formatFields, parseFields, formatMilliseconds, parseMilliseconds } from '$modules/utils/input-parser';
 import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
 
-const props = defineProps<{
-    config: PlunderConfigType;
-}>();
-
-const emit = defineEmits<{
-    <T extends keyof PlunderConfigType>(e: 'update:config', name: T, value: PlunderConfigType[T]): void;
-}>();
-
+const config = usePlunderConfigStore();
 const locale = await ipcInvoke('app:locale');
-const previousGroups = await ipcInvoke('game:get-all-village-groups');
-const groups = ref(previousGroups);
+const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
 
 const plunderGroupOptions = computed(() => {
-    const groupsArray = Array.from(groups.value).filter((group) => group.type === 'dynamic');
+    const groupsArray = Array.from(allGroups.value).filter((group) => group.type === 'dynamic');
     const options = groupsArray.map((group) => ({
         label: decodeString(group.name),
         value: group.id
@@ -28,17 +22,13 @@ const plunderGroupOptions = computed(() => {
     return options.sort((a, b) => a.label.localeCompare(b.label, locale));
 });
 
-const plunderGroupId = ref<number | null>(props.config.plunderGroupId);
-const fieldsPerWave = ref<number>(props.config.fieldsPerWave);
-const villageDelay = ref<number>(props.config.villageDelay);
-
-watch(plunderGroupId, (v) => emit('update:config', 'plunderGroupId', v));
-watch(fieldsPerWave, (v) => emit('update:config', 'fieldsPerWave', v));
-watch(villageDelay, (v) => emit('update:config', 'villageDelay', v));
-
 watchEffect(() => {
-    const plunderGroup = Array.from(groups.value).find((group) => group.id === plunderGroupId.value);
-    if (plunderGroup?.type !== 'dynamic') plunderGroupId.value = null;
+    const plunderGroup = Array.from(allGroups.value).find((group) => group.id === config.plunderGroupId);
+    if (plunderGroup?.type !== 'dynamic') config.plunderGroupId = null;
+});
+
+useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
+    allGroups.value = groups;
 });
 </script>
 
@@ -52,7 +42,7 @@ watchEffect(() => {
             <NGridItem>
                 <div class="config-select">
                     <NSelect
-                        v-model:value="plunderGroupId"
+                        v-model:value="config.plunderGroupId"
                         placeholder="Selecione um grupo"
                         :options="plunderGroupOptions"
                         :disabled="plunderGroupOptions.length === 0"
@@ -65,7 +55,7 @@ watchEffect(() => {
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="fieldsPerWave"
+                    v-model:value="config.fieldsPerWave"
                     class="config-input"
                     :min="5"
                     :max="9999"
@@ -81,7 +71,7 @@ watchEffect(() => {
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="villageDelay"
+                    v-model:value="config.villageDelay"
                     class="config-input"
                     :min="100"
                     :max="60000"
@@ -93,7 +83,7 @@ watchEffect(() => {
             </NGridItem>
 
             <NGridItem :span="2">
-                <ButtonGroupsUpdate v-model:groups="groups" />
+                <ButtonGroupsUpdate />
             </NGridItem>
         </NGrid>
     </div>

@@ -1,16 +1,15 @@
 import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
-import { ipcRenderer } from 'electron';
 import { nextTick } from 'vue';
 import { useLocalStorage } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
-import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { ipcInvoke, ipcOn, ipcSend } from '$renderer/ipc';
 import { TribalWorkerError } from '$worker/error';
 import { parseGameDate } from '$renderer/utils/parser';
 
 type LabeledAttack = Pick<IncomingAttack, 'arrivalTime' | 'id'>;
 
-ipcRenderer.on('port', (e) => {
+ipcOn('port', (e) => {
     const port = e.ports[0];
     port.onmessage = () => handleIncomings(port);
     port.onmessageerror = TribalWorkerError.onMessageError;

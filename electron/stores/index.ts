@@ -1,10 +1,34 @@
-export * from '$electron/stores/ares';
-export * from '$electron/stores/cache';
+import { Mechanus } from 'mechanus';
+import { defineAresStore } from '$electron/stores/ares';
+import { defineBrowserViewStore } from '$electron/stores/view';
+import { defineCacheStore } from '$electron/stores/cache';
+import { defineCurrentVillageStore } from '$electron/stores/village';
+import { definePlayerStore } from '$electron/stores/player';
+import { defineUnitsStore } from '$electron/stores/units';
+import {
+    defineFeaturesStore,
+    defineIncomingsStore,
+    definePlunderStore,
+    definePlunderConfigStore,
+    definePlunderHistoryStore,
+    definePlunderCacheStore
+} from '$electron/stores/game';
+
+// Electron Store
 export * from '$electron/stores/config';
-export * from '$electron/stores/game';
-export * from '$electron/stores/player';
-export * from '$electron/stores/plunder';
-export * from '$electron/stores/units';
-export * from '$electron/stores/view';
-export * from '$electron/stores/village';
-export * from '$electron/stores/world';
+
+// Mechanus
+export const mechanus = new Mechanus();
+
+export const useAresStore = defineAresStore(mechanus);
+export const useBrowserViewStore = defineBrowserViewStore(mechanus);
+export const useCacheStore = defineCacheStore(mechanus);
+export const useCurrentVillageStore = defineCurrentVillageStore(mechanus);
+export const useFeaturesStore = defineFeaturesStore(mechanus);
+export const useIncomingsStore = defineIncomingsStore(mechanus);
+export const usePlayerStore = definePlayerStore(mechanus);
+export const usePlunderStore = definePlunderStore(mechanus);
+export const usePlunderConfigStore = definePlunderConfigStore(mechanus);
+export const usePlunderHistoryStore = definePlunderHistoryStore(mechanus);
+export const usePlunderCacheStore = definePlunderCacheStore(mechanus);
+export const useUnitsStore = defineUnitsStore(mechanus);

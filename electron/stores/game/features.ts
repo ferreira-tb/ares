@@ -1,9 +1,15 @@
 import { ref } from 'mechanus';
 
 export function defineFeaturesStore(mechanus: Mechanus) {
-    return mechanus.define('features', {
-        premium: ref<boolean | null>(null),
-        accountManager: ref<boolean | null>(null),
-        farmAssistant: ref<boolean | null>(null)
-    } satisfies MechanusFeaturesStoreType);
+    return mechanus.define('features', () => {
+        const premium = ref<boolean | null>(null);
+        const accountManager = ref<boolean | null>(null);
+        const farmAssistant = ref<boolean | null>(null);
+
+        return {
+            premium,
+            accountManager,
+            farmAssistant
+        } satisfies MechanusFeaturesStoreType;
+    });
 };

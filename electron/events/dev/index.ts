@@ -2,7 +2,8 @@ import { ipcMain } from 'electron';
 import { computed, storeToRefs } from 'mechanus';
 import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
 import { getMainViewWebContents } from '$electron/utils/view';
-import { useBrowserViewStore } from '$electron/interface';
+import { useBrowserViewStore } from '$electron/stores';
+import { setDebugEvents } from '$electron/events/dev/debug';
 
 export function setDevEvents() {
     if (process.env.ARES_MODE !== 'dev') return;
@@ -31,4 +32,6 @@ export function setDevEvents() {
     ipcMain.on('dev:open-panel-window-dev-tools', () => {
         panelContents.openDevTools({ mode: 'detach' });
     });
+
+    setDebugEvents();
 };

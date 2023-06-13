@@ -13,7 +13,7 @@ export class MainProcessError extends AresError {
 
     /** Emite um erro falso no processo principal para fins de teste. */
     public static mock() {
-        const error = new this('Isso é um teste.');
+        const error = new this('This is a mock error.');
         this.catch(error);
     };
 

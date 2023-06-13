@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
-import { NButton, NButtonGroup, NGrid, NGridItem } from 'naive-ui';
+import { NButton, NButtonGroup, NGrid, NGridItem, NResult } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 import { isUserAlias } from '$common/guards';
+import { useUserAlias } from '$renderer/composables';
+import { ModuleError } from '$modules/error';
 import PlunderTemplateModal from '$modules/components/PlunderTemplateModal.vue';
 import ResultError from '$renderer/components/ResultError.vue';
-import ResultInfo from '$renderer/components/ResultInfo.vue';
 import PlunderTemplateCard from '$modules/components/PlunderTemplateCard.vue';
 
+const userAlias = useUserAlias();
 const locale = await ipcInvoke('app:locale');
-const userAlias = await ipcInvoke('user-alias');
-const isArcherWorld = await ipcInvoke('game:is-archer-world');
+const isArcherWorld = await ipcInvoke('world:is-archer-world');
 const previousTemplates = await ipcInvoke('plunder:get-custom-templates');
+
+if (typeof isArcherWorld !== 'boolean') {
+    throw new ModuleError('Could not determine if world is archer world.');
+};
 
 const showTemplateModal = ref<boolean>(false);
 const templates = ref<CustomPlunderTemplateType[]>(previousTemplates ?? []);
@@ -57,11 +62,13 @@ function removeTemplate(template: CustomPlunderTemplateType) {
                 </NGrid>
             </div>
 
-            <ResultInfo
-                v-else
-                title="Não há modelos salvos"
-                description="Experimente criar um modelo para começar"
-            />
+            <div v-else class="result-info">
+                <NResult
+                    status="info"
+                    title="Não há modelos salvos"
+                    description="Experimente criar um modelo para começar"
+                />
+            </div>
         </div>
         
         <ResultError v-else />

@@ -1,11 +1,10 @@
 import { computed, nextTick, ref } from 'vue';
-import { ipcRenderer } from 'electron';
 import { Kronos } from '@tb-dev/kronos';
 import { assertInteger, isInteger } from '$common/guards';
 import { useUnitsStore } from '$renderer/stores/units';
 import { assertFarmUnit } from '$common/guards';
 import { PlunderError } from '$browser/error';
-import { ipcInvoke } from '$renderer/ipc';
+import { ipcInvoke, ipcOn } from '$renderer/ipc';
 import type { usePlunderConfigStore } from '$renderer/stores';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
@@ -63,12 +62,12 @@ export class PlunderTemplate {
 /** Representa todos os modelos de saque. */
 const allTemplates = new Map<string, PlunderTemplate>();
 
-ipcRenderer.on('custom-plunder-template-saved', async (_e, template: CustomPlunderTemplateType) => {
+ipcOn('custom-plunder-template-saved', async (_e, template: CustomPlunderTemplateType) => {
     const plunderTemplate = await parseCustomPlunderTemplate(template);
     allTemplates.set(plunderTemplate.type, plunderTemplate);
 });
 
-ipcRenderer.on('custom-plunder-template-destroyed', (_e, template: CustomPlunderTemplateType) => {
+ipcOn('custom-plunder-template-destroyed', (_e, template: CustomPlunderTemplateType) => {
     const templateInMap = allTemplates.get(template.type);
     if (templateInMap && templateInMap.alias === template.alias) {
         allTemplates.delete(templateInMap.type);

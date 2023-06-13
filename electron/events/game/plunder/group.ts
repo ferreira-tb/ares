@@ -5,7 +5,7 @@ import { isInteger } from '$common/guards';
 import { MainProcessEventError } from '$electron/error';
 import { GameSearchParams } from '$common/constants';
 import { generateRandomDelay } from '$common/helpers';
-import { usePlunderConfigStore, usePlunderCacheStore } from '$electron/interface';
+import { usePlunderConfigStore, usePlunderCacheStore } from '$electron/stores';
 
 export function setPlunderGroupEvents() {
     const plunderCacheStore = usePlunderCacheStore();

@@ -2,20 +2,21 @@ import { ipcMain, webContents } from 'electron';
 import { storeToRefs, watch } from 'mechanus';
 import { isUserAlias } from '$common/guards';
 import { MainProcessEventError } from '$electron/error';
-import { useAresStore, useCacheStore, usePlunderHistoryStore, PlunderHistory } from '$electron/interface';
+import { useAresStore, useCacheStore } from '$electron/stores';
+import { PlunderHistory } from '$electron/database/models';
 
 export function setCaptchaEvents() {
     const aresStore = useAresStore();
     const { captcha } = storeToRefs(aresStore);
 
     const cacheStore = useCacheStore();
-    const plunderHistoryStore = usePlunderHistoryStore();
+    const { userAlias } = storeToRefs(cacheStore);
 
     ipcMain.on('captcha:update-status', (e, status: boolean) => {
         captcha.value = status;
         for (const contents of webContents.getAllWebContents()) {
             if (contents !== e.sender) {
-                contents.send('captcha:status-did-update', status);
+                contents.send('captcha:did-update-status', status);
             };
         };
     });
@@ -27,8 +28,9 @@ export function setCaptchaEvents() {
                 contents.send('plunder:stop');
             };
 
-            if (isUserAlias(cacheStore.userAlias)) {
-                await PlunderHistory.saveHistory(cacheStore.userAlias, plunderHistoryStore);
+            const alias = userAlias.value;
+            if (isUserAlias(alias)) {
+                await PlunderHistory.saveHistory(alias);
             };
             
         } catch (err) {

@@ -51,12 +51,19 @@ export const enum WebsiteUrl {
 };
 
 export const enum Dimensions {
+    /** Altura do container do menu superior. */
     TopContainerHeight = 80
 };
 
 export const enum ErrorLogFile {
+    /** Erros propriamente capturados e registrados no banco de dados. */
     All = 'error.log',
+    /**
+     * Erros capturados e registrados em algum dos processos filhos.
+     * @see https://www.electronjs.org/docs/latest/api/utility-process
+     */
     ChildProcess = 'child-process-error.log',
+    /** Se o Ares falhar em capturar um erro, ele será registrado diretamente no arquivo. */
     Uncaught = 'uncaught-error.log'
 };
 
@@ -76,7 +83,7 @@ export const allUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'mar
 export const months = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'] as const;
 
 // Mapas.
-// TO DO: transformar em JSON.
+// TODO: transformar em JSON.
 export const unitsToDestroyWall = {
     '0': {
         spear: 0,

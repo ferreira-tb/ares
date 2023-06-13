@@ -240,4 +240,11 @@ export class TribalWorker {
             worker.destroy();
         };
     };
+
+    public static getWorkerNameByWebContentsId(webContentsId: number): TribalWorkerName | null {
+        for (const [name, worker] of this.#active.entries()) {
+            if (worker.webContents.id === webContentsId) return name;
+        };
+        return null;
+    };
 };

@@ -9,6 +9,7 @@ import { restartAres } from '$electron/utils/helpers';
 
 export function setConfigEvents() {
     ipcMain.on('config:open', (_e, route: ConfigModuleRoutes) => showAppSettings(route));
+    ipcMain.handle('config:advanced', () => ({ ...appConfig.get('advanced') }));
     ipcMain.handle('config:general', () => ({ ...appConfig.get('general') }));
     ipcMain.handle('config:notifications', () => ({ ...appConfig.get('notifications') }));
     
@@ -30,7 +31,7 @@ export function setConfigEvents() {
             await sequelize.close();
             if (!sequelize.isClosed) sequelize.isClosed = true;
             await fs.rm(database, { recursive: true, maxRetries: 5 });
-            setTimeout(() => restartAres(), 3000);
+            setTimeout(restartAres, 3000);
             return true;
         } catch (err) {
             MainProcessEventError.catch(err);

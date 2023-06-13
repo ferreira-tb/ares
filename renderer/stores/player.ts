@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { defineStore } from 'pinia';
 
 export const usePlayerStore = defineStore('player', () => {
     const name = ref<string | null>(null);

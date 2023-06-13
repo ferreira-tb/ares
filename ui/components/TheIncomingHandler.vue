@@ -1,19 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useIpcRendererOn } from '@vueuse/electron';
 import { NTag } from 'naive-ui';
+import { useIpcOn } from '$renderer/composables';
+
+defineProps<{
+    userAlias: UserAlias | null;
+}>();
 
 const isHandlingIncoming = ref<boolean>(false);
 
-useIpcRendererOn('tribal-worker:will-handle-incoming-attack', () => {
+useIpcOn('tribal-worker:will-handle-incoming-attack', () => {
     isHandlingIncoming.value = true;
 });
 
-useIpcRendererOn('tribal-worker:did-handle-incoming-attack', () => {
+useIpcOn('tribal-worker:did-handle-incoming-attack', () => {
     isHandlingIncoming.value = false;
 });
 
-useIpcRendererOn('tribal-worker:did-fail-to-handle-incoming-attack', () => {
+useIpcOn('tribal-worker:did-fail-to-handle-incoming-attack', () => {
     isHandlingIncoming.value = false;
 });
 </script>
@@ -21,7 +25,7 @@ useIpcRendererOn('tribal-worker:did-fail-to-handle-incoming-attack', () => {
 <template>
     <div class="incoming-handler-tag-container">
         <Transition name="tb-fade" mode="out-in">
-            <div v-if="isHandlingIncoming" class="tag-wrapper">
+            <div v-if="userAlias && isHandlingIncoming" class="tag-wrapper">
                 <NTag round type="warning" size="small">
                     Analisando ataques...
                 </NTag>

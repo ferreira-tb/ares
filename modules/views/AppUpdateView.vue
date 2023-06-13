@@ -2,9 +2,9 @@
 import semverGte from 'semver/functions/gte';
 import { computed, ref } from 'vue';
 import { computedEager, useFetch, useWindowSize } from '@vueuse/core';
-import { useIpcRendererOn } from '@vueuse/electron';
 import { NButton, NButtonGroup, NSpin, NProgress } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { useIpcOn } from '$renderer/composables';
 import { AresAPI } from '$common/constants';
 import { ModuleAppUpdateError } from '$modules/error';
 
@@ -33,24 +33,24 @@ onFetchError((err: unknown) => {
     wentWrong.value = err instanceof Error;
 });
 
-useIpcRendererOn('will-download-update', (_e, downloadProgress: DownloadProgressType) => {
+useIpcOn('will-download-update', (_e, downloadProgress: DownloadProgressType) => {
     isDownloading.value = true;
     progressBarStatus.value = 'default';
     receivedBytes.value = downloadProgress.receivedBytes;
     totalBytes.value = downloadProgress.totalBytes;
 });
 
-useIpcRendererOn('update-download-progress', (_e, downloadProgress: DownloadProgressType) => {
+useIpcOn('update-download-progress', (_e, downloadProgress: DownloadProgressType) => {
     receivedBytes.value = downloadProgress.receivedBytes;
     totalBytes.value = downloadProgress.totalBytes;
 });
 
-useIpcRendererOn('update-download-completed', () => {
+useIpcOn('update-download-completed', () => {
     isDownloading.value = false;
     progressBarStatus.value = 'success';
 });
 
-useIpcRendererOn('update-download-failed', () => {
+useIpcOn('update-download-failed', () => {
     isDownloading.value = false;
     progressBarStatus.value = 'error';
 });

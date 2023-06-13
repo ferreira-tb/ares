@@ -1,23 +1,16 @@
-import { ipcRenderer } from 'electron';
 import { assertInteger } from '$common/guards';
 import { usePlunderStore, usePlunderHistoryStore, usePlunderConfigStore } from '$renderer/stores';
 import { PanelPlunderViewError } from '$panel/error';
+import { ipcOn } from '$renderer/ipc';
 
 export function setPlunderEvents() {
     const plunderStore = usePlunderStore();
     const plunderConfigStore = usePlunderConfigStore();
     const plunderHistoryStore = usePlunderHistoryStore();
 
-    ipcRenderer.on('plunder:stop', () => (plunderConfigStore.active = false));
+    ipcOn('plunder:stop', () => (plunderConfigStore.active = false));
 
-    // Atualiza o estado local do Plunder sempre que ocorre uma mudança.
-    ipcRenderer.on('plunder:config-updated', <T extends keyof typeof plunderConfigStore>(
-        _e: unknown, key: T, value: typeof plunderConfigStore[T]
-    ) => {
-        plunderConfigStore[key] = value;
-    });
-
-    ipcRenderer.on('plunder:attack-sent', <T extends keyof PlunderAttackLog>(_e: unknown, details: PlunderAttackLog) => {
+    ipcOn('plunder:attack-sent', <T extends keyof PlunderAttackLog>(_e: unknown, details: PlunderAttackLog) => {
         try {
             if (!plunderConfigStore.active) return;
             for (const [key, value] of Object.entries(details) as [T, PlunderAttackLog[T]][]) {
@@ -32,7 +25,7 @@ export function setPlunderEvents() {
         };
     });
 
-    ipcRenderer.on('panel:patch-plunder-info', (_e, info: PlunderInfoType) => plunderStore.$patch(info));
-    ipcRenderer.on('panel:patch-plunder-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
-    ipcRenderer.on('panel:patch-plunder-history', (_e, history: PlunderHistoryType) => plunderHistoryStore.$patch(history));
+    ipcOn('plunder:patch-info', (_e, info: PlunderInfoType) => plunderStore.$patch(info));
+    ipcOn('plunder:patch-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
+    ipcOn('plunder:patch-history', (_e, history: PlunderHistoryType) => plunderHistoryStore.$patch(history));
 };

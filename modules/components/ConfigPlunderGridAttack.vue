@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
+import { usePlunderConfigStore } from '$renderer/stores';
 import {
     formatFields,
     parseFields,
@@ -10,25 +10,7 @@ import {
     parseMilliseconds
 } from '$modules/utils/input-parser';
 
-const props = defineProps<{
-    config: PlunderConfigType;
-}>();
-
-const emit = defineEmits<{
-    <T extends keyof PlunderConfigType>(e: 'update:config', name: T, value: PlunderConfigType[T]): void;
-}>();
-
-const maxDistance = ref<number>(props.config.maxDistance);
-const ignoreOlderThan = ref<number>(props.config.ignoreOlderThan);
-const attackDelay = ref<number>(props.config.attackDelay);
-const resourceRatio = ref<number>(props.config.resourceRatio);
-const blindAttackPattern = ref<BlindAttackPattern>(props.config.blindAttackPattern);
-
-watch(maxDistance, (v) => emit('update:config', 'maxDistance', v));
-watch(ignoreOlderThan, (v) => emit('update:config', 'ignoreOlderThan', v));
-watch(attackDelay, (v) => emit('update:config', 'attackDelay', v));
-watch(resourceRatio, (v) => emit('update:config', 'resourceRatio', v));
-watch(blindAttackPattern, (v) => emit('update:config', 'blindAttackPattern', v));
+const config = usePlunderConfigStore();
 
 const blindAttackOptions = [
     { label: 'Menor capacidade', value: 'smaller' },
@@ -45,7 +27,7 @@ const blindAttackOptions = [
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="maxDistance"
+                    v-model:value="config.maxDistance"
                     class="config-input"
                     :min="1"
                     :max="9999"
@@ -61,7 +43,7 @@ const blindAttackOptions = [
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="ignoreOlderThan"
+                    v-model:value="config.ignoreOlderThan"
                     class="config-input"
                     :min="1"
                     :max="9999"
@@ -77,7 +59,7 @@ const blindAttackOptions = [
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="attackDelay"
+                    v-model:value="config.attackDelay"
                     class="config-input"
                     :min="100"
                     :max="60000"
@@ -93,7 +75,7 @@ const blindAttackOptions = [
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="resourceRatio"
+                    v-model:value="config.resourceRatio"
                     class="config-input"
                     :min="0.2"
                     :max="1"
@@ -107,7 +89,7 @@ const blindAttackOptions = [
             </NGridItem>
             <NGridItem>
                 <div class="config-select">
-                    <NSelect v-model:value="blindAttackPattern" :options="blindAttackOptions" />
+                    <NSelect v-model:value="config.blindAttackPattern" :options="blindAttackOptions" />
                 </div>
             </NGridItem>
         </NGrid>

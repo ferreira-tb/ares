@@ -7,6 +7,10 @@ import { useIncomingsStore } from '$renderer/stores';
 import { getLocaleDateString } from '$renderer/utils/helpers';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 
+defineProps<{
+    userAlias: UserAlias | null;
+}>();
+
 const locale = await ipcInvoke('app:locale');
 
 const incomingsStore = useIncomingsStore();
@@ -32,7 +36,7 @@ whenever(amount, () => filteredIncomings.trigger());
     <div class="next-incoming-tag-container">
         <Transition name="tb-fade" mode="out-in">
             <div
-                v-if="amount && incomings.length > 0 && nextIncoming"
+                v-if="userAlias && amount && incomings.length > 0 && nextIncoming"
                 :key="nextIncoming.id"
                 class="tag-wrapper"
             >

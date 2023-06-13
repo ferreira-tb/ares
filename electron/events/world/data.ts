@@ -1,17 +1,19 @@
 import { Op } from 'sequelize';
 import { ipcMain, MessageChannelMain, utilityProcess } from 'electron';
-import { storeToRefs, watch } from 'mechanus';
+import { watch } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { sequelize } from '$electron/database';
-import { getAlliesTable, getPlayersTable, getVillagesTable, useCacheStore, WorldDataFetchHistory } from '$electron/interface';
 import { childProcess } from '$electron/utils/files';
 import { MainProcessEventError } from '$electron/error';
 import { isWorld } from '$common/guards';
+import {
+    getAlliesTable,
+    getPlayersTable,
+    getVillagesTable,
+    WorldDataFetchHistory
+} from '$electron/database/models';
 
-export function setWorldDataEvents() {
-    const cacheStore = useCacheStore();
-    const { world: cachedWorld } = storeToRefs(cacheStore);
-
+export function setWorldDataEvents(cachedWorld: MechanusRef<World | null>) {
     // Obtêm informações sobre uma ou mais aldeias.
     // Se o id da aldeia não for especificado, retorna todas as aldeias do mundo.
     ipcMain.handle('world-data:get-villages', async (_e, villageId?: number[] | number, world: World | null = null) => {

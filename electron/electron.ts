@@ -6,14 +6,18 @@ import { sequelize } from '$electron/database';
 import { setEvents } from '$electron/events/index';
 import { appIcon, panelHtml, uiHtml, browserJs } from '$electron/utils/files';
 import { setBrowserViewAutoResize } from '$electron/utils/view';
-import { setEnv } from '$electron/env';
-import { MainProcessError } from '$electron/error';
+import { setEnv } from '$electron/utils/env';
 import { Dimensions } from '$common/constants';
 import { isUserAlias } from '$common/guards';
 import { getGameRegionUrl } from '$common/helpers';
 import { appConfig } from '$electron/stores';
-import { PlunderHistory, useBrowserViewStore, useCacheStore, usePlunderHistoryStore } from '$electron/interface';
+import { useBrowserViewStore, useCacheStore } from '$electron/stores';
+import { PlunderHistory } from '$electron/database/models';
+import { MainProcessError } from '$electron/error';
+import { errorHandler } from '$electron/utils/error-handler';
+import { showDebug } from '$electron/modules';
 
+MainProcessError.catch = errorHandler;
 setEnv();
 
 function createWindow() {
@@ -102,7 +106,13 @@ function createWindow() {
     mainWindow.on('system-context-menu', (e) => e.preventDefault());
     panelWindow.on('system-context-menu', (e) => e.preventDefault());
 
-    mainWindow.once('ready-to-show', () => mainWindow.show());
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
+        if (appConfig.get('advanced').debug) {
+            showDebug();
+            mainWindow.focus();
+        };
+    });
     
     panelWindow.once('ready-to-show', () => {
         const panelBounds = appConfig.get('panel').bounds;
@@ -125,7 +135,7 @@ app.once('will-quit', async (e) => {
         e.preventDefault();
         const cacheStore = useCacheStore();
         if (isUserAlias(cacheStore.userAlias)) {
-            await PlunderHistory.saveHistory(cacheStore.userAlias, usePlunderHistoryStore());
+            await PlunderHistory.saveHistory(cacheStore.userAlias);
         };
     } catch (err) {
         await MainProcessError.log(err);

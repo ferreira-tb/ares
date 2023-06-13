@@ -6,13 +6,14 @@ import { app, dialog, ipcMain, BrowserWindow } from 'electron';
 import { MainProcessEventError } from '$electron/error';
 import { sequelize } from '$electron/database';
 import { getActiveModule } from '$electron/modules';
-import { ErrorLog, ElectronErrorLog, useAresStore } from '$electron/interface';
+import { useAresStore } from '$electron/stores';
+import { ErrorLog, ElectronErrorLog } from '$electron/database/models';
 import { getMainWindow } from '$electron/utils/helpers';
 import { ErrorLogFile } from '$common/constants';
 
 export function setErrorEvents() {
-    const mainWindow = getMainWindow();
     const aresStore = useAresStore();
+    const mainWindow = getMainWindow();
 
     ipcMain.on('error:create-log', async (e, error: OmitOptionalErrorLogProps<ErrorLogBase>) => {
         try {
@@ -37,7 +38,7 @@ export function setErrorEvents() {
 
             const errorModule = getActiveModule('error-log');
             if (errorModule instanceof BrowserWindow) {
-                errorModule.webContents.send('error:log-did-update', newRow.toJSON());
+                errorModule.webContents.send('error:did-create-log', newRow.toJSON());
             };
 
         } catch (err) {
@@ -49,8 +50,7 @@ export function setErrorEvents() {
         try {
             await sequelize.transaction(async () => {
                 // Elimina do registro os erros que tenham mais de 30 dias.
-                const expiration = Date.thirtyDaysAgo();
-                await ErrorLog.destroy({ where: { time: { [Op.lte]: expiration } } });
+                await ErrorLog.destroy({ where: { time: { [Op.lte]: Date.thirtyDaysAgo() } } });
             });
             
             const errors = await ErrorLog.findAll({ where: { pending: true } });

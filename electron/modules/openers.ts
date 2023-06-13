@@ -15,10 +15,13 @@ export const showAppUpdate = createModule('app-update', 'app-update', {
     title: 'Atualização'
 });
 
-export const showErrorLog = createModule('error-log', 'error-log', {
-    width: 500,
+export const showDebug = createModule('debug', 'debug', {
+    width: 1000,
     height: 600,
-    title: 'Registro de Erros'
+    title: 'Modo de depuração',
+    minimizable: true,
+    maximizable: true,
+    resizable: true
 });
 
 export const showDemolitionConfig = createModule('demolition', 'demolition', {
@@ -28,11 +31,10 @@ export const showDemolitionConfig = createModule('demolition', 'demolition', {
     minimizable: true
 });
 
-export const showCustomPlunderTemplate = createModule('plunder-template', 'plunder-template', {
-    width: 1000,
+export const showErrorLog = createModule('error-log', 'error-log', {
+    width: 500,
     height: 600,
-    title: 'Modelos',
-    minimizable: true
+    title: 'Registro de Erros'
 });
 
 export const showPlunderHistory = createModule('plunder-history', 'plunder-history', {
@@ -44,6 +46,13 @@ export const showPlunderHistory = createModule('plunder-history', 'plunder-histo
     minimizable: true,
     maximizable: true,
     resizable: true
+});
+
+export const showCustomPlunderTemplate = createModule('plunder-template', 'plunder-template', {
+    width: 1000,
+    height: 600,
+    title: 'Modelos',
+    minimizable: true
 });
 
 // Websites

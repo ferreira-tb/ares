@@ -1,6 +1,6 @@
 import { app } from 'electron';
-import { storeToRefs, watch } from 'mechanus';
-import { useAresStore } from '$electron/interface';
+import { storeToRefs, watchImmediate } from 'mechanus';
+import { useAresStore } from '$electron/stores';
 
 /** Define as variáveis de ambiente. */
 export function setEnv() {
@@ -13,6 +13,6 @@ export function setEnv() {
     const aresStore = useAresStore();
     const { locale, majorVersion } = storeToRefs(aresStore);
 
-    watch(locale, (value) => (process.env.TRIBAL_WARS_LOCALE = value ?? 'unknown'));
-    watch(majorVersion, (value) => (process.env.TRIBAL_WARS_VERSION = value ?? 'unknown'));
+    watchImmediate(locale, (value) => (process.env.TRIBAL_WARS_LOCALE = value ?? 'unknown'));
+    watchImmediate(majorVersion, (value) => (process.env.TRIBAL_WARS_VERSION = value ?? 'unknown'));
 };
