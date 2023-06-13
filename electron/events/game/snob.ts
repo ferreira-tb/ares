@@ -174,7 +174,7 @@ async function mint(alias: UserAlias): Promise<TribalWorker> {
     await worker.init();
 
     await worker.toBeReady();
-    worker.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
+    worker.webContents.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
     return worker;
 };
 
@@ -192,22 +192,20 @@ function onMint(
         const baseDelay = getBaseDelay(snobConfig.timeUnit);
         const delay = snobConfig.delay * baseDelay;
 
-        timeout.value = setTimeout(async () => {
-            try {
-                if (alias !== userAlias.value || !worker.value) return;
+        timeout.value = setTimeout(() => {
+            if (alias !== userAlias.value || !worker.value) return;
 
-                // Se hover um captcha ativo no momento, adia o envio de uma nova requisição.
-                if (captcha.value) {
-                    timeout.value?.refresh();
-                    return;
-                };
-
-                worker.value.reload();
-                await worker.value.toBeReady();
-                worker.value.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
-            } catch (err) {
-                MainProcessEventError.catch(err);
+            // Se hover um captcha ativo no momento, adia o envio de uma nova requisição.
+            if (captcha.value) {
+                timeout.value?.refresh();
+                return;
             };
+
+            worker.value.webContents.reload();
+            worker.value.toBeReady().then(
+                () => worker.value?.webContents.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory),
+                (err: unknown) => MainProcessEventError.catch(err)
+            );
         }, delay);
     };
 };

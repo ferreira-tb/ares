@@ -1,12 +1,13 @@
 import * as path from 'node:path';
+import { EventEmitter } from 'node:events';
 import { BrowserView, MessageChannelMain } from 'electron';
 import { computed, ref, until, watchImmediate, type UntilOptions } from 'mechanus';
 import { getMainWindow } from '$electron/utils/helpers';
-import { MainProcessError } from '$electron/error';
+import { TribalWorkerError } from '$electron/error';
 import { getMainViewWebContents } from '$electron/utils/view';
 import type { TribalWorkerName } from '$common/constants';
 
-export class TribalWorker {
+export class TribalWorker extends EventEmitter {
     /** Nome do Worker. */
     public readonly name: TribalWorkerName;
     /** URL que será carregada no Worker. */
@@ -32,6 +33,8 @@ export class TribalWorker {
     });
     
     constructor(name: TribalWorkerName, url: import('node:url').URL) {
+        super();
+
         this.name = name;
         this.path = path.join(__dirname, `worker/${name}.js`);
         this.url = url;
@@ -43,60 +46,26 @@ export class TribalWorker {
         return this.#isDestroyed.value;
     };
 
-    /** Equivalente a `webContents.on()`. */
-    get on(): Electron.WebContents['on'] {
-        return this.view.webContents.on.bind(this.view.webContents);
-    };
-
-    /** Equivalente a `webContents.once()`. */
-    get once(): Electron.WebContents['once'] {
-        return this.view.webContents.once.bind(this.view.webContents);
-    };
-
     /** Porta do MessageChannel usado pelo Worker. */
     get port(): Electron.MessagePortMain {
         if (!this.#messagePort.value) {
-            throw new MainProcessError(`There is no message port for TribalWorker "${this.name}".`);
+            throw new TribalWorkerError(`There is no message port for TribalWorker "${this.name}".`);
         };
         return this.#messagePort.value;
     };
 
-    /** Envia uma mensagem para o Worker através do MessageChannel. */
-    get postMessage(): Electron.MessagePortMain['postMessage'] {
-        return this.port.postMessage.bind(this.port);
-    };
-
-    /** Envia uma mensagem para o Worker através do WebContents. */
-    get postMessageToWebContents(): Electron.WebContents['postMessage'] {
-        return this.view.webContents.postMessage.bind(this.view.webContents);
-    };
-
-    /** Equivalente a `webContents.reload()`. */
-    get reload(): Electron.WebContents['reload'] {
-        return this.view.webContents.reload.bind(this.view.webContents);
-    };
-
-    /** Equivalente a `webContents.send()`. */
-    get send(): Electron.WebContents['send'] {
-        return this.view.webContents.send.bind(this.view.webContents);
-    };
-
-    /** BrowserView do Worker. */
-    get view(): BrowserView {
-        if (!(this.#browserView.value instanceof BrowserView)) {
-            throw new MainProcessError(`TribalWorker "${this.name}" is not initialized.`);
-        };
-        return this.#browserView.value;
-    };
-
     /** WebContents do Worker. */
     get webContents(): Electron.WebContents {
-        return this.view.webContents;
+        if (!(this.#browserView.value instanceof BrowserView)) {
+            throw new TribalWorkerError(`TribalWorker "${this.name}" is not initialized.`);
+        };
+
+        return this.#browserView.value.webContents;
     };
 
     #createMessageChannel(): void {
         const { port1, port2 } = new MessageChannelMain();
-        this.view.webContents.postMessage('port', null, [port2]);
+        this.webContents.postMessage('port', null, [port2]);
         port1.postMessage({ channel: this.name });
         this.#messagePort.value = port1;
     };
@@ -126,26 +95,24 @@ export class TribalWorker {
 
             if (this.#browserView.value) {
                 this.#browserView.value.webContents.removeAllListeners();
+
+                const mainWindow = getMainWindow();
+                mainWindow.removeBrowserView(this.#browserView.value);
             };
 
             this.#watchers.forEach((stop) => stop());
             this.#watchers.clear();
             
-            const mainWindow = getMainWindow();
-            mainWindow.removeBrowserView(this.view);
             TribalWorker.deleteWorker(this.name);
 
             this.#browserView.value = null;
             this.#isDestroyed.value = true;
 
-        } catch (err) {
-            MainProcessError.catch(err);
-        };
-    };
+            this.emit('destroyed');
 
-    /** Indica se o Worker possui uma BrowserView associada a ele. */
-    public hasBrowserView(): boolean {
-        return this.#browserView.value instanceof BrowserView;
+        } catch (err) {
+            TribalWorkerError.catch(err);
+        };
     };
 
     /**
@@ -154,7 +121,7 @@ export class TribalWorker {
      */
     public async init(listener?: (event: Electron.MessageEvent) => void): Promise<void> {
         if (this.#isDestroyed.value) {
-            throw new MainProcessError(`TribalWorker "${this.name}" is destroyed.`);
+            throw new TribalWorkerError(`TribalWorker "${this.name}" is destroyed.`);
         };
 
         const aliveWorker = TribalWorker.getWorker(this.name);
@@ -184,15 +151,15 @@ export class TribalWorker {
         this.#createMessageChannel();
         TribalWorker.setWorker(this.name, this);
 
-        if (typeof listener === 'function') this.port.on('message', listener);
+        if (listener) this.port.on('message', listener);
         this.port.start();
     };
 
     public openDevTools() {
-        this.view.webContents.openDevTools({ mode: 'detach' });
+        this.webContents.openDevTools({ mode: 'detach' });
     };
 
-    /** Aguarda até que o webContents do Worker esteja carregado. */
+    /** Permite aguardar até que o webContents do Worker esteja carregado. */
     public toBeReady(
         timeout: UntilOptions['timeout'] = 10000,
         throwOnTimeout: UntilOptions['throwOnTimeout'] = true,
@@ -231,13 +198,6 @@ export class TribalWorker {
             if (worker instanceof TribalWorker) {
                 worker.destroy();
             };
-        };
-    };
-
-    /** Destrói todas os Workers, removendo-os da janela mãe. */
-    public static destroyAllWorkers() {
-        for (const worker of this.#active.values()) {
-            worker.destroy();
         };
     };
 

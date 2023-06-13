@@ -3,7 +3,7 @@ import { ipcMain, shell } from 'electron';
 import { isString } from '$common/guards';
 import { getMainWindow } from '$electron/utils/helpers';
 import { getActiveModuleWebContents } from '$electron/windows';
-import { DownloadError } from '$electron/error';
+import { MainProcessEventError } from '$electron/error';
 
 class DownloadProgress implements DownloadProgressType {
     readonly receivedBytes: number;
@@ -52,8 +52,8 @@ function handleUpdateDownload(item: Electron.DownloadItem) {
             const dirName = path.dirname(item.getSavePath());
             shell.openPath(dirName).catch((err: unknown) => {
                 if (isString(err)) {
-                    const error = new DownloadError(err);
-                    DownloadError.catch(error);
+                    const error = new MainProcessEventError(err);
+                    MainProcessEventError.catch(error);
                 };
             });
 

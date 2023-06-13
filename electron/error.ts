@@ -6,10 +6,7 @@ import { isString } from '$common/guards';
 import { ErrorLogFile } from '$common/constants';
 
 export class MainProcessError extends AresError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'MainProcessError';
-    };
+    public override name = 'MainProcessError';
 
     /** Emite um erro falso no processo principal para fins de teste. */
     public static mock() {
@@ -39,58 +36,22 @@ export class MainProcessError extends AresError {
     };
 };
 
-export class MechanusStoreError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'MechanusStoreError';
-    };
-};
-
 export class DatabaseError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'DatabaseError';
-    };
+    public override readonly name = 'DatabaseError';
 };
 
 export class MainProcessEventError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'MainProcessEventError';
-    };
-};
-
-export class ModuleCreationError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'ModuleCreationError';
-    };
-};
-
-export class AliasInterfaceError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'AliasInterfaceError';
-    };
-};
-
-export class WorldInterfaceError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'WorldInterfaceError';
-    };
+    public override readonly name = 'MainProcessEventError';
 };
 
 export class BrowserViewError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'BrowserViewError';
-    };
+    public override readonly name = 'BrowserViewError';
 };
 
-export class DownloadError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'DownloadError';
-    };
+export class TribalWorkerError extends MainProcessError {
+    public override readonly name = 'TribalWorkerError';
+};
+
+export class ModuleCreationError extends MainProcessError {
+    public override readonly name = 'ModuleCreationError';
 };
