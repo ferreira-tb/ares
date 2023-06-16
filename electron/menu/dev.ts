@@ -1,7 +1,6 @@
-import { Menu, MenuItem, webContents } from 'electron';
-import { MainWindow, PanelWindow } from '$electron/windows';
+import { Menu, MenuItem } from 'electron';
+import { BaseWindow, MainWindow, PanelWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
-import type { BaseWindow, StandardWindow, WebsiteWindow } from '$electron/windows';
 
 function getDevOptions(): Electron.MenuItemConstructorOptions[] {
     const mainWindow = MainWindow.getInstance();
@@ -9,7 +8,7 @@ function getDevOptions(): Electron.MenuItemConstructorOptions[] {
 
     const options: Electron.MenuItemConstructorOptions[] = [
         { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => mainWindow.webContents.reloadIgnoringCache() },
-        { label: 'Conjurar magia', accelerator: 'F9', click: () => castDevMagic() },
+        { label: 'Conjurar magia', accelerator: 'F9', click: () => BaseWindow.castDevMagic() },
         { label: 'Inspecionar', accelerator: 'F10', click: () => BrowserTab.current.openDevTools() },
         { label: 'Inspecionar janela principal', accelerator: 'F11', click: () => mainWindow.openDevTools() },
         { label: 'Inspecionar painel', accelerator: 'F12', click: () => panelWindow.openDevTools() }
@@ -41,31 +40,5 @@ export function appendDevMenu(...args: Menu[]) {
     for (const menu of args) {
         const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu: options });
         menu.append(menuItem);
-    };
-};
-
-export function setWindowDevMenu(standardWindow: StandardWindow | WebsiteWindow) {
-    if (process.env.ARES_MODE !== 'dev') {
-        standardWindow.setMenu(null);
-        return;
-    };
-
-    const options: Electron.MenuItemConstructorOptions[] = [
-        { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => standardWindow.webContents.reloadIgnoringCache() },
-        { label: 'Conjurar magia', accelerator: 'F9', click: () => castDevMagic() },
-        { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => standardWindow.webContents.openDevTools() }
-    ];
-
-    options.forEach((option) => (option.visible = false));
-
-    const menu = Menu.buildFromTemplate(options);
-    standardWindow.setMenu(menu);
-};
-
-/** Usado para situações de teste durante o desenvolvimento. */
-function castDevMagic() {
-    const allWebContents = webContents.getAllWebContents();
-    for (const contents of allWebContents) {
-        contents.send('dev:magic');
     };
 };

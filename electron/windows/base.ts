@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, webContents } from 'electron';
 
 export abstract class BaseWindow extends EventEmitter {
     public readonly browser;
@@ -54,6 +54,14 @@ export abstract class BaseWindow extends EventEmitter {
         return this.browser.minimize.bind(this.browser);
     };
 
+    get reload() {
+        return this.browser.webContents.reload.bind(this.browser.webContents);
+    };
+
+    get reloadIgnoringCache() {
+        return this.browser.webContents.reloadIgnoringCache.bind(this.browser.webContents);
+    };
+
     get removeBrowserView() {
         return this.browser.removeBrowserView.bind(this.browser);
     };
@@ -77,5 +85,13 @@ export abstract class BaseWindow extends EventEmitter {
     public openDevTools(options?: Electron.OpenDevToolsOptions) {
         options ??= { mode: 'detach' };
         this.browser.webContents.openDevTools(options);
+    };
+
+    /** Usado para situações de teste durante o desenvolvimento. */
+    public static castDevMagic() {
+        const allWebContents = webContents.getAllWebContents();
+        for (const contents of allWebContents) {
+            contents.send('dev:magic');
+        };
     };
 };

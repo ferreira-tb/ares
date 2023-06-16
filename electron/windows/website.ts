@@ -1,7 +1,7 @@
+import { Menu } from 'electron';
 import { BaseWindow } from '$electron/windows/base';
 import { MainWindow } from '$electron/windows/main';
 import { appIcon } from '$electron/utils/files';
-import { setWindowDevMenu } from '$electron/menu';
 import { WebsiteWindowError } from '$electron/error';
 import { isAllowedOrigin } from '$common/guards';
 
@@ -21,7 +21,7 @@ export class WebsiteWindow extends BaseWindow {
     private constructor(url: string, options: BrowserWindowOptions) {
         super(options);
 
-        setWindowDevMenu(this);
+        this.setWebsiteWindowMenu();
         this.browser.loadURL(url).catch(WebsiteWindowError.catch);
 
         this.browser.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
@@ -32,6 +32,24 @@ export class WebsiteWindow extends BaseWindow {
         this.browser.webContents.on('will-navigate', (e, targetUrl) => {
             if (!isAllowedOrigin(targetUrl)) e.preventDefault();
         });
+    };
+
+    public setWebsiteWindowMenu() {
+        if (process.env.ARES_MODE !== 'dev') {
+            this.setMenu(null);
+            return;
+        };
+    
+        const options: Electron.MenuItemConstructorOptions[] = [
+            { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => this.reloadIgnoringCache() },
+            { label: 'Conjurar magia', accelerator: 'F9', click: () => BaseWindow.castDevMagic() },
+            { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => this.openDevTools() }
+        ];
+    
+        options.forEach((option) => (option.visible = false));
+    
+        const menu = Menu.buildFromTemplate(options);
+        this.setMenu(menu);
     };
 
     public static open(url: string): WebsiteWindow | null {

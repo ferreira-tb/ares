@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
+import { Menu } from 'electron';
 import { BaseWindow } from '$electron/windows/base';
 import { MainWindow } from '$electron/windows/main';
 import { windowOptions } from '$electron/windows/options';
 import { appIcon, windowsHtml } from '$electron/utils/files';
-import { setWindowDevMenu } from '$electron/menu';
 import { appConfig } from '$electron/stores';
 import { StandardWindowError } from '$electron/error';
 import type { StandardWindowName } from '$common/constants';
@@ -28,7 +28,7 @@ export class StandardWindow extends BaseWindow {
 
         this.name = name;
 
-        setWindowDevMenu(this);
+        this.setStandardWindowMenu();
         this.browser.loadFile(windowsHtml).catch(StandardWindowError.catch);
 
         this.browser.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
@@ -59,6 +59,24 @@ export class StandardWindow extends BaseWindow {
     private saveBounds() {
         const rectangle = this.browser.getBounds();
         appConfig.set('window', { [this.name]: { bounds: rectangle } } satisfies WindowBoundsConfigType);
+    };
+
+    private setStandardWindowMenu() {
+        if (process.env.ARES_MODE !== 'dev') {
+            this.setMenu(null);
+            return;
+        };
+    
+        const options: Electron.MenuItemConstructorOptions[] = [
+            { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => this.reloadIgnoringCache() },
+            { label: 'Conjurar magia', accelerator: 'F9', click: () => BaseWindow.castDevMagic() },
+            { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => this.openDevTools() }
+        ];
+    
+        options.forEach((option) => (option.visible = false));
+    
+        const menu = Menu.buildFromTemplate(options);
+        this.setMenu(menu);
     };
 
     /** Janelas ativas. */
