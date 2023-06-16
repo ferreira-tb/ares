@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, toRaw } from 'vue';
 import { watchDeep } from '@vueuse/core';
 import { NCheckbox, NDivider, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 
 const config = ref(await ipcInvoke('config:notifications'));
-watchDeep(config, (newValue) => ipcSend('config:update', 'notifications', newValue));
+watchDeep(config, (newValue) => ipcSend('config:update', 'notifications', toRaw(newValue)));
 </script>
 
 <template>
