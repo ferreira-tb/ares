@@ -15,7 +15,7 @@ const appVersion = await ipcInvoke('app:version');
             <h2>Uma ferramenta para Tribal Wars</h2>
         </div>
         <NButtonGroup>
-            <NButton round @click="ipcSend('website:ares')">Site</NButton>
+            <NButton round @click="ipcSend('website:how-to-use')">Ajuda</NButton>
             <NButton round @click="ipcSend('website:repository')">Repositório</NButton>
             <NButton round @click="shell.openExternal(WebsiteUrl.Discord)">Discord</NButton>
         </NButtonGroup>

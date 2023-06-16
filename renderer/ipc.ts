@@ -128,8 +128,9 @@ export function ipcSend(channel: 'ui:close'): void;
 // Geral
 export function ipcSend(channel: 'website:any', url: string): void;
 export function ipcSend(channel: 'website:ares'): void;
-export function ipcSend(channel: 'website:repository'): void;
+export function ipcSend(channel: 'website:how-to-use'): void;
 export function ipcSend(channel: 'website:issues'): void;
+export function ipcSend(channel: 'website:repository'): void;
 export function ipcSend(channel: 'app-update:open'): void;
 export function ipcSend(channel: 'download-from-url', url: string): void;
 export function ipcSend(channel: 'app-update:update-available-dialog', newVersion: string): void;

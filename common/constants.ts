@@ -70,6 +70,7 @@ export const enum WebsiteUrl {
     Ares = 'https://tb.dev.br/ares',
     Author = 'https://github.com/ferreira-tb',
     Discord = 'https://discord.gg/tNQbrqbmdK',
+    HowToUse = 'https://tb.dev.br/ares/guide/how-to-use.html',
     Issues = 'https://github.com/ferreira-tb/ares/issues',
     Repository = 'https://github.com/ferreira-tb/ares'
 };

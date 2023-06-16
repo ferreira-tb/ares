@@ -12,10 +12,8 @@ import { setTabEvents } from '$electron/events/tabs';
 import { setMainWindowEvents } from '$electron/events/ui';
 import { setWindowsEvents } from '$electron/events/windows';
 import { setWorldEvents } from '$electron/events/world';
-import { WebsiteWindow } from '$electron/windows';
 import { useCacheStore } from '$electron/stores';
 import { MainProcessError } from '$electron/error';
-import { WebsiteUrl } from '$common/constants';
 
 export function setEvents() {
     const mainWindow = MainWindow.getInstance();
@@ -37,12 +35,6 @@ export function setEvents() {
     ipcMain.on('electron:show-message-box', (_e, options: MessageBoxOptions) => {
         dialog.showMessageBox(mainWindow.browser, options).catch(MainProcessError.catch);
     });
-
-    // Website
-    ipcMain.on('website:any', (_e, url: string) => void WebsiteWindow.open(url));
-    ipcMain.on('website:ares', () => void WebsiteWindow.open(WebsiteUrl.Ares));
-    ipcMain.on('website:repository', () => void WebsiteWindow.open(WebsiteUrl.Repository));
-    ipcMain.on('website:issues', () => void WebsiteWindow.open(WebsiteUrl.Issues));
 
     watch(userAlias, (value) => {
         for (const contents of webContents.getAllWebContents()) {
