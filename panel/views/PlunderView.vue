@@ -5,6 +5,7 @@ import { NButton, NButtonGroup, NGrid, NGridItem, NSwitch } from 'naive-ui';
 import { useFeaturesStore, usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
+import { StandardWindowName } from '$common/constants';
 import ThePlunderedResources from '$panel/components/ThePlunderedResources.vue';
 
 const config = usePlunderConfigStore();
@@ -62,7 +63,7 @@ useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) =
                 >
                     {{ plunderButtonText }}
                 </NButton>
-                <NButton round @click="ipcSend('config:open', 'config-plunder')">
+                <NButton round @click="ipcSend('config:open', StandardWindowName.ConfigPlunder)">
                     Configurações
                 </NButton>
             </NButtonGroup>

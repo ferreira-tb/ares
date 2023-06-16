@@ -5,44 +5,44 @@ import { DatabaseError } from '$electron/error';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class PlunderConfig extends Model<InferAttributes<PlunderConfig>, InferCreationAttributes<PlunderConfig>> implements PlunderConfigType {
-    declare readonly id: UserAlias;
+    declare public readonly id: UserAlias;
 
     // Painel
-    declare readonly active: boolean;
-    declare readonly ignoreWall: boolean;
-    declare readonly destroyWall: boolean;
-    declare readonly groupAttack: boolean;
-    declare readonly useC: boolean;
-    declare readonly ignoreDelay: boolean;
-    declare readonly blindAttack: boolean;
+    declare public readonly active: boolean;
+    declare public readonly ignoreWall: boolean;
+    declare public readonly destroyWall: boolean;
+    declare public readonly groupAttack: boolean;
+    declare public readonly useC: boolean;
+    declare public readonly ignoreDelay: boolean;
+    declare public readonly blindAttack: boolean;
 
     // Ataque
-    declare readonly maxDistance: number;
-    declare readonly ignoreOlderThan: number;
-    declare readonly attackDelay: number;
-    declare readonly resourceRatio: number;
-    declare readonly blindAttackPattern: BlindAttackPattern;
+    declare public readonly maxDistance: number;
+    declare public readonly ignoreOlderThan: number;
+    declare public readonly attackDelay: number;
+    declare public readonly resourceRatio: number;
+    declare public readonly blindAttackPattern: BlindAttackPattern;
 
     // Modelo C
-    declare readonly useCPattern: UseCPattern;
-    declare readonly maxDistanceC: number;
-    declare readonly ignoreOlderThanC: number;
-    declare readonly useCWhenResourceRatioIsBiggerThan: number;
+    declare public readonly useCPattern: UseCPattern;
+    declare public readonly maxDistanceC: number;
+    declare public readonly ignoreOlderThanC: number;
+    declare public readonly useCWhenResourceRatioIsBiggerThan: number;
 
     // Grupo
-    declare readonly plunderGroupId: number | null;
-    declare readonly fieldsPerWave: number;
-    declare readonly villageDelay: number;
+    declare public readonly plunderGroupId: number | null;
+    declare public readonly fieldsPerWave: number;
+    declare public readonly villageDelay: number;
 
     // Muralha
-    declare readonly wallLevelToIgnore: WallLevel;
-    declare readonly wallLevelToDestroy: WallLevel;
-    declare readonly destroyWallMaxDistance: number;
+    declare public readonly wallLevelToIgnore: WallLevel;
+    declare public readonly wallLevelToDestroy: WallLevel;
+    declare public readonly destroyWallMaxDistance: number;
     
     // Outros
-    declare readonly minutesUntilReload: number;
-    declare readonly plunderedResourcesRatio: number;
-    declare readonly pageDelay: number;
+    declare public readonly minutesUntilReload: number;
+    declare public readonly plunderedResourcesRatio: number;
+    declare public readonly pageDelay: number;
 };
 
 PlunderConfig.init({

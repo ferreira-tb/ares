@@ -4,7 +4,7 @@ import { NDataTable, useMessage } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 import { useUserAlias } from '$renderer/composables';
 import { assertUserAlias } from '$common/guards';
-import { ModuleConfigError } from '$windows/error';
+import { RendererProcessError } from '$renderer/error';
 import ResultError from '$renderer/components/ResultError.vue';
 import TableCellNumber from '$renderer/components/TableCellNumber.vue';
 import SpearIcon from '$icons/units/SpearIcon.vue';
@@ -70,11 +70,11 @@ for (const column of columns) {
             onCellUpdated<T extends keyof DemolitionData>(newValue: number) {
                 const dataItem = demolitionData.find((data) => data.level === row.level);
                 if (!dataItem) {
-                    throw new ModuleConfigError('Could not find the correct row in the table.');
+                    throw new RendererProcessError('Could not find the correct row in the table.');
                 } else if (!(column.key in dataItem)) {
-                    throw new ModuleConfigError('Could not find the correct column in the table.');
+                    throw new RendererProcessError('Could not find the correct column in the table.');
                 } else if (typeof newValue !== typeof dataItem[column.key as T]) {
-                    throw new ModuleConfigError('Old and new values are not of the same type.');
+                    throw new RendererProcessError('Old and new values are not of the same type.');
                 };
 
                 dataItem[column.key as T] = newValue;
@@ -92,12 +92,12 @@ const pagination = computed<PaginationProps>(() => ({
 watch(demolitionData, async (newData) => {
     try {
         if (!template) throw new Error('There is no demolition troops template.');
-        assertUserAlias(userAlias, ModuleConfigError);
+        assertUserAlias(userAlias, RendererProcessError);
         for (const data of newData) {
             const { level, ...units } = data;
             const key = level.toString(10) as StringWallLevel;
             if (!(key in template.units)) {
-                throw new ModuleConfigError(`There is no wall level ${key} in the demolition troops template.`);
+                throw new RendererProcessError(`There is no wall level ${key} in the demolition troops template.`);
             };
 
             template.units[key] = units;
@@ -111,7 +111,7 @@ watch(demolitionData, async (newData) => {
         };
 
     } catch (err) {
-        ModuleConfigError.catch(err);
+        RendererProcessError.catch(err);
     };
 });
 </script>

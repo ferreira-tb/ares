@@ -3,20 +3,20 @@ import { sequelize } from '$electron/database';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class WorldUnits extends Model<InferAttributes<WorldUnits>, InferCreationAttributes<WorldUnits>> implements WorldUnitsType {
-    declare readonly id: World;
-    declare readonly archer: UnitDetails | null;
-    declare readonly spear: UnitDetails;
-    declare readonly sword: UnitDetails;
-    declare readonly axe: UnitDetails;
-    declare readonly spy: UnitDetails;
-    declare readonly light: UnitDetails;
-    declare readonly heavy: UnitDetails;
-    declare readonly knight: UnitDetails;
-    declare readonly marcher: UnitDetails | null;
-    declare readonly ram: UnitDetails;
-    declare readonly catapult: UnitDetails;
-    declare readonly snob: UnitDetails;
-    declare readonly militia: UnitDetails;
+    declare public readonly id: World;
+    declare public readonly archer: UnitDetails | null;
+    declare public readonly spear: UnitDetails;
+    declare public readonly sword: UnitDetails;
+    declare public readonly axe: UnitDetails;
+    declare public readonly spy: UnitDetails;
+    declare public readonly light: UnitDetails;
+    declare public readonly heavy: UnitDetails;
+    declare public readonly knight: UnitDetails;
+    declare public readonly marcher: UnitDetails | null;
+    declare public readonly ram: UnitDetails;
+    declare public readonly catapult: UnitDetails;
+    declare public readonly snob: UnitDetails;
+    declare public readonly militia: UnitDetails;
 };
 
 WorldUnits.init({

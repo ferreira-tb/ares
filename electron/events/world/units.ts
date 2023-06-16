@@ -1,35 +1,30 @@
-import { storeToRefs, watch } from 'mechanus';
+import { watch } from 'mechanus';
 import { sequelize } from '$electron/database';
 import { WorldUnits } from '$electron/database/models';
-import { useCacheStore } from '$electron/stores';
+import { appConfig } from '$electron/stores';
 import { TribalWorker } from '$electron/worker';
 import { TribalWorkerName } from '$common/constants';
 import { isWorld } from '$common/guards';
 import { getWorldUnitInfoUrl } from '$common/helpers';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 
 export function setWorldUnitsEvents(world: MechanusRef<World | null>) {
-    watch(world, fetchWorldUnits());
-};
-
-function fetchWorldUnits() {
-    const cacheStore = useCacheStore();
-    const { region } = storeToRefs(cacheStore);
-
-    return async function(world: World | null) {
-        if (!isWorld(world)) return;
+    watch(world, async (newWorld) => {
+        if (!isWorld(newWorld)) return;
         try {
-            const previous = await WorldUnits.findByPk(world);
+            const previous = await WorldUnits.findByPk(newWorld);
             if (!previous) {
                 // Se não houver informações sobre as unidades do mundo atual, cria um novo registro.
-                const url = getWorldUnitInfoUrl(world, region.value);
+                const region = appConfig.get('general').lastRegion;
+                const url = getWorldUnitInfoUrl(newWorld, region);
+
                 const worker = new TribalWorker(TribalWorkerName.FetchWorldUnits, url);
                 const info = await new Promise<WorldUnitsType>((resolve, reject) => {
                     worker.once('destroyed', reject);
                     worker.once('port:message', (message: WorldUnitsType | null) => {
                         try {
                             if (!message) {
-                                throw new MainProcessEventError(`Could not fetch world units for ${world}.`);
+                                throw new MainProcessError(`Could not fetch world units for ${newWorld}.`);
                             };
                             resolve(message);
                         } catch (err) {
@@ -44,12 +39,12 @@ function fetchWorldUnits() {
     
                 // Salva o registro no banco de dados.
                 await sequelize.transaction(async () => {
-                    await WorldUnits.create({ id: world, ...info });
+                    await WorldUnits.create({ id: newWorld, ...info });
                 });
             };
     
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
-    };
+    });
 };

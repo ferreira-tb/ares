@@ -13,17 +13,17 @@ const { width } = useElementSize(tabsContainer);
 const tabsWidth = computed(() => `${width.value - 150}px`);
 
 const allTabs = reactive<Map<Electron.WebContents['id'], string>>(new Map());
-const mainViewWebContentsId = await ipcInvoke('main-view:web-contents-id');
+const mainViewWebContentsId = await ipcInvoke('main-tab:id');
 const activeView = ref<Electron.WebContents['id']>(mainViewWebContentsId);
-watch(activeView, (webContentsId) => ipcSend('current-view:update', webContentsId));
+watch(activeView, (webContentsId) => ipcSend('current-tab:update', webContentsId));
 
-useIpcOn('focus-main-view', () => (activeView.value = mainViewWebContentsId));
+useIpcOn('main-tab:focus', () => (activeView.value = mainViewWebContentsId));
 
-useIpcOn('browser-view-created', (_e, webContentsId: number, viewTitle: string) => {
+useIpcOn('tab:created', (_e, webContentsId: number, viewTitle: string) => {
     allTabs.set(webContentsId, viewTitle);
 });
 
-useIpcOn('browser-view-destroyed', (_e, webContentsId: number) => {
+useIpcOn('tab:destroyed', (_e, webContentsId: number) => {
     // Se a aba que foi fechada era a ativa, a aba principal tomará seu lugar.
     if (webContentsId === activeView.value) {
         activeView.value = mainViewWebContentsId;
@@ -32,14 +32,14 @@ useIpcOn('browser-view-destroyed', (_e, webContentsId: number) => {
     allTabs.delete(webContentsId);
 });
 
-useIpcOn('browser-view-title-updated', (_e, webContentsId: number, viewTitle: string) => {
+useIpcOn('tab:did-update-title', (_e, webContentsId: number, viewTitle: string) => {
     if (webContentsId === mainViewWebContentsId) return;
     allTabs.set(webContentsId, viewTitle);
 });
 
 function destroyBrowserView(webContentsId: Electron.WebContents['id']) {
     assertInteger(webContentsId, `Invalid webContentsId: ${webContentsId}`);
-    ipcSend('view:destroy', webContentsId);
+    ipcSend('tab:destroy', webContentsId);
 };
 
 function renderMainTab() {

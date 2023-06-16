@@ -1,16 +1,16 @@
-import { ipcMain } from 'electron';
-import { storeToRefs } from 'mechanus';
-import { isUserAlias } from '$common/guards';
-import { showCustomPlunderTemplate } from '$electron/windows';
-import { useCacheStore, useBrowserViewStore } from '$electron/stores';
+import { ipcMain, webContents } from 'electron';
+import { StandardWindow } from '$electron/windows';
+import { useCacheStore } from '$electron/stores';
 import { CustomPlunderTemplate } from '$electron/database/models';
+import { StandardWindowName } from '$common/constants';
+import { isUserAlias } from '$common/guards';
 
 export function setPlunderTemplatesEvents() {
     const cacheStore = useCacheStore();
-    const browserViewStore = useBrowserViewStore();
-    const { allWebContents } = storeToRefs(browserViewStore);
 
-    ipcMain.on('plunder:open-custom-template-window', () => showCustomPlunderTemplate());
+    ipcMain.on('plunder:open-custom-template-window', () => {
+        StandardWindow.open(StandardWindowName.PlunderTemplate);
+    });
 
     ipcMain.handle('plunder:get-custom-templates', async (_e, alias: UserAlias | null): Promise<CustomPlunderTemplateType[] | null> => {
         alias ??= cacheStore.userAlias;
@@ -25,7 +25,7 @@ export function setPlunderTemplatesEvents() {
         
         // Se o template foi salvo com sucesso, notifica o browser.
         if (saved) {
-            for (const contents of allWebContents.value) {
+            for (const contents of webContents.getAllWebContents()) {
                 if (contents === e.sender) continue;
                 contents.send('custom-plunder-template-saved', template);
             };
@@ -39,7 +39,7 @@ export function setPlunderTemplatesEvents() {
 
         // Se o template foi excluído com sucesso, notifica o browser.
         if (destroyed) {
-            for (const contents of allWebContents.value) {
+            for (const contents of webContents.getAllWebContents()) {
                 if (contents === e.sender) continue;
                 contents.send('custom-plunder-template-destroyed', template);
             };

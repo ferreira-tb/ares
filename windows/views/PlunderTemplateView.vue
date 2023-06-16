@@ -4,7 +4,7 @@ import { NButton, NButtonGroup, NGrid, NGridItem, NResult } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 import { isUserAlias } from '$common/guards';
 import { useUserAlias } from '$renderer/composables';
-import { ModuleError } from '$windows/error';
+import { RendererProcessError } from '$renderer/error';
 import PlunderTemplateModal from '$windows/components/PlunderTemplateModal.vue';
 import ResultError from '$renderer/components/ResultError.vue';
 import PlunderTemplateCard from '$windows/components/PlunderTemplateCard.vue';
@@ -15,7 +15,7 @@ const isArcherWorld = await ipcInvoke('world:is-archer-world');
 const previousTemplates = await ipcInvoke('plunder:get-custom-templates');
 
 if (typeof isArcherWorld !== 'boolean') {
-    throw new ModuleError('Could not determine if world is archer world.');
+    throw new RendererProcessError('Could not determine if world is archer world.');
 };
 
 const showTemplateModal = ref<boolean>(false);

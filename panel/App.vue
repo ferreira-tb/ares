@@ -5,15 +5,14 @@ import { useArrayIncludes, watchImmediate } from '@vueuse/core';
 import { NConfigProvider, NMessageProvider, darkTheme } from 'naive-ui';
 import { routeNames, router } from '$panel/router';
 import { useAresStore } from '$renderer/stores';
-import { usePanelStore } from '$panel/stores';
+import { usePanelVisibility } from '$renderer/composables';
 import HomeView from '$panel/views/HomeView.vue';
 import CaptchaView from '$panel/views/CaptchaView.vue';
 
 const aresStore = useAresStore();
-const panelStore = usePanelStore();
 
 const { captcha, screen: currentScreen } = storeToRefs(aresStore);
-const { isVisible } = storeToRefs(panelStore);
+const { isVisible } = usePanelVisibility();
 
 // Define a janela de acordo com a página atual no jogo.
 const isValidRoute = useArrayIncludes(routeNames, currentScreen);

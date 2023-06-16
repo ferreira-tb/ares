@@ -3,7 +3,7 @@ import { reactive, toRaw, toRef, watch } from 'vue';
 import { watchDeep } from '@vueuse/core';
 import { NCheckbox, NDivider, NGrid, NGridItem, NButton, useDialog, useMessage } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { ModuleConfigError } from '$windows/error';
+import { RendererProcessError } from '$renderer/error';
 
 const dialog = useDialog();
 const message = useMessage();
@@ -31,7 +31,7 @@ function dropDatabase() {
                 };
                 
             } catch (err) {
-                ModuleConfigError.catch(err);
+                RendererProcessError.catch(err);
             };
         }
     });

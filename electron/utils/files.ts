@@ -3,6 +3,7 @@ import { app } from 'electron';
 
 const userData = app.getPath('userData');
 
+// Assets
 export const appIcon = path.join(__dirname, 'favicon.ico');
 export const database = path.join(userData, 'ares.db');
 

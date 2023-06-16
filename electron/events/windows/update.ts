@@ -1,12 +1,15 @@
 import { ipcMain, dialog } from 'electron';
 import semverLte from 'semver/functions/lte';
 import semverValid from 'semver/functions/valid';
-import { MainProcessEventError } from '$electron/error';
+import { StandardWindow } from '$electron/windows';
 import { appConfig } from '$electron/stores';
-import { showAppUpdate } from '$electron/windows';
+import { MainProcessError } from '$electron/error';
+import { StandardWindowName } from '$common/constants';
 
-export function setAppUpdateModuleEvents() {
-    ipcMain.on('app-update:open', () => showAppUpdate());
+export function setUpdateWindowEvents() {
+    ipcMain.on('app-update:open', () => {
+        StandardWindow.open(StandardWindowName.Update);
+    });
 
     ipcMain.handle('app-update:is-ignored-version', (_e, version: string): boolean => {
         try {
@@ -14,7 +17,7 @@ export function setAppUpdateModuleEvents() {
             if (!versionToIgnore || !semverValid(versionToIgnore)) return false;
             return semverLte(version, versionToIgnore);
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return false;
         };
     });
@@ -22,7 +25,7 @@ export function setAppUpdateModuleEvents() {
     ipcMain.on('app-update:update-available-dialog', async (_e, newVersion: string) => {
         try {
             if (!semverValid(newVersion)) {
-                throw new MainProcessEventError(`Invalid version: ${newVersion}.`);
+                throw new MainProcessError(`Invalid version: ${newVersion}.`);
             };
 
             const { response } = await dialog.showMessageBox({
@@ -36,13 +39,13 @@ export function setAppUpdateModuleEvents() {
             });
 
             if (response === 0) {
-                showAppUpdate();
+                StandardWindow.open(StandardWindowName.Update);
             } else if (response === 2) {
                 appConfig.set('update', { versionToIgnore: newVersion });
             };
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 };

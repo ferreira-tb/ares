@@ -1,13 +1,14 @@
 import * as path from 'node:path';
 import { ipcMain, shell } from 'electron';
 import { isString } from '$common/guards';
-import { getMainWindow } from '$electron/utils/helpers';
-import { getActiveModuleWebContents } from '$electron/windows';
-import { MainProcessEventError } from '$electron/error';
+import { MainWindow } from '$electron/windows';
+import { StandardWindow } from '$electron/windows';
+import { MainProcessError } from '$electron/error';
+import { StandardWindowName } from '$common/constants';
 
 class DownloadProgress implements DownloadProgressType {
-    readonly receivedBytes: number;
-    readonly totalBytes: number;
+    public readonly receivedBytes: number;
+    public readonly totalBytes: number;
 
     constructor(item: Electron.DownloadItem) {
         this.receivedBytes = item.getReceivedBytes();
@@ -16,7 +17,7 @@ class DownloadProgress implements DownloadProgressType {
 };
 
 export function setMainWindowDownloadEvents() {
-    const mainWindow = getMainWindow();
+    const mainWindow = MainWindow.getInstance();
     const mainSession = mainWindow.webContents.session;
 
     ipcMain.on('download-from-url', (_e, url) => mainWindow.webContents.downloadURL(url));
@@ -28,32 +29,26 @@ export function setMainWindowDownloadEvents() {
 };
 
 function handleUpdateDownload(item: Electron.DownloadItem) {
-    const updateContents = getActiveModuleWebContents('app-update');
-    if (updateContents) {
-        updateContents.send('will-download-update', new DownloadProgress(item));
-    };
+    const updateContents = StandardWindow.getWindow(StandardWindowName.Update)?.webContents;
+    updateContents?.send('will-download-update', new DownloadProgress(item));
 
     item.on('updated', (_e, state) => {
         if (state === 'progressing') {
-            const contents = getActiveModuleWebContents('app-update');
-            if (contents) {
-                contents.send('update-download-progress', new DownloadProgress(item));
-            };
+            const contents = StandardWindow.getWindow(StandardWindowName.Update)?.webContents;
+            contents?.send('update-download-progress', new DownloadProgress(item));
         };
     });
 
     item.once('done', (_e, state) => {
-        const contents = getActiveModuleWebContents('app-update');
+        const contents = StandardWindow.getWindow(StandardWindowName.Update)?.webContents;
         if (state === 'completed') {
-            if (contents) {
-                contents.send('update-download-completed');
-            };
+            contents?.send('update-download-completed');
         
             const dirName = path.dirname(item.getSavePath());
             shell.openPath(dirName).catch((err: unknown) => {
                 if (isString(err)) {
-                    const error = new MainProcessEventError(err);
-                    MainProcessEventError.catch(error);
+                    const error = new MainProcessError(err);
+                    MainProcessError.catch(error);
                 };
             });
 

@@ -6,13 +6,13 @@ import { usePlunderHistoryStore } from '$electron/stores';
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, InferCreationAttributes<PlunderHistory>> implements PlunderHistoryType {
-    declare readonly id: UserAlias;
-    declare readonly wood: number;
-    declare readonly stone: number;
-    declare readonly iron: number;
-    declare readonly attackAmount: number;
-    declare readonly destroyedWalls: number;
-    declare readonly villages: CreationOptional<PlunderHistoryType['villages']>;
+    declare public readonly id: UserAlias;
+    declare public readonly wood: number;
+    declare public readonly stone: number;
+    declare public readonly iron: number;
+    declare public readonly attackAmount: number;
+    declare public readonly destroyedWalls: number;
+    declare public readonly villages: CreationOptional<PlunderHistoryType['villages']>;
 
     public static async saveHistory(alias: UserAlias) {
         try {

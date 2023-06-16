@@ -2,7 +2,7 @@ import { URL } from 'node:url';
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { isInteger } from '$common/guards';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 import { GameSearchParams } from '$common/constants';
 import { generateRandomDelay } from '$common/helpers';
 import { usePlunderConfigStore, usePlunderCacheStore } from '$electron/stores';
@@ -19,7 +19,7 @@ export function setPlunderGroupEvents() {
             plunderGroup.value = groupInfo;
             return true;
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return false;
         };
     });
@@ -60,7 +60,7 @@ export function setPlunderGroupEvents() {
             e.sender.send('plunder:set-navigation-timer', url.href, delay);
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -73,7 +73,7 @@ export function setPlunderGroupEvents() {
             url.searchParams.set('group', plunderConfigStore.plunderGroupId.toString(10));
             await e.sender.loadURL(url.href);
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 };

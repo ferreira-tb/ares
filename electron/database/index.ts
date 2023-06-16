@@ -6,7 +6,7 @@ const namespace = cls.createNamespace('ares-cls');
 Sequelize.useCLS(namespace);
 
 class SequelizeDatabase extends Sequelize {
-    isClosed: boolean = false;
+    public isClosed: boolean = false;
 };
 
 export const sequelize = new SequelizeDatabase({

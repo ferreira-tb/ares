@@ -1,57 +1,52 @@
 import { app, dialog, ipcMain, Menu } from 'electron';
-import { storeToRefs } from 'mechanus';
-import { getMainWindow } from '$electron/utils/helpers';
-import { getMainViewWebContents } from '$electron/utils/view';
-import { showDebug, showErrorLog, openIssuesWebsite } from '$electron/windows';
-import { useCacheStore } from '$electron/stores';
+import { MainWindow, StandardWindow, WebsiteWindow } from '$electron/windows';
+import { BrowserTab } from '$electron/tabs';
 import { appConfig } from '$electron/stores';
 import { MainProcessError } from '$electron/error';
+import { StandardWindowName, WebsiteUrl } from '$common/constants';
 import { getGameRegionUrl } from '$common/helpers';
 
 export function setMenuEvents() {
-    const mainWindow = getMainWindow();
-
-    const cacheStore = useCacheStore();
-    const { region } = storeToRefs(cacheStore);
-    region.value = appConfig.get('general').lastRegion;
+    const mainWindow = MainWindow.getInstance();
 
     ipcMain.on('open-region-select-menu', () => {
         const template: Electron.MenuItemConstructorOptions[] = [
-            { label: 'tribalwars.com.br', type: 'radio', click: () => void setGameRegion('br', region) }
+            { label: 'tribalwars.com.br', type: 'radio', click: () => void setGameRegion('br') }
         ];
 
         if (app.getVersion().includes('alpha')) {
             template.push(
-                { label: 'tribalwars.com.pt', type: 'radio', click: () => void setGameRegion('pt', region) },
-                { label: 'tribalwars.co.uk', type: 'radio', click: () => void setGameRegion('uk', region) },
-                { label: 'tribalwars.net', type: 'radio', click: () => void setGameRegion('en', region) },
-                { label: 'tribalwars.nl', type: 'radio', click: () => void setGameRegion('nl', region) },
-                { label: 'tribalwars.us', type: 'radio', click: () => void setGameRegion('us', region) }
+                { label: 'tribalwars.com.pt', type: 'radio', click: () => void setGameRegion('pt') },
+                { label: 'tribalwars.co.uk', type: 'radio', click: () => void setGameRegion('uk') },
+                { label: 'tribalwars.net', type: 'radio', click: () => void setGameRegion('en') },
+                { label: 'tribalwars.nl', type: 'radio', click: () => void setGameRegion('nl') },
+                { label: 'tribalwars.us', type: 'radio', click: () => void setGameRegion('us') }
             );
         };
 
-        setCheckedGameRegion(template, region.value);
+        setCheckedGameRegion(template);
         const menu = Menu.buildFromTemplate(template);
-        menu.popup({ window: mainWindow });
+        menu.popup({ window: mainWindow.browser });
     });
 
     ipcMain.on('open-bug-report-menu', () => {
         const template: Electron.MenuItemConstructorOptions[] = [
-            { label: 'Registro de erros', click: () => showErrorLog() },
-            { label: 'Problemas conhecidos', click: () => openIssuesWebsite() }
+            { label: 'Registro de erros', click: () => void StandardWindow.open(StandardWindowName.ErrorLog) },
+            { label: 'Problemas conhecidos', click: () => void WebsiteWindow.open(WebsiteUrl.Issues) }
         ];
 
         if (appConfig.get('advanced').debug) {
             template.push({ type: 'separator' });
-            template.push({ label: 'Depurar', click: () => showDebug() });
+            template.push({ label: 'Depurar', click: () => void StandardWindow.open(StandardWindowName.Debug) });
         };
 
         const menu = Menu.buildFromTemplate(template);
-        menu.popup({ window: mainWindow });
+        menu.popup({ window: mainWindow.browser });
     });
 };
 
-function setCheckedGameRegion(template: Electron.MenuItemConstructorOptions[], region: GameRegion) {
+function setCheckedGameRegion(template: Electron.MenuItemConstructorOptions[]) {
+    const region = appConfig.get('general').lastRegion;
     template.forEach((item) => {
         if (item.label?.endsWith(region) || (region === 'en' && item.label?.endsWith('net'))) {
             item.checked = true;
@@ -59,7 +54,7 @@ function setCheckedGameRegion(template: Electron.MenuItemConstructorOptions[], r
     });
 };
 
-async function setGameRegion(region: GameRegion, cachedRegion: MechanusRef<GameRegion>) {
+async function setGameRegion(region: GameRegion) {
     try {
         if (region !== 'br') {
             const { response } = await dialog.showMessageBox({
@@ -77,11 +72,9 @@ async function setGameRegion(region: GameRegion, cachedRegion: MechanusRef<GameR
         };
 
         appConfig.set('general', { lastRegion: region });
-        cachedRegion.value = region;
 
         const regionUrl = getGameRegionUrl(region);
-        const contents = getMainViewWebContents();
-        await contents.loadURL(regionUrl);
+        await BrowserTab.main.loadURL(regionUrl);
         
     } catch (err) {
         MainProcessError.catch(err);

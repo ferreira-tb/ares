@@ -1,41 +1,46 @@
-import { BrowserWindow } from 'electron';
-import { isInstanceOf, isString } from '$common/guards';
+import { BaseWindow } from '$electron/windows/base';
+import { MainWindow } from '$electron/windows/main';
 import { appIcon } from '$electron/utils/files';
-import { getMainWindow } from '$electron/utils/helpers';
+import { setWindowDevMenu } from '$electron/menu';
+import { WebsiteWindowError } from '$electron/error';
 import { isAllowedOrigin } from '$common/guards';
-import { ModuleCreationError } from '$electron/error';
-import { setModuleDevMenu } from '$electron/menu/dev';
 
-const activeWebsiteModules = new Map<WebsiteModuleNames, BrowserWindow>();
-export const getActiveWebsiteModule = (name: WebsiteModuleNames) => activeWebsiteModules.get(name) ?? null;
+export class WebsiteWindow extends BaseWindow {
+    public override emit(event: string, ...args: any[]): boolean {
+        return super.emit(event, ...args);
+    };
 
-export function createWebsiteModule(name: WebsiteModuleNames, url: string) {
-    return function(arbitraryUrl?: string) {
+    public override on(event: string, listener: (...args: any[]) => void): this {
+        return super.on(event, listener);
+    };
+
+    public override once(event: string, listener: (...args: any[]) => void): this {
+        return super.once(event, listener);
+    };
+
+    private constructor(url: string, options: BrowserWindowOptions) {
+        super(options);
+
+        setWindowDevMenu(this);
+        this.browser.loadURL(url).catch(WebsiteWindowError.catch);
+
+        this.browser.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+
+        this.browser.on('system-context-menu', (e) => e.preventDefault());
+        this.browser.once('ready-to-show', () => this.show());
+
+        this.browser.webContents.on('will-navigate', (e, targetUrl) => {
+            if (!isAllowedOrigin(targetUrl)) e.preventDefault();
+        });
+    };
+
+    public static open(url: string): WebsiteWindow | null {
         try {
-            if (name === 'any-allowed') {
-                if (!isString(arbitraryUrl) || !isAllowedOrigin(arbitraryUrl)) {
-                    throw new ModuleCreationError('When module name is "any-allowed", arbitraryUrl must be a string.');
-                } else {
-                    url = arbitraryUrl;
-                };
+            if (!isAllowedOrigin(url)) return null;
 
-            } else if (isString(arbitraryUrl)) {
-                throw new ModuleCreationError('Cannot pass arbitraryUrl when module name is not "any".');
-            };
-
-            // Se a janela já estiver aberta, foca-a.
-            const previousWindow = activeWebsiteModules.get(name);
-            if (isInstanceOf(previousWindow, BrowserWindow) && !previousWindow.isDestroyed()) {
-                if (previousWindow.isVisible()) {
-                    previousWindow.focus();  
-                } else {
-                    previousWindow.show();
-                };
-                return;
-            };
-
-            const websiteWindow = new BrowserWindow({
-                parent: getMainWindow(),
+            const mainWindow = MainWindow.getInstance();
+            const options: BrowserWindowOptions = {
+                parent: mainWindow.browser,
                 width: 1200,
                 height: 800,
                 useContentSize: true,
@@ -49,28 +54,17 @@ export function createWebsiteModule(name: WebsiteModuleNames, url: string) {
                 autoHideMenuBar: true,
                 webPreferences: {
                     spellcheck: false,
+                    nodeIntegration: false,
+                    contextIsolation: true,
                     devTools: process.env.ARES_MODE === 'dev'
                 }
-            });
+            };
 
-            setModuleDevMenu(websiteWindow);
-            websiteWindow.loadURL(url).catch(ModuleCreationError.catch);
-            websiteWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-            websiteWindow.on('system-context-menu', (e) => e.preventDefault());
-
-            websiteWindow.once('ready-to-show', () => {
-                activeWebsiteModules.set(name, websiteWindow);
-                websiteWindow.show();
-            });
-
-            websiteWindow.webContents.on('will-navigate', (e, targetUrl) => {
-                if (!isAllowedOrigin(targetUrl)) e.preventDefault();
-            });
-
-            websiteWindow.once('close', () => activeWebsiteModules.delete(name));
+            return new WebsiteWindow(url, options);
 
         } catch (err) {
-            ModuleCreationError.catch(err);
+            WebsiteWindowError.catch(err);
+            return null;
         };
     };
 };

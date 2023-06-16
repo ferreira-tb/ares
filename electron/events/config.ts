@@ -1,14 +1,15 @@
 import * as fs from 'node:fs/promises';
 import { ipcMain } from 'electron';
-import { showAppSettings } from '$electron/windows';
 import { sequelize } from '$electron/database';
 import { appConfig } from '$electron/stores';
-import { MainProcessEventError } from '$electron/error';
+import { StandardWindow } from '$electron/windows';
+import { MainProcessError } from '$electron/error';
 import { database } from '$electron/utils/files';
 import { restartAres } from '$electron/utils/helpers';
+import type { StandardWindowName } from '$common/constants';
 
 export function setConfigEvents() {
-    ipcMain.on('config:open', (_e, route: ConfigModuleRoutes) => showAppSettings(route));
+    ipcMain.on('config:open', (_e, route: StandardWindowName) => StandardWindow.open(route));
     ipcMain.handle('config:advanced', () => ({ ...appConfig.get('advanced') }));
     ipcMain.handle('config:general', () => ({ ...appConfig.get('general') }));
     ipcMain.handle('config:notifications', () => ({ ...appConfig.get('notifications') }));
@@ -22,7 +23,7 @@ export function setConfigEvents() {
         try {
             appConfig.set(configType, value);
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -34,7 +35,7 @@ export function setConfigEvents() {
             setTimeout(restartAres, 3000);
             return true;
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return false;
         };
     });

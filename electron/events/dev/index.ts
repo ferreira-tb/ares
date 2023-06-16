@@ -1,37 +1,16 @@
 import { ipcMain } from 'electron';
-import { computed, storeToRefs } from 'mechanus';
-import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
-import { getMainViewWebContents } from '$electron/utils/view';
-import { useBrowserViewStore } from '$electron/stores';
+import { MainWindow, PanelWindow } from '$electron/windows';
+import { BrowserTab } from '$electron/tabs';
 import { setDebugEvents } from '$electron/events/dev/debug';
 
 export function setDevEvents() {
-    if (process.env.ARES_MODE !== 'dev') return;
+    const mainWindow = MainWindow.getInstance();
+    const panelWindow = PanelWindow.getInstance();
 
-    const browserViewStore = useBrowserViewStore();
-    const { webContents: mainContents } = getMainWindow();
-    const { webContents: panelContents } = getPanelWindow();
-    const { currentWebContents: currentWebContentsMaybeNull } = storeToRefs(browserViewStore);
-
-    const contents = computed<Electron.WebContents>([currentWebContentsMaybeNull], () => {
-        return currentWebContentsMaybeNull.value ?? getMainViewWebContents();
-    });
-
-    ipcMain.on('dev:open-main-window-dev-tools', () => {
-        mainContents.openDevTools({ mode: 'detach' });
-    });
-
-    ipcMain.on('dev:open-current-view-dev-tools', () => {
-        contents.value.openDevTools({ mode: 'detach' });
-    });
-
-    ipcMain.on('dev:open-main-view-dev-tools', () => {
-        getMainViewWebContents().openDevTools({ mode: 'detach' });
-    });
-
-    ipcMain.on('dev:open-panel-window-dev-tools', () => {
-        panelContents.openDevTools({ mode: 'detach' });
-    });
+    ipcMain.on('dev-tools:main-window', () => mainWindow.openDevTools());
+    ipcMain.on('dev-tools:panel-window', () => panelWindow.openDevTools());
+    ipcMain.on('dev-tools:current-tab', () => BrowserTab.current.openDevTools());
+    ipcMain.on('dev-tools:main-tab', () => BrowserTab.main.openDevTools());
 
     setDebugEvents();
 };

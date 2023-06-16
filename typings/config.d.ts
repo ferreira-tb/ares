@@ -10,8 +10,8 @@ type GeneralConfigType = {
     reloadAfterCaptcha: boolean;
 };
 
-type ModuleBoundsConfigType = {
-    [name in ModuleNames]?: {
+type WindowBoundsConfigType = {
+    [name in import('$common/constants').StandardWindowName]?: {
         /** Posição e tamanho do módulo. */
         bounds: Electron.Rectangle | null;
     };
@@ -44,8 +44,6 @@ interface AppConfigType {
     advanced: AdvancedConfigType;
     /** Configurações gerais. */
     general: GeneralConfigType;
-    /** Configurações das dimensões dos módulos. */
-    moduleBounds: ModuleBoundsConfigType;
     /** Configurações de notificações. */
     notifications: NotificationsConfigType;
     /** Configurações do painel. */
@@ -54,4 +52,6 @@ interface AppConfigType {
     ui: UIConfigType;
     /** Configurações de atualização. */
     update: UpdateConfigType;
+    /** Configurações das dimensões das janelas secundárias. */
+    window: WindowBoundsConfigType;
 };

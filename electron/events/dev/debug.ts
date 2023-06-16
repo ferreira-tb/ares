@@ -2,12 +2,11 @@ import { randomUUID } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
 import { ipcMain, Menu, webContents } from 'electron';
 import { appConfig } from '$electron/stores';
-import { getActiveModuleWebContents } from '$electron/windows';
-import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
-import { getMainViewWebContents } from '$electron/utils/view';
-import { getModuleNameByWebContentsId } from '$electron/windows';
+import { MainWindow, PanelWindow, StandardWindow } from '$electron/windows';
+import { BrowserTab } from '$electron/tabs';
 import { TribalWorker } from '$electron/worker';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
+import { StandardWindowName } from '$common/constants';
 
 export function setDebugEvents() {
     ipcMain.handle('debug:is-enabled', () => appConfig.get('advanced').debug);
@@ -21,8 +20,8 @@ export function setDebugEvents() {
 
     const sender = getSenderName();
     ipcMain.on('debug:report', (e, processType: 'main' | 'renderer', channel: string, ...args: unknown[]) => {
-        const debugModule = getActiveModuleWebContents('debug');
-        if (!debugModule || channel.startsWith('debug')) return;
+        const debugWindow = StandardWindow.getWindow(StandardWindowName.Debug);
+        if (!debugWindow || channel.startsWith('debug')) return;
 
         const data = args.map((arg) => {
             if (arg instanceof Set || arg instanceof Map) {
@@ -35,13 +34,13 @@ export function setDebugEvents() {
         const debufInfo: AppDebugInfo = {
             uuid: randomUUID(),
             channel,
-            from: processType === 'main' ? 'ELECTRON' : sender(e.sender.id),
-            to: processType === 'main' ? sender(e.sender.id) : 'ELECTRON',
+            from: processType === 'main' ? 'ELECTRON' : sender(e.sender),
+            to: processType === 'main' ? sender(e.sender) : 'ELECTRON',
             time: performance.now(),
             data
         };
 
-        debugModule.send('debug:did-receive-report', debufInfo);
+        debugWindow.webContents.send('debug:did-receive-report', debufInfo);
     });
 
     ipcMain.on('debug:show-context-menu', (e, isOptionsVisible: boolean) => {
@@ -57,27 +56,27 @@ export function setDebugEvents() {
 };
 
 function getSenderName() {
-    const mainWindow = getMainWindow();
-    const panelWindow = getPanelWindow();
-    const mainView = getMainViewWebContents();
+    const mainWindow = MainWindow.getInstance();
+    const panelWindow = PanelWindow.getInstance();
+    const mainView = BrowserTab.main;
 
     // TODO: Incluir algo similar no registro de erro.
-    return function(senderId: number): string {
+    return function(sender: Electron.WebContents): string {
         try {
-            if (senderId === mainWindow.webContents.id) return 'UI';
-            if (senderId === panelWindow.webContents.id) return 'PANEL';
-            if (senderId === mainView.id) return 'BROWSER';
+            if (sender === mainWindow.webContents) return 'UI';
+            if (sender === panelWindow.webContents) return 'PANEL';
+            if (sender === mainView.webContents) return 'BROWSER';
 
-            const moduleName = getModuleNameByWebContentsId(senderId);
-            if (moduleName) return moduleName.replaceAll('-', ' ').toUpperCase();
+            const standardWindow = StandardWindow.getWindow(sender);
+            if (standardWindow) return standardWindow.name.replaceAll('-', ' ').toUpperCase();
 
-            const workerName = TribalWorker.getWorkerNameByWebContentsId(senderId);
-            if (workerName) return workerName.replaceAll('-', ' ').toUpperCase();
+            const worker = TribalWorker.getWorker(sender);
+            if (worker) return worker.name.replaceAll('-', ' ').toUpperCase();
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
 
-        return senderId.toString(10);
+        return sender.id.toString(10);
     };
 };

@@ -10,7 +10,8 @@ type AppDebugInfo = {
 type SequelizeModel = import('sequelize').Model<T, U>;
 type WindowOpenHandler = ReturnType<Parameters<Electron.WebContents['setWindowOpenHandler']>[0]>;
 
-type ElectronMessageBoxOptions = Pick<Electron.MessageBoxOptions,
+type BrowserWindowOptions = Electron.BrowserWindowConstructorOptions;
+type MessageBoxOptions = Pick<Electron.MessageBoxOptions,
     'buttons' | 'cancelId' | 'defaultId' | 'message' | 'noLink' | 'title' | 'type'
 >;
 

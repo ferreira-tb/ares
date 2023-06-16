@@ -1,36 +1,27 @@
 import { Menu, MenuItem, webContents } from 'electron';
-import { computed, storeToRefs } from 'mechanus';
-import { getMainWindow, getPanelWindow } from '$electron/utils/helpers';
-import { getMainViewWebContents } from '$electron/utils/view';
-import type { useBrowserViewStore } from '$electron/stores';
+import { MainWindow, PanelWindow } from '$electron/windows';
+import { BrowserTab } from '$electron/tabs';
+import type { BaseWindow, StandardWindow, WebsiteWindow } from '$electron/windows';
 
-function getDevOptions(browserViewStore: ReturnType<typeof useBrowserViewStore>): Electron.MenuItemConstructorOptions[] {
-    const { webContents: mainContents } = getMainWindow();
-    const { webContents: panelContents } = getPanelWindow();
-    const { currentWebContents: currentWebContentsMaybeNull } = storeToRefs(browserViewStore);
-
-    const contents = computed<Electron.WebContents>([currentWebContentsMaybeNull], () => {
-        return currentWebContentsMaybeNull.value ?? getMainViewWebContents();
-    });
+function getDevOptions(): Electron.MenuItemConstructorOptions[] {
+    const mainWindow = MainWindow.getInstance();
+    const panelWindow = PanelWindow.getInstance();
 
     const options: Electron.MenuItemConstructorOptions[] = [
-        { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => contents.value.reloadIgnoringCache() },
+        { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => mainWindow.webContents.reloadIgnoringCache() },
         { label: 'Conjurar magia', accelerator: 'F9', click: () => castDevMagic() },
-        { label: 'Inspecionar', accelerator: 'F10', click: () => contents.value.openDevTools({ mode: 'detach' }) },
-        { label: 'Inspecionar janela principal', accelerator: 'F11', click: () => mainContents.openDevTools({ mode: 'detach' }) },
-        { label: 'Inspecionar painel', accelerator: 'F12', click: () => panelContents.openDevTools({ mode: 'detach' }) }
+        { label: 'Inspecionar', accelerator: 'F10', click: () => BrowserTab.current.openDevTools() },
+        { label: 'Inspecionar janela principal', accelerator: 'F11', click: () => mainWindow.openDevTools() },
+        { label: 'Inspecionar painel', accelerator: 'F12', click: () => panelWindow.openDevTools() }
     ];
 
-    options.forEach((option) => {
-        option.visible = false;
-    });
-
+    options.forEach((option) => (option.visible = false));
     return options;
 };
 
-/** Adiciona o menu de desenvolvedor à janela. */
-export function setDevMenu(browserViewStore: ReturnType<typeof useBrowserViewStore>, ...args: Electron.BrowserWindow[]) {
-    const options = getDevOptions(browserViewStore);
+/** Adiciona o menu de desenvolvedor à janela principal ou ao painel. */
+export function setDevMenu(...args: BaseWindow[]) {
+    const options = getDevOptions();
     for (const browserWindow of args) {
         if (process.env.ARES_MODE !== 'dev') {
             browserWindow.setMenu(null);
@@ -43,35 +34,32 @@ export function setDevMenu(browserViewStore: ReturnType<typeof useBrowserViewSto
 };
 
 /** Adiciona o menu de desenvolvedor a menus já existentes. */
-export function appendDevMenu(browserViewStore: ReturnType<typeof useBrowserViewStore>, ...args: Menu[]) {
+export function appendDevMenu(...args: Menu[]) {
     if (process.env.ARES_MODE !== 'dev') return;
     
-    const options = getDevOptions(browserViewStore);
+    const options = getDevOptions();
     for (const menu of args) {
         const menuItem = new MenuItem({ label: 'Desenvolvedor', submenu: options });
         menu.append(menuItem);
     };
 };
 
-export function setModuleDevMenu(browserWindow: Electron.BrowserWindow) {
+export function setWindowDevMenu(standardWindow: StandardWindow | WebsiteWindow) {
     if (process.env.ARES_MODE !== 'dev') {
-        browserWindow.setMenu(null);
+        standardWindow.setMenu(null);
         return;
     };
 
-    const contents = browserWindow.webContents;
     const options: Electron.MenuItemConstructorOptions[] = [
-        { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => contents.reloadIgnoringCache() },
+        { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => standardWindow.webContents.reloadIgnoringCache() },
         { label: 'Conjurar magia', accelerator: 'F9', click: () => castDevMagic() },
-        { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => contents.openDevTools({ mode: 'detach' }) }
+        { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => standardWindow.webContents.openDevTools() }
     ];
 
-    options.forEach((option) => {
-        option.visible = false;
-    });
+    options.forEach((option) => (option.visible = false));
 
     const menu = Menu.buildFromTemplate(options);
-    browserWindow.setMenu(menu);
+    standardWindow.setMenu(menu);
 };
 
 /** Usado para situações de teste durante o desenvolvimento. */

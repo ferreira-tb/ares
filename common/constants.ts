@@ -42,6 +42,30 @@ export const enum GameSearchParams {
     SnobCoin = 'screen=snob&mode=coin&from=-1'
 };
 
+export const enum TribalWorkerName {
+    FetchWorldConfig = 'fetch-world-config',
+    FetchWorldUnits = 'fetch-world-units',
+    GetVillageGroups = 'get-village-groups',
+    HandleIncomings = 'handle-incomings',
+    MintCoin = 'mint-coin'
+};
+
+export const enum StandardWindowName {
+    Config = 'config',
+    ConfigAdvanced = 'config-advanced',
+    ConfigBuildingsSnob = 'config-buildings-snob',
+    ConfigGeneral = 'config-general',
+    ConfigNotifications = 'config-notifications',
+    ConfigPlunder = 'config-plunder',
+    Debug = 'debug',
+    Default = 'default',
+    DemolitionTemplate = 'demolition-template',
+    ErrorLog = 'error-log',
+    PlunderHistory = 'plunder-history',
+    PlunderTemplate = 'plunder-template',
+    Update = 'update'
+};
+
 export const enum WebsiteUrl {
     Ares = 'https://tb.dev.br/ares',
     Author = 'https://github.com/ferreira-tb',
@@ -51,10 +75,11 @@ export const enum WebsiteUrl {
 };
 
 export const enum Dimensions {
-    /** Altura do container do menu superior. */
+    /** Altura do container do menu superior da UI. */
     TopContainerHeight = 80
 };
 
+// TODO: unificar os três.
 export const enum ErrorLogFile {
     /** Erros propriamente capturados e registrados no banco de dados. */
     All = 'error.log',
@@ -65,14 +90,6 @@ export const enum ErrorLogFile {
     ChildProcess = 'child-process-error.log',
     /** Se o Ares falhar em capturar um erro, ele será registrado diretamente no arquivo. */
     Uncaught = 'uncaught-error.log'
-};
-
-export const enum TribalWorkerName {
-    FetchWorldConfig = 'fetch-world-config',
-    FetchWorldUnits = 'fetch-world-units',
-    GetVillageGroups = 'get-village-groups',
-    HandleIncomings = 'handle-incomings',
-    MintCoin = 'mint-coin'
 };
 
 // Jogo.

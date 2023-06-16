@@ -1,6 +1,7 @@
-import { routeNames, router } from '$windows/router'; 
-import { ModuleRouterError } from '$windows/error';
+import { router } from '$windows/router'; 
 import { ipcOn, ipcOnce } from '$renderer/ipc';
+import { RendererProcessError } from '$renderer/error';
+import type { StandardWindowName } from '$common/constants';
 import {
     useAresStore,
     useCurrentVillageStore,
@@ -18,14 +19,11 @@ export function setModuleEvents() {
     const snobConfigStore = useSnobConfigStore();
     const unitStore = useUnitsStore();
 
-    ipcOnce('module:set-route', async (_e, name: ModuleRoutes) => {
+    ipcOnce('window:set-route', async (_e, name: StandardWindowName) => {
         try {
-            if (!routeNames.includes(name)) {
-                throw new ModuleRouterError(`${name} is not a valid route name.`);
-            };
             await router.push({ name });
         } catch (err) {
-            ModuleRouterError.catch(err);
+            RendererProcessError.catch(err);
         };
     });
 

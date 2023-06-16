@@ -1,46 +1,94 @@
-import { BrowserWindow } from 'electron';
+/* eslint-disable @typescript-eslint/unified-signatures */
+import { BaseWindow } from '$electron/windows/base';
+import { MainWindow } from '$electron/windows/main';
+import { windowOptions } from '$electron/windows/options';
 import { appIcon, windowsHtml } from '$electron/utils/files';
-import { getMainWindow } from '$electron/utils/helpers';
-import { ModuleCreationError } from '$electron/error';
-import { setModuleDevMenu } from '$electron/menu/dev';
+import { setWindowDevMenu } from '$electron/menu';
 import { appConfig } from '$electron/stores';
+import { StandardWindowError } from '$electron/error';
+import type { StandardWindowName } from '$common/constants';
 
-const activeModules = new Map<ModuleNames, BrowserWindow>();
-export const getActiveModule = (name: ModuleNames) => activeModules.get(name) ?? null;
-export function getActiveModuleWebContents(name: ModuleNames) {
-    const moduleWindow = getActiveModule(name);
-    return moduleWindow?.webContents ?? null;
-};
-
-export function getModuleNameByWebContentsId(id: number): ModuleNames | null {
-    for (const [name, browserWindow] of activeModules.entries()) {
-        if (browserWindow.webContents.id === id) return name;
+export class StandardWindow extends BaseWindow {
+    public override emit(event: string, ...args: any[]): boolean {
+        return super.emit(event, ...args);
     };
-    return null;
-};
 
-export function createModule<T extends keyof ModuleConstructorOptions>(
-    moduleName: ModuleNames,
-    defaultRoute: ModuleRoutes,
-    options: ModuleConstructorOptions = {}
-) {
-    return function(route?: ModuleRoutes): void {
+    public override on(event: string, listener: (...args: any[]) => void): this {
+        return super.on(event, listener);
+    };
+
+    public override once(event: string, listener: (...args: any[]) => void): this {
+        return super.once(event, listener);
+    };
+
+    public readonly name: StandardWindowName;
+
+    private constructor(name: StandardWindowName, options: BrowserWindowOptions) {
+        super(options);
+
+        this.name = name;
+
+        setWindowDevMenu(this);
+        this.browser.loadFile(windowsHtml).catch(StandardWindowError.catch);
+
+        this.browser.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+        this.browser.webContents.setAudioMuted(true);
+
+        const windowConfig = appConfig.get('window')[name];
+        if (windowConfig) {
+            const { bounds } = windowConfig;
+            if (bounds) this.browser.setBounds(bounds);
+        };
+
+        this.browser.on('system-context-menu', (e) => e.preventDefault());
+
+        this.browser.on('moved', () => this.saveBounds());
+        this.browser.on('resized', () => this.saveBounds());
+        
+        this.browser.once('ready-to-show', () => {
+            this.browser.webContents.send('window:set-route', this.name);
+            this.show();
+        });
+
+        this.browser.once('close', () => {
+            this.browser.removeAllListeners();
+            StandardWindow.windows.delete(this.name);
+        });
+    };
+
+    private saveBounds() {
+        const rectangle = this.browser.getBounds();
+        appConfig.set('window', { [this.name]: { bounds: rectangle } } satisfies WindowBoundsConfigType);
+    };
+
+    /** Janelas ativas. */
+    private static readonly windows = new Map<StandardWindowName, StandardWindow>();
+
+    public static getWindow(name: StandardWindowName): StandardWindow | null;
+    public static getWindow(contents: Electron.WebContents): StandardWindow | null;
+    public static getWindow(nameOrContents: Electron.WebContents | StandardWindowName): StandardWindow | null {
+        if (typeof nameOrContents === 'string') {
+            return this.windows.get(nameOrContents) ?? null;
+        };
+
+        for (const standardWindow of this.windows.values()) {
+            if (standardWindow.webContents === nameOrContents) return standardWindow;
+        };
+
+        return null;
+    };
+
+    public static open<T extends keyof BrowserWindowOptions>(name: StandardWindowName): StandardWindow | null {
         try {
-            const mainWindow = getMainWindow();
-
-            // Se a janela já estiver aberta, foca-a.
-            const previousWindow = getActiveModule(moduleName);
-            if (previousWindow instanceof BrowserWindow && !previousWindow.isDestroyed()) {
-                if (previousWindow.isVisible()) {
-                    previousWindow.focus();   
-                } else {
-                    previousWindow.show();
-                };
-                return;
+            const previous = this.windows.get(name);
+            if (previous instanceof StandardWindow && !previous.isDestroyed()) {
+                if (previous.isVisible()) previous.focus();
+                return previous;
             };
 
-            const windowOptions: Electron.BrowserWindowConstructorOptions = {
-                parent: mainWindow,
+            const mainWindow = MainWindow.getInstance();
+            const options: BrowserWindowOptions = {
+                parent: mainWindow.browser,
                 width: 500,
                 height: 600,
                 useContentSize: true,
@@ -60,48 +108,17 @@ export function createModule<T extends keyof ModuleConstructorOptions>(
                 }
             };
 
-            for (const [key, value] of Object.entries(options) as [T, ModuleConstructorOptions[T]][]) {
-                windowOptions[key] = value;
+            for (const [key, value] of Object.entries(windowOptions[name]) as [T, BrowserWindowOptions[T]][]) {
+                options[key] = value;
             };
 
-            const moduleWindow = new BrowserWindow(windowOptions);
-            setModuleDevMenu(moduleWindow);
-            moduleWindow.loadFile(windowsHtml).catch(ModuleCreationError.catch);
-            moduleWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-            moduleWindow.webContents.setAudioMuted(true);
-            moduleWindow.on('system-context-menu', (e) => e.preventDefault());
-
-            const moduleBounds = appConfig.get('moduleBounds')[moduleName];
-            if (moduleBounds) {
-                const { bounds } = moduleBounds;
-                if (bounds) moduleWindow.setBounds(bounds);
-            };
-
-            moduleWindow.on('moved', saveBounds(moduleWindow, moduleName));
-            moduleWindow.on('resized', saveBounds(moduleWindow, moduleName));
-            
-            moduleWindow.once('ready-to-show', () => {
-                activeModules.set(moduleName, moduleWindow);
-                moduleWindow.webContents.send('module:set-route', route ?? defaultRoute);
-                moduleWindow.show();
-            });
-
-            moduleWindow.once('closed', () => {
-                moduleWindow.removeAllListeners();
-                activeModules.delete(moduleName);
-            });
+            const standardWindow = new StandardWindow(name, options);
+            StandardWindow.windows.set(name, standardWindow);
+            return standardWindow;
 
         } catch (err) {
-            ModuleCreationError.catch(err);
+            StandardWindowError.catch(err);
+            return null;
         };
-    };
-};
-
-function saveBounds(moduleWindow: Electron.CrossProcessExports.BrowserWindow, moduleName: ModuleNames) {
-    return function() {
-        const rectangle = moduleWindow.getBounds();
-        appConfig.set('moduleBounds', {
-            [moduleName]: { bounds: rectangle }
-        } satisfies ModuleBoundsConfigType);
     };
 };

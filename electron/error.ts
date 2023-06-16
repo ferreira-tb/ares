@@ -40,18 +40,18 @@ export class DatabaseError extends MainProcessError {
     public override readonly name = 'DatabaseError';
 };
 
-export class MainProcessEventError extends MainProcessError {
-    public override readonly name = 'MainProcessEventError';
-};
-
-export class BrowserViewError extends MainProcessError {
-    public override readonly name = 'BrowserViewError';
-};
-
 export class TribalWorkerError extends MainProcessError {
     public override readonly name = 'TribalWorkerError';
 };
 
-export class ModuleCreationError extends MainProcessError {
-    public override readonly name = 'ModuleCreationError';
+export class StandardWindowError extends MainProcessError {
+    public override readonly name = 'StandardWindowError';
+};
+
+export class WebsiteWindowError extends MainProcessError {
+    public override readonly name = 'WebsiteWindowError';
+};
+
+export class BrowserTabError extends MainProcessError {
+    public override readonly name = 'BrowserTabError';
 };

@@ -22,9 +22,9 @@ const { coins } = storeToRefs(history);
 function navigateToSnob() {
     if (!village.value) return;
     if (mode.value === 'single') {
-        ipcSend('current-view:navigate-to-snob-train', village.value.id);
+        ipcSend('current-tab:navigate-to-snob-train', village.value.id);
     } else {
-        ipcSend('current-view:navigate-to-snob-coin', village.value.id, group.value);
+        ipcSend('current-tab:navigate-to-snob-coin', village.value.id, group.value);
     };
 };
 </script>

@@ -3,7 +3,7 @@ import { computed, nextTick, reactive, ref, toRaw } from 'vue';
 import { useVModels } from '@vueuse/core';
 import { useDialog, useMessage } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import { ModuleError } from '$windows/error';
+import { RendererProcessError } from '$renderer/error';
 import ArcherIcon from '$icons/units/ArcherIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';
 import HeavyIcon from '$icons/units/HeavyIcon.vue';
@@ -165,7 +165,7 @@ async function save() {
         };
 
     } catch (err) {
-        ModuleError.catch(err);
+        RendererProcessError.catch(err);
     };
 };
 

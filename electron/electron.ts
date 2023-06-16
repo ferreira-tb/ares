@@ -1,133 +1,34 @@
 import '@tb-dev/prototype';
-import { app, BrowserWindow, BrowserView } from 'electron';
-import { storeToRefs } from 'mechanus';
-import { setAppMenu } from '$electron/menu/menu';
+import { app } from 'electron';
+import { setMenu } from '$electron/menu';
 import { sequelize } from '$electron/database';
-import { setEvents } from '$electron/events/index';
-import { appIcon, panelHtml, uiHtml, browserJs } from '$electron/utils/files';
-import { setBrowserViewAutoResize } from '$electron/utils/view';
+import { setEvents } from '$electron/events';
 import { setEnv } from '$electron/utils/env';
-import { Dimensions } from '$common/constants';
+import { MainWindow, PanelWindow } from '$electron/windows';
+import { BrowserTab } from '$electron/tabs';
 import { isUserAlias } from '$common/guards';
-import { getGameRegionUrl } from '$common/helpers';
-import { appConfig } from '$electron/stores';
-import { useBrowserViewStore, useCacheStore } from '$electron/stores';
+import { useCacheStore } from '$electron/stores';
 import { PlunderHistory } from '$electron/database/models';
 import { MainProcessError } from '$electron/error';
 import { errorHandler } from '$electron/utils/error-handler';
-import { showDebug } from '$electron/windows';
 
-MainProcessError.catch = errorHandler;
 setEnv();
+MainProcessError.catch = errorHandler;
 
 function createWindow() {
-    const mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 1000,
-        minHeight: 100,
-        show: false,
-        title: `Ares ${app.getVersion()}`,
-        icon: appIcon,
-        frame: false,
-        resizable: true,
-        movable: true,
-        minimizable: true,
-        maximizable: true,
-        fullscreenable: false,
-        closable: true,
-        titleBarStyle: 'hidden',
-        darkTheme: true,
-        webPreferences: {
-            spellcheck: false,
-            nodeIntegration: true,
-            contextIsolation: false,
-            devTools: process.env.ARES_MODE === 'dev'
-        }
-    });
-
-    /** A BrowserView principal jamais deve ser destruída. */
-    const mainView = new BrowserView({
-        webPreferences: {
-            spellcheck: false,
-            preload: browserJs,
-            nodeIntegration: false,
-            contextIsolation: true,
-            devTools: process.env.ARES_MODE === 'dev'
-        }
-    });
-
-    const panelWindow = new BrowserWindow({
-        parent: mainWindow,
-        width: 350,
-        height: 250,
-        show: false,
-        resizable: false,
-        fullscreenable: false,
-        frame: false,
-        titleBarStyle: 'hidden',
-        darkTheme: true,
-        webPreferences: {
-            spellcheck: false,
-            nodeIntegration: true,
-            contextIsolation: false,
-            devTools: process.env.ARES_MODE === 'dev'
-        }
-    });
-
-    process.env.MAIN_WINDOW_ID = mainWindow.id.toString(10);
-    process.env.PANEL_WINDOW_ID = panelWindow.id.toString(10);
-    process.env.MAIN_VIEW_WEB_CONTENTS_ID = mainView.webContents.id.toString(10);
-
-    const gameUrl = getGameRegionUrl(appConfig.get('general').lastRegion);
-    Promise.all([
-        mainWindow.loadFile(uiHtml),
-        panelWindow.loadFile(panelHtml),
-        mainView.webContents.loadURL(gameUrl)
-    ]).catch(MainProcessError.catch);
-
-    const bounds = appConfig.get('ui').bounds;
-    if (bounds) mainWindow.setBounds(bounds);
-    mainWindow.maximize();
-
-    mainWindow.addBrowserView(mainView);
-    mainWindow.setTopBrowserView(mainView);
-
-    const { width, height } = mainWindow.getContentBounds();
-    mainView.setBounds({ x: 0, y: Dimensions.TopContainerHeight, width, height: height - Dimensions.TopContainerHeight });
-
-    const browserViewStore = useBrowserViewStore();
-    const { currentAutoResize } = storeToRefs(browserViewStore);
-    currentAutoResize.value = setBrowserViewAutoResize(mainView);
+    MainWindow.create();
+    PanelWindow.create();
+    
+    BrowserTab.create({ current: true, main: true })
+        .catch(MainProcessError.catch);
 
     setEvents();
-    setAppMenu(browserViewStore, useCacheStore());
-
-    // https://github.com/ferreira-tb/ares/issues/77
-    mainWindow.on('system-context-menu', (e) => e.preventDefault());
-    panelWindow.on('system-context-menu', (e) => e.preventDefault());
-
-    mainWindow.once('ready-to-show', () => {
-        mainWindow.show();
-        if (appConfig.get('advanced').debug) {
-            showDebug();
-            mainWindow.focus();
-        };
-    });
-    
-    panelWindow.once('ready-to-show', () => {
-        const panelBounds = appConfig.get('panel').bounds;
-        if (panelBounds) panelWindow.setBounds(panelBounds);
-
-        const shouldShowPanel = appConfig.get('panel').show;
-        if (shouldShowPanel) panelWindow.show();
-
-        panelWindow.webContents.send('panel:visibility-did-change', panelWindow.isVisible());
-    });
+    setMenu();
 };
 
+app.whenReady().then(createWindow, MainProcessError.catch);
+
 app.on('window-all-closed', () => app.quit());
-app.whenReady().then(() => createWindow())
-    .catch(MainProcessError.catch);
 
 app.once('will-quit', async (e) => {
     if (sequelize.isClosed) return;
@@ -151,9 +52,8 @@ app.once('will-quit', async (e) => {
             await sequelize.sync({ alter: { drop: false } });
         } else {
             await sequelize.sync();
-        };
-        
+        };   
     } catch (err) {
-        MainProcessError.catch(err);
+        await MainProcessError.log(err);
     };
 })();

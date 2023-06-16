@@ -5,7 +5,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '$windows/router';
 import { setModuleEvents } from '$windows/events';
-import { ModuleError } from '$windows/error';
+import { RendererProcessError } from '$renderer/error';
 import App from '$windows/App.vue';
 
 const app = createApp(App);
@@ -17,7 +17,7 @@ app.use(router);
 
 // Error handler.
 app.config.errorHandler = (err: unknown) => {
-    ModuleError.catch(err);
+    RendererProcessError.catch(err);
 };
 
 // Eventos
@@ -25,4 +25,4 @@ setModuleEvents();
 
 router.push('/')
     .then(() => app.mount('#app'))
-    .catch((err: unknown) => ModuleError.catch(err));
+    .catch((err: unknown) => RendererProcessError.catch(err));

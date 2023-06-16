@@ -4,11 +4,11 @@ import { useIpcOn } from '$renderer/composables';
 
 const loadingBar = useLoadingBar();
 
-useIpcOn('current-view:did-start-loading', () => {
+useIpcOn('current-tab:did-start-loading', () => {
     loadingBar.start();
 });
 
-useIpcOn('current-view:did-stop-loading', () => {
+useIpcOn('current-tab:did-stop-loading', () => {
     loadingBar.finish();
 });
 </script>

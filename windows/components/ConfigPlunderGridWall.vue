@@ -3,7 +3,7 @@ import { NButton, NButtonGroup, NDivider, NGrid, NGridItem, NInputNumber, useDia
 import { usePlunderConfigStore } from '$renderer/stores';
 import { assertUserAlias } from '$common/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { ModuleConfigError } from '$windows/error';
+import { RendererProcessError } from '$renderer/error';
 import { formatFields, parseFields, formatWallLevel, parseWallLevel } from '$windows/utils/input-parser';
 
 const props = defineProps<{
@@ -24,7 +24,7 @@ function resetDemolitionConfig() {
         onPositiveClick: async () => {
             status.loading = true;
             try {
-                assertUserAlias(props.userAlias, ModuleConfigError);
+                assertUserAlias(props.userAlias, RendererProcessError);
                 const destroyed = await ipcInvoke('plunder:destroy-demolition-config', props.userAlias);
                 if (destroyed) {
                     message.success('Resetado com sucesso!');
@@ -33,7 +33,7 @@ function resetDemolitionConfig() {
                 };
                 
             } catch (err) {
-                ModuleConfigError.catch(err);
+                RendererProcessError.catch(err);
             };
         }
     });

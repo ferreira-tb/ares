@@ -9,9 +9,9 @@ export class DemolitionTemplate extends Model<
     InferAttributes<DemolitionTemplate>,
     InferCreationAttributes<DemolitionTemplate>>
 implements DemolitionTemplateType {
-    declare readonly id: CreationOptional<number>;
-    declare readonly alias: UserAlias;
-    declare readonly units: UnitsToDestroyWall;
+    declare public readonly id: CreationOptional<number>;
+    declare public readonly alias: UserAlias;
+    declare public readonly units: UnitsToDestroyWall;
 
     public static async getDemolitionTroopsConfig(alias: UserAlias): Promise<DemolitionTemplateType | null> {
         try {

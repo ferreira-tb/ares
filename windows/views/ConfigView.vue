@@ -3,40 +3,41 @@ import { h, onMounted, ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 import { NLayout, NLayoutSider, NMenu, type MenuInst, type MenuOption } from 'naive-ui';
 import { router } from '$windows/router';
+import { StandardWindowName } from '$common/constants';
 
 const menuInst = ref<MenuInst | null>(null);
-const selectedKey = ref<ConfigModuleRoutes>('config-general');
+const selectedKey = ref<StandardWindowName>(StandardWindowName.ConfigGeneral);
 
 const menuOptions: MenuOption[] = [
     {
-        label: renderLabel('config-general', 'Geral'),
-        key: 'config-general'
+        label: renderLabel(StandardWindowName.ConfigGeneral, 'Geral'),
+        key: StandardWindowName.ConfigGeneral
     },
     {
         label: () => h('span', { style: 'padding-right: 20px;' }, 'Edifícios'),
         key: 'config-buildings',
         children: [
             {
-                label: renderLabel('config-buildings-snob', 'Academia'),
-                key: 'config-buildings-snob'
+                label: renderLabel(StandardWindowName.ConfigBuildingsSnob, 'Academia'),
+                key: StandardWindowName.ConfigBuildingsSnob
             }
         ]
     },
     {
-        label: renderLabel('config-plunder', 'Saque'),
-        key: 'config-plunder'
+        label: renderLabel(StandardWindowName.ConfigPlunder, 'Saque'),
+        key: StandardWindowName.ConfigPlunder
     },
     {
-        label: renderLabel('config-notifications', 'Notificações'),
-        key: 'config-notifications'
+        label: renderLabel(StandardWindowName.ConfigNotifications, 'Notificações'),
+        key: StandardWindowName.ConfigNotifications
     },
     {
-        label: renderLabel('config-advanced', 'Avançado'),
-        key: 'config-advanced'
+        label: renderLabel(StandardWindowName.ConfigAdvanced, 'Avançado'),
+        key: StandardWindowName.ConfigAdvanced
     }
 ];
 
-function renderLabel(routeName: ConfigModuleRoutes, label: string) {
+function renderLabel(routeName: StandardWindowName, label: string) {
     return () => h('span', { style: 'padding-right: 20px;' }, [
          h(RouterLink, { to: { name: routeName } }, label)
     ]);
@@ -57,7 +58,7 @@ function isRoute(routeName: string, options: MenuOption[] = menuOptions): boolea
 onMounted(() => {
     const routeName = router.currentRoute.value.name;
     if (typeof routeName === 'string' && isRoute(routeName)) {
-        selectedKey.value = routeName as ConfigModuleRoutes;
+        selectedKey.value = routeName as StandardWindowName;
         menuInst.value?.showOption(routeName);
     };
 });

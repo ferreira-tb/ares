@@ -3,7 +3,7 @@ import { h, toRef } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { NDataTable, type DataTableColumns } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import { usePlunderHistoryVillageData } from '$windows/composables/plunder-history';
+import { usePlunderHistory } from '$windows/composables/plunder-history';
 
 const props = defineProps<{
     headerProps: PlunderHistoryDataTableHeaderProps;
@@ -20,7 +20,7 @@ const locale = await ipcInvoke('app:locale');
 const header = useVModel(props, 'headerProps', emit);
 const villagesHistory = toRef(props, 'history');
 const timePeriod = toRef(props, 'period');
-const { villageData, onHeaderInfoUpdated } = usePlunderHistoryVillageData(villagesHistory, timePeriod);
+const { villageData, onHeaderInfoUpdated } = usePlunderHistory(villagesHistory, timePeriod);
 
 onHeaderInfoUpdated((newValue) => (header.value = newValue));
 

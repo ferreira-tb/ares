@@ -9,11 +9,11 @@ export class CustomPlunderTemplate extends Model<
     InferAttributes<CustomPlunderTemplate>,
     InferCreationAttributes<CustomPlunderTemplate>>
 implements CustomPlunderTemplateType {
-    declare readonly id: CreationOptional<number>;
-    declare readonly alias: UserAlias;
-    declare readonly type: string;
-    declare readonly description: string | null;
-    declare readonly units: CustomPlunderTemplateType['units'];
+    declare public readonly id: CreationOptional<number>;
+    declare public readonly alias: UserAlias;
+    declare public readonly type: string;
+    declare public readonly description: string | null;
+    declare public readonly units: CustomPlunderTemplateType['units'];
 
     public static async getCustomPlunderTemplates(alias: UserAlias): Promise<CustomPlunderTemplateType[] | null> {
         try {

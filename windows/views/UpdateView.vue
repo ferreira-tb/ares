@@ -6,7 +6,7 @@ import { NButton, NButtonGroup, NSpin, NProgress } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
 import { AresAPI } from '$common/constants';
-import { ModuleAppUpdateError } from '$windows/error';
+import { RendererProcessError } from '$renderer/error';
 
 const appVersion = await ipcInvoke('app:version');
 const { isFetching, data, onFetchError } = useFetch(AresAPI.Latest).json<LatestVersion>();
@@ -29,7 +29,7 @@ const isLatest = computed(() => {
 });
 
 onFetchError((err: unknown) => {
-    ModuleAppUpdateError.catch(err);
+    RendererProcessError.catch(err);
     wentWrong.value = err instanceof Error;
 });
 
@@ -62,7 +62,7 @@ function downloadUpdate() {
 
 function openChangelog() {
     if (!data.value?.notes) return;
-    ipcSend('open-any-allowed-website', data.value.notes);
+    ipcSend('website:any', data.value.notes);
 };
 </script>
 

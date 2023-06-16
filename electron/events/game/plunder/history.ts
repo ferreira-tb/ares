@@ -2,12 +2,13 @@ import { ipcMain, webContents } from 'electron';
 import { storeToRefs, watch } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { assertInteger } from '$common/guards';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 import { isUserAlias, assertUserAlias } from '$common/guards';
-import { getPanelWindow } from '$electron/utils/helpers';
-import { showPlunderHistory, getActiveModuleWebContents } from '$electron/windows';
+import { PanelWindow } from '$electron/windows';
+import { StandardWindow } from '$electron/windows';
 import { usePlunderHistoryStore, useCacheStore } from '$electron/stores';
 import { PlunderHistory } from '$electron/database/models';
+import { StandardWindowName } from '$common/constants';
 import { DefaultPlunderHistory, PlunderHistoryVillage } from '$common/templates';
 
 export function setPlunderHistoryEvents() {
@@ -15,9 +16,11 @@ export function setPlunderHistoryEvents() {
     const { userAlias } = storeToRefs(cacheStore);
 
     const plunderHistoryStore = usePlunderHistoryStore();
-    const panelWindow = getPanelWindow();
+    const panelWindow = PanelWindow.getInstance();
 
-    ipcMain.on('plunder:show-history', () => showPlunderHistory());
+    ipcMain.on('plunder:show-history', () => {
+        StandardWindow.open(StandardWindowName.PlunderHistory);
+    });
 
     // Emitido pela view após cada ataque realizado pelo Plunder.
     ipcMain.on('plunder:attack-sent', <T extends keyof PlunderAttackLog>(
@@ -43,10 +46,8 @@ export function setPlunderHistoryEvents() {
         panelWindow.webContents.send('plunder:attack-sent', attackLog);
 
         // Se a janela de histórico estiver aberta, atualiza-a.
-        const plunderHistoryWebContents = getActiveModuleWebContents('plunder-history');
-        if (plunderHistoryWebContents) {
-            plunderHistoryWebContents.send('plunder:history-did-update', plunderHistoryStore.unproxifyVillages());
-        };
+        const historyWindow = StandardWindow.getWindow(StandardWindowName.PlunderHistory);
+        historyWindow?.webContents.send('plunder:history-did-update', plunderHistoryStore.unproxifyVillages());
     });
 
     ipcMain.handle('plunder:get-history', () => plunderHistoryStore.unproxifyVillages());
@@ -54,10 +55,10 @@ export function setPlunderHistoryEvents() {
     ipcMain.on('plunder:save-history', async () => {
         try {
             const alias = userAlias.value;
-            assertUserAlias(alias, MainProcessEventError, 'Could not save plunder history: user alias is not valid.');
+            assertUserAlias(alias, MainProcessError, 'Could not save plunder history: user alias is not valid.');
             await PlunderHistory.saveHistory(alias);
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 

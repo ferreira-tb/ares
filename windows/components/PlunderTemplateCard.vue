@@ -2,7 +2,7 @@
 import { toRaw } from 'vue';
 import { NCard, NSpace, useDialog, useMessage } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import { ModuleError } from '$windows/error';
+import { RendererProcessError } from '$renderer/error';
 import ArcherIcon from '$icons/units/ArcherIcon.vue';
 import AxeIcon from '$icons/units/AxeIcon.vue';
 import HeavyIcon from '$icons/units/HeavyIcon.vue';
@@ -44,7 +44,7 @@ function destroyTemplate() {
                 };
 
             } catch (err) {
-                ModuleError.catch(err);
+                RendererProcessError.catch(err);
             };
         }
     });

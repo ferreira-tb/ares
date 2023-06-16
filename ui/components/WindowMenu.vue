@@ -6,7 +6,7 @@ import { NIcon } from 'naive-ui';
 import { DiscordSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { useIpcOn, useUserAlias } from '$renderer/composables';
-import { WebsiteUrl } from '$common/constants';
+import { StandardWindowName, WebsiteUrl } from '$common/constants';
 import TheIncomingHandler from '$ui/components/TheIncomingHandler.vue';
 import TheMintingStatus from '$ui/components/TheMintingStatus.vue';
 import TheNextIncoming from '$ui/components/TheNextIncoming.vue';
@@ -31,13 +31,13 @@ const { width } = useElementSize(mainWindowMenu);
 const menuWidth = computed(() => `${width.value - 300}px`);
 const isSmallScreen = useMediaQuery('(max-width: 800px)');
 
-const canGoBack = ref<boolean>(await ipcInvoke('current-view:can-go-back'));
-const canGoForward = ref<boolean>(await ipcInvoke('current-view:can-go-forward'));
+const canGoBack = ref<boolean>(await ipcInvoke('current-tab:can-go-back'));
+const canGoForward = ref<boolean>(await ipcInvoke('current-tab:can-go-forward'));
 
 const goBackDepth = computed(() => canGoBack.value ? 3 : 5);
 const goForwardDepth = computed(() => canGoForward.value ? 3 : 5);
 
-useIpcOn('current-view-back-forward-status', (_e, status: BackForwardStatus) => {
+useIpcOn('tab:back-forward-status', (_e, status: BackForwardStatus) => {
     canGoBack.value = status.canGoBack;
     canGoForward.value = status.canGoForward;
 });
@@ -46,19 +46,19 @@ useIpcOn('current-view-back-forward-status', (_e, status: BackForwardStatus) => 
 <template>
     <div ref="mainWindowMenu" class="main-window-menu">
         <div class="menu-icon-area">
-            <div class="menu-icon" @click="ipcSend('current-view:back')">
+            <div class="menu-icon" @click="ipcSend('current-tab:back')">
                 <NIcon :size="22" :depth="goBackDepth" :component="ArrowBackSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('current-view:forward')">
+            <div class="menu-icon" @click="ipcSend('current-tab:forward')">
                 <NIcon :size="22" :depth="goForwardDepth" :component="ArrowForwardSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('current-view:reload')">
+            <div class="menu-icon" @click="ipcSend('current-tab:reload')">
                 <NIcon :size="22" :depth="3" :component="ReloadSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('current-view:home')">
+            <div class="menu-icon" @click="ipcSend('current-tab:home')">
                 <NIcon :size="22" :depth="3" :component="HomeSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('config:open', 'config-general')">
+            <div class="menu-icon" @click="ipcSend('config:open', StandardWindowName.ConfigGeneral)">
                 <NIcon :size="22" :depth="3" :component="SettingsSharp" />
             </div>
             <div class="menu-icon" @click="ipcSend('open-region-select-menu')">
@@ -70,7 +70,7 @@ useIpcOn('current-view-back-forward-status', (_e, status: BackForwardStatus) => 
             <div class="menu-icon" @click="shell.openExternal(WebsiteUrl.Discord)">
                 <NIcon :size="22" :depth="3" :component="DiscordSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('open-github-repo')">
+            <div class="menu-icon" @click="ipcSend('website:repository')">
                 <NIcon :size="22" :depth="3" :component="LogoGithub" />
             </div>
         </div>

@@ -1,7 +1,7 @@
 import { ipcMain, webContents } from 'electron';
 import { storeToRefs, watch } from 'mechanus';
 import { isUserAlias } from '$common/guards';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 import { useAresStore, useCacheStore } from '$electron/stores';
 import { PlunderHistory } from '$electron/database/models';
 
@@ -34,7 +34,7 @@ export function setCaptchaEvents() {
             };
             
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 };

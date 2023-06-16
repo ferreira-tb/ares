@@ -52,7 +52,7 @@ async function reloadMainView() {
     const shouldReload = await ipcInvoke('config:should-reload-after-captcha');
     if (shouldReload) {
         await nextTick();
-        ipcSend('main-view:reload');
+        ipcSend('main-tab:reload');
     };
 };
 </script>

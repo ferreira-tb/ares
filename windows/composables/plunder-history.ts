@@ -4,7 +4,7 @@ import { Kronos } from '@tb-dev/kronos';
 import { ipcInvoke } from '$renderer/ipc';
 import { decodeString, getContinentFromCoords } from '$common/helpers';
 
-export function usePlunderHistoryVillageData(history: Ref<PlunderHistoryType>, period: Ref<PlunderHistoryTimePeriod>) {
+export function usePlunderHistory(history: Ref<PlunderHistoryType>, period: Ref<PlunderHistoryTimePeriod>) {
     const scope = effectScope();
 
     const headerProps = ref<PlunderHistoryDataTableHeaderProps>({
