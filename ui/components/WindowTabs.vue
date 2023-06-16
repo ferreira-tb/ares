@@ -43,7 +43,7 @@ function destroyBrowserView(webContentsId: Electron.WebContents['id']) {
 };
 
 function renderMainTab() {
-    return h('div', [h(LightIcon), h('span', { class: 'main-tab-icon', textContent: 'Ares' })]);
+    return h('div', [h(LightIcon), h('span', { style: 'margin-left: 5px;', textContent: 'Ares' })]);
 };
 </script>
 
@@ -99,9 +99,5 @@ function renderMainTab() {
 .main-window-tab-area {
     width: v-bind("tabsWidth");
     height: 40px;
-}
-
-:global(.main-tab-icon) {
-    margin-left: 5px;
 }
 </style>

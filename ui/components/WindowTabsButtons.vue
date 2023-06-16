@@ -1,27 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
+import { useIpcOn } from '$renderer/composables';
 
-const maximized = ref<boolean>(true);
-maximized.value = await ipcInvoke('ui:is-maximized');
+const maximized = ref<boolean>(await ipcInvoke('ui:is-maximized'));
 
-const minimize = () => ipcSend('ui:minimize');
-const close = () => ipcSend('ui:close');
-
-async function maximizeOrRestore() {
-    const status = await ipcInvoke('ui:maximize-or-restore');
+useIpcOn('ui:did-update-maximize-status', (_e, status: boolean) => {
     maximized.value = status;
-};
+});
 </script>
 
 <template>
     <div class="main-window-button-area">
-        <div @click="minimize"><span class="mdl2-chrome-minimize"></span></div>
-        <div @click="maximizeOrRestore">
+        <div @click="ipcSend('ui:minimize')"><span class="mdl2-chrome-minimize"></span></div>
+        <div @click="ipcSend('ui:maximize')">
             <span v-if="maximized" class="mdl2-chrome-restore"></span>
             <span v-else class="mdl2-chrome-maximize"></span>
         </div>
-        <div @click="close"><span class="mdl2-chrome-close"></span></div>
+        <div @click="ipcSend('ui:close')"><span class="mdl2-chrome-close"></span></div>
     </div>
 </template>
 

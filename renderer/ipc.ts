@@ -21,8 +21,6 @@ function report(processType: 'main' | 'renderer', channel: string, ...args: unkn
 };
 
 // Janela
-export async function ipcInvoke(channel: 'ui:maximize-or-restore'): Promise<boolean>;
-export async function ipcInvoke(channel: 'ui:is-minimized'): Promise<boolean>;
 export async function ipcInvoke(channel: 'ui:is-maximized'): Promise<boolean>;
 
 // Geral
@@ -123,6 +121,7 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
 
 // Janela
 export function ipcSend(channel: 'ui:minimize'): void;
+export function ipcSend(channel: 'ui:maximize'): void;
 export function ipcSend(channel: 'ui:close'): void;
 
 // Geral

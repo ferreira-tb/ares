@@ -55,27 +55,30 @@ export class MainWindow extends BaseWindow {
 
         this.browser.on('moved', () => this.saveBounds());
         this.browser.on('resized', () => this.saveBounds());
+
+        this.browser.on('maximize', () => this.updateMaximizeStatus());
+        this.browser.on('unmaximize', () => this.updateMaximizeStatus());
+        this.browser.on('restore', () => this.updateMaximizeStatus());
         
         this.browser.once('ready-to-show', () => this.browser.show());
     };
 
-    /**
-     * Maximiza ou restaura a janela, dependendo do estado atual.
-     * @returns Boolean indicando se a janela está maximizada.
-     */
-    public maximizeOrRestore(): boolean {
+    /** Maximiza ou restaura a janela, dependendo do estado atual. */
+    public maximize() {
         if (this.browser.isMaximized()) {
-            this.browser.restore();
+            this.browser.unmaximize();
         } else {
             this.browser.maximize();
         };
-
-        return this.browser.isMaximized();
     };
 
     private saveBounds() {
         const rectangle = this.browser.getBounds();
         appConfig.set('ui', { bounds: rectangle });
+    };
+
+    private updateMaximizeStatus() {
+        this.browser.webContents.send('ui:did-update-maximize-status', this.browser.isMaximized());
     };
 
     private static mainWindow: MainWindow | null = null;
