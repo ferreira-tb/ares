@@ -1,4 +1,4 @@
-type UIMessageType = 'show-ui-error-message' | 'show-ui-info-message' | 'show-ui-success-message';
+type UIMessageType = 'ipc-tribal:ui-error-message' | 'ipc-tribal:ui-info-message' | 'ipc-tribal:ui-success-message';
 
 type ActivePossible = {
     readonly active: boolean;
@@ -14,22 +14,22 @@ type Features = {
 
 type Player = {
     ally: string;
-    ally_level: string;
-    ally_member_count: string;
+    ally_level: string | null;
+    ally_member_count: string | null;
     confirmation_skipping_hash: string;
     date_started: string;
     email_valid: string;
     id: number;
     incomings: string;
     is_guest: string;
-    knight_location: string;
-    knight_unit: string;
+    knight_location: string | null;
+    knight_unit: string | null;
     name: string;
-    new_ally_application: string;
+    new_ally_application: number | string;
     new_ally_invite: string;
     new_buddy_request: string;
     new_daily_bonus: string;
-    new_forum_post: string;
+    new_forum_post: number | string;
     new_igm: string;
     new_items: string;
     new_post_notification: number;
@@ -46,7 +46,7 @@ type Player = {
     sleep_end: string;
     sleep_last: string;
     sleep_start: string;
-    supports: string;
+    supports: number | string;
     villages: string;
 };
 

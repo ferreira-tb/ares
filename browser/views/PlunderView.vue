@@ -2,7 +2,7 @@
 import { ref, watch, toRaw } from 'vue';
 import { computedEager, whenever, watchImmediate } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
-import { useAresStore, usePlunderConfigStore, useCurrentVillageStore } from '$renderer/stores';
+import { useCacheStore, useGameDataStore, usePlunderConfigStore } from '$renderer/stores';
 import { pickBestTemplate, queryTemplateData } from '$lib/plunder/templates';
 import { queryTargetsInfo, targets } from '$browser/lib/plunder/targets';
 import { queryAvailableUnits } from '$lib/plunder/units';
@@ -17,9 +17,9 @@ import { PlunderError } from '$browser/error';
 import { ipcSend } from '$renderer/ipc';
 import PlunderReload from '$browser/components/PlunderReload.vue';
 
-const ares = useAresStore();
+const cache = useCacheStore();
 const config = usePlunderConfigStore();
-const currentVillage = useCurrentVillageStore();
+const gameData = useGameDataStore();
 
 /** Tabela do assistente de saque. */
 const plunderList = document.querySelector('#plunder_list:has(tr[id^="village"]) tbody');
@@ -28,13 +28,13 @@ const groupInfo = ref<PlunderGroupType | null>(null);
 
 /** Indica se a aldeia atual pertence ao grupo de saque. */
 const belongsToPlunderGroup = computedEager(() => {
-    if (!groupInfo.value || !currentVillage.id) return false;
-    return groupInfo.value.villages.has(currentVillage.id);
+    if (!groupInfo.value || !gameData.village.id) return false;
+    return groupInfo.value.villages.has(gameData.village.id);
 });
 
 /** Indica se ataques devem ser enviados. */
 const shouldAttack = computedEager(() => {
-    if (ares.captcha || !config.active || !plunderList) return false;
+    if (cache.captcha || !config.active || !plunderList) return false;
     if (config.groupAttack && !belongsToPlunderGroup.value) return false;
     return true;
 });
@@ -119,7 +119,7 @@ async function handleAttack(): Promise<void> {
         if ((Date.now() - info.lastAttack) > config.ignoreOlderThan * Kronos.Hour) continue;
 
         if (config.groupAttack && groupInfo.value) {
-            const villageStatus = groupInfo.value.villages.getStrict(currentVillage.getId());
+            const villageStatus = groupInfo.value.villages.getStrict(gameData.getVillageId());
             if (info.distance > villageStatus.waveMaxDistance) continue;
         };
 
@@ -166,7 +166,7 @@ async function handleAttack(): Promise<void> {
         const sent = await sendAttackFromPlace(best.units);
         if (!sent) throw new PlunderError(`Could not use template ${best.type.toUpperCase()}.`);
 
-        ipcSend('plunder:attack-sent', currentVillage.id, plunderAttack);
+        ipcSend('plunder:attack-sent', gameData.village.id, plunderAttack);
         targets.delete(id);
         village.remove();
         

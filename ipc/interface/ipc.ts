@@ -5,41 +5,38 @@ import type { PlunderInfo, TribalWarsGameData, TribalWarsTiming, Units } from '$
 // Arquivos no diretório "interface" não podem importar de outras partes do IpcTribal.
 // Isso é para evitar que a importações dos protótipos feitas no index vazem para o resto do código.
 
-// IMPORTANTE: Não é possível utilizar o IpcTribal a partir do painel.
-// A função dele é apenas prover uma forma de comunicação entre o browser e o jogo.
-
 export class IpcTribal {
-    readonly channel: string;
-    readonly message: unknown[];
+    private readonly channel: string;
+    private readonly message: unknown[];
 
-    constructor(channel: string, ...args: unknown[]) {
+    private constructor(channel: string, ...args: unknown[]) {
         this.channel = channel;
         this.message = args;
     };
 
-    static #uuid: number = 0;
-    static #generateUUID = (type: 'invoke' | 'send') => `${type}${(++this.#uuid).toString(10)}`;
+    private static uuid: number = 0;
+    private static readonly generateUUID = (type: 'invoke' | 'send') => `${type}${(++this.uuid).toString(10)}`;
 
     public static send(channel: UIMessageType, message: string): void;
     public static send(channel: string, ...args: unknown[]) {
-        channel = this.#handleKey(channel);
-        const uuid = this.#generateUUID('send');
+        channel = this.handleKey(channel);
+        const uuid = this.generateUUID('send');
         const ipc = new IpcTribal(channel, uuid, ...args);
         window.postMessage(ipc, '*');
     };
 
-    public static invoke(channel: 'get-current-village-units'): Promise<Units | null>;
+    public static invoke(channel: 'ipc-tribal:current-village-units'): Promise<Units | null>;
     public static invoke(channel: 'get-game-data'): Promise<TribalWarsGameData | null>;
-    public static invoke(channel: 'get-incoming-attacks'): Promise<number>;
-    public static invoke(channel: 'get-plunder-info'): Promise<PlunderInfo | null>;
+    public static invoke(channel: 'ipc-tribal:incoming-attacks'): Promise<number>;
+    public static invoke(channel: 'ipc-tribal:plunder-info'): Promise<PlunderInfo | null>;
     public static invoke(channel: 'get-response-time'): Promise<number | null>;
-    public static invoke(channel: 'get-timing'): Promise<TribalWarsTiming | null>;
+    public static invoke(channel: 'ipc-tribal:timing'): Promise<TribalWarsTiming | null>;
     public static invoke(channel: string, ...args: unknown[]): Promise<unknown> {
         return new Promise((resolve) => {
-            channel = this.#handleKey(channel);
+            channel = this.handleKey(channel);
 
             // Usa o UUID para identificar a requisição.
-            const uuid = this.#generateUUID('invoke');
+            const uuid = this.generateUUID('invoke');
             const ipc = new IpcTribal(channel, uuid, ...args);
 
             const request = (e: MessageEvent<IpcTribal>) => {
@@ -56,13 +53,13 @@ export class IpcTribal {
         });
     };
 
-    public static handle(channel: 'get-current-village-units', listener: () => Units | null): void;
+    public static handle(channel: 'ipc-tribal:current-village-units', listener: () => Units | null): void;
     public static handle(channel: 'get-game-data', listener: () => TribalWarsGameData | null): void;
-    public static handle(channel: 'get-incoming-attacks' | 'get-response-time', listener: () => number | null): void;
-    public static handle(channel: 'get-plunder-info', listener: () => PlunderInfo | null): void;
-    public static handle(channel: 'get-timing', listener: () => TribalWarsTiming | null): void;
+    public static handle(channel: 'ipc-tribal:incoming-attacks' | 'get-response-time', listener: () => number | null): void;
+    public static handle(channel: 'ipc-tribal:plunder-info', listener: () => PlunderInfo | null): void;
+    public static handle(channel: 'ipc-tribal:timing', listener: () => TribalWarsTiming | null): void;
     public static handle(channel: string, listener: (...args: unknown[]) => unknown): void {
-        channel = this.#handleKey(channel);
+        channel = this.handleKey(channel);
         window.addEventListener('message', async (e: MessageEvent<IpcTribal>) => {
             if (e.data.channel === channel) {
                 try {
@@ -89,7 +86,7 @@ export class IpcTribal {
 
     public static on(channel: UIMessageType, listener: (message: string) => void): void;
     public static on(channel: string, listener: (...args: any[]) => void) {
-        channel = this.#handleKey(channel);
+        channel = this.handleKey(channel);
         window.addEventListener('message', async (e: MessageEvent<IpcTribal>) => {
             if (e.data.channel === channel) {
                 try {
@@ -110,7 +107,7 @@ export class IpcTribal {
     };
 
 
-    static #handleKey(channel: string) {
+    private static handleKey(channel: string) {
         assertString(channel, 'IpcTribal channel must be a string.');
         return `ipc-${channel}`;
     };

@@ -26,7 +26,7 @@ useMutationObserver(incomingsElement, async (mutations) => {
 }, options);
 
 async function updateAmount() {
-    const current = incomingsElement.value ? await IpcTribal.invoke('get-incoming-attacks') : null;
+    const current = incomingsElement.value ? await IpcTribal.invoke('ipc-tribal:incoming-attacks') : null;
     amount.value = current;
     ipcSend('game:update-incomings-amount', current);
 };

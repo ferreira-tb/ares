@@ -4,7 +4,7 @@ import { Kronos } from '@tb-dev/kronos';
 import { TribalWorker } from '$electron/worker';
 import { MainWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
-import { useAresStore, useIncomingsStore } from '$electron/stores';
+import { useCacheStore, useIncomingsStore } from '$electron/stores';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
 import { MainProcessError } from '$electron/error';
 
@@ -40,8 +40,8 @@ export function setIncomingAttacksEvents() {
 };
 
 function createIncomingsHandler() {
-    const aresStore = useAresStore();
-    const { responseTime } = storeToRefs(aresStore);
+    const cacheStore = useCacheStore();
+    const { responseTime } = storeToRefs(cacheStore);
 
     const delay = computed([responseTime], () => {
         return (Kronos.Second * 5) + (responseTime.value ?? 1000);

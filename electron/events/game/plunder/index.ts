@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { ref, storeToRefs, watch, watchImmediate } from 'mechanus';
 import { isInteger, isWorld } from '$common/guards';
 import { MainProcessError } from '$electron/error';
-import { useAresStore, useCacheStore, usePlunderCacheStore } from '$electron/stores';
+import { useCacheStore, useGameDataStore, usePlunderCacheStore } from '$electron/stores';
 import { WorldUnits } from '$electron/database/models';
 import { setPlunderGroupEvents } from '$electron/events/game/plunder/group';
 import { setPlunderPageEvents } from '$electron/events/game/plunder/page';
@@ -12,8 +12,8 @@ import { setPlunderDemolitionEvents } from '$electron/events/game/plunder/demoli
 import { setPlunderTemplatesEvents } from '$electron/events/game/plunder/templates';
 
 export function setPlunderEvents() {
-    const aresStore = useAresStore();
-    const { screen } = storeToRefs(aresStore);
+    const gameDataStore = useGameDataStore();
+    const { screen } = storeToRefs(gameDataStore);
 
     const plunderCacheStore = usePlunderCacheStore();
     const { pages: plunderPages, plunderGroup } = storeToRefs(plunderCacheStore);

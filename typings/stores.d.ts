@@ -4,67 +4,43 @@ type MechanusRefOptions<T> = import('mechanus').MechanusRefOptions<T>;
 type MechanusComputedRef<T> = import('mechanus').MechanusComputedRef<T>;
 type MechanusStore<T> = import('mechanus').MechanusStore<T>;
 
-// ARES
-type AresType = TribalWarsGameDataType['ares'];
-interface AresStore extends AresType {
+// GAME DATA
+interface GameDataStore extends TribalWarsGameDataType {
+    /** Retorna o id da aldeia atual. Essa função emitirá um erro caso o id não seja válido. */
+    getVillageId(): number;
+
+    useCoords(): import('vue').ComputedRef<[number | null, number | null]>;
+    useTotalResources(): import('vue').ComputedRef<number | null>;
+};
+
+type PiniaGameDataStoreType = {
+    [K in keyof GameDataStore]:
+        GameDataStore[K] extends () => void ? GameDataStore[K] : import('vue').Ref<GameDataStore[K]>;
+};
+
+type MechanusGameDataStoreType = {
+    [K in keyof RemoveMethods<GameDataStore>]: MechanusRef<RemoveMethods<GameDataStore>[K]>;
+};
+
+// CACHE
+interface CacheStore {
+    readonly world: World | null;
+    readonly player: string | null;
+    readonly userAlias: UserAlias | null;
+
     /** Indica se há um captcha ativo. */
     readonly captcha: boolean;
     /** Tempo de resposta do servidor do jogo. */
     readonly responseTime: number | null;
 };
-type PiniaAresStoreType = {
-    [K in keyof AresStore]: import('vue').Ref<AresStore[K]>;
-};
-type MechanusAresStoreType = {
-    [K in keyof AresStore]: MechanusRef<AresStore[K]>;
+
+type PiniaCacheStoreType = {
+    [K in keyof Omit<CacheStore, 'world' | 'player' | 'userAlias'>]: import('vue').Ref<CacheStore[K]>;
 };
 
-// PLAYER
-type PlayerStore = TribalWarsGameDataType['player'];
-type PiniaPlayerStoreType = {
-    [K in keyof PlayerStore]: import('vue').Ref<PlayerStore[K]>;
-};
-type MechanusPlayerStoreType = {
-    [K in keyof PlayerStore]: MechanusRef<PlayerStore[K]>;
-};
-
-// FEATURES
-type FeaturesStore = TribalWarsGameDataType['features'];
-type PiniaFeaturesStoreType = {
-    [K in keyof FeaturesStore]: import('vue').Ref<FeaturesStore[K]>;
-};
-type MechanusFeaturesStoreType = {
-    [K in keyof FeaturesStore]: MechanusRef<FeaturesStore[K]>;
-};
-
-// CURRENT VILLAGE
-type CurrentVillageType = TribalWarsGameDataType['currentVillage'];
-interface CurrentVillageStore extends CurrentVillageType {
-    readonly coords: [CurrentVillageType['x'], CurrentVillageType['y']];
-    readonly totalResources: number | null;
-
-    /**
-     * Retorna o id da aldeia atual.
-     * Essa função emitirá um erro caso o id não seja um número inteiro.
-     */
-    getId(): number;
-};
-
-type PiniaCurrentVillageStoreActions = CurrentVillageStore['getId'];
-type PiniaCurrentVillageStoreType = {
-    [K in keyof CurrentVillageStore]:
-        CurrentVillageStore[K] extends PiniaCurrentVillageStoreActions ?
-        CurrentVillageStore[K] :
-        K extends keyof Omit<CurrentVillageStore, keyof CurrentVillageType> ?
-        import('vue').ComputedRef<CurrentVillageStore[K]> :
-        import('vue').Ref<CurrentVillageStore[K]>;
-};
-
-type MechanusCurrentVillageStoreType = {
-    [K in keyof RemoveMethods<CurrentVillageStore>]:
-        K extends keyof Omit<CurrentVillageStore, keyof CurrentVillageType> ?
-        MechanusComputedRef<CurrentVillageStore[K]> :
-        MechanusRef<CurrentVillageStore[K]>;
+type MechanusCacheStoreType = {
+    [K in keyof CacheStore]:
+        K extends 'userAlias' ? MechanusComputedRef<CacheStore[K]> : MechanusRef<CacheStore[K]>;
 };
 
 // PLUNDER INFO
@@ -81,14 +57,11 @@ interface PlunderConfigStore extends PlunderConfigType {
     raw(): PlunderConfigType;
 };
 
-type PiniaPlunderConfigStoreActions = PlunderConfigStore['raw'];
-
 type PiniaPlunderConfigStoreType = {
     [K in keyof PlunderConfigStore]:
-        PlunderConfigStore[K] extends PiniaPlunderConfigStoreActions ?
-        PlunderConfigStore[K] :
-        import('vue').Ref<PlunderConfigStore[K]>;
+        PlunderConfigStore[K] extends () => void ? PlunderConfigStore[K] : import('vue').Ref<PlunderConfigStore[K]>;
 };
+
 type MechanusPlunderConfigStoreType = {
     [K in keyof RemoveMethods<PlunderConfigStore>]: MechanusRef<RemoveMethods<PlunderConfigStore>[K]>;
 };
@@ -97,14 +70,12 @@ type MechanusPlunderConfigStoreType = {
 interface PlunderHistoryStore extends PlunderHistoryType {
     useTotal(): import('vue').ComputedRef<number>;
 };
-type PiniaPlunderHistoryStoreActions = PlunderHistoryStore['useTotal'];
 
 type PiniaPlunderHistoryStoreType = {
     [K in Exclude<keyof PlunderHistoryStore, 'villages'>]:
-        PlunderHistoryStore[K] extends PiniaPlunderHistoryStoreActions ?
-        PlunderHistoryStore[K] :
-        import('vue').Ref<PlunderHistoryStore[K]>;
+        PlunderHistoryStore[K] extends () => void ? PlunderHistoryStore[K] : import('vue').Ref<PlunderHistoryStore[K]>;
 };
+
 type MechanusPlunderHistoryStoreType = {
     [K in keyof RemoveMethods<PlunderHistoryStore>]: MechanusRef<RemoveMethods<PlunderHistoryStore>[K]>;
 };
@@ -120,27 +91,13 @@ interface UnitsStore extends UnitAmount {
     raw(): UnitAmount;
 };
 
-type PiniaUnitsStoreActions = UnitsStore['raw'];
 type PiniaUnitsStoreType = {
     [K in keyof UnitsStore]:
-        UnitsStore[K] extends PiniaUnitsStoreActions ?
-        UnitsStore[K] :
-        import('vue').Ref<UnitsStore[K]>;
+        UnitsStore[K] extends () => void ? UnitsStore[K] : import('vue').Ref<UnitsStore[K]>;
 };
+
 type MechanusUnitsStoreType = {
     [K in keyof RemoveMethods<UnitsStore>]: MechanusRef<RemoveMethods<UnitsStore>[K]>;
-};
-
-// CACHE
-interface CacheStore {
-    readonly world: World | null;
-    readonly player: string | null;
-    readonly userAlias: UserAlias | null;
-};
-
-type MechanusCacheStoreType = {
-    [K in keyof CacheStore]:
-        K extends 'userAlias' ? MechanusComputedRef<CacheStore[K]> : MechanusRef<CacheStore[K]>;
 };
 
 // BROWSER
@@ -174,13 +131,9 @@ interface SnobConfigStore extends SnobConfigType {
     raw(): SnobConfigType;
 };
 
-type PiniaSnobConfigStoreActions = SnobConfigStore['raw'];
-
 type PiniaSnobConfigStoreType = {
     [K in keyof SnobConfigStore]:
-        SnobConfigStore[K] extends PiniaSnobConfigStoreActions ?
-        SnobConfigStore[K] :
-        import('vue').Ref<SnobConfigStore[K]>;
+        SnobConfigStore[K] extends () => void ? SnobConfigStore[K] : import('vue').Ref<SnobConfigStore[K]>;
 };
 
 // SNOB HISTORY

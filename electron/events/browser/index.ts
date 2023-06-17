@@ -1,16 +1,16 @@
 import { ipcMain } from 'electron';
-import { useAresStore } from '$electron/stores';
+import { useCacheStore } from '$electron/stores';
 import { MainWindow } from '$electron/windows';
 import { setCaptchaEvents } from '$electron/events/browser/captcha';
 
 export function setBrowserEvents() {
     const mainWindow = MainWindow.getInstance();
-    const aresStore = useAresStore();
+    const cacheStore = useCacheStore();
 
-    ipcMain.handle('browser:get-response-time', () => aresStore.responseTime);
+    ipcMain.handle('browser:get-response-time', () => cacheStore.responseTime);
 
     ipcMain.on('browser:update-response-time', (_e, time: number) => {
-        aresStore.responseTime = time;
+        cacheStore.responseTime = time;
         mainWindow.webContents.send('response-time-did-update', time);
     });
 

@@ -1,6 +1,7 @@
+import { storeToRefs } from 'pinia';
 import { useEventListener, useMutationObserver } from '@vueuse/core';
 import { assertInteger, isInstanceOf, assertString } from '$common/guards';
-import { useCurrentVillageStore, usePlunderConfigStore } from '$renderer/stores';
+import { useGameDataStore, usePlunderConfigStore } from '$renderer/stores';
 import { generateRandomDelay } from '$common/helpers';
 import { wait } from '$browser/utils/helpers';
 import { unitsRegex } from '$common/regex';
@@ -12,7 +13,9 @@ export const eventTarget = new EventTarget();
 
 export function prepareAttack(plunderAttack: PlunderAttack, button: HTMLAnchorElement) {
     const config = usePlunderConfigStore();
-    const village = useCurrentVillageStore();
+    const gameData = useGameDataStore();
+
+    const { village } = storeToRefs(gameData);
 
     return new Promise<void>((resolve, reject) => {
         // O jogo possui um limite de cinco ações por segundo.
@@ -22,7 +25,7 @@ export function prepareAttack(plunderAttack: PlunderAttack, button: HTMLAnchorEl
 
         function attack() {
             sendAttack(button)
-                .then(() => ipcSend('plunder:attack-sent', village.id, plunderAttack))
+                .then(() => ipcSend('plunder:attack-sent', village.value.id, plunderAttack))
                 .then(() => resolve())
                 .catch((err: unknown) => reject(err))
                 .finally(() => cleanup());

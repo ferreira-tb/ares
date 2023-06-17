@@ -62,6 +62,7 @@ export async function ipcInvoke(channel: 'current-tab:can-go-back'): Promise<boo
 export async function ipcInvoke(channel: 'current-tab:can-go-forward'): Promise<boolean>;
 
 // Jogo
+export async function ipcInvoke(channel: 'game:data'): Promise<TribalWarsGameDataType | null>;
 export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:get-all-village-groups'): Promise<Set<VillageGroup>>;
 
@@ -79,7 +80,6 @@ export async function ipcInvoke(
 
 // Jogador
 export async function ipcInvoke(channel: 'player:name'): Promise<string | null>;
-export async function ipcInvoke(channel: 'player:get-store'): Promise<PlayerStore>;
 
 // Erros
 export async function ipcInvoke(channel: 'error:export'): Promise<'canceled' | 'error' | 'sucess'>;

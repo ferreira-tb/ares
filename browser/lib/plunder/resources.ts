@@ -5,9 +5,9 @@ import { usePlunderConfigStore } from '$renderer/stores';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 export class PlunderAttackWithLoot extends PlunderAttack {
-    wood: number;
-    stone: number;
-    iron: number;
+    public wood: number;
+    public stone: number;
+    public iron: number;
 
     constructor(info: PlunderTargetInfo, carry: number) {
         super();

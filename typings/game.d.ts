@@ -75,22 +75,20 @@ type VillageGroupsType = {
 };
 
 interface TribalWarsGameDataType {
-    readonly ares: {
-        /** Local. */
-        readonly locale: string | null;
-        /** Mundo atual. */
-        readonly world: World | null;
-        /** Versão do Tribal Wars. */
-        readonly majorVersion: string | null;
-        /** Janela atual. */
-        readonly screen: string | null;
-        /** Modo da janela atual. */
-        readonly screenMode: string | null;
-        /** Indica se está no modo de pré-jogo. */
-        readonly pregame: boolean | null;
-        /** ID do grupo de aldeias atual. */
-        readonly groupId: number | null;
-    };
+    /** Local. */
+    readonly locale: string | null;
+    /** Mundo atual. */
+    readonly world: World | null;
+    /** Versão do Tribal Wars. */
+    readonly majorVersion: string | null;
+    /** Janela atual. */
+    readonly screen: string | null;
+    /** Modo da janela atual. */
+    readonly screenMode: string | null;
+    /** Indica se está no modo de pré-jogo. */
+    readonly pregame: boolean | null;
+    /** ID do grupo de aldeias atual. */
+    readonly groupId: number | null;
 
     readonly features: {
         /** Conta premium. */
@@ -110,9 +108,11 @@ interface TribalWarsGameDataType {
         readonly points: number;
         /** Quantidade de aldeias que o jogador possui. */
         readonly villageAmount: number;
+        /** Tribo do jogador. */
+        readonly ally: number;
     };
     
-    readonly currentVillage: {
+    readonly village: {
         /** Coordenada X da aldeia atual. */
         readonly x: number | null;
         /** Coordenada Y da aldeia atual. */

@@ -2,11 +2,11 @@ import { IpcTribal, IpcTribalError } from '$ipc/interface';
 import { PlunderInfo, TribalWarsGameData, TribalWarsTiming, Units } from '$ipc/templates';
 
 export function setIpcTribalEvents() {
-    IpcTribal.on('show-ui-error-message', (message: string) => UI.ErrorMessage(message));
-    IpcTribal.on('show-ui-info-message', (message: string) => UI.InfoMessage(message));
-    IpcTribal.on('show-ui-success-message', (message: string) => UI.SuccessMessage(message));
+    IpcTribal.on('ipc-tribal:ui-error-message', (message: string) => UI.ErrorMessage(message));
+    IpcTribal.on('ipc-tribal:ui-info-message', (message: string) => UI.InfoMessage(message));
+    IpcTribal.on('ipc-tribal:ui-success-message', (message: string) => UI.SuccessMessage(message));
 
-    IpcTribal.handle('get-current-village-units', () => {
+    IpcTribal.handle('ipc-tribal:current-village-units', () => {
         try {
             const rawUnits = Accountmanager.farm.current_units;
             return new Units(rawUnits);
@@ -26,7 +26,7 @@ export function setIpcTribalEvents() {
         };
     });
 
-    IpcTribal.handle('get-incoming-attacks', () => {
+    IpcTribal.handle('ipc-tribal:incoming-attacks', () => {
         try {
             const incomingAttacks = TribalWars.getGameData().player.incomings;
             return Number.parseIntStrict(incomingAttacks);
@@ -36,7 +36,7 @@ export function setIpcTribalEvents() {
         };
     });
 
-    IpcTribal.handle('get-plunder-info', () => {
+    IpcTribal.handle('ipc-tribal:plunder-info', () => {
         try {
             const rawPlunderInfo = Accountmanager.farm;
             return new PlunderInfo(rawPlunderInfo);
@@ -57,7 +57,7 @@ export function setIpcTribalEvents() {
         };
     });
 
-    IpcTribal.handle('get-timing', () => {
+    IpcTribal.handle('ipc-tribal:timing', () => {
         try {
             return new TribalWarsTiming(Timing);
         } catch (err) {

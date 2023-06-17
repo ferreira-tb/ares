@@ -6,12 +6,13 @@ import { app, dialog, ipcMain } from 'electron';
 import { MainProcessError } from '$electron/error';
 import { sequelize } from '$electron/database';
 import { MainWindow, StandardWindow } from '$electron/windows';
-import { useAresStore } from '$electron/stores';
+import { useCacheStore, useGameDataStore } from '$electron/stores';
 import { ErrorLog, ElectronErrorLog } from '$electron/database/models';
 import { StandardWindowName } from '$common/constants';
 
 export function setErrorEvents() {
-    const aresStore = useAresStore();
+    const cacheStore = useCacheStore();
+    const gameDataStore = useGameDataStore();
     const mainWindow = MainWindow.getInstance();
 
     ipcMain.on('error:create-log', async (e, error: OmitOptionalErrorLogProps<ErrorLogBase>) => {
@@ -20,14 +21,14 @@ export function setErrorEvents() {
                 name: error.name,
                 message: error.message,
                 stack: error.stack,
-                world: aresStore.world,
+                world: cacheStore.world,
                 time: Date.now(),
                 url: new URL(e.sender.getURL()).href,
                 ares: app.getVersion(),
                 chrome: process.versions.chrome,
                 electron: process.versions.electron,
-                tribal: aresStore.majorVersion,
-                locale: aresStore.locale
+                tribal: gameDataStore.majorVersion,
+                locale: gameDataStore.locale
             };
 
             const newRow = await sequelize.transaction(async () => {

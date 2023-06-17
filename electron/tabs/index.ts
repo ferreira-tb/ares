@@ -24,20 +24,21 @@ export class BrowserTab extends EventEmitter {
         return super.once(event, listener);
     };
 
-    public readonly view: BrowserView = new BrowserView({
-        webPreferences: {
-            preload: browserJs,
+    public readonly id: number;
+    public readonly view: BrowserView;
+
+    private constructor(id: number) {
+        super();
+
+        const webPreferences: Electron.WebPreferences = {
             spellcheck: false,
             nodeIntegration: false,
             contextIsolation: true,
             devTools: process.env.ARES_MODE === 'dev'
-        }
-    });
+        };
 
-    public readonly id: number;
-
-    private constructor(id: number) {
-        super();
+        if (!BrowserTab.mainTab.value) webPreferences.preload = browserJs;
+        this.view = new BrowserView({ webPreferences });
 
         this.id = id;
         this.setWindowOpenHandler();
@@ -46,6 +47,32 @@ export class BrowserTab extends EventEmitter {
 
         this.view.webContents.on('will-navigate', (e, url) => {
             if (!isAllowedOrigin(url)) e.preventDefault();
+        });
+
+        this.view.webContents.on('did-navigate', async () => {
+            try {
+                await this.view.webContents.insertCSS(BrowserTab.css);
+                
+                if (BrowserTab.currentTab.value !== this) return;
+                this.updateBackForwardStatus();
+            } catch (err) {
+                BrowserTabError.catch(err);
+            };
+        });
+    
+        this.view.webContents.on('did-navigate-in-page', () => {
+            if (BrowserTab.currentTab.value !== this) return;
+            this.updateBackForwardStatus();
+        });
+    
+        this.view.webContents.on('did-frame-navigate', () => {
+            if (BrowserTab.currentTab.value !== this) return;
+            this.updateBackForwardStatus();
+        });
+    
+        this.view.webContents.on('did-redirect-navigation', () => {
+            if (BrowserTab.currentTab.value !== this) return;
+            this.updateBackForwardStatus();
         });
 
         this.view.webContents.on('page-title-updated', () => {
@@ -123,14 +150,6 @@ export class BrowserTab extends EventEmitter {
         mainWindow.webContents.send('tab:destroyed', this.id);
     };
 
-    /** Retorna um objeto com informações sobre a capacidade de navegação da aba. */
-    private getBackForwardStatus(): BackForwardStatus {
-        return {
-            canGoBack: this.view.webContents.canGoBack(),
-            canGoForward: this.view.webContents.canGoForward()
-        };
-    };
-
     public goBack() {
         if (this.view.webContents.canGoBack()) {
             this.view.webContents.goBack();
@@ -196,6 +215,16 @@ export class BrowserTab extends EventEmitter {
         });
     };
 
+    private updateBackForwardStatus() {
+        const status: BackForwardStatus = {
+            canGoBack: this.view.webContents.canGoBack(),
+            canGoForward: this.view.webContents.canGoForward()
+        };
+
+        const mainWindow = MainWindow.getInstance();
+        mainWindow.webContents.send('tab:back-forward-status', status);
+    };
+
     private updateLoadingStatus() {
         const mainWindow = MainWindow.getInstance();
         mainWindow.webContents.send('tab:loading-status', this.id, this.isLoading());
@@ -214,38 +243,13 @@ export class BrowserTab extends EventEmitter {
     private static readonly css = readFileSync(browserCss, { encoding: 'utf8' });
 
     static {
-        wheneverAsync(this.currentTab, (current, previous: BrowserTab | null) => {
-            if (previous) {
-                previous.view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
-
-                queueMicrotask(() => {
-                    previous.webContents.removeAllListeners('did-navigate');
-                    previous.webContents.removeAllListeners('did-navigate-in-page');
-                    previous.webContents.removeAllListeners('did-frame-navigate');
-                    previous.webContents.removeAllListeners('did-redirect-navigation');
-                });
-            };
-        
-            current.webContents.on('did-navigate', () => {
-                current.insertCSS(this.css).catch(BrowserTabError.catch);
-                mainWindow.webContents.send('tab:back-forward-status', current.getBackForwardStatus());
-            });
-        
-            current.webContents.on('did-navigate-in-page', () => {
-                mainWindow.webContents.send('tab:back-forward-status', current.getBackForwardStatus());
-            });
-        
-            current.webContents.on('did-frame-navigate', () => {
-                mainWindow.webContents.send('tab:back-forward-status', current.getBackForwardStatus());
-            });
-        
-            current.webContents.on('did-redirect-navigation', () => {
-                mainWindow.webContents.send('tab:back-forward-status', current.getBackForwardStatus());
-            });
+        wheneverAsync(this.currentTab, async (current, previous: BrowserTab | null) => {
+            previous?.view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
 
             this.removeAutoResize?.();
             this.setAutoResize(current);
 
+            await current.insertCSS(this.css);
             const mainWindow = MainWindow.getInstance();
             mainWindow.setTopBrowserView(current.view);
             current.setTabBounds();
@@ -279,8 +283,7 @@ export class BrowserTab extends EventEmitter {
                 this.currentTab.value = tab;
             };
 
-            Promise.all([tab.loadURL(options.url), tab.insertCSS(this.css)])
-                .catch(BrowserTabError.catch);
+            tab.loadURL(options.url).catch(BrowserTabError.catch);
 
             if (this.mainTab.value) {
                 // Envia o id e o título da aba para a janela principal.

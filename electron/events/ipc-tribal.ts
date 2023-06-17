@@ -5,21 +5,15 @@ import { ipcTribalJs } from '$electron/utils/files';
 import { MainProcessError } from '$electron/error';
 
 import {
-    useAresStore,
     useCacheStore,
-    useCurrentVillageStore,
-    useFeaturesStore,
-    usePlayerStore,
+    useGameDataStore,
     usePlunderStore,
     useUnitsStore
 } from '$electron/stores';
 
 export function setIpcTribalEvents() {
-    const aresStore = useAresStore();
     const cacheStore = useCacheStore();
-    const currentVillageStore = useCurrentVillageStore();
-    const featuresStore = useFeaturesStore();
-    const playerStore = usePlayerStore();
+    const gameDataStore = useGameDataStore();
     const plunderStore = usePlunderStore();
     const unitsStore = useUnitsStore();
 
@@ -45,38 +39,17 @@ export function setIpcTribalEvents() {
     });
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
-    ipcMain.on('ipc-tribal:update-game-data', <T extends keyof TribalWarsGameDataType>(
-        e: Electron.IpcMainEvent, gameData: TribalWarsGameDataType | null
-    ) => {
+    ipcMain.on('ipc-tribal:update-game-data', (e: Electron.IpcMainEvent, gameData: TribalWarsGameDataType | null) => {
         try {
-            // Até então, quando o IpcTribal não conseguia obter os dados, ele simplesmente não avisava ao processo principal.
-            // Isso agora foi alterado, permitindo-o a enviar um objeto nulo, que deverá ser tratado aqui.
-            // No entanto, todos esses eventos precisam ser revisados.
-            // Por hora, apenas o cache será atualizado, para que o alias se torne também nulo.
             if (!gameData) {
                 cacheStore.player = null;
                 cacheStore.world = null;
                 return;
             };
 
-            for (const key of Object.keys(gameData) as T[]) {
-                switch (key) {
-                    case 'ares':
-                        patchGameData('ares', aresStore, gameData);
-                        break;
-                    case 'features':
-                        patchGameData('features', featuresStore, gameData);
-                        break;
-                    case 'player':
-                        patchGameData('player', playerStore, gameData);
-                        break;
-                    case 'currentVillage':
-                        patchGameData('currentVillage', currentVillageStore, gameData);
-                        break;
-                    default:
-                        throw new MainProcessError(`Could not update game data: ${key} is not a valid key.`);
-                };
-            };
+            gameDataStore.$patch(gameData);
+            cacheStore.player = gameData.player.name;
+            cacheStore.world = gameData.world;
             
             for (const contents of webContents.getAllWebContents()) {
                 if (contents !== e.sender) {
@@ -119,7 +92,7 @@ export function setIpcTribalEvents() {
     
             for (const contents of webContents.getAllWebContents()) {
                 if (contents !== e.sender) {
-                    contents.send('game:patch-current-village-units', units);
+                    contents.send('game:patch-village-units', units);
                 };
             };
 
@@ -130,19 +103,4 @@ export function setIpcTribalEvents() {
             return false;
         };
     });
-};
-
-function patchGameData(dataType: 'ares', store: ReturnType<typeof useAresStore>, gameData: TribalWarsGameDataType): void;
-function patchGameData(dataType: 'features', store: ReturnType<typeof useFeaturesStore>, gameData: TribalWarsGameDataType): void;
-function patchGameData(dataType: 'player', store: ReturnType<typeof usePlayerStore>, gameData: TribalWarsGameDataType): void;
-function patchGameData(dataType: 'currentVillage', store: ReturnType<typeof useCurrentVillageStore>, gameData: TribalWarsGameDataType): void;
-function patchGameData<T extends keyof TribalWarsGameDataType, U extends keyof TribalWarsGameDataType[T]>(
-    dataType: T, store: MechanusStore<TribalWarsGameDataType[T]>, gameData: TribalWarsGameDataType
-) {
-    const cacheStore = useCacheStore();
-    for (const [key, value] of Object.entries(gameData[dataType]) as [U, typeof store[U]][]) {
-        if (key === 'world' && dataType === 'ares') cacheStore.world = value as World | null;
-        if (key === 'name' && dataType === 'player') cacheStore.player = value as string | null;
-        store[key] = value;
-    };
 };

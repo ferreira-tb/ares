@@ -1,18 +1,19 @@
-import { useCurrentVillageStore, usePlunderStore } from '$renderer/stores';
+import { useGameDataStore, usePlunderStore } from '$renderer/stores';
 import { ipcSend } from '$renderer/ipc';
 
 class PlunderPageList implements PlunderPageListType {
-    readonly id: number;
-    readonly all: PlunderPageType[] = [];
+    public readonly id: number;
+    public readonly all: PlunderPageType[] = [];
 
     constructor() {
-        this.id = useCurrentVillageStore().getId();
+        const gameData = useGameDataStore();
+        this.id = gameData.getVillageId();
     };
 };
 
 class PlunderPage implements PlunderPageType {
-    readonly index: number;
-    readonly done: boolean;
+    public readonly index: number;
+    public readonly done: boolean;
 
     constructor(plunderStore: ReturnType<typeof usePlunderStore>, index: number) {
         this.index = index;
