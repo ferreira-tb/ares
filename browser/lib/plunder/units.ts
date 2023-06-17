@@ -8,7 +8,7 @@ import { PlunderError } from '$browser/error';
 /** Atualiza a quantidade de unidades disponíveis no assistente de saque. */
 export async function queryAvailableUnits() {
     const unitStore = useUnitsStore();
-    const units = await IpcTribal.invoke('get-current-village-units');
+    const units = await IpcTribal.invoke('ipc-tribal:current-village-units');
 
     // Se não foi possível obter as unidades a partir do IpcTribal, tenta obter do DOM.
     if (units) {

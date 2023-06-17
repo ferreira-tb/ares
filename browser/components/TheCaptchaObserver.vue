@@ -3,13 +3,13 @@ import { ref, watchSyncEffect, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useMutationObserver } from '@vueuse/core';
 import { isInstanceOf } from '$common/guards';
-import { useAresStore } from '$renderer/stores';
+import { useCacheStore } from '$renderer/stores';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
 import type { UseMutationObserverOptions } from '@vueuse/core';
 
-const aresStore = useAresStore();
-const { captcha } = storeToRefs(aresStore);
+const cache = useCacheStore();
+const { captcha } = storeToRefs(cache);
 
 captcha.value = thereIsBotCheck();
 watchSyncEffect(() => ipcSend('captcha:update-status', captcha.value));

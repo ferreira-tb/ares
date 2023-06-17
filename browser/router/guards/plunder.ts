@@ -1,22 +1,22 @@
-import { nextTick } from 'vue';
+import { nextTick, toRef } from 'vue';
 import { storeToRefs } from 'pinia';
 import { until } from '@vueuse/core';
 import { getPlunderInfo, updatePlunderConfig } from '$browser/lib/plunder/data';
-import { useAresStore, useCurrentVillageStore, usePlunderStore, usePlunderConfigStore } from '$renderer/stores';
+import { useGameDataStore, usePlunderStore, usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { BrowserRouterError } from '$browser/error';
 import type { Router } from 'vue-router';
 
 export function setPlunderNavigationGuards(router: Router) {
-    const aresStore = useAresStore();
-    const plunderStore = usePlunderStore();
-    const plunderConfigStore = usePlunderConfigStore();
-    const currentVillageStore = useCurrentVillageStore();
+    const gameData = useGameDataStore();
+    const plunder = usePlunderStore();
+    const plunderConfig = usePlunderConfigStore();
 
-    const { groupId: currentGroupId } = storeToRefs(aresStore);
-    const { page: plunderPage } = storeToRefs(plunderStore);
-    const { active: isPlunderActive, plunderGroupId, groupAttack } = storeToRefs(plunderConfigStore);
-    const { id: currentVillageId } = storeToRefs(currentVillageStore);
+    const { groupId: currentGroupId, village } = storeToRefs(gameData);
+    const { page: plunderPage } = storeToRefs(plunder);
+    const { active: isPlunderActive, plunderGroupId, groupAttack } = storeToRefs(plunderConfig);
+
+    const currentVillageId = toRef(() => village.value.id);
 
     router.beforeEach(async (to) => {
         try {

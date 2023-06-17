@@ -6,32 +6,32 @@ import { calcDistance } from '$common/helpers';
 import { parseCoordsFromTextContentStrict, parseGameDate } from '$renderer/utils/parser';
 import { PlunderError } from '$browser/error';
 import { resources as resourceList } from '$common/constants';
-import { useCurrentVillageStore } from '$renderer/stores';
+import { useGameDataStore } from '$renderer/stores';
 import { assertWallLevel } from '$common/guards';
 
 /** Informações sobre a aldeia-alvo. */
 export class PlunderTargetInfo {
     /** ID da aldeia. */
-    readonly id: number;
+    public readonly id: number;
     /** Data do último ataque contra a aldeia (em milisegundos). */
-    lastAttack: number = 0;
+    public lastAttack: number = 0;
     /** Minutos desde o último ataque. */
-    minutesSince: number = 0;
+    public minutesSince: number = 0;
     /** Indica se há informações obtidas por exploradores. */
-    spyInfo: boolean = false;
+    public spyInfo: boolean = false;
     /** Nível da muralha. */
-    wallLevel: WallLevel = 0;
+    public wallLevel: WallLevel = 0;
     /** Distância até à aldeia. */
-    distance: number = Infinity;
+    public distance: number = Infinity;
 
     /** Coordenadas da aldeia. */
-    coords: Coords = {
+    public coords: Coords = {
         x: 0,
         y: 0
     };
 
     /** Quantidade de recursos na aldeia. */
-    res: PlunderTableResources = {
+    public res: PlunderTableResources = {
         wood: 0,
         stone: 0,
         iron: 0,
@@ -39,7 +39,7 @@ export class PlunderTargetInfo {
     };
     
     /** Botões da tabela. */
-    button: PlunderTableButtons = {
+    public button: PlunderTableButtons = {
         a: null,
         b: null,
         c: null,
@@ -66,8 +66,8 @@ export function queryTargetsInfo() {
     // Desconecta qualquer observer que esteja ativo.
     eventTarget.dispatchEvent(new Event('stop'));
 
-    const currentVillageStore = useCurrentVillageStore();
-    const { x, y } = storeToRefs(currentVillageStore);
+    const gameData = useGameDataStore();
+    const { village } = storeToRefs(gameData);
 
     const plunderListRows = document.queryAsArray('#plunder_list tbody tr[id^="village_"]');
     for (const row of plunderListRows) {
@@ -82,7 +82,7 @@ export function queryTargetsInfo() {
         const info = new PlunderTargetInfo(villageId.toIntegerStrict());
 
         // Campo de relatório. É usado para calcular a distância até a aldeia-alvo.
-        queryReport(row, info, x.value, y.value);
+        queryReport(row, info, village.value.x, village.value.y);
         // Data do último ataque.
         queryLastAttack(row, info);
         // Quantidade de recursos.

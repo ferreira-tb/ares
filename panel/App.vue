@@ -4,19 +4,21 @@ import { RouterView } from 'vue-router';
 import { useArrayIncludes, watchImmediate } from '@vueuse/core';
 import { NConfigProvider, NMessageProvider, darkTheme } from 'naive-ui';
 import { routeNames, router } from '$panel/router';
-import { useAresStore } from '$renderer/stores';
+import { useCacheStore, useGameDataStore } from '$renderer/stores';
 import { usePanelVisibility } from '$renderer/composables';
 import HomeView from '$panel/views/HomeView.vue';
 import CaptchaView from '$panel/views/CaptchaView.vue';
 
-const aresStore = useAresStore();
+const cache = useCacheStore();
+const gameData = useGameDataStore();
 
-const { captcha, screen: currentScreen } = storeToRefs(aresStore);
+const { captcha } = storeToRefs(cache);
+const { screen } = storeToRefs(gameData);
 const { isVisible } = usePanelVisibility();
 
 // Define a janela de acordo com a página atual no jogo.
-const isValidRoute = useArrayIncludes(routeNames, currentScreen);
-watchImmediate(currentScreen, async (name) => {
+const isValidRoute = useArrayIncludes(routeNames, screen);
+watchImmediate(screen, async (name) => {
     if (name && isValidRoute.value) {
         await router.push({ name });
     } else {

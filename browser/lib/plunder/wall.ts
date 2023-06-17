@@ -1,5 +1,5 @@
 import { assertInteger } from '$common/guards';
-import { useCurrentVillageStore, useUnitsStore } from '$renderer/stores';
+import { useGameDataStore, useUnitsStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { openPlace } from '$lib/plunder/place';
 import { sendAttackFromPlace } from '$lib/plunder/attack';
@@ -35,8 +35,8 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
             const attack = new PlunderAttackWithLoot(info, carry);
             attack.destroyedWalls = info.wallLevel;
 
-            const currentVillage = useCurrentVillageStore();
-            ipcSend('plunder:attack-sent', currentVillage.id, attack);
+            const gameData = useGameDataStore();
+            ipcSend('plunder:attack-sent', gameData.village.id, attack);
         };
 
         return sent;

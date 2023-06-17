@@ -4,10 +4,6 @@ import { ipcInvoke } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
 import { RendererProcessError } from '$renderer/error';
 
-/**
- * Cria uma referência reativa para o alias do usuário.
- * Ela é atualizada automaticamente quando ele é alterado.
- */
 export function useUserAlias() {
     const scope = effectScope();
     const userAlias = ref<UserAlias | null>(null);

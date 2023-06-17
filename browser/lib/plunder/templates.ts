@@ -9,24 +9,24 @@ import type { usePlunderConfigStore } from '$renderer/stores';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 class TemplateUnits implements FarmUnitsAmount {
-    spear = 0;
-    sword = 0;
-    axe = 0;
-    spy = 0;
-    light = 0;
-    heavy = 0;
-    knight = 0;
-    archer = 0;
-    marcher = 0;
+    public spear = 0;
+    public sword = 0;
+    public axe = 0;
+    public spy = 0;
+    public light = 0;
+    public heavy = 0;
+    public knight = 0;
+    public archer = 0;
+    public marcher = 0;
 };
 
 export class PlunderTemplate {
     /** Tipo do modelo. */
-    readonly type: string;
+    public readonly type: string;
     /** Alias do criador do modelo. Somente válido para modelos personalizados. */
-    readonly alias: UserAlias | null;
+    public readonly alias: UserAlias | null;
     /** Quantidade de tropas no modelo. */
-    readonly units = new TemplateUnits();
+    public readonly units = new TemplateUnits();
 
     constructor(type: string, alias: UserAlias | null = null) {
         this.type = type;
@@ -34,10 +34,10 @@ export class PlunderTemplate {
     };
 
     /** Capacidade de carga. */
-    readonly carry = ref(0);
+    public readonly carry = ref(0);
     
     /** Indica se há tropas o suficiente para o modelo ser usado. */
-    readonly ok = computed(() => {
+    public readonly ok = computed(() => {
         const unitStore = useUnitsStore();
         for (const [key, value] of Object.entries(this.units) as [FarmUnits, number][]) {
             if (unitStore[key] < value) return false;

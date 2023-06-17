@@ -2,13 +2,13 @@ import { ref, type Ref } from 'vue';
 import { until, useStyleTag, useMutationObserver } from '@vueuse/core';
 import { isInstanceOf, isInteger } from '$common/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { useFeaturesStore } from '$renderer/stores';
+import { useGameDataStore } from '$renderer/stores';
 import { usePlunderConfigStore } from '$renderer/stores/plunder';
 import { PlunderError } from '$browser/error';
 
 class PlunderGroup implements PlunderGroupType {
-    readonly id: number;
-    readonly villages = new Map<number, PlunderGroupVillageType>();
+    public readonly id: number;
+    public readonly villages = new Map<number, PlunderGroupVillageType>();
 
     constructor(plunderGroupId: number) {
         this.id = plunderGroupId;
@@ -16,8 +16,8 @@ class PlunderGroup implements PlunderGroupType {
 };
 
 class PlunderGroupVillage implements PlunderGroupVillageType {
-    waveMaxDistance: number;
-    done: boolean = false;
+    public waveMaxDistance: number;
+    public done: boolean = false;
 
     constructor(fieldsPerWave: number) {
         this.waveMaxDistance = fieldsPerWave;
@@ -28,11 +28,11 @@ export async function queryPlunderGroupInfo(): Promise<PlunderGroupType | null> 
     let groupInfo: PlunderGroupType | null = null;
     try {
         const config = usePlunderConfigStore();
-        const features = useFeaturesStore();
+        const gameData = useGameDataStore();
         
         if (
-            !features.premium ||
-            !features.farmAssistant ||
+            !gameData.features.premium ||
+            !gameData.features.farmAssistant ||
             !config.groupAttack ||
             !config.plunderGroupId
         ) {

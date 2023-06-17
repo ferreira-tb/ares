@@ -1,29 +1,17 @@
 import { RendererProcessError } from '$renderer/error';
 
 export class PanelError extends RendererProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'PanelError';
-    };
+    public override name = 'PanelError';
 };
 
 export class PanelRouterError extends PanelError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'PanelRouterError';
-    };
+    public override readonly name = 'PanelRouterError';
 };
 
 export class PanelPlunderViewError extends PanelError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'PanelPlunderViewError';
-    };
+    public override readonly name = 'PanelPlunderViewError';
 };
 
 export class PanelSnobViewError extends PanelError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'PanelSnobViewError';
-    };
+    public override readonly name = 'PanelSnobViewError';
 };

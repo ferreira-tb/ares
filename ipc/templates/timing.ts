@@ -2,13 +2,13 @@ import { assertInteger } from '$common/guards';
 import { IpcTribalModelError } from '$ipc/interface/error';
 
 export class TribalWarsTiming implements TribalWarsTimingType {
-    readonly addedServerTime: number;
-    readonly initialServerTime: number;
-    readonly isReady: boolean;
-    readonly offsetFromServer: number;
-    readonly offsetToServer: number;
-    readonly paused: boolean;
-    readonly tickInterval: number;
+    public readonly addedServerTime: number;
+    public readonly initialServerTime: number;
+    public readonly isReady: boolean;
+    public readonly offsetFromServer: number;
+    public readonly offsetToServer: number;
+    public readonly paused: boolean;
+    public readonly tickInterval: number;
 
     constructor(timing: RawTiming) {
         assertInteger(timing.added_server_time, 'added_server_time is not an integer');

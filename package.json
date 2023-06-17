@@ -83,7 +83,7 @@
         "rollup": "^3.25.1",
         "sass": "^1.63.4",
         "semver": "^7.5.2",
-        "sequelize": "^6.32.0",
+        "sequelize": "^6.32.1",
         "taze": "^0.10.2",
         "tslib": "^2.5.3",
         "typescript": "^5.1.3",

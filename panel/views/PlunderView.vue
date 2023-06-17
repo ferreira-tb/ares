@@ -2,14 +2,14 @@
 import { computed, nextTick, ref, watchEffect } from 'vue';
 import { watchDeep } from '@vueuse/core';
 import { NButton, NButtonGroup, NGrid, NGridItem, NSwitch } from 'naive-ui';
-import { useFeaturesStore, usePlunderConfigStore } from '$renderer/stores';
+import { useGameDataStore, usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
 import { StandardWindowName } from '$common/constants';
 import ThePlunderedResources from '$panel/components/ThePlunderedResources.vue';
 
 const config = usePlunderConfigStore();
-const features = useFeaturesStore();
+const gameData = useGameDataStore();
 
 // Sincroniza a configuração com o processo principal.
 const previousConfig = await ipcInvoke('plunder:get-config');
@@ -28,7 +28,7 @@ const hasDynamicGroup = computed<boolean>(() => {
 });
 
 const canUseGroupAttack = computed<boolean>(() => {
-    if (features.premium === false) return false;
+    if (gameData.features.premium === false) return false;
     return hasDynamicGroup.value;
 });
 
@@ -37,9 +37,9 @@ watchDeep(config, () => {
 });
 
 watchEffect(() => {
-    if (features.premium === false || !hasDynamicGroup.value) {
+    if (gameData.features.premium === false || !hasDynamicGroup.value) {
         config.groupAttack = false;
-    } else if (features.farmAssistant === false) {
+    } else if (gameData.features.farmAssistant === false) {
         config.active = false;
     };
 });
@@ -58,7 +58,7 @@ useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) =
                 </NButton>
                 <NButton
                     round
-                    :disabled="features.farmAssistant === false"
+                    :disabled="gameData.features.farmAssistant === false"
                     @click="config.active = !config.active"
                 >
                     {{ plunderButtonText }}

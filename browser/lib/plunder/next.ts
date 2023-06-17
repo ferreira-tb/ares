@@ -4,7 +4,7 @@ import { getAllTemplates } from '$lib/plunder/templates';
 import { queryAvailableUnits } from '$lib/plunder/units';
 import { getPlunderTargets } from '$lib/plunder/targets';
 import { PlunderError } from '$browser/error';
-import { usePlunderConfigStore, useCurrentVillageStore } from '$renderer/stores';
+import { useGameDataStore, usePlunderConfigStore } from '$renderer/stores';
 import type { PlunderTargetInfo } from '$lib/plunder/targets';
 
 export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
@@ -25,7 +25,8 @@ async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStor
         
         let maxDistance = config.maxDistance;
         if (config.groupAttack && groupInfo) {
-            const currentVillageId = useCurrentVillageStore().getId();
+            const gameData = useGameDataStore();
+            const currentVillageId = gameData.getVillageId();
             const villageStatus = groupInfo.villages.get(currentVillageId);
             if (villageStatus) maxDistance = villageStatus.waveMaxDistance;
         };
@@ -45,7 +46,8 @@ async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStor
 
 function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>, groupInfo: PlunderGroupType) {
     try {
-        const currentVillageId = useCurrentVillageStore().getId();
+        const gameData = useGameDataStore();
+        const currentVillageId = gameData.getVillageId();
         const groupVillage = groupInfo.villages.getStrict(currentVillageId);
         if (groupVillage.done) return;
 

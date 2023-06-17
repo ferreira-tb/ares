@@ -5,7 +5,7 @@ import { usePlunderStore, usePlunderConfigStore } from '$renderer/stores';
 
 export async function getPlunderInfo() {
     try {
-        const plunderInfo = await IpcTribal.invoke('get-plunder-info');
+        const plunderInfo = await IpcTribal.invoke('ipc-tribal:plunder-info');
         if (!plunderInfo) throw new PlunderError('Could not get plunder info.');
         
         const plunderStore = usePlunderStore();

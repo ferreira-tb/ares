@@ -3,7 +3,7 @@ import { computed, nextTick, ref } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NResult, NSelect } from 'naive-ui';
 import { computedAsync, watchDeep } from '@vueuse/core';
 import { useIpcOn, useUserAlias } from '$renderer/composables';
-import { usePlayerStore, useSnobConfigStore } from '$renderer/stores';
+import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { decodeString } from '$common/helpers';
 import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
@@ -15,15 +15,15 @@ const config = useSnobConfigStore();
 const previousConfig = await ipcInvoke('snob:get-config');
 if (previousConfig) config.$patch(previousConfig);
 
-const playerStore = usePlayerStore();
-const playerDataFromMainProcess = await ipcInvoke('player:get-store');
-playerStore.$patch(playerDataFromMainProcess);
+const gameData = useGameDataStore();
+const gameDataFromMainProcess = await ipcInvoke('game:data');
+if (gameDataFromMainProcess) gameData.$patch(gameDataFromMainProcess);
 
 await nextTick();
 
 const villages = computedAsync<WorldVillageType[]>(async () => {
-    if (!userAlias.value || typeof playerStore.id !== 'number') return [];
-    const playerVillages = await ipcInvoke('world-data:get-player-villages', playerStore.id);
+    if (!userAlias.value || typeof gameData.player.id !== 'number') return [];
+    const playerVillages = await ipcInvoke('world-data:get-player-villages', gameData.player.id);
     return playerVillages;
 }, []);
 

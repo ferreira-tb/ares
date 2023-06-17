@@ -2,7 +2,7 @@
 import { computed, ref, toRef } from 'vue';
 import { NButton, NButtonGroup } from 'naive-ui';
 import { computedAsync, watchDeep, watchImmediate, whenever } from '@vueuse/core';
-import { useCurrentVillageStore, useSnobConfigStore } from '$renderer/stores';
+import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
 import { useVillage } from '$renderer/composables/village';
@@ -12,7 +12,7 @@ import { StandardWindowName } from '$common/constants';
 import TheMintedCoins from '$panel/components/TheMintedCoins.vue';
 
 const config = useSnobConfigStore();
-const currentVillage = useCurrentVillageStore();
+const gameData = useGameDataStore();
 
 const snobButtonText = computed(() => config.active ? 'Parar' : 'Cunhar');
 const translatedTimeUnit = computed(() => {
@@ -66,7 +66,7 @@ watchImmediate(() => config.active, (active) => {
 // Como o watcher não é imediato, ele não irá alterar a aldeia caso a cunhagem já esteja ativa em outra.
 whenever(() => config.active, () => {
     if (config.mode === 'single') {
-        config.village = currentVillage.id;
+        config.village = gameData.village.id;
     };
 });
 

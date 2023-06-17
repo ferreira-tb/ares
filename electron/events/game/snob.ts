@@ -1,7 +1,7 @@
 import { ipcMain, webContents } from 'electron';
 import { ref, storeToRefs, watch, type MechanusRef } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
-import { useAresStore, useCacheStore } from '$electron/stores';
+import { useCacheStore } from '$electron/stores';
 import { sequelize } from '$electron/database';
 import { BrowserTab } from '$electron/tabs';
 import { SnobConfig, SnobHistory } from '$electron/database/models';
@@ -184,11 +184,8 @@ function onMint(
     timeout: MechanusRef<NodeJS.Timeout | null>,
     worker: MechanusRef<TribalWorker | null>
 ) {
-    const aresStore = useAresStore();
-    const { captcha } = storeToRefs(aresStore);
-
     const cacheStore = useCacheStore();
-    const { userAlias } = storeToRefs(cacheStore);
+    const { captcha, userAlias } = storeToRefs(cacheStore);
 
     return function(alias: UserAlias, snobConfig: SnobConfigType, snobHistory: SnobHistoryType | null) {
         const baseDelay = getBaseDelay(snobConfig.timeUnit);

@@ -14,10 +14,16 @@ export function defineCacheStore(mechanus: Mechanus) {
             return `${world.value}_${playerName}`;
         });
 
+        const captcha = ref<boolean>(false);
+        const responseTime = ref<number | null>(null);
+
         return {
             world,
             player,
-            userAlias
+            userAlias,
+
+            captcha,
+            responseTime
         } satisfies MechanusCacheStoreType;
     });
 };

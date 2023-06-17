@@ -2,15 +2,12 @@ import { ipcMain, webContents } from 'electron';
 import { storeToRefs, watch } from 'mechanus';
 import { isUserAlias } from '$common/guards';
 import { MainProcessError } from '$electron/error';
-import { useAresStore, useCacheStore } from '$electron/stores';
+import { useCacheStore } from '$electron/stores';
 import { PlunderHistory } from '$electron/database/models';
 
 export function setCaptchaEvents() {
-    const aresStore = useAresStore();
-    const { captcha } = storeToRefs(aresStore);
-
     const cacheStore = useCacheStore();
-    const { userAlias } = storeToRefs(cacheStore);
+    const { captcha, userAlias } = storeToRefs(cacheStore);
 
     ipcMain.on('captcha:update-status', (e, status: boolean) => {
         captcha.value = status;
