@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useEventListener } from '@vueuse/core';
+import { NCountdown } from 'naive-ui';
+import { Kronos } from '@tb-dev/kronos';
 import { ipcSend } from '$renderer/ipc';
 import { PlunderError } from '$browser/error';
-import { Kronos } from '@tb-dev/kronos';
-import PlunderReloadMessage from '$browser/components/PlunderReloadMessage.vue';
 
 const props = defineProps<{
     /** Indica se o Plunder está ativo. */
@@ -19,6 +19,11 @@ const eventTarget = new EventTarget();
 const plunderListTitle = document.queryAndAssert('div[id="am_widget_Farm" i] > h4:has(a)');
 /** Milisegundos entre cada recarregamento automático da página. */
 const plunderTimeout = ref<number>(props.minutesUntilReload * Kronos.Minute);
+
+const duration = computed(() => {
+    if (!props.active) return 0;
+    return plunderTimeout.value;
+});
 
 watchEffect(() => {
     eventTarget.dispatchEvent(new Event('cancelreload'));
@@ -46,10 +51,25 @@ function reloadMainView() {
 
 <template>
     <Teleport :to="plunderListTitle">
-        <Transition name="tb-fade" mode="out-in">
-            <Suspense>
-                <PlunderReloadMessage :active="props.active" :plunder-timeout="plunderTimeout" />
-            </Suspense>
-        </Transition>
+        <span class="auto-reload-message">
+            <Transition name="tb-fade" mode="out-in">
+                <span v-if="props.active">
+                    <span class="auto-reload-label">Próxima atualização:</span>
+                    <NCountdown :duration="duration" />
+                </span>
+            </Transition>
+        </span>
     </Teleport>
 </template>
+
+<style scoped lang="scss">
+.auto-reload-message {
+    font-style: normal;
+    position: absolute;
+    right: 1em;
+
+    .auto-reload-label {
+        margin-right: 0.3em;
+    }
+}
+</style>
