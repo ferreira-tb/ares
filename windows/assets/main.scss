@@ -1,0 +1,36 @@
+@charset 'utf-8';
+
+@use '$renderer/assets/variables.scss';
+@use '$renderer/assets/base.scss';
+@use '$renderer/assets/transitions.scss';
+
+@forward '$renderer/assets/scrollbar.scss';
+@forward '$renderer/assets/utils.scss';
+@use '$renderer/assets/utils.scss';
+
+html {
+    overflow: hidden;
+}
+
+.config-divider {
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
+}
+
+.config-divider:first-of-type {
+    margin-top: 0.3em !important;
+}
+
+.config-checkbox, .config-label {
+    @include utils.flex-x-start-y-center($height: 100%);
+    padding-left: 0.5rem;
+}
+
+.config-input, .config-select {
+    margin-right: 0.5rem;
+}
+
+.result-info, .result-sucess {
+    padding: 1em;
+    user-select: none;
+}

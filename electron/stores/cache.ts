@@ -3,7 +3,6 @@ import { isString, isWorld } from '$common/guards';
 
 export function defineCacheStore(mechanus: Mechanus) {
     return mechanus.define('cache', () => {
-        const region = ref<GameRegion>('br');
         const world = ref<World | null>(null);
         const player = ref<string | null>(null);
 
@@ -16,7 +15,6 @@ export function defineCacheStore(mechanus: Mechanus) {
         });
 
         return {
-            region,
             world,
             player,
             userAlias

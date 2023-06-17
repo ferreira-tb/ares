@@ -6,13 +6,13 @@ import { DatabaseError } from '$electron/error';
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class SnobConfig extends Model<InferAttributes<SnobConfig>, InferCreationAttributes<SnobConfig>> implements SnobConfigType {
-    declare readonly id: UserAlias;
-    declare readonly active: boolean;
-    declare readonly mode: 'group' | 'single';
-    declare readonly delay: number;
-    declare readonly timeUnit: 'hours' | 'minutes' | 'seconds';
-    declare readonly village: CreationOptional<number | null>;
-    declare readonly group: CreationOptional<number>;
+    declare public readonly id: UserAlias;
+    declare public readonly active: boolean;
+    declare public readonly mode: 'group' | 'single';
+    declare public readonly delay: number;
+    declare public readonly timeUnit: 'hours' | 'minutes' | 'seconds';
+    declare public readonly village: CreationOptional<number | null>;
+    declare public readonly group: CreationOptional<number>;
 };
 
 SnobConfig.init({
@@ -59,9 +59,9 @@ SnobConfig.init({
 }, { sequelize, tableName: 'snob_config', timestamps: true });
 
 export class SnobHistory extends Model<InferAttributes<SnobHistory>, InferCreationAttributes<SnobHistory>> implements SnobHistoryType {
-    declare readonly id: UserAlias;
-    declare readonly coins: number;
-    declare readonly villages: CreationOptional<SnobHistoryType['villages']>;
+    declare public readonly id: UserAlias;
+    declare public readonly coins: number;
+    declare public readonly villages: CreationOptional<SnobHistoryType['villages']>;
 };
 
 SnobHistory.init({

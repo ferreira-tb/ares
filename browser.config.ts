@@ -7,7 +7,6 @@ export default defineConfig({
     plugins: [vue()],
     resolve: {
         alias: {
-            '$assets': fileURLToPath(new URL('./renderer/assets', import.meta.url)),
             '$common': fileURLToPath(new URL('./common', import.meta.url)),
             '$browser': fileURLToPath(new URL('./browser', import.meta.url)),
             '$icons': fileURLToPath(new URL('./renderer/components/icons', import.meta.url)),

@@ -1,8 +1,8 @@
 import * as fs from 'node:fs/promises';
 import { ipcMain, webContents } from 'electron';
-import { getPanelWindow } from '$electron/utils/helpers';
+import { PanelWindow } from '$electron/windows';
 import { ipcTribalJs } from '$electron/utils/files';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 
 import {
     useAresStore,
@@ -34,12 +34,12 @@ export function setIpcTribalEvents() {
         try {
             if (ipcTribal) return ipcTribal;
             const ipcTribalFileContent = await fs.readFile(ipcTribalJs, 'utf8');
-            if (ipcTribalFileContent.length === 0) throw new MainProcessEventError('ipc-tw.js file is empty.');
+            if (ipcTribalFileContent.length === 0) throw new MainProcessError('ipc-tw.js file is empty.');
             ipcTribal ??= ipcTribalFileContent;
             return ipcTribal;
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return null;
         };
     });
@@ -74,7 +74,7 @@ export function setIpcTribalEvents() {
                         patchGameData('currentVillage', currentVillageStore, gameData);
                         break;
                     default:
-                        throw new MainProcessEventError(`Could not update game data: ${key} is not a valid key.`);
+                        throw new MainProcessError(`Could not update game data: ${key} is not a valid key.`);
                 };
             };
             
@@ -85,7 +85,7 @@ export function setIpcTribalEvents() {
             };
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -98,12 +98,12 @@ export function setIpcTribalEvents() {
                 plunderStore[key] = value;
             };
     
-            const panelWindow = getPanelWindow();
+            const panelWindow = PanelWindow.getInstance();
             panelWindow.webContents.send('plunder:patch-info', plunderInfo);
             return true;
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return false;
         };
     });
@@ -126,7 +126,7 @@ export function setIpcTribalEvents() {
             return true;
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return false;
         };
     });

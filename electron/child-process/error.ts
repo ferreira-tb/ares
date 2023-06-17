@@ -1,13 +1,9 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { AresError } from '$common/error';
-import { ErrorLogFile } from '$common/constants';
 
 export class ChildProcessError extends AresError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'ChildProcessError';
-    };
+    public override readonly name = 'ChildProcessError';
 
     public static override async catch(err: unknown): Promise<void> {
         if (!process.env.USER_DATA_PATH) return;
@@ -27,7 +23,7 @@ export class ChildProcessError extends AresError {
 
             // Gera um arquivo de log com a data e a pilha de erros.
             const content = this.generateLogContent(errorLog);
-            const logPath = path.join(process.env.USER_DATA_PATH, ErrorLogFile.ChildProcess);
+            const logPath = path.join(process.env.USER_DATA_PATH, 'error.log');
             await fs.appendFile(logPath, content, { encoding: 'utf-8' });
         };
     };

@@ -3,8 +3,9 @@ import { ref, storeToRefs, watch, type MechanusRef } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { useAresStore, useCacheStore } from '$electron/stores';
 import { sequelize } from '$electron/database';
+import { BrowserTab } from '$electron/tabs';
 import { SnobConfig, SnobHistory } from '$electron/database/models';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 import { TribalWorker } from '$electron/worker';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
 import { assertUserAlias, isUserAlias } from '$common/guards';
@@ -28,7 +29,7 @@ export function setSnobEvents() {
     ipcMain.on('snob:update-config', async (e, snobConfig: SnobConfigType) => {
         try {
             const alias = userAlias.value;
-            assertUserAlias(alias, MainProcessEventError, 'Cannot update snob config without a valid user alias.');
+            assertUserAlias(alias, MainProcessError, 'Cannot update snob config without a valid user alias.');
 
             await sequelize.transaction(async () => {
                 await SnobConfig.upsert({ id: alias, ...snobConfig });
@@ -37,7 +38,7 @@ export function setSnobEvents() {
             patchAllWebContents('config', snobConfig, e.sender);
             isMinting.value = snobConfig.active;
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -53,7 +54,7 @@ export function setSnobEvents() {
             toNextMint(alias, snobConfig, snobHistory);
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -85,7 +86,7 @@ export function setSnobEvents() {
             };
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -97,11 +98,11 @@ export function setSnobEvents() {
             };
 
             const alias = userAlias.value;
-            assertUserAlias(alias, MainProcessEventError, 'Cannot start minting without a valid user alias.');
+            assertUserAlias(alias, MainProcessError, 'Cannot start minting without a valid user alias.');
             mintWorker.value = await mint(alias);
         } catch (err) {
             isMinting.value = false;
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 };
@@ -126,7 +127,7 @@ function getConfig(userAlias: MechanusComputedRef<UserAlias | null>) {
             const snobConfig = (await SnobConfig.findByPk(alias))?.toJSON();
             return snobConfig ?? null;
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return null;
         };
     };
@@ -140,7 +141,7 @@ function getHistory(userAlias: MechanusComputedRef<UserAlias | null>) {
             const snobHistory = (await SnobHistory.findByPk(alias))?.toJSON();
             return snobHistory ?? null;
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return null;
         };
     };
@@ -152,18 +153,18 @@ async function mint(alias: UserAlias): Promise<TribalWorker> {
 
     const snobConfig = (await SnobConfig.findByPk(alias))?.toJSON();
     if (!snobConfig) {
-        throw new MainProcessEventError('Cannot start minting without a valid snob config.');
+        throw new MainProcessError('Cannot start minting without a valid snob config.');
     };
 
     const { mode, village, group } = snobConfig;
     const search = mode === 'single' ? GameSearchParams.SnobTrain : GameSearchParams.SnobCoin;
-    const url = TribalWorker.createURL(search);
+    const url = BrowserTab.createURL(search);
 
     const snobHistory = (await SnobHistory.findByPk(alias))?.toJSON() ?? null;
 
     if (mode === 'single') {
         if (!village) {
-            throw new MainProcessEventError('Cannot mint coins on single mode without a village being set.');
+            throw new MainProcessError('Cannot mint coins on single mode without a village being set.');
         };
         url.searchParams.set('village', village.toString(10));
     } else {
@@ -171,10 +172,11 @@ async function mint(alias: UserAlias): Promise<TribalWorker> {
     };
 
     const worker = new TribalWorker(TribalWorkerName.MintCoin, url);
+    worker.once('ready', (contents) => {
+        contents.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
+    });
+    
     await worker.init();
-
-    await worker.toBeReady();
-    worker.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
     return worker;
 };
 
@@ -192,22 +194,20 @@ function onMint(
         const baseDelay = getBaseDelay(snobConfig.timeUnit);
         const delay = snobConfig.delay * baseDelay;
 
-        timeout.value = setTimeout(async () => {
-            try {
-                if (alias !== userAlias.value || !worker.value) return;
+        timeout.value = setTimeout(() => {
+            if (alias !== userAlias.value || !worker.value) return;
 
-                // Se hover um captcha ativo no momento, adia o envio de uma nova requisição.
-                if (captcha.value) {
-                    timeout.value?.refresh();
-                    return;
-                };
-
-                worker.value.reload();
-                await worker.value.toBeReady();
-                worker.value.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory);
-            } catch (err) {
-                MainProcessEventError.catch(err);
+            // Se hover um captcha ativo no momento, adia o envio de uma nova requisição.
+            if (captcha.value) {
+                timeout.value?.refresh();
+                return;
             };
+
+            worker.value.webContents.reload();
+            worker.value.whenReady().then(
+                () => worker.value?.webContents.send('tribal-worker:mint-coin', alias, snobConfig, snobHistory),
+                (err: unknown) => MainProcessError.catch(err)
+            );
         }, delay);
     };
 };

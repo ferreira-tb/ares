@@ -237,6 +237,17 @@
             "prefer": "type-imports",
             "disallowTypeAnnotations": false
         }],
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-member-accessibility": ["error", {
+            "accessibility": "explicit",
+            "overrides": {
+                "accessors": "no-public",
+                "constructors": "no-public",
+                "methods": "explicit",
+                "properties": "explicit",
+                "parameterProperties": "explicit"
+            }
+        }],
         "@typescript-eslint/no-confusing-non-null-assertion": "error",
         "@typescript-eslint/no-confusing-void-expression": ["error", { "ignoreArrowShorthand": true }],
         "@typescript-eslint/no-duplicate-enum-values": "error",
@@ -286,22 +297,7 @@
         "@typescript-eslint/prefer-string-starts-ends-with": "error",
         "@typescript-eslint/require-array-sort-compare": "error",
         "@typescript-eslint/restrict-plus-operands": "off",
-        "@typescript-eslint/sort-type-constituents": ["error", { 
-            "groupOrder": [
-                "named",
-                "keyword",
-                "operator",
-                "literal",
-                "function",
-                "import",
-                "conditional",
-                "object",
-                "tuple",
-                "intersection",
-                "union",
-                "nullish"
-            ]
-        }],
+        "@typescript-eslint/sort-type-constituents": "off",
         "@typescript-eslint/switch-exhaustiveness-check": "error",
         "@typescript-eslint/unbound-method": ["error", { "ignoreStatic": true }],
         "@typescript-eslint/unified-signatures": "error",

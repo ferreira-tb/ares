@@ -1,9 +1,9 @@
 {
     "include": [
         "browser.config.*",
-        "modules.config.*",
         "panel.config.*",
         "ui.config.*",
+        "windows.config.*",
 
         "taze.config.*",
 
@@ -12,28 +12,27 @@
 
         "browser/**/*",
         "browser/**/*.vue",
-        "modules/**/*",
-        "modules/**/*.vue",
         "panel/**/*",
         "panel/**/*.vue",
         "renderer/**/*",
         "renderer/**/*.vue",
         "ui/**/*",
-        "ui/**/*.vue"
+        "ui/**/*.vue",
+        "windows/**/*",
+        "windows/**/*.vue"
     ],
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "$assets/*": ["./renderer/assets/*"],
             "$browser/*": ["./browser/*"],
             "$common/*": ["./common/*"],
             "$icons/*": ["./renderer/components/icons/*"],
             "$ipc/*": ["./ipc/*"],
             "$lib/*": ["./browser/lib/*"],
-            "$modules/*": ["./modules/*"],
             "$panel/*": ["./panel/*"],
             "$renderer/*": ["./renderer/*"],
-            "$ui/*": ["./ui/*"]
+            "$ui/*": ["./ui/*"],
+            "$windows/*": ["./windows/*"]
         },
 
         "target": "esnext",

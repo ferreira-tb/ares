@@ -1,32 +1,22 @@
 import { Menu } from 'electron';
-import { computed, storeToRefs } from 'mechanus';
-import { showAppSettings } from '$electron/modules';
-import { togglePanelWindow, getMainWindow, getPanelWindow } from '$electron/utils/helpers';
+import { MainWindow, PanelWindow, StandardWindow } from '$electron/windows';
+import { BrowserTab } from '$electron/tabs';
 import { appendDevMenu } from '$electron/menu/dev';
-import { getMainViewWebContents, contentsGoBack, contentsGoForward, contentsGoHome } from '$electron/utils/view';
-import type { useBrowserViewStore, useCacheStore } from '$electron/stores';
+import { StandardWindowName } from '$common/constants';
 
-export function setAppMenu(
-    browserViewStore: ReturnType<typeof useBrowserViewStore>,
-    cacheStore: ReturnType<typeof useCacheStore>
-) {
-    const mainWindow = getMainWindow();
-    const panelWindow = getPanelWindow();
-    const { currentWebContents: currentWebContentsMaybeNull } = storeToRefs(browserViewStore);
-
-    const currentWebContents = computed<Electron.WebContents>([currentWebContentsMaybeNull], () => {
-        return currentWebContentsMaybeNull.value ?? getMainViewWebContents();
-    });
+export function setMenu() {
+    const mainWindow = MainWindow.getInstance();
+    const panelWindow = PanelWindow.getInstance();
 
     const sharedOptions: Electron.MenuItemConstructorOptions[] = [
-        { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => contentsGoHome(currentWebContents.value, cacheStore.region) },
-        { label: 'Atualizar', accelerator: 'F5', click: () => currentWebContents.value.reload() },
-        { label: 'Voltar', accelerator: 'CmdOrCtrl+Left', click: () => contentsGoBack(currentWebContents.value) },
-        { label: 'Avançar', accelerator: 'CmdOrCtrl+Right', click: () => contentsGoForward(currentWebContents.value) },
+        { label: 'Início', accelerator: 'CmdOrCtrl+Home', click: () => BrowserTab.current.goHome() },
+        { label: 'Atualizar', accelerator: 'F5', click: () => BrowserTab.current.reload() },
+        { label: 'Voltar', accelerator: 'CmdOrCtrl+Left', click: () => BrowserTab.current.goBack() },
+        { label: 'Avançar', accelerator: 'CmdOrCtrl+Right', click: () => BrowserTab.current.goForward() },
 
-        { label: 'Focar view principal', accelerator: 'F1', click: () => mainWindow.webContents.send('focus-main-view') },
-        { label: 'Exibir ou ocultar painel', accelerator: 'F2', click: () => togglePanelWindow() },
-        { label: 'Configurações', accelerator: 'F3', click: () => showAppSettings('config-general') },
+        { label: 'Focar view principal', accelerator: 'F1', click: () => mainWindow.webContents.send('main-tab:focus') },
+        { label: 'Exibir ou ocultar painel', accelerator: 'F2', click: () => panelWindow.toggle() },
+        { label: 'Configurações', accelerator: 'F3', click: () => void StandardWindow.open(StandardWindowName.Config) },
         
         { label: 'Sair', accelerator: 'Esc', role: 'quit' }
     ];
@@ -39,7 +29,7 @@ export function setAppMenu(
     const panelMenu = Menu.buildFromTemplate([...sharedOptions]);
 
     // Adiciona o menu de desenvolvedor às janelas.
-    appendDevMenu(browserViewStore, mainMenu, panelMenu);
+    appendDevMenu(mainMenu, panelMenu);
 
     mainWindow.setMenu(mainMenu);
     panelWindow.setMenu(panelMenu);

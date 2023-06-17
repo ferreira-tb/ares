@@ -3,14 +3,14 @@ import { sequelize } from '$electron/database';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class WorldConfig extends Model<InferAttributes<WorldConfig>, InferCreationAttributes<WorldConfig>> implements WorldConfigType {
-    declare readonly id: World;
-    declare readonly speed: number;
-    declare readonly unitSpeed: number;
-    declare readonly tradeCancelTime: number;
-    declare readonly commandCancelTime: number;
-    declare readonly archer: boolean;
-    declare readonly church: boolean;
-    declare readonly watchtower: boolean;
+    declare public readonly id: World;
+    declare public readonly speed: number;
+    declare public readonly unitSpeed: number;
+    declare public readonly tradeCancelTime: number;
+    declare public readonly commandCancelTime: number;
+    declare public readonly archer: boolean;
+    declare public readonly church: boolean;
+    declare public readonly watchtower: boolean;
 };
 
 WorldConfig.init({

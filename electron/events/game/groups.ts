@@ -1,12 +1,11 @@
-import { URL } from 'node:url';
 import { ipcMain, webContents } from 'electron';
 import { ref, storeToRefs, watchImmediate } from 'mechanus';
 import { sequelize } from '$electron/database';
 import { useCacheStore } from '$electron/stores';
 import { VillageGroups } from '$electron/database/models';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 import { TribalWorker } from '$electron/worker';
-import { getMainViewWebContents } from '$electron/utils/view';
+import { BrowserTab } from '$electron/tabs';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
 import { isUserAlias } from '$common/guards';
 
@@ -30,7 +29,7 @@ export function setGroupsEvents() {
             return true;
             
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return false;
         };
     });
@@ -48,32 +47,30 @@ export function setGroupsEvents() {
             const newGroups = previous.length > 0 ? new Set(previous) : await fetchGroups();
             await updateGroups(newAlias, newGroups);
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 };
 
-function fetchGroups(): Promise<Set<VillageGroup>> {
-    return new Promise(async (resolve, reject) => {
+function fetchGroups() {
+    return new Promise<Set<VillageGroup>>((resolve, reject) => {
         // Cria o Worker na tela de grupos manuais.
         // Lá é possível obter tanto os grupos manuais quanto os dinâmicos.
-        const mainViewWebContents = getMainViewWebContents();
-        const url = new URL(mainViewWebContents.getURL());
-        url.search = GameSearchParams.Groups;
-
+        const url = BrowserTab.createURL(GameSearchParams.Groups);
         const worker = new TribalWorker(TribalWorkerName.GetVillageGroups, url);
-        await worker.init((e) => {
+        worker.once('destroyed', reject);
+        worker.once('port:message', (message: Set<VillageGroup> | null) => {
             try {
-                if (!(e.data instanceof Set)) {
-                    throw new Error('Village groups data must be a Set.');
-                };
-                resolve(e.data);
+                if (!message) throw new Error('Could not fetch village groups.');
+                resolve(message);
             } catch (err) {
                 reject(err);
             } finally {
                 worker.destroy();
             };
         });
+
+        worker.init().catch(reject);
     });
 };
 

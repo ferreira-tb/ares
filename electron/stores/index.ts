@@ -1,6 +1,5 @@
 import { Mechanus } from 'mechanus';
 import { defineAresStore } from '$electron/stores/ares';
-import { defineBrowserViewStore } from '$electron/stores/view';
 import { defineCacheStore } from '$electron/stores/cache';
 import { defineCurrentVillageStore } from '$electron/stores/village';
 import { definePlayerStore } from '$electron/stores/player';
@@ -21,7 +20,6 @@ export * from '$electron/stores/config';
 export const mechanus = new Mechanus();
 
 export const useAresStore = defineAresStore(mechanus);
-export const useBrowserViewStore = defineBrowserViewStore(mechanus);
 export const useCacheStore = defineCacheStore(mechanus);
 export const useCurrentVillageStore = defineCurrentVillageStore(mechanus);
 export const useFeaturesStore = defineFeaturesStore(mechanus);

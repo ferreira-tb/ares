@@ -1,4 +1,3 @@
-import { usePanelStore } from '$panel/stores';
 import { setPlunderEvents } from '$panel/events/plunder';
 import { setSnobEvents } from '$panel/events/snob';
 import { ipcOn } from '$renderer/ipc';
@@ -11,7 +10,6 @@ import {
 } from '$renderer/stores';
 
 export function setPanelEvents() {
-    const panelStore = usePanelStore();
     const aresStore = useAresStore();
     const featuresStore = useFeaturesStore();
     const playerStore = usePlayerStore();
@@ -31,10 +29,6 @@ export function setPanelEvents() {
         featuresStore.$patch(data.features);
         playerStore.$patch(data.player);
         currentVillageStore.$patch(data.currentVillage);
-    });
-
-    ipcOn('panel:visibility-did-change', (_e, isVisible: boolean) => {
-        panelStore.isVisible = isVisible;
     });
 
     setPlunderEvents();

@@ -133,7 +133,6 @@ type MechanusUnitsStoreType = {
 
 // CACHE
 interface CacheStore {
-    readonly region: GameRegion;
     readonly world: World | null;
     readonly player: string | null;
     readonly userAlias: UserAlias | null;
@@ -141,25 +140,7 @@ interface CacheStore {
 
 type MechanusCacheStoreType = {
     [K in keyof CacheStore]:
-        K extends 'userAlias' ?
-        MechanusComputedRef<CacheStore[K]> :
-        MechanusRef<CacheStore[K]>;
-};
-
-// BROWSER VIEW
-interface BrowserViewStore {
-    /** Todos os WebContents de BrowserViews associados à janela principal. */
-    readonly allWebContents: Set<WebContents>;
-    /** Todos os WebContents de BrowserViews com eventos já registrados. */
-    readonly registeredWebContents: WeakSet<WebContents>;
-    /** O WebContents atualmente ativo (em primeiro plano). */
-    readonly currentWebContents: Electron.WebContents | null;
-    /** Função para remover o evento de redimensionamento do WebContents ativo. */
-    readonly currentAutoResize: (() => void) | null;
-};
-
-type MechanusBrowserViewStoreType = {
-    [K in keyof BrowserViewStore]: MechanusRef<BrowserViewStore[K]>;
+        K extends 'userAlias' ? MechanusComputedRef<CacheStore[K]> : MechanusRef<CacheStore[K]>;
 };
 
 // BROWSER
@@ -170,16 +151,6 @@ interface BrowserStore {
 
 type PiniaBrowserStoreType = {
     [K in keyof BrowserStore]: import('vue').Ref<BrowserStore[K]>;
-};
-
-// PAINEL
-interface PanelStore {
-    /** Indica se o painel está visível. */
-    readonly isVisible: boolean;
-};
-
-type PiniaPanelStoreType = {
-    [K in keyof PanelStore]: import('vue').Ref<PanelStore[K]>;
 };
 
 // INCOMING ATTACKS

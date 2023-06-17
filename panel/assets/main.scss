@@ -1,12 +1,12 @@
 @charset 'utf-8';
 
-@use '$assets/variables.scss';
-@use '$assets/base.scss';
-@use '$assets/transitions.scss';
+@use '$renderer/assets/variables.scss';
+@use '$renderer/assets/base.scss';
+@use '$renderer/assets/transitions.scss';
 
-@forward '$assets/scrollbar.scss';
-@forward '$assets/utils.scss';
-@use '$assets/utils.scss';
+@forward '$renderer/assets/scrollbar.scss';
+@forward '$renderer/assets/utils.scss';
+@use '$renderer/assets/utils.scss';
 
 html {
     overflow: hidden;

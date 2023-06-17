@@ -3,6 +3,7 @@ import { app } from 'electron';
 
 const userData = app.getPath('userData');
 
+// Assets
 export const appIcon = path.join(__dirname, 'favicon.ico');
 export const database = path.join(userData, 'ares.db');
 
@@ -16,7 +17,7 @@ export const childProcess = {
 } as const;
 
 // HTML
-export const moduleHtml = path.join(__dirname, 'modules.html');
+export const windowsHtml = path.join(__dirname, 'windows.html');
 export const panelHtml = path.join(__dirname, 'panel.html');
 export const uiHtml = path.join(__dirname, 'ui.html');
 

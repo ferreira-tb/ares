@@ -1,11 +1,11 @@
-import { app, BrowserWindow } from 'electron';
+import { app } from 'electron';
 import { isString } from '$common/guards';
 import { sequelize } from '$electron/database';
-import { getActiveModule } from '$electron/modules';
-import { getMainWindow } from '$electron/utils/helpers';
+import { MainWindow, StandardWindow } from '$electron/windows';
 import { MainProcessError } from '$electron/error';
 import { appConfig } from '$electron/stores';
 import { ElectronErrorLog } from '$electron/database/models';
+import { StandardWindowName } from '$common/constants';
 
 export async function errorHandler(err: unknown) {
     if (!(err instanceof Error)) return;
@@ -24,15 +24,13 @@ export async function errorHandler(err: unknown) {
 
         await sequelize.transaction(async () => {
             const newRow = await ElectronErrorLog.create(errorLog);
-            const errorModule = getActiveModule('error-log');
-            if (errorModule instanceof BrowserWindow) {
-                errorModule.webContents.send('error:did-create-electron-log', newRow.toJSON());
-            };
+            const errorWindow = StandardWindow.getWindow(StandardWindowName.ErrorLog);
+            errorWindow?.webContents.send('error:did-create-electron-log', newRow.toJSON());
         });
 
         const shouldNotify = appConfig.get('notifications').notifyOnError;
         if (shouldNotify) {
-            const mainWindow = getMainWindow();
+            const mainWindow = MainWindow.getInstance();
             mainWindow.webContents.send('notify-electron-error', errorLog);
         };
 

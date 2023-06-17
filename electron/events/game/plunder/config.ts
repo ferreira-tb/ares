@@ -1,7 +1,7 @@
 import { ipcMain, webContents } from 'electron';
 import { storeToRefs, watch } from 'mechanus';
 import { sequelize } from '$electron/database';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 import { useCacheStore, usePlunderConfigStore } from '$electron/stores';
 import { PlunderConfig } from '$electron/database/models';
 import { isUserAlias, assertUserAlias } from '$common/guards';
@@ -27,7 +27,7 @@ export function setPlunderConfigEvents() {
     ipcMain.on('plunder:update-config', async (e, config: PlunderConfigType) => {
         try {
             const alias = userAlias.value;
-            assertUserAlias(alias, MainProcessEventError);
+            assertUserAlias(alias, MainProcessError);
 
             await sequelize.transaction(async () => {
                 await PlunderConfig.upsert({ id: alias, ...plunderConfigStore });
@@ -37,7 +37,7 @@ export function setPlunderConfigEvents() {
             patchAllWebContents(config, e.sender);
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 

@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { ref, storeToRefs, watch, watchImmediate } from 'mechanus';
 import { isInteger, isWorld } from '$common/guards';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 import { useAresStore, useCacheStore, usePlunderCacheStore } from '$electron/stores';
 import { WorldUnits } from '$electron/database/models';
 import { setPlunderGroupEvents } from '$electron/events/game/plunder/group';
@@ -74,7 +74,7 @@ function calcCarryCapacityHandler() {
             }, 0);
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return null;
         };
     };

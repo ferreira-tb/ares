@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia';
 import { watchImmediate } from '@vueuse/core';
 import { usePlunderConfigStore, usePlunderHistoryStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import StorageIcon from '$icons/buildings/StorageIcon.vue';
+import StorageIcon18 from '$icons/buildings/StorageIcon18.vue';
 
 const locale = await ipcInvoke('app:locale');
 const config = usePlunderConfigStore();
@@ -24,7 +24,7 @@ watchImmediate(active, async () => {
     <NButton
         quaternary
         :keyboard="false"
-        :render-icon="() => h(StorageIcon)"
+        :render-icon="() => h(StorageIcon18)"
         @click="ipcSend('plunder:show-history')"
     >
         <span>{{ total.toLocaleString(locale) }}</span>

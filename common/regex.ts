@@ -6,6 +6,7 @@ export const unitsRegex = /(spear|sword|axe|archer|spy|light|heavy|ram|catapult|
 /** Escopos do IPC. */
 export const scopeRegex = /^\w+(?:-\w+)*:\w+(?:-\w+)*/;
 
+// Websites.
 export const gameOriginRegex = /tribalwars\.(com?\.)?(br|net|nl|pt|uk|us)/;
 export const tbOriginRegex = /tb\.dev\.br/;
 export const githubOriginRegex = /github\.com/;

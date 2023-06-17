@@ -4,7 +4,7 @@ import { watch } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { sequelize } from '$electron/database';
 import { childProcess } from '$electron/utils/files';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 import { isWorld } from '$common/guards';
 import {
     getAlliesTable,
@@ -16,7 +16,7 @@ import {
 export function setWorldDataEvents(cachedWorld: MechanusRef<World | null>) {
     // Obtêm informações sobre uma ou mais aldeias.
     // Se o id da aldeia não for especificado, retorna todas as aldeias do mundo.
-    ipcMain.handle('world-data:get-villages', async (_e, villageId?: number[] | number, world: World | null = null) => {
+    ipcMain.handle('world-data:get-village', async (_e, villageId?: number[] | number, world: World | null = null) => {
         world ??= cachedWorld.value;
         if (!isWorld(world)) return [];
 
@@ -73,7 +73,7 @@ function fetchWorldData() {
                 port1.on('message', (e) => {
                     try {
                         if (!e.data) {
-                            throw new MainProcessEventError(`No data received for world ${world}.`);
+                            throw new MainProcessError(`No data received for world ${world}.`);
                         };
                         resolve(e.data);
                     } catch (err) {
@@ -123,11 +123,11 @@ function fetchWorldData() {
                 });
                 
             } else {
-                throw new MainProcessEventError(`No data received for world ${world}.`);
+                throw new MainProcessError(`No data received for world ${world}.`);
             };
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     };
 };

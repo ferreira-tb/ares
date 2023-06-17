@@ -8,6 +8,7 @@ import { useIpcOn } from '$renderer/composables';
 import { useVillage } from '$renderer/composables/village';
 import { PanelSnobViewError } from '$panel/error';
 import { decodeString } from '$common/helpers';
+import { StandardWindowName } from '$common/constants';
 import TheMintedCoins from '$panel/components/TheMintedCoins.vue';
 
 const config = useSnobConfigStore();
@@ -85,7 +86,7 @@ useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) =
                 >
                     {{ snobButtonText }}
                 </NButton>
-                <NButton round @click="ipcSend('config:open', 'config-buildings-snob')">
+                <NButton round @click="ipcSend('config:open', StandardWindowName.ConfigBuildingsSnob)">
                     Configurações
                 </NButton>
             </NButtonGroup>
@@ -98,7 +99,7 @@ useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) =
                 <div class="location-label">Aldeia selecionada</div>
                 <a
                     v-if="villageName && village"
-                    @click="ipcSend('current-view:navigate-to-snob-train', village.id)"
+                    @click="ipcSend('current-tab:navigate-to-snob-train', village.id)"
                 >
                     {{ villageName }}
                 </a>
@@ -109,7 +110,7 @@ useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) =
                 <div class="location-label">Grupo selecionado</div>
                 <a
                     v-if="groupName && village"
-                    @click="ipcSend('current-view:navigate-to-snob-coin', village.id, config.group)"
+                    @click="ipcSend('current-tab:navigate-to-snob-coin', village.id, config.group)"
                 >
                     {{ groupName }}
                 </a>

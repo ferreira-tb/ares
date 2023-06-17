@@ -2,16 +2,17 @@ import { ipcMain } from 'electron';
 import { computed, storeToRefs, watch } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { TribalWorker } from '$electron/worker';
+import { MainWindow } from '$electron/windows';
+import { BrowserTab } from '$electron/tabs';
 import { useAresStore, useIncomingsStore } from '$electron/stores';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
-import { getMainWindow } from '$electron/utils/helpers';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 
 export function setIncomingAttacksEvents() {
     const incomingsStore = useIncomingsStore();
     const { amount, incomings } = storeToRefs(incomingsStore);
 
-    const mainWindow = getMainWindow();
+    const mainWindow = MainWindow.getInstance();
 
     ipcMain.on('game:update-incomings-amount', (_e, newAmount: number | null) => {
         amount.value = newAmount;
@@ -49,8 +50,8 @@ function createIncomingsHandler() {
     let worker: TribalWorker | null = null;
     let timeout: NodeJS.Timeout | null = null;
 
-    async function createWorker() {
-        if (worker?.isDestroyed) worker = null;
+    function createWorker() {
+        if (worker?.destroyed) worker = null;
         if (worker) {
             // O uso do timeout impede que o worker seja sobrecarregado quando houver muitas requisições.
             if (timeout) {
@@ -60,18 +61,19 @@ function createIncomingsHandler() {
             };
 
         } else {
-            const url = TribalWorker.createURL(GameSearchParams.Incomings);
+            const url = BrowserTab.createURL(GameSearchParams.Incomings);
             worker = new TribalWorker(TribalWorkerName.HandleIncomings, url);
-            await worker.init((e) => {
-                if (e.data === 'destroy') {
+            worker.once('port:message', (message) => {
+                if (message === 'destroy') {
                     setTimeout(() => worker?.destroy(), delay.value);
                 };
             });
+
+            worker.init().catch(MainProcessError.catch);
         };
     };
 
     return function(value: number | null) {
-        if (value === null) return;
-        createWorker().catch(MainProcessEventError.catch);
+        if (value !== null) createWorker();
     };
 };

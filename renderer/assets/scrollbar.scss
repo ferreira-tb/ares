@@ -1,6 +1,6 @@
 @mixin scrollbar(
     $track: var(--color-background),
-    $thumb: var(--color-background-mute),
+    $thumb: #4b4b4b,
     $thumb-border: var(--color-background),
     $corner: var(--color-background)
 ) {

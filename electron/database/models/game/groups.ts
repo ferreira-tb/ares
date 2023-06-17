@@ -5,8 +5,8 @@ import { DatabaseError } from '$electron/error';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class VillageGroups extends Model<InferAttributes<VillageGroups>, InferCreationAttributes<VillageGroups>> implements VillageGroupsType {
-    declare readonly id: UserAlias;
-    declare readonly allGroups: VillageGroup[];
+    declare public readonly id: UserAlias;
+    declare public readonly allGroups: VillageGroup[];
 };
 
 VillageGroups.init({

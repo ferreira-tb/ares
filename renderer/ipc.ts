@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
 import { ipcRenderer } from 'electron';
+import type { StandardWindowName } from '$common/constants';
 import type { PlunderAttack } from '$common/templates';
 
 const debug = {
@@ -20,8 +21,6 @@ function report(processType: 'main' | 'renderer', channel: string, ...args: unkn
 };
 
 // Janela
-export async function ipcInvoke(channel: 'ui:maximize-or-restore'): Promise<boolean>;
-export async function ipcInvoke(channel: 'ui:is-minimized'): Promise<boolean>;
 export async function ipcInvoke(channel: 'ui:is-maximized'): Promise<boolean>;
 
 // Geral
@@ -53,13 +52,14 @@ export async function ipcInvoke(channel: 'browser:get-response-time'): Promise<n
 // Painel
 export async function ipcInvoke(channel: 'panel:is-visible'): Promise<boolean>;
 
-// Browser View
-export async function ipcInvoke(channel: 'main-view:url'): Promise<string>;
-export async function ipcInvoke(channel: 'main-view:web-contents-id'): Promise<number>;
-export async function ipcInvoke(channel: 'current-view:url'): Promise<string>;
-export async function ipcInvoke(channel: 'current-view:web-contents-id'): Promise<number>;
-export async function ipcInvoke(channel: 'current-view:can-go-back'): Promise<boolean>;
-export async function ipcInvoke(channel: 'current-view:can-go-forward'): Promise<boolean>;
+// Abas
+export async function ipcInvoke(channel: 'tab:title', tabId: number): Promise<string | null>;
+export async function ipcInvoke(channel: 'main-tab:url'): Promise<string>;
+export async function ipcInvoke(channel: 'main-tab:id'): Promise<number>;
+export async function ipcInvoke(channel: 'current-tab:url'): Promise<string>;
+export async function ipcInvoke(channel: 'current-tab:id'): Promise<number>;
+export async function ipcInvoke(channel: 'current-tab:can-go-back'): Promise<boolean>;
+export async function ipcInvoke(channel: 'current-tab:can-go-forward'): Promise<boolean>;
 
 // Jogo
 export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
@@ -71,7 +71,7 @@ export async function ipcInvoke(channel: 'world:get-config', world?: World): Pro
 export async function ipcInvoke(channel: 'world:get-units-info', world?: World): Promise<WorldUnitsType | null>;
 export async function ipcInvoke(channel: 'world:is-archer-world'): Promise<boolean | null>;
 export async function ipcInvoke(
-    channel: 'world-data:get-villages', id?: number[] | number, world?: World
+    channel: 'world-data:get-village', id?: number[] | number, world?: World
 ): Promise<WorldVillageType[]>;
 export async function ipcInvoke(
     channel: 'world-data:get-player-villages', player: number, world?: World
@@ -122,28 +122,30 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
 
 // Janela
 export function ipcSend(channel: 'ui:minimize'): void;
+export function ipcSend(channel: 'ui:maximize'): void;
 export function ipcSend(channel: 'ui:close'): void;
 
 // Geral
-export function ipcSend(channel: 'open-any-allowed-website', url: string): void;
-export function ipcSend(channel: 'open-ares-website'): void;
-export function ipcSend(channel: 'open-github-repo'): void;
-export function ipcSend(channel: 'open-github-issues'): void;
+export function ipcSend(channel: 'website:any', url: string): void;
+export function ipcSend(channel: 'website:ares'): void;
+export function ipcSend(channel: 'website:how-to-use'): void;
+export function ipcSend(channel: 'website:issues'): void;
+export function ipcSend(channel: 'website:repository'): void;
 export function ipcSend(channel: 'app-update:open'): void;
 export function ipcSend(channel: 'download-from-url', url: string): void;
 export function ipcSend(channel: 'app-update:update-available-dialog', newVersion: string): void;
-export function ipcSend(channel: 'electron:show-message-box', options: ElectronMessageBoxOptions): void;
+export function ipcSend(channel: 'electron:show-message-box', options: MessageBoxOptions): void;
 
 // Desenvolvedor
 export function ipcSend(channel: 'debug:toggle', status: boolean): void;
 export function ipcSend(channel: 'debug:show-context-menu', isOptionsVisible: boolean): void;
-export function ipcSend(channel: 'dev:open-main-window-dev-tools'): void;
-export function ipcSend(channel: 'dev:open-panel-window-dev-tools'): void;
-export function ipcSend(channel: 'dev:open-current-view-dev-tools'): void;
-export function ipcSend(channel: 'dev:open-main-view-dev-tools'): void;
+export function ipcSend(channel: 'dev-tools:main-window'): void;
+export function ipcSend(channel: 'dev-tools:panel-window'): void;
+export function ipcSend(channel: 'dev-tools:current-tab'): void;
+export function ipcSend(channel: 'dev-tools:main-tab'): void;
 
 // Configurações
-export function ipcSend(channel: 'config:open', route: ConfigModuleRoutes): void;
+export function ipcSend(channel: 'config:open', route: StandardWindowName): void;
 export function ipcSend<T extends keyof AppConfigType>(channel: 'config:update', configType: T, value: AppConfigType[T]): void;
 
 // Menu
@@ -154,19 +156,24 @@ export function ipcSend(channel: 'open-bug-report-menu'): void;
 export function ipcSend(channel: 'browser:update-response-time', time: number | null): void;
 export function ipcSend(channel: 'captcha:update-status', status: boolean): void;
 
-// Browser View
-export function ipcSend(channel: 'main-view:reload'): void;
-export function ipcSend(channel: 'main-view:force-reload'): void;
-export function ipcSend(channel: 'current-view:reload'): void;
-export function ipcSend(channel: 'current-view:force-reload'): void;
-export function ipcSend(channel: 'current-view:home'): void;
-export function ipcSend(channel: 'current-view:back'): void;
-export function ipcSend(channel: 'current-view:forward'): void;
-export function ipcSend(channel: 'current-view:update', webContentsId: number): void;
-export function ipcSend(channel: 'current-view:navigate-to-place', villageId: number): void;
-export function ipcSend(channel: 'current-view:navigate-to-snob-train', villageId: number): void;
-export function ipcSend(channel: 'current-view:navigate-to-snob-coin', villageId: number, groupId?: number): void;
-export function ipcSend(channel: 'view:destroy', webContentsId: number): void;
+// Painel
+export function ipcSend(channel: 'panel:toggle'): void;
+
+// Abas
+export function ipcSend(channel: 'main-tab:reload'): void;
+export function ipcSend(channel: 'main-tab:force-reload'): void;
+export function ipcSend(channel: 'current-tab:reload'): void;
+export function ipcSend(channel: 'current-tab:force-reload'): void;
+export function ipcSend(channel: 'current-tab:home'): void;
+export function ipcSend(channel: 'current-tab:back'): void;
+export function ipcSend(channel: 'current-tab:forward'): void;
+export function ipcSend(channel: 'tab:set-current', tabId: number): void;
+export function ipcSend(channel: 'current-tab:navigate-to-place', villageId: number): void;
+export function ipcSend(channel: 'current-tab:navigate-to-snob-train', villageId: number): void;
+export function ipcSend(channel: 'current-tab:navigate-to-snob-coin', villageId: number, groupId?: number): void;
+export function ipcSend(channel: 'tab:destroy', tabId: number): void;
+export function ipcSend(channel: 'tab:destroy-all', exclude?: number | number[]): void;
+export function ipcSend(channel: 'tab:show-context-menu', tabId: number): void;
 
 // Erros
 export function ipcSend(channel: 'error:open-log-window'): void;

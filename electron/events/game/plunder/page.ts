@@ -1,7 +1,7 @@
 import { URL } from 'node:url';
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
-import { MainProcessEventError } from '$electron/error';
+import { MainProcessError } from '$electron/error';
 import { usePlunderStore, usePlunderConfigStore, usePlunderCacheStore } from '$electron/stores';
 import { GameSearchParams } from '$common/constants';
 import { generateRandomDelay } from '$common/helpers';
@@ -24,7 +24,7 @@ export function setPlunderPageEvents() {
             if (pagesInfo && pages.value?.id === pagesInfo.id) return;
             pages.value = pagesInfo;
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -35,7 +35,7 @@ export function setPlunderPageEvents() {
             url.search = GameSearchParams.Farm;
             await e.sender.loadURL(url.href);
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
         };
     });
 
@@ -59,7 +59,7 @@ export function setPlunderPageEvents() {
             return true;
 
         } catch (err) {
-            MainProcessEventError.catch(err);
+            MainProcessError.catch(err);
             return false;
         };
     });

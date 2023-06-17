@@ -45,7 +45,7 @@ whenever(amount, () => filteredIncomings.trigger());
                     class="next-incoming-tag"
                     type="info"
                     size="small"
-                    @click="ipcSend('current-view:navigate-to-place', nextIncoming.target)"
+                    @click="ipcSend('current-tab:navigate-to-place', nextIncoming.target)"
                 >
                     {{ `Próximo ataque: ${getLocaleDateString(locale, nextIncoming.arrivalTime)}` }}
                 </NTag>

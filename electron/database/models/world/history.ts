@@ -8,10 +8,10 @@ export class WorldDataFetchHistory extends Model<
     InferAttributes<WorldDataFetchHistory>,
     InferCreationAttributes<WorldDataFetchHistory>
 > implements WorldDataFetchHistoryType {
-    declare readonly world: World;
-    declare readonly village: CreationOptional<number>;
-    declare readonly player: CreationOptional<number>;
-    declare readonly ally: CreationOptional<number>;
+    declare public readonly world: World;
+    declare public readonly village: CreationOptional<number>;
+    declare public readonly player: CreationOptional<number>;
+    declare public readonly ally: CreationOptional<number>;
 };
 
 WorldDataFetchHistory.init({

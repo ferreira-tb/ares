@@ -3,19 +3,19 @@ import { sequelize } from '$electron/database';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
 export class ErrorLog extends Model<InferAttributes<ErrorLog>, InferCreationAttributes<ErrorLog>> implements ErrorLogType {
-    declare readonly id: CreationOptional<number>;
-    declare readonly name: string;
-    declare readonly message: string;
-    declare readonly stack: string | null;
-    declare readonly world: World | null;
-    declare readonly url: string;
-    declare readonly time: number;
-    declare readonly ares: string;
-    declare readonly electron: string;
-    declare readonly chrome: string;
-    declare readonly tribal: string | null;
-    declare readonly locale: string | null;
-    declare readonly pending: CreationOptional<boolean>;
+    declare public readonly id: CreationOptional<number>;
+    declare public readonly name: string;
+    declare public readonly message: string;
+    declare public readonly stack: string | null;
+    declare public readonly world: World | null;
+    declare public readonly url: string;
+    declare public readonly time: number;
+    declare public readonly ares: string;
+    declare public readonly electron: string;
+    declare public readonly chrome: string;
+    declare public readonly tribal: string | null;
+    declare public readonly locale: string | null;
+    declare public readonly pending: CreationOptional<boolean>;
 };
 
 ErrorLog.init({
@@ -78,17 +78,17 @@ ErrorLog.init({
 type EELAttributes = InferAttributes<ElectronErrorLog>;
 type EELCreationAttributes = InferCreationAttributes<ElectronErrorLog>;
 export class ElectronErrorLog extends Model<EELAttributes, EELCreationAttributes> implements ElectronErrorLogType {
-    declare readonly id: CreationOptional<number>;
-    declare readonly name: string;
-    declare readonly message: string;
-    declare readonly stack: string | null;
-    declare readonly time: number;
-    declare readonly ares: string;
-    declare readonly electron: string;
-    declare readonly chrome: string;
-    declare readonly tribal: string | null;
-    declare readonly locale: string | null;
-    declare readonly pending: CreationOptional<boolean>;
+    declare public readonly id: CreationOptional<number>;
+    declare public readonly name: string;
+    declare public readonly message: string;
+    declare public readonly stack: string | null;
+    declare public readonly time: number;
+    declare public readonly ares: string;
+    declare public readonly electron: string;
+    declare public readonly chrome: string;
+    declare public readonly tribal: string | null;
+    declare public readonly locale: string | null;
+    declare public readonly pending: CreationOptional<boolean>;
 };
 
 ElectronErrorLog.init({

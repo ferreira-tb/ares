@@ -3,13 +3,9 @@ import * as fs from 'node:fs/promises';
 import { app } from 'electron';
 import { AresError } from '$common/error';
 import { isString } from '$common/guards';
-import { ErrorLogFile } from '$common/constants';
 
 export class MainProcessError extends AresError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'MainProcessError';
-    };
+    public override name = 'MainProcessError';
 
     /** Emite um erro falso no processo principal para fins de teste. */
     public static mock() {
@@ -34,63 +30,27 @@ export class MainProcessError extends AresError {
         };
 
         const content = this.generateLogContent(errorLog);
-        const logPath = path.join(app.getPath('userData'), ErrorLogFile.Uncaught);
+        const logPath = path.join(app.getPath('userData'), 'error.log');
         await fs.appendFile(logPath, content, { encoding: 'utf-8' });
     };
 };
 
-export class MechanusStoreError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'MechanusStoreError';
-    };
-};
-
 export class DatabaseError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'DatabaseError';
-    };
+    public override readonly name = 'DatabaseError';
 };
 
-export class MainProcessEventError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'MainProcessEventError';
-    };
+export class TribalWorkerError extends MainProcessError {
+    public override readonly name = 'TribalWorkerError';
 };
 
-export class ModuleCreationError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'ModuleCreationError';
-    };
+export class StandardWindowError extends MainProcessError {
+    public override readonly name = 'StandardWindowError';
 };
 
-export class AliasInterfaceError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'AliasInterfaceError';
-    };
+export class WebsiteWindowError extends MainProcessError {
+    public override readonly name = 'WebsiteWindowError';
 };
 
-export class WorldInterfaceError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'WorldInterfaceError';
-    };
-};
-
-export class BrowserViewError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'BrowserViewError';
-    };
-};
-
-export class DownloadError extends MainProcessError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'DownloadError';
-    };
+export class BrowserTabError extends MainProcessError {
+    public override readonly name = 'BrowserTabError';
 };

@@ -1,19 +1,9 @@
 import { ipcMain } from 'electron';
-import { appConfig } from '$electron/stores';
-import { getPanelWindow } from '$electron/utils/helpers';
+import { PanelWindow } from '$electron/windows';
 
 export function setPanelEvents() {
-    const panelWindow = getPanelWindow();
+    const panelWindow = PanelWindow.getInstance();
 
+    ipcMain.handle('panel:toggle', () => panelWindow.toggle());
     ipcMain.handle('panel:is-visible', () => panelWindow.isVisible());
-
-    panelWindow.on('moved', saveBounds(panelWindow));
-    panelWindow.on('resized', saveBounds(panelWindow));
-};
-
-function saveBounds(panelWindow: Electron.CrossProcessExports.BrowserWindow) {
-    return function() {
-        const rectangle = panelWindow.getBounds();
-        appConfig.set('panel', { bounds: rectangle });
-    };
 };

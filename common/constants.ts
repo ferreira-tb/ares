@@ -42,37 +42,42 @@ export const enum GameSearchParams {
     SnobCoin = 'screen=snob&mode=coin&from=-1'
 };
 
-export const enum WebsiteUrl {
-    Ares = 'https://tb.dev.br/ares',
-    Author = 'https://github.com/ferreira-tb',
-    Discord = 'https://discord.gg/tNQbrqbmdK',
-    Issues = 'https://github.com/ferreira-tb/ares/issues',
-    Repository = 'https://github.com/ferreira-tb/ares'
-};
-
-export const enum Dimensions {
-    /** Altura do container do menu superior. */
-    TopContainerHeight = 80
-};
-
-export const enum ErrorLogFile {
-    /** Erros propriamente capturados e registrados no banco de dados. */
-    All = 'error.log',
-    /**
-     * Erros capturados e registrados em algum dos processos filhos.
-     * @see https://www.electronjs.org/docs/latest/api/utility-process
-     */
-    ChildProcess = 'child-process-error.log',
-    /** Se o Ares falhar em capturar um erro, ele será registrado diretamente no arquivo. */
-    Uncaught = 'uncaught-error.log'
-};
-
 export const enum TribalWorkerName {
     FetchWorldConfig = 'fetch-world-config',
     FetchWorldUnits = 'fetch-world-units',
     GetVillageGroups = 'get-village-groups',
     HandleIncomings = 'handle-incomings',
     MintCoin = 'mint-coin'
+};
+
+export const enum StandardWindowName {
+    Config = 'config',
+    ConfigAdvanced = 'config-advanced',
+    ConfigBuildingsSnob = 'config-buildings-snob',
+    ConfigGeneral = 'config-general',
+    ConfigNotifications = 'config-notifications',
+    ConfigPlunder = 'config-plunder',
+    Debug = 'debug',
+    Default = 'default',
+    DemolitionTemplate = 'demolition-template',
+    ErrorLog = 'error-log',
+    PlunderHistory = 'plunder-history',
+    PlunderTemplate = 'plunder-template',
+    Update = 'update'
+};
+
+export const enum WebsiteUrl {
+    Ares = 'https://tb.dev.br/ares',
+    Author = 'https://github.com/ferreira-tb',
+    Discord = 'https://discord.gg/tNQbrqbmdK',
+    HowToUse = 'https://tb.dev.br/ares/guide/how-to-use.html',
+    Issues = 'https://github.com/ferreira-tb/ares/issues',
+    Repository = 'https://github.com/ferreira-tb/ares'
+};
+
+export const enum Dimensions {
+    /** Altura do container do menu superior da UI. */
+    TopContainerHeight = 80
 };
 
 // Jogo.

@@ -19,11 +19,6 @@ const schema: Schema<AppConfigType> = {
             reloadAfterCaptcha: { type: 'boolean', default: true }
         }
     },
-    moduleBounds: {
-        type: 'object',
-        additionalProperties: true,
-        default: {}
-    },
     notifications: {
         type: 'object',
         additionalProperties: false,
@@ -76,6 +71,11 @@ const schema: Schema<AppConfigType> = {
         properties: {
             versionToIgnore: { type: ['string', 'null'], default: null }
         }
+    },
+    window: {
+        type: 'object',
+        additionalProperties: true,
+        default: {}
     }
 };
 
