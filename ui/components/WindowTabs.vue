@@ -4,7 +4,7 @@ import { NTabs, NTab } from 'naive-ui';
 import { useElementSize } from '@vueuse/core';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
-import TabFavicon from '$ui/components/TabFavicon.vue';
+import BrowserTab from '$ui/components/BrowserTab.vue';
 import WindowTabsButtons from '$ui/components/WindowTabsButtons.vue';
 
 const tabsContainer = ref<HTMLElement | null>(null);
@@ -54,14 +54,14 @@ useIpcOn('tab:destroyed', (_e, tabId: number) => {
                     :key="mainTabId"
                     :name="mainTabId"
                     :closable="false"
-                    :tab="() => h(TabFavicon, { id: mainTabId, isMainTab: true })"
+                    :tab="() => h(BrowserTab, { id: mainTabId, isMainTab: true })"
                 />
 
                 <NTab
                     v-for="tabId of allTabs"
                     :key="tabId"
                     :name="tabId"
-                    :tab="() => h(TabFavicon, { id: tabId, isMainTab: false })"
+                    :tab="() => h(BrowserTab, { id: tabId, isMainTab: false })"
                 />
             </NTabs>
         </div>
