@@ -8,7 +8,7 @@ import { sequelize } from '$electron/database';
 import { MainWindow, StandardWindow } from '$electron/windows';
 import { useAresStore } from '$electron/stores';
 import { ErrorLog, ElectronErrorLog } from '$electron/database/models';
-import { ErrorLogFile, StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/constants';
 
 export function setErrorEvents() {
     const aresStore = useAresStore();
@@ -83,20 +83,14 @@ export function setErrorEvents() {
             const errors = [...normalErrors, ...electronErrors].sort((a, b) => a.time - b.time);
             if (errors.length === 0) return 'canceled';
 
-            const asJson = errors.map((err) => err.toJSON()) as AllErrorLogTypes[];
-            let content = MainProcessError.generateLogContent(asJson);
-
             const userData = app.getPath('userData');
-            const uncaughtLogFilePath = path.join(userData, ErrorLogFile.Uncaught);
-            content = await consumeLogFile(uncaughtLogFilePath, content);
+            const filePath = path.join(userData, 'error.log');
 
-            const childProcessFilePath = path.join(userData, ErrorLogFile.ChildProcess);
-            content = await consumeLogFile(childProcessFilePath, content);
+            const asJson = errors.map((err) => err.toJSON()) as AllErrorLogTypes[];
+            const content = MainProcessError.generateLogContent(asJson);
+            await fs.appendFile(filePath, content, { encoding: 'utf-8' });
 
-            const mergedLogPath = path.join(userData, ErrorLogFile.All);
-            await fs.appendFile(mergedLogPath, content, { encoding: 'utf-8' });
-
-            const defaultPath = `ares-error-log-${Date.now()}.log`;
+            const defaultPath = `ares-${Date.now()}.log`;
             const { canceled, filePath: savePath } = await dialog.showSaveDialog(mainWindow.browser, { defaultPath });
 
             if (canceled) {
@@ -119,14 +113,4 @@ export function setErrorEvents() {
             return 'error';
         };
     });
-};
-
-async function consumeLogFile(filePath: string, currentContent: string) {
-    try {
-        const newContent = await fs.readFile(filePath, { encoding: 'utf-8' });
-        queueMicrotask(() => fs.rm(filePath).catch(MainProcessError.catch));
-        return currentContent + newContent;
-    } catch {
-        return currentContent;
-    };
 };

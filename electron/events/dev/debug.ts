@@ -60,7 +60,6 @@ function getSenderName() {
     const panelWindow = PanelWindow.getInstance();
     const mainView = BrowserTab.main;
 
-    // TODO: Incluir algo similar no registro de erro.
     return function(sender: Electron.WebContents): string {
         try {
             if (sender === mainWindow.webContents) return 'UI';

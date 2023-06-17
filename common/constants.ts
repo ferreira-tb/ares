@@ -80,19 +80,6 @@ export const enum Dimensions {
     TopContainerHeight = 80
 };
 
-// TODO: unificar os três.
-export const enum ErrorLogFile {
-    /** Erros propriamente capturados e registrados no banco de dados. */
-    All = 'error.log',
-    /**
-     * Erros capturados e registrados em algum dos processos filhos.
-     * @see https://www.electronjs.org/docs/latest/api/utility-process
-     */
-    ChildProcess = 'child-process-error.log',
-    /** Se o Ares falhar em capturar um erro, ele será registrado diretamente no arquivo. */
-    Uncaught = 'uncaught-error.log'
-};
-
 // Jogo.
 export const resources = ['wood', 'stone', 'iron'] as const;
 export const farmUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'marcher', 'heavy', 'knight'] as const;

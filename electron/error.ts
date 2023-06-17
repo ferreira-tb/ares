@@ -3,7 +3,6 @@ import * as fs from 'node:fs/promises';
 import { app } from 'electron';
 import { AresError } from '$common/error';
 import { isString } from '$common/guards';
-import { ErrorLogFile } from '$common/constants';
 
 export class MainProcessError extends AresError {
     public override name = 'MainProcessError';
@@ -31,7 +30,7 @@ export class MainProcessError extends AresError {
         };
 
         const content = this.generateLogContent(errorLog);
-        const logPath = path.join(app.getPath('userData'), ErrorLogFile.Uncaught);
+        const logPath = path.join(app.getPath('userData'), 'error.log');
         await fs.appendFile(logPath, content, { encoding: 'utf-8' });
     };
 };
