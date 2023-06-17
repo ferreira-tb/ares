@@ -28,6 +28,8 @@ const tooltipProps: TooltipProps = {
 };
 
 useEventListener(browserTab, 'contextmenu', (e) => {
+    if (props.isMainTab) return;
+
     e.preventDefault();
     e.stopPropagation();
     ipcSend('tab:show-context-menu', props.id);
