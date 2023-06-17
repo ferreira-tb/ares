@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { useEventListener } from '@vueuse/core';
 import { NEllipsis, NSpin, type TooltipProps } from 'naive-ui';
 import { useBrowserTab } from '$ui/composables';
+import { ipcSend } from '$renderer/ipc';
 import LightIcon18 from '$icons/units/LightIcon18.vue';
 
 const props = defineProps<{
@@ -9,6 +11,7 @@ const props = defineProps<{
     isMainTab: boolean;
 }>();
 
+const browserTab = ref<HTMLDivElement | null>(null);
 const { title, favicon, isLoading } = useBrowserTab(props.id);
 
 const tabTitle = computed(() => {
@@ -23,10 +26,16 @@ const tooltipProps: TooltipProps = {
     duration: 100,
     disabled: props.isMainTab
 };
+
+useEventListener(browserTab, 'contextmenu', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    ipcSend('tab:show-context-menu', props.id);
+});
 </script>
 
 <template>
-    <div class="browser-tab">
+    <div ref="browserTab" class="browser-tab">
         <div class="tab-favicon">
             <Transition name="tb-fade" mode="out-in">
                 <NSpin v-if="isLoading" :size="16" />

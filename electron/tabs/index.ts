@@ -1,7 +1,7 @@
 import { URL } from 'node:url';
 import { readFileSync } from 'fs';
 import { EventEmitter } from 'node:events';
-import { BrowserView } from 'electron';
+import { BrowserView, Menu } from 'electron';
 import { ref, wheneverAsync } from 'mechanus';
 import { MainWindow } from '$electron/windows';
 import { browserCss, browserJs } from '$electron/utils/files';
@@ -316,6 +316,17 @@ export class BrowserTab extends EventEmitter {
         tab.destroy();
     };
 
+    public static destroyAll(exclude: number | number[] = []) {
+        const excludeArray = Array.isArray(exclude) ? exclude : [exclude];
+        const tabs = [...this.tabs.values()].filter((tab) => {
+            if (tab.id === this.mainTab.value?.id) return false;
+            if (excludeArray.includes(tab.id)) return false;
+            return true;
+        });
+
+        tabs.forEach((tab) => tab.destroy());
+    };
+
     private static getDefaultURL(): GameUrl {
         const lastRegion = appConfig.get('general').lastRegion;
         return getGameRegionUrl(lastRegion);
@@ -353,5 +364,20 @@ export class BrowserTab extends EventEmitter {
         const tab = this.tabs.get(tabId);
         if (!tab) throw new BrowserTabError(`Tab with ID ${tabId} does not exist.`);
         this.currentTab.value = tab;
+    };
+
+    public static showContextMenu(tabId: number) {
+        const tab = this.tabs.get(tabId);
+        if (!tab) throw new BrowserTabError(`Tab with ID ${tabId} does not exist.`);
+
+        const template: Electron.MenuItemConstructorOptions[] = [
+            { label: 'Duplicar', click: () => this.create({ url: tab.getURL() }) },
+            { type: 'separator' },
+            { label: 'Fechar', click: () => tab.destroy() },
+            { label: 'Fechar outras', click: () => this.destroyAll(tab.id) }
+        ];
+
+        const menu = Menu.buildFromTemplate(template);
+        menu.popup();
     };
 };

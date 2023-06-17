@@ -53,7 +53,7 @@ export async function ipcInvoke(channel: 'browser:get-response-time'): Promise<n
 export async function ipcInvoke(channel: 'panel:is-visible'): Promise<boolean>;
 
 // Abas
-export async function ipcInvoke(channel: 'tab:title', id: number): Promise<string | null>;
+export async function ipcInvoke(channel: 'tab:title', tabId: number): Promise<string | null>;
 export async function ipcInvoke(channel: 'main-tab:url'): Promise<string>;
 export async function ipcInvoke(channel: 'main-tab:id'): Promise<number>;
 export async function ipcInvoke(channel: 'current-tab:url'): Promise<string>;
@@ -167,11 +167,13 @@ export function ipcSend(channel: 'current-tab:force-reload'): void;
 export function ipcSend(channel: 'current-tab:home'): void;
 export function ipcSend(channel: 'current-tab:back'): void;
 export function ipcSend(channel: 'current-tab:forward'): void;
-export function ipcSend(channel: 'tab:set-current', webContentsId: number): void;
+export function ipcSend(channel: 'tab:set-current', tabId: number): void;
 export function ipcSend(channel: 'current-tab:navigate-to-place', villageId: number): void;
 export function ipcSend(channel: 'current-tab:navigate-to-snob-train', villageId: number): void;
 export function ipcSend(channel: 'current-tab:navigate-to-snob-coin', villageId: number, groupId?: number): void;
-export function ipcSend(channel: 'tab:destroy', webContentsId: number): void;
+export function ipcSend(channel: 'tab:destroy', tabId: number): void;
+export function ipcSend(channel: 'tab:destroy-all', exclude?: number | number[]): void;
+export function ipcSend(channel: 'tab:show-context-menu', tabId: number): void;
 
 // Erros
 export function ipcSend(channel: 'error:open-log-window'): void;
