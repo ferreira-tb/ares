@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
-import { NEllipsis, NSpin, type TooltipProps } from 'naive-ui';
+import { NEllipsis, NSpin } from 'naive-ui';
 import { useBrowserTab } from '$ui/composables';
 import { ipcSend } from '$renderer/ipc';
 import LightIcon18 from '$icons/units/LightIcon18.vue';
@@ -18,14 +18,6 @@ const tabTitle = computed(() => {
     if (props.isMainTab) return 'Ares';
     return title.value ?? 'Ares';
 });
-
-const tooltipProps: TooltipProps = {
-    placement: 'bottom',
-    trigger: 'hover',
-    delay: 1000,
-    duration: 100,
-    disabled: props.isMainTab
-};
 
 useEventListener(browserTab, 'contextmenu', (e) => {
     if (props.isMainTab) return;
@@ -46,7 +38,7 @@ useEventListener(browserTab, 'contextmenu', (e) => {
             </Transition>
         </div>
         <div class="tab-title">
-            <NEllipsis :tooltip="tooltipProps">
+            <NEllipsis :tooltip="false">
                 {{ tabTitle }}
             </NEllipsis>
         </div>
