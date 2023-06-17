@@ -12,6 +12,18 @@ import { isAllowedOrigin } from '$common/guards';
 import { getGameRegionUrl } from '$common/helpers';
 
 export class BrowserTab extends EventEmitter {
+    public override emit(event: string, ...args: any[]): boolean {
+        return super.emit(event, ...args);
+    };
+
+    public override on(event: string, listener: (...args: any[]) => void): this {
+        return super.on(event, listener);
+    };
+
+    public override once(event: string, listener: (...args: any[]) => void): this {
+        return super.once(event, listener);
+    };
+
     public readonly view: BrowserView = new BrowserView({
         webPreferences: {
             preload: browserJs,
@@ -40,9 +52,20 @@ export class BrowserTab extends EventEmitter {
             // O título da aba principal não deve ser alterado.
             if (BrowserTab.mainTab.value === this) return;
 
-            const title = this.view.webContents.getTitle();
+            const title = this.getTitle() || this.getURL();
             mainWindow.webContents.send('tab:did-update-title', this.id, title);
         });
+
+        this.view.webContents.on('page-favicon-updated', (_e, favicons) => {
+            // O ícone da aba principal não deve ser alterado.
+            if (BrowserTab.mainTab.value === this) return;
+
+            const favicon = favicons[0];
+            mainWindow.webContents.send('tab:did-update-favicon', this.id, favicon);
+        });
+
+        this.view.webContents.on('did-start-loading', () => this.updateLoadingStatus());
+        this.view.webContents.on('did-stop-loading', () => this.updateLoadingStatus());
     };
 
     get canGoBack() {
@@ -63,6 +86,10 @@ export class BrowserTab extends EventEmitter {
 
     get insertCSS() {
         return this.view.webContents.insertCSS.bind(this.view.webContents);
+    };
+
+    get isLoading() {
+        return this.view.webContents.isLoading.bind(this.view.webContents);
     };
 
     get loadURL() {
@@ -169,6 +196,11 @@ export class BrowserTab extends EventEmitter {
         });
     };
 
+    private updateLoadingStatus() {
+        const mainWindow = MainWindow.getInstance();
+        mainWindow.webContents.send('tab:loading-status', this.id, this.isLoading());
+    };
+
     /** O id aumenta a cada nova aba criada. */
     private static id: number = 0;
     /** Função que remove o evento de redimensionamento da aba. */
@@ -187,22 +219,12 @@ export class BrowserTab extends EventEmitter {
                 previous.view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
 
                 queueMicrotask(() => {
-                    previous.webContents.removeAllListeners('did-start-loading');
-                    previous.webContents.removeAllListeners('did-stop-loading');
                     previous.webContents.removeAllListeners('did-navigate');
                     previous.webContents.removeAllListeners('did-navigate-in-page');
                     previous.webContents.removeAllListeners('did-frame-navigate');
                     previous.webContents.removeAllListeners('did-redirect-navigation');
                 });
             };
-
-            current.webContents.on('did-start-loading', () => {
-                mainWindow.webContents.send('current-tab:did-start-loading');
-            });
-        
-            current.webContents.on('did-stop-loading', () => {
-                mainWindow.webContents.send('current-tab:did-stop-loading');
-            });
         
             current.webContents.on('did-navigate', () => {
                 current.insertCSS(this.css).catch(BrowserTabError.catch);
@@ -241,7 +263,7 @@ export class BrowserTab extends EventEmitter {
         return this.mainTab.value;
     };
 
-    public static async create(options: CreateBrowserTabOptions = {}) {
+    public static create(options: CreateBrowserTabOptions = {}) {
         try {
             if (!options.url) options.url = this.getDefaultURL();
             if (!isAllowedOrigin(options.url)) return null;
@@ -252,21 +274,23 @@ export class BrowserTab extends EventEmitter {
 
             const mainWindow = MainWindow.getInstance();
             mainWindow.addBrowserView(tab.view);
-            
+
             if (options.current || this.currentTab.value === null) {
                 this.currentTab.value = tab;
             };
 
-            if (options.main || this.mainTab.value === null) {
+            Promise.all([tab.loadURL(options.url), tab.insertCSS(this.css)])
+                .catch(BrowserTabError.catch);
+
+            if (this.mainTab.value) {
+                // Envia o id e o título da aba para a janela principal.
+                // Isso é necessário para que ela possa renderizar a nova aba.
+                const title = tab.getTitle() || tab.getURL();
+                mainWindow.webContents.send('tab:created', tabId, title);
+            } else {
                 this.mainTab.value = tab;
             };
 
-            await tab.loadURL(options.url);
-            await tab.insertCSS(this.css);
-
-            // Envia o ID e o título da BrowserView para a janela principal.
-            // Isso é necessário para que ela possa criar a nova aba.
-            mainWindow.webContents.send('tab:created', tabId, tab.getTitle());
             return tab;
 
         } catch (err) {
@@ -295,6 +319,11 @@ export class BrowserTab extends EventEmitter {
     private static getDefaultURL(): GameUrl {
         const lastRegion = appConfig.get('general').lastRegion;
         return getGameRegionUrl(lastRegion);
+    };
+
+    public static getTab(tabId: number): BrowserTab | null {
+        const tab = this.tabs.get(tabId);
+        return tab ?? null;
     };
 
     /**

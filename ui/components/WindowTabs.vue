@@ -2,74 +2,66 @@
 import { h, computed, ref, reactive, watch } from 'vue';
 import { NTabs, NTab } from 'naive-ui';
 import { useElementSize } from '@vueuse/core';
-import { assertInteger } from '$common/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
+import TabFavicon from '$ui/components/TabFavicon.vue';
 import WindowTabsButtons from '$ui/components/WindowTabsButtons.vue';
-import LightIcon from '$icons/units/LightIcon.vue';
 
 const tabsContainer = ref<HTMLElement | null>(null);
 const { width } = useElementSize(tabsContainer);
 const tabsWidth = computed(() => `${width.value - 150}px`);
 
-const allTabs = reactive<Map<Electron.WebContents['id'], string>>(new Map());
-const mainViewWebContentsId = await ipcInvoke('main-tab:id');
-const activeView = ref<Electron.WebContents['id']>(mainViewWebContentsId);
-watch(activeView, (webContentsId) => ipcSend('current-tab:update', webContentsId));
+const allTabs = reactive<number[]>([]);
+const mainTabId = await ipcInvoke('main-tab:id');
+const currentTabId = ref(mainTabId);
+watch(currentTabId, (tabId) => ipcSend('tab:set-current', tabId));
 
-useIpcOn('main-tab:focus', () => (activeView.value = mainViewWebContentsId));
-
-useIpcOn('tab:created', (_e, webContentsId: number, viewTitle: string) => {
-    allTabs.set(webContentsId, viewTitle);
+useIpcOn('main-tab:focus', () => {
+    currentTabId.value = mainTabId;
 });
 
-useIpcOn('tab:destroyed', (_e, webContentsId: number) => {
-    // Se a aba que foi fechada era a ativa, a aba principal tomará seu lugar.
-    if (webContentsId === activeView.value) {
-        activeView.value = mainViewWebContentsId;
+useIpcOn('tab:created', (_e, tabId: number) => {
+    allTabs.push(tabId);
+});
+
+useIpcOn('tab:destroyed', (_e, tabId: number) => {
+    if (tabId === currentTabId.value) {
+        const nextTab = allTabs[allTabs.indexOf(tabId) + 1] as number | undefined;
+        if (nextTab) {
+            currentTabId.value = nextTab;
+        } else {
+            const previousTab = allTabs[allTabs.indexOf(tabId) - 1] as number | undefined;
+            currentTabId.value = previousTab ?? mainTabId;
+        };
     };
 
-    allTabs.delete(webContentsId);
+    allTabs.splice(allTabs.indexOf(tabId), 1);
 });
-
-useIpcOn('tab:did-update-title', (_e, webContentsId: number, viewTitle: string) => {
-    if (webContentsId === mainViewWebContentsId) return;
-    allTabs.set(webContentsId, viewTitle);
-});
-
-function destroyBrowserView(webContentsId: Electron.WebContents['id']) {
-    assertInteger(webContentsId, `Invalid webContentsId: ${webContentsId}`);
-    ipcSend('tab:destroy', webContentsId);
-};
-
-function renderMainTab() {
-    return h('div', [h(LightIcon), h('span', { style: 'margin-left: 5px;', textContent: 'Ares' })]);
-};
 </script>
 
 <template>
     <div ref="tabsContainer" class="main-window-tabs-container">
         <div class="main-window-tab-area">
             <NTabs
-                v-model:value="activeView"
+                v-model:value="currentTabId"
                 closable
                 type="card"
                 trigger="click"
                 tab-style="-webkit-app-region: no-drag;"
-                @close="destroyBrowserView"
+                @close="(tabId: number) => ipcSend('tab:destroy', tabId)"
             >
                 <NTab
-                    :key="mainViewWebContentsId"
-                    :name="mainViewWebContentsId"
+                    :key="mainTabId"
+                    :name="mainTabId"
                     :closable="false"
-                    :tab="renderMainTab"
+                    :tab="() => h(TabFavicon, { id: mainTabId, isMainTab: true })"
                 />
 
                 <NTab
-                    v-for="[viewId, title] of allTabs"
-                    :key="viewId"
-                    :name="viewId"
-                    :tab="title"
+                    v-for="tabId of allTabs"
+                    :key="tabId"
+                    :name="tabId"
+                    :tab="() => h(TabFavicon, { id: tabId, isMainTab: false })"
                 />
             </NTabs>
         </div>

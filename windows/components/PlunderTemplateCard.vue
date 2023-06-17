@@ -3,14 +3,14 @@ import { toRaw } from 'vue';
 import { NCard, NSpace, useDialog, useMessage } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 import { RendererProcessError } from '$renderer/error';
-import ArcherIcon from '$icons/units/ArcherIcon.vue';
-import AxeIcon from '$icons/units/AxeIcon.vue';
-import HeavyIcon from '$icons/units/HeavyIcon.vue';
-import LightIcon from '$icons/units/LightIcon.vue';
-import MarcherIcon from '$icons/units/MarcherIcon.vue';
-import SpearIcon from '$icons/units/SpearIcon.vue';
-import SpyIcon from '$icons/units/SpyIcon.vue';
-import SwordIcon from '$icons/units/SwordIcon.vue';
+import ArcherIcon18 from '$icons/units/ArcherIcon18.vue';
+import AxeIcon18 from '$icons/units/AxeIcon18.vue';
+import HeavyIcon18 from '$icons/units/HeavyIcon18.vue';
+import LightIcon18 from '$icons/units/LightIcon18.vue';
+import MarcherIcon18 from '$icons/units/MarcherIcon18.vue';
+import SpearIcon18 from '$icons/units/SpearIcon18.vue';
+import SpyIcon18 from '$icons/units/SpyIcon18.vue';
+import SwordIcon18 from '$icons/units/SwordIcon18.vue';
 
 const props = defineProps<{
     locale: string;
@@ -62,28 +62,28 @@ function destroyTemplate() {
     >
         <NSpace>
             <span v-if="template.units.spear > 0">
-                <SpearIcon />{{ template.units.spear.toLocaleString(locale) }}
+                <SpearIcon18 />{{ template.units.spear.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.sword > 0">
-                <SwordIcon />{{ template.units.sword.toLocaleString(locale) }}
+                <SwordIcon18 />{{ template.units.sword.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.axe > 0">
-                <AxeIcon />{{ template.units.axe.toLocaleString(locale) }}
+                <AxeIcon18 />{{ template.units.axe.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.archer > 0">
-                <ArcherIcon />{{ template.units.archer.toLocaleString(locale) }}
+                <ArcherIcon18 />{{ template.units.archer.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.spy > 0">
-                <SpyIcon />{{ template.units.spy.toLocaleString(locale) }}
+                <SpyIcon18 />{{ template.units.spy.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.light > 0">
-                <LightIcon />{{ template.units.light.toLocaleString(locale) }}
+                <LightIcon18 />{{ template.units.light.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.marcher > 0">
-                <MarcherIcon />{{ template.units.marcher.toLocaleString(locale) }}
+                <MarcherIcon18 />{{ template.units.marcher.toLocaleString(locale) }}
             </span>
             <span v-if="template.units.heavy > 0">
-                <HeavyIcon />{{ template.units.heavy.toLocaleString(locale) }}
+                <HeavyIcon18 />{{ template.units.heavy.toLocaleString(locale) }}
             </span>
         </NSpace>
     </NCard>

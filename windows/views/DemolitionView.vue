@@ -7,16 +7,16 @@ import { assertUserAlias } from '$common/guards';
 import { RendererProcessError } from '$renderer/error';
 import ResultError from '$renderer/components/ResultError.vue';
 import TableCellNumber from '$renderer/components/TableCellNumber.vue';
-import SpearIcon from '$icons/units/SpearIcon.vue';
-import SwordIcon from '$icons/units/SwordIcon.vue';
-import AxeIcon from '$icons/units/AxeIcon.vue';
-import ArcherIcon from '$icons/units/ArcherIcon.vue';
-import SpyIcon from '$icons/units/SpyIcon.vue';
-import LightIcon from '$icons/units/LightIcon.vue';
-import MarcherIcon from '$icons/units/MarcherIcon.vue';
-import HeavyIcon from '$icons/units/HeavyIcon.vue';
-import RamIcon from '$icons/units/RamIcon.vue';
-import CatapultIcon from '$icons/units/CatapultIcon.vue';
+import SpearIcon18 from '$icons/units/SpearIcon18.vue';
+import SwordIcon18 from '$icons/units/SwordIcon18.vue';
+import AxeIcon18 from '$icons/units/AxeIcon18.vue';
+import ArcherIcon18 from '$icons/units/ArcherIcon18.vue';
+import SpyIcon18 from '$icons/units/SpyIcon18.vue';
+import LightIcon18 from '$icons/units/LightIcon18.vue';
+import MarcherIcon18 from '$icons/units/MarcherIcon18.vue';
+import HeavyIcon18 from '$icons/units/HeavyIcon18.vue';
+import RamIcon18 from '$icons/units/RamIcon18.vue';
+import CatapultIcon18 from '$icons/units/CatapultIcon18.vue';
 import type { PaginationProps, DataTableBaseColumn } from 'naive-ui';
 
 interface DemolitionData extends DemolitionTroops {
@@ -42,20 +42,20 @@ if (template) {
 
 const columns: DataTableBaseColumn[] = [
     { title: 'Nível', key: 'level' },
-    { title: () => h(SpearIcon), key: 'spear' },
-    { title: () => h(SwordIcon), key: 'sword' },
-    { title: () => h(AxeIcon), key: 'axe' },
-    { title: () => h(SpyIcon), key: 'spy' },
-    { title: () => h(LightIcon), key: 'light' },
-    { title: () => h(HeavyIcon), key: 'heavy' },
-    { title: () => h(RamIcon), key: 'ram' },
-    { title: () => h(CatapultIcon), key: 'catapult' }
+    { title: () => h(SpearIcon18), key: 'spear' },
+    { title: () => h(SwordIcon18), key: 'sword' },
+    { title: () => h(AxeIcon18), key: 'axe' },
+    { title: () => h(SpyIcon18), key: 'spy' },
+    { title: () => h(LightIcon18), key: 'light' },
+    { title: () => h(HeavyIcon18), key: 'heavy' },
+    { title: () => h(RamIcon18), key: 'ram' },
+    { title: () => h(CatapultIcon18), key: 'catapult' }
 ];
 
 // Se o mundo possui arqueiros, adiciona as colunas de arqueiros e arqueiros a cavalo.
 if (isArcherWorld) {
-    columns.splice(4, 0, { title: () => h(ArcherIcon), key: 'archer' });
-    columns.splice(7, 0, { title: () => h(MarcherIcon), key: 'marcher' });
+    columns.splice(4, 0, { title: () => h(ArcherIcon18), key: 'archer' });
+    columns.splice(7, 0, { title: () => h(MarcherIcon18), key: 'marcher' });
 };
 
 for (const column of columns) {

@@ -1,11 +1,15 @@
-@mixin icon($image-url: '') {
-    width: 18px;
-    height: 18px;
+@mixin icon(
+    $image-url: '',
+    $width: 18px,
+    $height: 18px,
+) {
+    width: $width;
+    height: $height;
     display: inline-block;
     overflow: hidden;
     background-repeat: no-repeat;
     vertical-align: -4px;
-    background-image:  url($image-url);
+    background-image: url($image-url);
 }
 
 @mixin bold-text-color($text-color: var(--color-green)) {

@@ -5,7 +5,7 @@ import { NButton } from 'naive-ui';
 import { watchImmediate } from '@vueuse/core';
 import { useSnobConfigStore, useSnobHistoryStore } from '$renderer/stores';
 import { ipcInvoke } from '$renderer/ipc';
-import CoinIcon from '$icons/misc/CoinIcon.vue';
+import CoinIcon18 from '$icons/misc/CoinIcon18.vue';
 
 const locale = await ipcInvoke('app:locale');
 
@@ -26,7 +26,7 @@ watchImmediate(active, async () => {
         class="minted-amount"
         quaternary
         :keyboard="false"
-        :render-icon="() => h(CoinIcon)"
+        :render-icon="() => h(CoinIcon18)"
     >
         <span>{{ coins.toLocaleString(locale) }}</span>
     </NButton>

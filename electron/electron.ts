@@ -18,9 +18,7 @@ MainProcessError.catch = errorHandler;
 function createWindow() {
     MainWindow.create();
     PanelWindow.create();
-    
-    BrowserTab.create({ current: true, main: true })
-        .catch(MainProcessError.catch);
+    BrowserTab.create({ current: true });
 
     setEvents();
     setMenu();

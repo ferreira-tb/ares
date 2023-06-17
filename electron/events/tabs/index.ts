@@ -3,6 +3,15 @@ import { BrowserTab } from '$electron/tabs';
 import { setCurrentViewNavigationEvents } from '$electron/events/tabs/navigation';
 
 export function setTabEvents() {
+    ipcMain.on('tab:set-current', (_e, tabId: number) => BrowserTab.setCurrent(tabId));
+    ipcMain.on('tab:destroy', (_e, tabId: number) => BrowserTab.destroy(tabId));
+
+    ipcMain.handle('tab:title', (_e, tabId: number): string | null => {
+        const tab = BrowserTab.getTab(tabId);
+        if (!tab) return null;
+        return tab.getTitle() || tab.getURL();
+    });
+
     // Aba principal.
     ipcMain.handle('main-tab:id', () => BrowserTab.main.id);
     ipcMain.handle('main-tab:url', () => BrowserTab.main.getURL());
@@ -10,7 +19,6 @@ export function setTabEvents() {
     ipcMain.on('main-tab:force-reload', () => BrowserTab.main.reloadIgnoringCache());
 
     // Aba atual.
-    ipcMain.on('current-tab:update', (_e, tabId: number) => BrowserTab.setCurrent(tabId));
     ipcMain.handle('current-tab:id', () => BrowserTab.current.id);
     ipcMain.handle('current-tab:url', () => BrowserTab.current.getURL());
     ipcMain.handle('current-tab:can-go-back', () => BrowserTab.current.canGoBack());
@@ -21,9 +29,6 @@ export function setTabEvents() {
     ipcMain.on('current-tab:home', () => BrowserTab.current.goHome());
     ipcMain.on('current-tab:reload', () => BrowserTab.current.reload());
     ipcMain.on('current-tab:force-reload', () => BrowserTab.current.reloadIgnoringCache());
-
-    // Abas específicas.
-    ipcMain.on('tab:destroy', (_e, tabId: number) => BrowserTab.destroy(tabId));
 
     setCurrentViewNavigationEvents();
 };
