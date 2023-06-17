@@ -47,7 +47,7 @@
     "devDependencies": {
         "@electron-forge/cli": "^6.2.1",
         "@electron-forge/maker-zip": "^6.2.1",
-        "@octokit/core": "^4.2.1",
+        "@octokit/core": "^4.2.4",
         "@rollup/plugin-commonjs": "^25.0.1",
         "@rollup/plugin-json": "^6.0.0",
         "@rollup/plugin-node-resolve": "^15.1.0",
@@ -73,7 +73,7 @@
         "discord.js": "^14.11.0",
         "electron": "^25.1.1",
         "electron-store": "^8.1.0",
-        "eslint": "^8.42.0",
+        "eslint": "^8.43.0",
         "eslint-plugin-vue": "^9.14.1",
         "mechanus": "^3.5.1",
         "naive-ui": "^2.34.4",
@@ -92,6 +92,6 @@
         "vue": "^3.3.4",
         "vue-eslint-parser": "^9.3.1",
         "vue-router": "^4.2.2",
-        "vue-tsc": "^1.6.5"
+        "vue-tsc": "^1.8.0"
     }
 }
