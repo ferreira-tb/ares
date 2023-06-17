@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { NTag } from 'naive-ui';
+import { NCountdown, NTag } from 'naive-ui';
 import { computedWithControl, whenever } from '@vueuse/core';
 import { useIncomingsStore } from '$renderer/stores';
-import { getLocaleDateString } from '$renderer/utils/helpers';
-import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { ipcSend } from '$renderer/ipc';
 
 defineProps<{
     userAlias: UserAlias | null;
 }>();
-
-const locale = await ipcInvoke('app:locale');
 
 const incomingsStore = useIncomingsStore();
 const { amount, incomings } = storeToRefs(incomingsStore);
@@ -29,7 +26,16 @@ const nextIncoming = computed<IncomingAttack | null>(() => {
     return filteredIncomings.value[0];
 });
 
-whenever(amount, () => filteredIncomings.trigger());
+const duration = computed(() => {
+    if (!nextIncoming.value) return 0;
+    return nextIncoming.value.arrivalTime - Date.now();
+});
+
+whenever(amount, () => trigger());
+
+function trigger() {
+    filteredIncomings.trigger();
+};
 </script>
 
 <template>
@@ -47,7 +53,8 @@ whenever(amount, () => filteredIncomings.trigger());
                     size="small"
                     @click="ipcSend('current-tab:navigate-to-place', nextIncoming.target)"
                 >
-                    {{ `Próximo ataque: ${getLocaleDateString(locale, nextIncoming.arrivalTime)}` }}
+                    <span class="next-incoming-label">Próximo ataque:</span>
+                    <NCountdown :duration="duration" @finish="trigger" />
                 </NTag>
             </div>
         </Transition>
@@ -65,6 +72,10 @@ whenever(amount, () => filteredIncomings.trigger());
 
         .next-incoming-tag {
             cursor: pointer;
+        }
+
+        .next-incoming-label {
+            margin-right: 0.3rem;
         }
     }
 }
