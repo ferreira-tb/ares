@@ -1,10 +1,11 @@
 import { ipcMain } from 'electron';
-import { computed, storeToRefs, watch } from 'mechanus';
+import { storeToRefs, watch } from 'mechanus';
 import { Kronos } from '@tb-dev/kronos';
 import { TribalWorker } from '$electron/worker';
 import { MainWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
-import { useCacheStore, useIncomingsStore } from '$electron/stores';
+import { useIncomingsStore } from '$electron/stores';
+import { useDelay } from '$electron/composables';
 import { GameSearchParams, TribalWorkerName } from '$common/constants';
 import { MainProcessError } from '$electron/error';
 
@@ -40,13 +41,7 @@ export function setIncomingAttacksEvents() {
 };
 
 function createIncomingsHandler() {
-    const cacheStore = useCacheStore();
-    const { responseTime } = storeToRefs(cacheStore);
-
-    const delay = computed([responseTime], () => {
-        return (Kronos.Second * 5) + (responseTime.value ?? 1000);
-    });
-
+    const delay = useDelay();
     let worker: TribalWorker | null = null;
     let timeout: NodeJS.Timeout | null = null;
 

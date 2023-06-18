@@ -58,7 +58,7 @@ export class TribalWorker extends EventEmitter {
         super();
 
         this.name = name;
-        this.path = path.join(__dirname, `worker/${name}.js`);
+        this.path = path.join(__dirname, `worker/tribal/${name}.js`);
         this.url = url;
 
         const readyWatcher = wheneverAsync(this.isReady, () => {
@@ -67,7 +67,7 @@ export class TribalWorker extends EventEmitter {
 
         this.watchers = new Set([
             readyWatcher,
-            this.#setBrowserViewWatcher()
+            this.setBrowserViewWatcher()
         ]);
     };
 
@@ -161,11 +161,36 @@ export class TribalWorker extends EventEmitter {
         await tribalWorker.webContents.loadURL(this.url.href);
 
         TribalWorker.setWorker(this.name, this);
-        this.#setupMessageChannel();
+        this.setupMessageChannel();
     };
 
     public openDevTools() {
         this.webContents.openDevTools({ mode: 'detach' });
+    };
+
+    private setBrowserViewWatcher(): () => void {
+        return watchImmediate(this.browserView, (view) => {
+            if (!(view instanceof BrowserView)) return;
+            const contents = view.webContents;
+            contents.on('did-start-loading', () => (this.isLoading.value = contents.isLoading()));
+            contents.on('did-stop-loading', () => (this.isLoading.value = contents.isLoading()));
+            contents.on('did-finish-load', () => (this.isLoading.value = contents.isLoading()));
+            contents.on('did-fail-load', () => (this.isLoading.value = contents.isLoading()));
+            contents.on('did-fail-provisional-load', () => (this.isLoading.value = contents.isLoading()));
+            contents.on('dom-ready', () => (this.isLoading.value = contents.isLoading()));
+        });
+    };
+
+    private setupMessageChannel(): void {
+        const { port1, port2 } = new MessageChannelMain();
+        
+        this.messagePort.value = port1;
+        port1.on('message', (e: Electron.MessageEvent) => {
+            this.emit('port:message', e.data);
+        });
+
+        this.webContents.postMessage('port', null, [port2]);
+        port1.start();
     };
 
     /** Permite aguardar até que o webContents do Worker esteja carregado. */
@@ -221,31 +246,5 @@ export class TribalWorker extends EventEmitter {
     private static setWorker(name: TribalWorkerName, worker: TribalWorker): void {
         worker.once('destroyed', () => this.active.delete(name));
         this.active.set(name, worker);
-    };
-
-    #setBrowserViewWatcher(): () => void {
-        return watchImmediate(this.browserView, (view) => {
-            if (!(view instanceof BrowserView)) return;
-            const contents = view.webContents;
-            contents.on('did-start-loading', () => (this.isLoading.value = contents.isLoading()));
-            contents.on('did-stop-loading', () => (this.isLoading.value = contents.isLoading()));
-            contents.on('did-finish-load', () => (this.isLoading.value = contents.isLoading()));
-            contents.on('did-fail-load', () => (this.isLoading.value = contents.isLoading()));
-            contents.on('did-fail-provisional-load', () => (this.isLoading.value = contents.isLoading()));
-            contents.on('dom-ready', () => (this.isLoading.value = contents.isLoading()));
-        });
-    };
-
-    #setupMessageChannel(): void {
-        const { port1, port2 } = new MessageChannelMain();
-        this.webContents.postMessage('port', null, [port2]);
-        port1.postMessage({ channel: this.name });
-
-        port1.on('message', (e: Electron.MessageEvent) => {
-            this.emit('port:message', e.data);
-        });
-
-        this.messagePort.value = port1;
-        port1.start();
     };
 };

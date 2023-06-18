@@ -27,7 +27,7 @@ const translatedTimeUnit = computed(() => {
 const village = useVillage(toRef(() => config.village));
 const villageName = computed<string | null>(() => {
     if (!village.value) return null;
-    return decodeString(village.value.name);
+    return village.value.name;
 });
 
 const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));

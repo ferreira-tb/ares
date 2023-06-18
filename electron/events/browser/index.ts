@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import { useCacheStore } from '$electron/stores';
 import { MainWindow } from '$electron/windows';
 import { setCaptchaEvents } from '$electron/events/browser/captcha';
+import { setContextMenuEvents } from '$electron/events/browser/menu';
 
 export function setBrowserEvents() {
     const mainWindow = MainWindow.getInstance();
@@ -15,4 +16,5 @@ export function setBrowserEvents() {
     });
 
     setCaptchaEvents();
+    setContextMenuEvents();
 };

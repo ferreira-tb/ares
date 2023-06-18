@@ -3,10 +3,7 @@ import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { AresError } from '$common/error';
 
 export class RendererProcessError extends AresError {
-    constructor(message: string) {
-        super(message);
-        this.name = 'AresError';
-    };
+    public override name = 'RendererProcessError';
 
     public static override async catch(err: unknown) {
         if (err instanceof Error) {
@@ -23,4 +20,8 @@ export class RendererProcessError extends AresError {
             };
         };
     };
+};
+
+export class RendererWorkerError extends RendererProcessError {
+    public override readonly name = 'RendererWorkerError';
 };

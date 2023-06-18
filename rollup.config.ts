@@ -81,32 +81,57 @@ function workers(): RollupOptions[] {
     const workerPlugins = plugins('worker/tsconfig.json');
     return [
         {
-            input: 'worker/groups/get-village-groups.ts',
-            output: output('dist/worker/get-village-groups.js'),
+            input: 'worker/tribal/groups/add-villages-to-group.ts',
+            output: output('dist/worker/tribal/add-villages-to-group.js'),
             plugins: workerPlugins,
             external: ['electron']
         },
         {
-            input: 'worker/incomings/handle-incomings.ts',
-            output: output('dist/worker/handle-incomings.js'),
+            input: 'worker/tribal/groups/create-static-group.ts',
+            output: output('dist/worker/tribal/create-static-group.js'),
             plugins: workerPlugins,
             external: ['electron']
         },
         {
-            input: 'worker/snob/mint-coin.ts',
-            output: output('dist/worker/mint-coin.js'),
+            input: 'worker/tribal/ally/fetch-diplomacy.ts',
+            output: output('dist/worker/tribal/fetch-diplomacy.js'),
             plugins: workerPlugins,
             external: ['electron']
         },
         {
-            input: 'worker/world/fetch-world-config.ts',
-            output: output('dist/worker/fetch-world-config.js'),
+            input: 'worker/tribal/world/fetch-world-config.ts',
+            output: output('dist/worker/tribal/fetch-world-config.js'),
             plugins: workerPlugins,
             external: ['electron']
         },
         {
-            input: 'worker/world/fetch-world-units.ts',
-            output: output('dist/worker/fetch-world-units.js'),
+            input: 'worker/tribal/world/fetch-world-units.ts',
+            output: output('dist/worker/tribal/fetch-world-units.js'),
+            plugins: workerPlugins,
+            external: ['electron']
+        },
+        {
+            input: 'worker/tribal/groups/get-village-groups.ts',
+            output: output('dist/worker/tribal/get-village-groups.js'),
+            plugins: workerPlugins,
+            external: ['electron']
+        },
+        {
+            input: 'worker/tribal/incomings/handle-incomings.ts',
+            output: output('dist/worker/tribal/handle-incomings.js'),
+            plugins: workerPlugins,
+            external: ['electron']
+        },
+        {
+            input: 'worker/tribal/snob/mint-coin.ts',
+            output: output('dist/worker/tribal/mint-coin.js'),
+            plugins: workerPlugins,
+            external: ['electron']
+        },
+
+        {
+            input: 'worker/web/groups/calc-safe-zone-villages.ts',
+            output: output('dist/worker/web/calc-safe-zone-villages.js'),
             plugins: workerPlugins,
             external: ['electron']
         }

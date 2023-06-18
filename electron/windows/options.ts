@@ -1,18 +1,24 @@
 import { StandardWindowName } from '$common/constants';
 
-const configOptions: BrowserWindowOptions = {
+const config: BrowserWindowOptions = {
     width: 700,
     height: 600,
     title: 'Configurações'
 };
 
+const groupTemplate: BrowserWindowOptions = {
+    width: 900,
+    height: 600,
+    title: 'Modelos de grupo'
+};
+
 export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions } = {
-    [StandardWindowName.Config]: configOptions,
-    [StandardWindowName.ConfigAdvanced]: configOptions,
-    [StandardWindowName.ConfigBuildingsSnob]: configOptions,
-    [StandardWindowName.ConfigGeneral]: configOptions,
-    [StandardWindowName.ConfigNotifications]: configOptions,
-    [StandardWindowName.ConfigPlunder]: configOptions,
+    [StandardWindowName.Config]: config,
+    [StandardWindowName.ConfigAdvanced]: config,
+    [StandardWindowName.ConfigBuildingsSnob]: config,
+    [StandardWindowName.ConfigGeneral]: config,
+    [StandardWindowName.ConfigNotifications]: config,
+    [StandardWindowName.ConfigPlunder]: config,
     [StandardWindowName.Debug]: {
         width: 1000,
         height: 600,
@@ -31,8 +37,10 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
     [StandardWindowName.ErrorLog]: {
         width: 500,
         height: 600,
-        title: 'Registro de Erros'
+        title: 'Registro de erros'
     },
+    [StandardWindowName.GroupTemplate]: groupTemplate,
+    [StandardWindowName.GroupTemplateSafeZone]: groupTemplate,
     [StandardWindowName.PlunderHistory]: {
         width: 1200,
         minWidth: 1200,

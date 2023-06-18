@@ -50,13 +50,13 @@ const groupOptions = computed(() => {
 const modeOptions = [
     { label: 'Simples', value: 'single' },
     { label: 'Grupo', value: 'group' }
-] satisfies NSelectPatternOption<SnobConfigType['mode']>;
+] satisfies NSelectOptions<SnobConfigType['mode']>;
 
 const timeUnitOptions = [
     { label: 'Segundos', value: 'seconds' },
     { label: 'Minutos', value: 'minutes' },
     { label: 'Horas', value: 'hours' }
-] satisfies NSelectPatternOption<SnobConfigType['timeUnit']>;
+] satisfies NSelectOptions<SnobConfigType['timeUnit']>;
 
 watchDeep(config, () => {
     ipcSend('snob:update-config', config.raw());

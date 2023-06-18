@@ -50,6 +50,19 @@ type IncomingAttack = {
     readonly addedAt: number;
 };
 
+// TRIBOS
+type RawDiplomacy = {
+    readonly allies: number[];
+    readonly enemies: number[];
+    readonly nap: number[];
+};
+
+type Diplomacy = {
+    readonly allies: WorldAllyType[];
+    readonly enemies: WorldAllyType[];
+    readonly nap: WorldAllyType[];
+};
+
 // OUTROS
 type DemolitionTroops = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
 type UnitsToDestroyWall = Record<StringWallLevel, DemolitionTroops>;

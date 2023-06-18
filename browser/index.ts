@@ -6,6 +6,7 @@ import { createPinia } from 'pinia';
 import { router, setNavigationGuards } from '$browser/router';
 import { setBrowserEvents } from '$browser/events';
 import { BrowserError } from '$browser/error';
+import { ipcSend } from '$renderer/ipc';
 import App from '$browser/App.vue';
 
 const app = createApp(App);
@@ -33,3 +34,9 @@ window.addEventListener('DOMContentLoaded', async () => {
         BrowserError.catch(err);
     };
 }, { once: true });
+
+window.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    ipcSend('browser:show-context-menu');
+});

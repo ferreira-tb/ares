@@ -5,8 +5,9 @@ import { TribalWorkerError } from '$worker/error';
 
 ipcOn('port', (e) => {
     const port = e.ports[0];
-    port.onmessage = () => getVillageGroups(port);
     port.onmessageerror = TribalWorkerError.onMessageError;
+
+    getVillageGroups(port);
 });
 
 async function getVillageGroups(port: MessagePort) {
@@ -28,9 +29,11 @@ async function getVillageGroups(port: MessagePort) {
         });
 
         port.postMessage(groups);
+        
     } catch (err) {
         await TribalWorkerError.catch(err);
         port.postMessage(null);
+
     } finally {
         port.close();
     };

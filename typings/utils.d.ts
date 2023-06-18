@@ -19,7 +19,7 @@ type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumer
 type IntRangeToString<F extends number, T extends number> = NumberToString<IntRange<F, T>>;
 
 /** Opções do componente `NSelect` do Naive UI. */
-type NSelectPatternOption<T> = ReadonlyArray<{
+type NSelectOptions<T> = ReadonlyArray<{
     label: string;
     value: T;
     disabled?: boolean;

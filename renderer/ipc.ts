@@ -2,6 +2,7 @@
 import { ipcRenderer } from 'electron';
 import type { StandardWindowName } from '$common/constants';
 import type { PlunderAttack } from '$common/templates';
+import type { RendererWorkerName } from '$common/constants';
 
 const debug = {
     enabled: false
@@ -63,8 +64,11 @@ export async function ipcInvoke(channel: 'current-tab:can-go-forward'): Promise<
 
 // Jogo
 export async function ipcInvoke(channel: 'game:data'): Promise<TribalWarsGameDataType | null>;
+export async function ipcInvoke(channel: 'game:create-static-group', groupName: string): Promise<VillageGroup | null>;
+export async function ipcInvoke(channel: 'game:add-villages-to-group', group: number, villages: number[]): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:fetch-village-groups'): Promise<boolean>;
 export async function ipcInvoke(channel: 'game:get-all-village-groups'): Promise<Set<VillageGroup>>;
+export async function ipcInvoke(channel: 'game:fetch-diplomacy'): Promise<RawDiplomacy | null>;
 
 // Mundo
 export async function ipcInvoke(channel: 'world:current'): Promise<World | null>;
@@ -72,10 +76,19 @@ export async function ipcInvoke(channel: 'world:get-config', world?: World): Pro
 export async function ipcInvoke(channel: 'world:get-units-info', world?: World): Promise<WorldUnitsType | null>;
 export async function ipcInvoke(channel: 'world:is-archer-world'): Promise<boolean | null>;
 export async function ipcInvoke(
-    channel: 'world-data:get-village', id?: number[] | number, world?: World
+    channel: 'world-data:get-ally', id?: number | number[] | null, world?: World | null
+): Promise<WorldAllyType[]>;
+export async function ipcInvoke(
+    channel: 'world-data:get-ally-players', id: number | number[], world?: World
+): Promise<WorldPlayerType[]>;
+export async function ipcInvoke(
+    channel: 'world-data:get-ally-villages', id: number | number[], world?: World
 ): Promise<WorldVillageType[]>;
 export async function ipcInvoke(
-    channel: 'world-data:get-player-villages', player: number, world?: World
+    channel: 'world-data:get-village', id?: number | number[] | null, world?: World | null
+): Promise<WorldVillageType[]>;
+export async function ipcInvoke(
+    channel: 'world-data:get-player-villages', player: number | number[], world?: World
 ): Promise<WorldVillageType[]>;
 
 // Jogador
@@ -113,6 +126,11 @@ export async function ipcInvoke(channel: 'snob:get-history'): Promise<SnobHistor
 export async function ipcInvoke(channel: 'ipc-tribal:get-file'): Promise<string | null>;
 export async function ipcInvoke(channel: 'ipc-tribal:update-plunder-info', plunderInfo: PlunderInfoType): Promise<boolean>;
 export async function ipcInvoke(channel: 'ipc-tribal:update-current-village-units', units: UnitAmount): Promise<boolean>;
+
+// Renderer Worker
+export async function ipcInvoke(
+    channel: 'renderer-worker:get-js-file', workerName: RendererWorkerName
+): Promise<string | null>;
 
 export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknown> {
     if (debug.enabled) report('renderer', channel, ...args);
@@ -153,6 +171,7 @@ export function ipcSend(channel: 'open-region-select-menu'): void;
 export function ipcSend(channel: 'open-bug-report-menu'): void;
 
 // Browser
+export function ipcSend(channel: 'browser:show-context-menu'): void;
 export function ipcSend(channel: 'browser:update-response-time', time: number | null): void;
 export function ipcSend(channel: 'captcha:update-status', status: boolean): void;
 
