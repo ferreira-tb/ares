@@ -1,10 +1,19 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { RouterView } from 'vue-router';
-import { NEllipsis, NLayout, NLayoutSider, NResult, NSpace, NSteps, NStep, type StepsProps } from 'naive-ui';
 import { useUserAlias } from '$renderer/composables';
-import type { StandardWindowName } from '$common/constants';
 import GroupTemplateWelcome from '$windows/components/GroupTemplateWelcome.vue';
+import type { StandardWindowName } from '$common/constants';
+import {
+    NEllipsis,
+    NLayout,
+    NLayoutSider,
+    NResult,
+    NSpace,
+    NSteps,
+    NStep,
+    type StepsProps
+} from 'naive-ui';
 
 const userAlias = useUserAlias();
 
