@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core';
-import { NButton, NSelect, NThing } from 'naive-ui';
+import { NButton, NSelect } from 'naive-ui';
 import { router } from '$windows/router';
 import { StandardWindowName } from '$common/constants';
+import GroupTemplateCard from '$windows/components/GroupTemplateCard.vue';
 
 const props = defineProps<{
     template: StandardWindowName | null;
@@ -47,13 +48,13 @@ async function next() {
         <Transition name="tb-fade" mode="out-in">
             <div v-if="selectedTemplate" class="template-description">
                 <Transition name="tb-fade" mode="out-in">
-                    <NThing
+                    <GroupTemplateCard
                         v-if="selectedTemplate === StandardWindowName.GroupTemplateSafeZone"
                         title="Zona segura"
                         description="Manual"
                     >
                         Aldeias que estão longe de inimigos.
-                    </NThing>
+                    </GroupTemplateCard>
                 </Transition>
             </div>
         </Transition>
@@ -81,6 +82,5 @@ async function next() {
 .template-description {
     @include main.flex-x-start-y-center;
     margin-top: 2em;
-    margin-left: 20px;
 }
 </style>

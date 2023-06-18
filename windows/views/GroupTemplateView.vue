@@ -22,7 +22,7 @@ const templateTitle = computed(() => templateName.value ? templateName.value : '
             <NLayoutSider bordered content-style="padding: 12px; overflow: hidden;" :width="200">
                 <NSpace vertical>
                     <NSteps vertical :current="currentStep" :status="currentStatus">
-                        <NStep title="Início" />
+                        <NStep title="Escolha um modelo" />
                         <NStep>
                             <template #title>
                                 <div class="title-ellipsis">
