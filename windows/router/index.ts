@@ -10,6 +10,8 @@ import DebugView from '$windows/views/DebugView.vue';
 import DefaultView from '$renderer/views/DefaultView.vue';
 import DemolitionView from '$windows/views/DemolitionView.vue';
 import ErrorLogView from '$windows/views/ErrorLogView.vue';
+import GroupTemplateView from '$windows/views/GroupTemplateView.vue';
+import GroupTemplateSafeZone from '$windows/components/GroupTemplateSafeZone.vue';
 import PlunderHistoryView from '$windows/views/PlunderHistoryView.vue';
 import PlunderTemplateView from '$windows/views/PlunderTemplateView.vue';
 import UpdateView from '$windows/views/UpdateView.vue';
@@ -69,6 +71,18 @@ const routes: RouteRecordRaw[] = [
         path: '/error-log',
         name: StandardWindowName.ErrorLog,
         component: ErrorLogView
+    },
+    {
+        path: '/group-template',
+        name: StandardWindowName.GroupTemplate,
+        component: GroupTemplateView,
+        children: [
+            {
+                path: 'safe-zone',
+                name: StandardWindowName.GroupTemplateSafeZone,
+                component: GroupTemplateSafeZone
+            }
+        ]
     },
     {
         path: '/plunder-history',

@@ -121,6 +121,7 @@ export class StandardWindow extends BaseWindow {
                 webPreferences: {
                     spellcheck: false,
                     nodeIntegration: true,
+                    nodeIntegrationInWorker: true,
                     contextIsolation: false,
                     devTools: process.env.ARES_MODE === 'dev'
                 }

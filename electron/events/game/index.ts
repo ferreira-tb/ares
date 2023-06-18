@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 import { useCacheStore, useGameDataStore } from '$electron/stores';
+import { setAllyEvents } from '$electron/events/game/ally';
 import { setGroupsEvents } from '$electron/events/game/groups';
 import { setIncomingAttacksEvents } from '$electron/events/game/incomings';
 import { setPlunderEvents } from '$electron/events/game/plunder';
@@ -12,6 +13,7 @@ export function setGameEvents() {
     ipcMain.handle('game:data', (): TribalWarsGameDataType => gameDataStore.$raw());
     ipcMain.handle('player:name', (): string | null => cacheStore.player);
 
+    setAllyEvents();
     setGroupsEvents();
     setIncomingAttacksEvents();
     setPlunderEvents();

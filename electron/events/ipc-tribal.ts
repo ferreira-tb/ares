@@ -3,7 +3,6 @@ import { ipcMain, webContents } from 'electron';
 import { PanelWindow } from '$electron/windows';
 import { ipcTribalJs } from '$electron/utils/files';
 import { MainProcessError } from '$electron/error';
-
 import {
     useCacheStore,
     useGameDataStore,

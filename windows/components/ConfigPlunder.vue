@@ -2,7 +2,7 @@
 import { nextTick } from 'vue';
 import { watchDeep } from '@vueuse/core';
 import { NResult } from 'naive-ui';
-import { useIpcOn, useUserAlias } from '$renderer/composables';
+import { useUserAlias } from '$renderer/composables';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { usePlunderConfigStore } from '$renderer/stores';
 import ConfigPlunderGridAttack from '$windows/components/ConfigPlunderGridAttack.vue';
@@ -20,11 +20,6 @@ if (previousConfig) {
     config.$patch(previousConfig);
     await nextTick();
 };
-
-// Atualiza o estado local do Plunder sempre que ocorre uma mudança.
-useIpcOn('plunder:patch-config', (_e: unknown, newConfig: PlunderConfigType) => {
-    config.$patch(newConfig);
-});
 
 watchDeep(config, () => {
     ipcSend('plunder:update-config', config.raw());

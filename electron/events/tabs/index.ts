@@ -6,7 +6,7 @@ export function setTabEvents() {
     ipcMain.on('tab:set-current', (_e, tabId: number) => BrowserTab.setCurrent(tabId));
     ipcMain.on('tab:destroy', (_e, tabId: number) => BrowserTab.destroy(tabId));
     ipcMain.on('tab:destroy-all', (_e, exclude?: number | number[]) => BrowserTab.destroyAll(exclude));
-    ipcMain.on('tab:show-context-menu', (_e, tabId: number) => BrowserTab.showContextMenu(tabId)); 
+    ipcMain.on('tab:show-context-menu', (_e, tabId: number) => BrowserTab.showContextMenu(tabId));
 
     ipcMain.handle('tab:title', (_e, tabId: number): string | null => {
         const tab = BrowserTab.getTab(tabId);

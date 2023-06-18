@@ -11,6 +11,7 @@ import { setPanelEvents } from '$electron/events/panel';
 import { setTabEvents } from '$electron/events/tabs';
 import { setMainWindowEvents } from '$electron/events/ui';
 import { setWindowsEvents } from '$electron/events/windows';
+import { setWorkerEvents } from '$electron/events/worker';
 import { setWorldEvents } from '$electron/events/world';
 import { useCacheStore } from '$electron/stores';
 import { MainProcessError } from '$electron/error';
@@ -50,8 +51,9 @@ export function setEvents() {
     setGameEvents();
     setIpcTribalEvents();
     setMainWindowEvents();
-    setWindowsEvents();
     setPanelEvents();
     setTabEvents();
+    setWindowsEvents();
+    setWorkerEvents();
     setWorldEvents();
 };

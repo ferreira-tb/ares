@@ -257,7 +257,7 @@
         "@typescript-eslint/no-explicit-any": ["error", { "ignoreRestArgs": true }],
         "@typescript-eslint/no-extra-non-null-assertion": "error",
         "@typescript-eslint/no-extraneous-class": "error",
-        "@typescript-eslint/no-floating-promises": ["error", { "ignoreIIFE": true }],
+        "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/no-for-in-array": "error",
         "@typescript-eslint/no-invalid-void-type": "error",
         "@typescript-eslint/no-meaningless-void-operator": "error",

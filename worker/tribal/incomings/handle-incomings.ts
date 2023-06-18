@@ -11,8 +11,9 @@ type LabeledAttack = Pick<IncomingAttack, 'arrivalTime' | 'id'>;
 
 ipcOn('port', (e) => {
     const port = e.ports[0];
-    port.onmessage = () => handleIncomings(port);
     port.onmessageerror = TribalWorkerError.onMessageError;
+
+    handleIncomings(port);
 });
 
 async function handleIncomings(port: MessagePort) {

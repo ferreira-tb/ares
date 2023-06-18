@@ -5,19 +5,20 @@ import { TribalWorkerError } from '$worker/error';
 
 ipcOn('port', (e) => {
     const port = e.ports[0];
-    port.onmessage = () => fetchWorldUnits(port);
     port.onmessageerror = TribalWorkerError.onMessageError;
+
+    fetchWorldUnits(port);
 });
 
 class EachUnit implements UnitDetails {
-    readonly buildTime: number;
-    readonly pop: number;
-    readonly speed: number;
-    readonly attack: number;
-    readonly defense: number;
-    readonly defenseCavalry: number;
-    readonly defenseArcher: number;
-    readonly carry: number;
+    public readonly buildTime: number;
+    public readonly pop: number;
+    public readonly speed: number;
+    public readonly attack: number;
+    public readonly defense: number;
+    public readonly defenseCavalry: number;
+    public readonly defenseArcher: number;
+    public readonly carry: number;
 
     constructor(element: Element) {
         const buildTime = element.queryAndAssert('build_time');
@@ -47,19 +48,19 @@ class EachUnit implements UnitDetails {
 };
 
 class WorldUnits implements WorldUnitsType {
-    readonly spear: EachUnit;
-    readonly sword: EachUnit;
-    readonly axe: EachUnit;
-    readonly archer: EachUnit | null;
-    readonly spy: EachUnit;
-    readonly light: EachUnit;
-    readonly marcher: EachUnit | null;
-    readonly heavy: EachUnit;
-    readonly ram: EachUnit;
-    readonly catapult: EachUnit;
-    readonly knight: EachUnit;
-    readonly snob: EachUnit;
-    readonly militia: EachUnit;
+    public readonly spear: EachUnit;
+    public readonly sword: EachUnit;
+    public readonly axe: EachUnit;
+    public readonly archer: EachUnit | null;
+    public readonly spy: EachUnit;
+    public readonly light: EachUnit;
+    public readonly marcher: EachUnit | null;
+    public readonly heavy: EachUnit;
+    public readonly ram: EachUnit;
+    public readonly catapult: EachUnit;
+    public readonly knight: EachUnit;
+    public readonly snob: EachUnit;
+    public readonly militia: EachUnit;
 
     constructor() {
         this.spear = new EachUnit(document.queryAndAssert('spear'));

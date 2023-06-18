@@ -1,10 +1,9 @@
 import { assertGameRegion } from '$common/guards';
 import { GameUrl, GameEndpoints } from '$common/constants';
-import { aliasRegex } from '$common/regex';
 import type { AresError } from '$common/error';
 
 export function decodeString(str: string) {
-    return decodeURIComponent(str.replace(/\+/g, ' '));
+    return decodeURIComponent(str).replace(/\+/g, ' ');
 };
 
 /**
@@ -83,11 +82,38 @@ export function getContinentFromCoords(x: number, y: number, prefix?: string) {
     return `${a}${b}`;
 };
 
-/**
- * Obtém o nome do jogador a partir do alias, decodificando-o.
- * @param userAlias Alias do jogador.
- */
-export function getPlayerNameFromAlias(userAlias: UserAlias): string {
-    const encodedPlayerName = userAlias.replace(aliasRegex, '');
-    return decodeURIComponent(encodedPlayerName);
+export function decodeAlly(raw: WorldAllyType) {
+    return {
+        id: raw.id,
+        name: decodeString(raw.name),
+        tag: decodeString(raw.tag),
+        members: raw.members,
+        villages: raw.villages,
+        points: raw.points,
+        allPoints: raw.allPoints,
+        rank: raw.rank
+    };
+};
+
+export function decodePlayer(raw: WorldPlayerType) {
+    return {
+        id: raw.id,
+        name: decodeString(raw.name),
+        villages: raw.villages,
+        points: raw.points,
+        rank: raw.rank,
+        ally: raw.ally
+    };
+};
+
+export function decodeVillage(raw: WorldVillageType) {
+    return {
+        id: raw.id,
+        name: decodeString(raw.name),
+        x: raw.x,
+        y: raw.y,
+        player: raw.player,
+        points: raw.points,
+        type: raw.type
+    };
 };

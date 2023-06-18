@@ -35,19 +35,28 @@ export const enum GameEndpoints {
 };
 
 export const enum GameSearchParams {
+    AddVillagesToGroup = 'screen=overview_villages&mode=groups&type=static&group=0&page=-1&type=static',
+    Contracts = 'screen=ally&mode=contracts',
     Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0',
-    Groups = 'screen=overview_villages&&mode=groups&type=static',
     Incomings = 'screen=overview_villages&mode=incomings&type=unignored&subtype=attacks&group=0&page=-1&subtype=attacks',
     SnobTrain = 'screen=snob&mode=train',
-    SnobCoin = 'screen=snob&mode=coin&from=-1'
+    SnobCoin = 'screen=snob&mode=coin&from=-1',
+    StaticGroups = 'screen=overview_villages&&mode=groups&type=static'
 };
 
 export const enum TribalWorkerName {
+    AddVillagesToGroup = 'add-villages-to-group',
+    CreateStaticGroup = 'create-static-group',
+    FetchDiplomacy = 'fetch-diplomacy',
     FetchWorldConfig = 'fetch-world-config',
     FetchWorldUnits = 'fetch-world-units',
     GetVillageGroups = 'get-village-groups',
     HandleIncomings = 'handle-incomings',
     MintCoin = 'mint-coin'
+};
+
+export const enum RendererWorkerName {
+    CalcSafeZoneVillages = 'calc-safe-zone-villages'
 };
 
 export const enum StandardWindowName {
@@ -61,6 +70,8 @@ export const enum StandardWindowName {
     Default = 'default',
     DemolitionTemplate = 'demolition-template',
     ErrorLog = 'error-log',
+    GroupTemplate = 'group-template',
+    GroupTemplateSafeZone = 'group-template-safe-zone',
     PlunderHistory = 'plunder-history',
     PlunderTemplate = 'plunder-template',
     Update = 'update'

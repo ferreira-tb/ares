@@ -9,7 +9,7 @@ const useCOptions = [
     { label: 'Normal', value: 'normal' },
     { label: 'Quando em excesso', value: 'excess' },
     { label: 'Somente C', value: 'only' }
-] satisfies NSelectPatternOption<UseCPattern>;
+] satisfies NSelectOptions<UseCPattern>;
 </script>
 
 <template>

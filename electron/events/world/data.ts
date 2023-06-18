@@ -16,16 +16,18 @@ import {
 export function setWorldDataEvents(cachedWorld: MechanusRef<World | null>) {
     // Obtêm informações sobre uma ou mais aldeias.
     // Se o id da aldeia não for especificado, retorna todas as aldeias do mundo.
-    ipcMain.handle('world-data:get-village', async (_e, villageId?: number[] | number, world: World | null = null) => {
+    ipcMain.handle('world-data:get-village', async (
+        _e, villageId?: number | number[] | null, world: World | null = null
+    ) => {
         world ??= cachedWorld.value;
         if (!isWorld(world)) return [];
 
         const VillagesTable = await getVillagesTable(world);
-        if (!villageId) return (await VillagesTable.findAll()).map((v) => v.toJSON());
+        if (!villageId || (Array.isArray(villageId) && villageId.length === 0)) {
+            return (await VillagesTable.findAll()).map((v) => v.toJSON());
+        };
 
         const idList = Array.isArray(villageId) ? villageId : [villageId];
-        if (idList.length === 0) return [];
-
         const villages = await VillagesTable.findAll({
             where: { [Op.or]: idList.map((id) => ({ id })) }
         });
@@ -34,12 +36,81 @@ export function setWorldDataEvents(cachedWorld: MechanusRef<World | null>) {
     });
 
     // Obtêm uma lista com todas as aldeias de um jogador.
-    ipcMain.handle('world-data:get-player-villages', async (_e, player: number, world: World | null = null) => {
+    ipcMain.handle('world-data:get-player-villages', async (
+        _e, player: number | number[], world: World | null = null
+    ) => {
         world ??= cachedWorld.value;
         if (!isWorld(world)) return [];
 
+        player = Array.isArray(player) ? player : [player];
+
         const VillagesTable = await getVillagesTable(world);
-        const villages = await VillagesTable.findAll({ where: { player } });
+        const villages = await VillagesTable.findAll({ 
+            where: { [Op.or]: player.map((id) => ({ player: id })) }
+        });
+
+        return villages.map((v) => v.toJSON());
+    });
+
+    // Obtêm informações sobre uma ou mais tribos.
+    // Se o id da tribo não for especificado, retorna todas as tribos do mundo.
+    ipcMain.handle('world-data:get-ally', async (
+        _e, allyId?: number | number[] | null, world: World | null = null
+    ) => {
+        world ??= cachedWorld.value;
+        if (!isWorld(world)) return [];
+
+        const AlliesTable = await getAlliesTable(world);
+        if (!allyId || (Array.isArray(allyId) && allyId.length === 0)) {
+            return (await AlliesTable.findAll()).map((a) => a.toJSON());
+        };
+
+        const idList = Array.isArray(allyId) ? allyId : [allyId];
+        const allies = await AlliesTable.findAll({
+            where: { [Op.or]: idList.map((id) => ({ id })) }
+        });
+
+        return allies.map((a) => a.toJSON());
+    });
+
+    // Obtêm uma lista com todas os jogadores de uma tribo.
+    ipcMain.handle('world-data:get-ally-players', async (
+        _e, ally: number | number[], world: World | null = null
+    ) => {
+        world ??= cachedWorld.value;
+        if (!isWorld(world)) return [];
+
+        ally = Array.isArray(ally) ? ally : [ally];
+
+        const PlayersTable = await getPlayersTable(world);
+        const players = await PlayersTable.findAll({
+            where: { [Op.or]: ally.map((id) => ({ ally: id })) }
+        });
+
+        return players.map((p) => p.toJSON());
+    });
+
+    // Obtêm uma lista com todas as aldeias de uma tribo.
+    ipcMain.handle('world-data:get-ally-villages', async (
+        _e, ally: number | number[], world: World | null = null
+    ) => {
+        world ??= cachedWorld.value;
+        if (!isWorld(world)) return [];
+
+        ally = Array.isArray(ally) ? ally : [ally];
+
+        const PlayersTable = await getPlayersTable(world);
+        const players = (await PlayersTable.findAll({
+            where: { [Op.or]: ally.map((id) => ({ ally: id })) }
+        }) as unknown) as WorldPlayersModel[];
+
+        if (players.length === 0) return [];
+
+        const VillagesTable = await getVillagesTable(world);
+        const villages = await VillagesTable.findAll({
+            where: { [Op.or]: players.map((p) => ({ player: p.id })) }
+        });
+
         return villages.map((v) => v.toJSON());
     });
 

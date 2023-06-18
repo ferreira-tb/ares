@@ -56,37 +56,37 @@ type WorldUnitsType = {
 };
 
 interface WorldAlliesModel extends SequelizeModel {
-    readonly id: number;
-    readonly name: string;
-    readonly tag: string;
-    readonly members: number;
-    readonly villages: number;
-    readonly points: number;
-    readonly allPoints: number;
-    readonly rank: number;
+    id: number;
+    name: string;
+    tag: string;
+    members: number;
+    villages: number;
+    points: number;
+    allPoints: number;
+    rank: number;
 };
 
 type WorldAllyType = Omit<WorldAlliesModel, keyof import('sequelize').Model>;
 
 interface WorldPlayersModel extends SequelizeModel {
-    readonly id: number;
-    readonly name: string;
-    readonly ally: number;
-    readonly villages: number;
-    readonly points: number;
-    readonly rank: number;
+    id: number;
+    name: string;
+    ally: number;
+    villages: number;
+    points: number;
+    rank: number;
 };
 
 type WorldPlayerType = Omit<WorldPlayersModel, keyof import('sequelize').Model>;
 
 interface WorldVillagesModel extends SequelizeModel {
-    readonly id: number;
-    readonly name: string;
-    readonly x: number;
-    readonly y: number;
-    readonly player: number;
-    readonly points: number;
-    readonly type: number;
+    id: number;
+    name: string;
+    x: number;
+    y: number;
+    player: number;
+    points: number;
+    type: number;
 };
 
 type WorldVillageType = Omit<WorldVillagesModel, keyof import('sequelize').Model>;

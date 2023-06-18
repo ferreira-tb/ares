@@ -5,18 +5,19 @@ import { TribalWorkerError } from '$worker/error';
 
 ipcOn('port', (e) => {
     const port = e.ports[0];
-    port.onmessage = () => fetchWorldConfig(port);
     port.onmessageerror = TribalWorkerError.onMessageError;
+
+    fetchWorldConfig(port);
 });
 
 class WorldConfig implements WorldConfigType {
-    readonly speed: number;
-    readonly unitSpeed: number;
-    readonly tradeCancelTime: number;
-    readonly commandCancelTime: number;
-    readonly archer: boolean;
-    readonly church: boolean;
-    readonly watchtower: boolean;
+    public readonly speed: number;
+    public readonly unitSpeed: number;
+    public readonly tradeCancelTime: number;
+    public readonly commandCancelTime: number;
+    public readonly archer: boolean;
+    public readonly church: boolean;
+    public readonly watchtower: boolean;
 
     constructor() {
         const speed = document.queryAndAssert('config > speed');

@@ -15,7 +15,7 @@ const config = usePlunderConfigStore();
 const blindAttackOptions = [
     { label: 'Menor capacidade', value: 'smaller' },
     { label: 'Maior capacidade', value: 'bigger' }
-] satisfies NSelectPatternOption<BlindAttackPattern>;
+] satisfies NSelectOptions<BlindAttackPattern>;
 </script>
 
 <template>
