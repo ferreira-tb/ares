@@ -72,7 +72,7 @@ async function* expandRows(rows: Map<number, HTMLTableRowElement>) {
         queueMicrotask(() => editAnchor.click());
         await new Promise<void>((resolve, reject) => {
             const observer = new MutationObserver((mutations) => {
-                const didOpen = mutations.some((mutation) => {
+                const didExpand = mutations.some((mutation) => {
                     const nodes = Array.from(mutation.addedNodes);
                     return nodes.some((node) => {
                         if (!(node instanceof HTMLElement)) return false;
@@ -80,7 +80,7 @@ async function* expandRows(rows: Map<number, HTMLTableRowElement>) {
                     });
                 });
                 
-                if (didOpen) {
+                if (didExpand) {
                     observer.disconnect();
                     resolve();
                 };
