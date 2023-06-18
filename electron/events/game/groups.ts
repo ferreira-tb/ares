@@ -161,7 +161,6 @@ function addVillagesToGroup(group: number, villages: number[]) {
         });
 
         await worker.init();
-        worker.openDevTools();
         worker.port.postMessage({ group, villages });
     });
 };

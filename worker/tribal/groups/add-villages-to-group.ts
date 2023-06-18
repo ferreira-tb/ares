@@ -41,6 +41,7 @@ async function addVillagesToGroup(port: MessagePort, data: AddVillageToGroupData
         for await (const row of expandRows(rows)) {
             const inputSelector = `input[type="checkbox"][value="${data.group}"]`;
             const groupInput = row.queryAndAssert<HTMLInputElement>(inputSelector);
+            if (groupInput.checked) continue;
             groupInput.click();
 
             const submitSelector = 'input[type="submit"].btn';
