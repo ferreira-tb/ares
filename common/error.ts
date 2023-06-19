@@ -1,11 +1,8 @@
 export class AresError extends Error {
     declare public static catch: (err: unknown, ...args: any[]) => Promise<void>;
 
-    constructor(message: string) {
-        super(message);
-        this.name = 'AresError';
-    };
-
+    public override name = 'AresError';
+    
     public static generateLogContent(err: AllErrorLogTypes | AllErrorLogTypes[]) {
         const errors = Array.isArray(err) ? err : [err];
 
