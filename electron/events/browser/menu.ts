@@ -13,14 +13,23 @@ export function setContextMenuEvents() {
     const { userAlias } = storeToRefs(cacheStore);
 
     ipcMain.on('browser:show-context-menu', () => {
-        const template: Electron.MenuItemConstructorOptions[] = [];
+        const template: Electron.MenuItemConstructorOptions[] = [
+            { label: 'Voltar', id: 'go-back', click: () => BrowserTab.current.goBack() },
+            { label: 'Avançar', id: 'go-forward', click: () => BrowserTab.current.goForward() },
+            { label: 'Atualizar', id: 'reload', click: () => BrowserTab.current.reload() }
+        ];
+
+        template.forEach((item) => {
+            if (item.id === 'reload') return;
+            if (item.id === 'go-back' && !BrowserTab.current.canGoBack()) item.enabled = false;
+            if (item.id === 'go-forward' && !BrowserTab.current.canGoForward()) item.enabled = false;
+        });
 
         if (userAlias.value) {
-            const groupsTemplate: Electron.MenuItemConstructorOptions[] = [
-                { label: 'Modelos', click: () => StandardWindow.open(StandardWindowName.GroupTemplate) }
-            ];
-
-            template.push({ label: 'Grupos', submenu: groupsTemplate });
+            template.push({ type: 'separator' });
+            template.push({ label: 'Ferramentas', submenu: tools() });
+            template.push({ label: 'Grupos', submenu: groups() });
+            template.push({ label: 'Tropas', submenu: troops() });
         };
 
         if (process.env.ARES_MODE === 'dev') {
@@ -43,4 +52,26 @@ export function setContextMenuEvents() {
         const menu = Menu.buildFromTemplate(template);
         menu.popup();
     });
+};
+
+function groups(): Electron.MenuItemConstructorOptions[] {
+    return [
+        { label: 'Modelos', click: () => StandardWindow.open(StandardWindowName.GroupTemplate) }
+    ];
+};
+
+function tools(): Electron.MenuItemConstructorOptions[] {
+    return [
+        { 
+            label: 'Saque', submenu: [
+                { label: 'Histórico', click: () => StandardWindow.open(StandardWindowName.PlunderHistory) }
+            ] 
+        }
+    ];
+};
+
+function troops(): Electron.MenuItemConstructorOptions[] {
+    return [
+        { label: 'Contador', click: () => StandardWindow.open(StandardWindowName.TroopCounter) }
+    ];
 };

@@ -57,6 +57,11 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
         title: 'Modelos',
         minimizable: true
     },
+    [StandardWindowName.TroopCounter]: {
+        width: 600,
+        height: 400,
+        title: 'Contador de tropas'
+    },
     [StandardWindowName.Update]: {
         width: 350,
         height: 260,
