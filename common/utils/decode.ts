@@ -37,3 +37,15 @@ export function decodeVillage(raw: WorldVillageType) {
         type: raw.type
     };
 };
+
+export function decodeVillageGroups(raw: Set<VillageGroup>) {
+    const groups = Array.from(raw).map((group) => {
+        return {
+            id: group.id,
+            name: decodeString(group.name),
+            type: group.type
+        };
+    });
+
+    return new Set(groups);
+};

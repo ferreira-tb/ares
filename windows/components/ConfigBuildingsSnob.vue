@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue';
+import { computed, nextTick } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NResult, NSelect } from 'naive-ui';
 import { computedAsync, watchDeep } from '@vueuse/core';
-import { useIpcOn, useUserAlias } from '$renderer/composables';
+import { useGroups, useUserAlias } from '$renderer/composables';
 import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { decodeString } from '$common/utils';
@@ -36,7 +36,7 @@ const villageOptions = computed(() => {
     return options;
 });
 
-const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
+const allGroups = useGroups(userAlias);
 const groupOptions = computed(() => {
     const options = Array.from(allGroups.value).map(({ id: groupId, name: groupName }) => {
         return { label: decodeString(groupName), value: groupId };
@@ -60,10 +60,6 @@ const timeUnitOptions = [
 
 watchDeep(config, () => {
     ipcSend('snob:update-config', config.raw());
-});
-
-useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
-    allGroups.value = groups;
 });
 </script>
 

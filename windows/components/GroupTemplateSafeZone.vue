@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { h, computed, ref, toRaw, toRef } from 'vue';
 import { watchImmediate } from '@vueuse/core';
-import { useDiplomacy, useAllyVillages, usePlayerVillages } from '$renderer/composables';
+import { useAllyVillages, useDiplomacy, useGroups, usePlayerVillages } from '$renderer/composables';
 import { ipcInvoke } from '$renderer/ipc';
 import { useGameDataStore } from '$renderer/stores';
 import { formatFields, parseFields } from '$renderer/utils/format-input';
@@ -42,11 +42,17 @@ const enemyVillages = useAllyVillages(enemies);
 const fields = ref(30);
 const groupName = ref<string>('Zona segura');
 
+const currentGroups = useGroups();
+const currentGroupsNames = computed(() => {
+    return Array.from(currentGroups.value).map((group) => group.name);
+});
+
 const disableCreation = computed(() => {
     if (!diplomacy.value) return true;
     if (diplomacy.value.enemies.length === 0) return true;
     if (playerVillages.value.length === 0) return true;
     if (enemyVillages.value.length === 0) return true;
+    if (currentGroupsNames.value.some((n) => n === groupName.value)) return true;
     return false;
 });
 
@@ -155,7 +161,6 @@ function createGroup() {
                             placeholder="Nome do grupo"
                             :minlength="1"
                             :maxlength="20"
-                            :allow-input="(value) => /^[\x00-\x7F]+$/.test(value)"
                         />
                     </div>
                 </NGridItem>

@@ -3,7 +3,9 @@
 </script>
 
 <template>
-	<div></div>
+	<main>
+        <div id="troop-counter-header"></div>
+    </main>
 </template>
 
 <style scoped lang="scss">

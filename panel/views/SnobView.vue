@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import { NButton, NButtonGroup } from 'naive-ui';
 import { computedAsync, watchDeep, watchImmediate, whenever } from '@vueuse/core';
 import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { useIpcOn } from '$renderer/composables';
-import { useVillage } from '$renderer/composables/village';
+import { useGroups, useVillage } from '$renderer/composables';
 import { PanelSnobViewError } from '$panel/error';
 import { decodeString } from '$common/utils';
 import { StandardWindowName } from '$common/enum';
@@ -30,7 +29,7 @@ const villageName = computed<string | null>(() => {
     return village.value.name;
 });
 
-const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
+const allGroups = useGroups();
 const groupName = computedAsync<string | null>(async () => {
     try {
         if (config.group === 0) return 'Todas as aldeias';
@@ -68,10 +67,6 @@ whenever(() => config.active, () => {
     if (config.mode === 'single') {
         config.village = gameData.village.id;
     };
-});
-
-useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
-    allGroups.value = groups;
 });
 </script>
 

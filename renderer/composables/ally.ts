@@ -1,15 +1,15 @@
-import { readonly, ref, watchEffect, toValue } from 'vue';
+import { readonly, ref, toRef, toValue, watchEffect, type MaybeRefOrGetter } from 'vue';
 import { ipcInvoke } from '$renderer/ipc';
 import { useUserAlias } from '$renderer/composables/user-alias';
 import { decodeAlly } from '$common/utils';
 
-export function useDiplomacy() {
+export function useDiplomacy(userAlias: MaybeRefOrGetter<UserAlias | null> = useUserAlias()) {
     const diplomacy = ref<Diplomacy | null>(null);
 
     // Se o usuário mudar, a diplomacia deve ser atualizada.
-    const userAlias = useUserAlias();
+    const userAliasRef = toRef(userAlias);
     watchEffect(async () => {
-        const alias = toValue(userAlias);
+        const alias = toValue(userAliasRef);
         if (!alias) {
             diplomacy.value = null;
             return;

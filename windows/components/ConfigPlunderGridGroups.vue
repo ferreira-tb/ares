@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue';
+import { computed, watchEffect } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
 import { usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke } from '$renderer/ipc';
-import { useIpcOn } from '$renderer/composables';
+import { useGroups } from '$renderer/composables';
 import { decodeString } from '$common/utils';
 import { formatFields, parseFields, formatMilliseconds, parseMilliseconds } from '$renderer/utils/format-input';
 import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
 
 const config = usePlunderConfigStore();
 const locale = await ipcInvoke('app:locale');
-const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
 
+const allGroups = useGroups();
 const plunderGroupOptions = computed(() => {
     const groupsArray = Array.from(allGroups.value).filter((group) => group.type === 'dynamic');
     const options = groupsArray.map((group) => ({
@@ -25,10 +25,6 @@ const plunderGroupOptions = computed(() => {
 watchEffect(() => {
     const plunderGroup = Array.from(allGroups.value).find((group) => group.id === config.plunderGroupId);
     if (plunderGroup?.type !== 'dynamic') config.plunderGroupId = null;
-});
-
-useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
-    allGroups.value = groups;
 });
 </script>
 
