@@ -1,5 +1,6 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { existsSync as exists } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +19,7 @@ try {
     // CSS
     const style = path.join(distDir, 'style.css');
     const browser = path.join(distDir, 'browser.css');
-    await fs.rename(style, browser);    
+    if (exists(style)) await fs.rename(style, browser);
 
     // Fontes
     const regex = /url\s*\(\/?fonts/g;
@@ -42,6 +43,7 @@ try {
 };
 
 async function html(file) {
+    if (!exists(file)) return;
     let content = await fs.readFile(file, { encoding: 'utf-8' });
     content = content.replace(/\"\/assets\//g, '\"assets\/');
     await fs.writeFile(file, content, { encoding: 'utf-8' });
