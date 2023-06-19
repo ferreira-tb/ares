@@ -188,7 +188,6 @@ function createGroup() {
             <div class="enemies-table">
                 <NDataTable
                     v-if="diplomacy && diplomacy.enemies.length > 0"
-                    virtual-scroll
                     :data="(diplomacy.enemies as WorldAllyType[])"
                     :columns="columns"
                     :max-height="300"
