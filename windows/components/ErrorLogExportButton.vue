@@ -18,7 +18,7 @@ async function exportLog() {
     loading.value = true;
     const status = await ipcInvoke('error:export');
     if (status === 'sucess') {
-        message.success('Tudo certo!');
+        message.success('Exportação concluída com sucesso.');
         emit('export');
     } else if (status === 'error') {
         message.error('Erro ao exportar o registro de erros.');
