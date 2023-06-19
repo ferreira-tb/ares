@@ -1,28 +1,16 @@
 <script setup lang="ts">
-import { h, toRef } from 'vue';
-import { useVModel } from '@vueuse/core';
+import { h } from 'vue';
 import { NDataTable, NEllipsis, type DataTableColumns } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import { usePlunderHistory } from '$windows/composables/plunder-history';
 
-const props = defineProps<{
+defineProps<{
+    villageData: PlunderHistoryVillageData[];
     headerProps: PlunderHistoryDataTableHeaderProps;
+    period: 'day' | 'week' | 'month';
     maxHeight: number;
-    history: PlunderHistoryType;
-    period: PlunderHistoryTimePeriod;
-}>();
-
-const emit = defineEmits<{
-    (e: 'update:header', header: PlunderHistoryDataTableHeaderProps): void;
 }>();
 
 const locale = await ipcInvoke('app:locale');
-const header = useVModel(props, 'headerProps', emit);
-const villagesHistory = toRef(props, 'history');
-const timePeriod = toRef(props, 'period');
-const { villageData, onHeaderInfoUpdated } = usePlunderHistory(villagesHistory, timePeriod);
-
-onHeaderInfoUpdated((newValue) => (header.value = newValue));
 
 const columns: DataTableColumns<PlunderHistoryVillageData> = [
     {

@@ -5,8 +5,8 @@
 @use '$renderer/assets/transitions.scss';
 
 @forward '$renderer/assets/scrollbar.scss';
-@forward '$renderer/assets/utils.scss';
-@use '$renderer/assets/utils.scss';
+@forward '$renderer/assets/mixins.scss';
+@use '$renderer/assets/mixins.scss';
 
 html {
     overflow: hidden;
@@ -22,7 +22,7 @@ html {
 }
 
 .config-checkbox, .config-label {
-    @include utils.flex-x-start-y-center($height: 100%);
+    @include mixins.flex-x-start-y-center($height: 100%);
     padding-left: 0.5rem;
 }
 

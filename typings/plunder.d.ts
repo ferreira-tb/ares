@@ -147,8 +147,6 @@ type PlunderHistoryVillageData = {
     score: number;
 };
 
-type PlunderHistoryTimePeriod = 'day' | 'month' | 'week';
-
 type PlunderHistoryDataTableHeaderProps = PlunderAttackLog & { average: number };
 
 type PlunderInfoType = {

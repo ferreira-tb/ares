@@ -5,7 +5,7 @@
 @use '$renderer/assets/transitions.scss';
 @use '$renderer/assets/fonts.scss';
 @forward '$renderer/assets/scrollbar.scss';
-@forward '$renderer/assets/utils.scss';
+@forward '$renderer/assets/mixins.scss';
 
 @mixin display-flex-center {
     display: flex;

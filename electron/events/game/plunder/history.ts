@@ -4,7 +4,6 @@ import { Kronos } from '@tb-dev/kronos';
 import { assertInteger } from '$common/guards';
 import { MainProcessError } from '$electron/error';
 import { isUserAlias, assertUserAlias } from '$common/guards';
-import { PanelWindow } from '$electron/windows';
 import { StandardWindow } from '$electron/windows';
 import { usePlunderHistoryStore, useCacheStore } from '$electron/stores';
 import { PlunderHistory } from '$electron/database/models';
@@ -16,7 +15,6 @@ export function setPlunderHistoryEvents() {
     const { userAlias } = storeToRefs(cacheStore);
 
     const plunderHistoryStore = usePlunderHistoryStore();
-    const panelWindow = PanelWindow.getInstance();
 
     ipcMain.on('plunder:show-history', () => {
         StandardWindow.open(StandardWindowName.PlunderHistory);
@@ -43,14 +41,16 @@ export function setPlunderHistoryEvents() {
             today[key] += value;
         };
 
-        panelWindow.webContents.send('plunder:attack-sent', attackLog);
-
-        // Se a janela de histórico estiver aberta, atualiza-a.
-        const historyWindow = StandardWindow.getWindow(StandardWindowName.PlunderHistory);
-        historyWindow?.webContents.send('plunder:history-did-update', plunderHistoryStore.toClonable());
+        patchAllWebContents(plunderHistoryStore.toClonable());
     });
 
-    ipcMain.handle('plunder:get-history', () => plunderHistoryStore.toClonable());
+    // Esse canal é apenas para a aquisição inicial dos dados.
+    // Não deve ser usado para atualizar os dados após mudança do alias, pois surgirão race conditions.
+    // Para sincronização, o renderer deve possuir listeners para o evento `plunder:patch-history`.
+    // Ou, para o histórico das aldeias, o evento `plunder:did-update-villages-history`.
+    ipcMain.handle('plunder:get-history', (_e, omitVillages: boolean = false) => {
+        return plunderHistoryStore.toClonable(omitVillages);
+    });
 
     ipcMain.on('plunder:save-history', async () => {
         try {
@@ -70,10 +70,7 @@ export function setPlunderHistoryEvents() {
             // `villages` é um Proxy na store, então é necessário lidar com ele separadamente.
             const { villages, ...history } = previousHistory;
             plunderHistoryStore.$patch(history);
-
-            // As stores do renderer não contêm `villages`, apenas o processo principal.
-            patchAllWebContents(history);
-
+            
             const now = Date.now();
             plunderHistoryStore.villages = plunderHistoryStore.proxifyVillages();
             for (const [villageId, villageHistory] of Object.entries(villages)) {
@@ -81,6 +78,8 @@ export function setPlunderHistoryEvents() {
                     return log.addedAt >= (now - Kronos.Month);
                 });
             };
+
+            patchAllWebContents(plunderHistoryStore.toClonable());
 
         } else {
             const defaultHistory = new DefaultPlunderHistory();
@@ -91,9 +90,24 @@ export function setPlunderHistoryEvents() {
 };
 
 /** Comunica a mudança aos processos diferentes daquele que enviou os dados. */
-function patchAllWebContents(data: Omit<PlunderHistoryType, 'villages'>, sender?: Electron.WebContents) {
+function patchAllWebContents<T extends keyof PlunderHistoryType>(
+    data: PlunderHistoryType, sender?: Electron.WebContents
+) {
+    // Se a janela de histórico estiver aberta, atualiza-a com o histórico das aldeias.
+    const historyWindow = StandardWindow.getWindow(StandardWindowName.PlunderHistory);
+    historyWindow?.webContents.send('plunder:did-update-villages-history', data.villages);
+
+    const partial = Object.entries(data).reduce((acc, [key, value]: [T, PlunderHistoryType[T]]) => {
+        if (key === 'villages') return acc;
+        acc[key] = value;
+        return acc;
+    }, {} as PlunderHistoryType);
+
     for (const contents of webContents.getAllWebContents()) {
+        if (contents === historyWindow?.webContents) continue;
         if (sender && contents === sender) continue;
-        contents.send('plunder:patch-history', data);
+
+        // Para os outros, envia apenas a quantidade total, sem dados detalhados.
+        contents.send('plunder:patch-history', partial);
     };
 };

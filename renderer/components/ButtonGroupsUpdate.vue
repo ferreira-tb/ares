@@ -33,9 +33,9 @@ async function fetchVillageGroups() {
 </template>
 
 <style scoped lang="scss">
-@use '$renderer/assets/utils.scss';
+@use '$renderer/assets/mixins.scss';
 
 .button-groups-update {
-    @include utils.flex-x-center-y-center;
+    @include mixins.flex-x-center-y-center;
 }
 </style>

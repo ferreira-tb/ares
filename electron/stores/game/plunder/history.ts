@@ -31,14 +31,14 @@ export function definePlunderHistoryStore(mechanus: Mechanus) {
             return { ...villages.value };
         };
 
-        function toClonable() {
+        function toClonable(omitVillages: boolean = false) {
             return {
                 wood: wood.value,
                 stone: stone.value,
                 iron: iron.value,
                 destroyedWalls: destroyedWalls.value,
                 attackAmount: attackAmount.value,
-                villages: unproxifyVillages()
+                villages: omitVillages ? {} : unproxifyVillages()
             };
         };
 

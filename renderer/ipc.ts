@@ -102,7 +102,7 @@ export async function ipcInvoke(channel: 'error:get-electron-log'): Promise<Elec
 // Plunder
 export async function ipcInvoke(channel: 'plunder:is-active'): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:get-config'): Promise<PlunderConfigType | null>;
-export async function ipcInvoke(channel: 'plunder:get-history'): Promise<PlunderHistoryType>;
+export async function ipcInvoke(channel: 'plunder:get-history', omitVillages?: boolean): Promise<PlunderHistoryType>;
 export async function ipcInvoke(
     channel: 'plunder:get-custom-templates', alias?: UserAlias
 ): Promise<CustomPlunderTemplateType[] | null>;

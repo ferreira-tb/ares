@@ -24,9 +24,8 @@ defineProps<{
     width: 100%;
     
     .card-title {
+        @include main.bold-text-color;
         font-size: 1.2em;
-        font-weight: bold;
-        color: var(--color-green);
     }
 
     .card-description {

@@ -123,8 +123,8 @@ function createGroupsUpdater(
 
         // Garante que o alias ainda é o mesmo.
         if (alias === userAlias.value) {
-            patchAllWebContents(groups);
             allGroups.value = groups;
+            patchAllWebContents(groups);
         };
     };
 };
