@@ -26,7 +26,7 @@ const templateTitle = computed(() => templateName.value ? templateName.value : '
 </script>
 
 <template>
-    <template v-if="userAlias">
+    <main v-if="userAlias" class="group-template-view">
         <NLayout has-sider position="absolute">
             <NLayoutSider bordered content-style="padding: 12px; overflow: hidden;" :width="200">
                 <NSpace vertical>
@@ -70,7 +70,7 @@ const templateTitle = computed(() => templateName.value ? templateName.value : '
                 </Transition>
             </NLayout>
         </NLayout>
-    </template>
+    </main>
 
     <div v-else class="result-info">
         <NResult
@@ -82,6 +82,10 @@ const templateTitle = computed(() => templateName.value ? templateName.value : '
 </template>
 
 <style scoped lang="scss">
+.group-template-view {
+    user-select: none;
+}
+
 .title-ellipsis {
     max-width: 130px;
 }
