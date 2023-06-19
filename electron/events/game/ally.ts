@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { TribalWorker } from '$electron/worker';
 import { BrowserTab } from '$electron/tabs';
-import { GameSearchParams, TribalWorkerName } from '$common/constants';
+import { GameSearchParams, TribalWorkerName } from '$common/enum';
 import { MainProcessError } from '$electron/error';
 
 export function setAllyEvents() {

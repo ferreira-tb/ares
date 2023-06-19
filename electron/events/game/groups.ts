@@ -7,8 +7,8 @@ import { MainProcessError } from '$electron/error';
 import { TribalWorker } from '$electron/worker';
 import { BrowserTab } from '$electron/tabs';
 import { useDelay } from '$electron/composables';
-import { GameSearchParams, TribalWorkerName } from '$common/constants';
-import { decodeString } from '$common/helpers';
+import { GameSearchParams, TribalWorkerName } from '$common/enum';
+import { decodeString } from '$common/utils';
 import { isUserAlias } from '$common/guards';
 
 export function setGroupsEvents() {

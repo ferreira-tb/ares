@@ -4,7 +4,7 @@ import { computed, watchEffect } from 'vue';
 import { useFetch } from '@vueuse/core';
 import { NTag } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { AresAPI } from '$common/constants';
+import { AresAPI } from '$common/enum';
 import { MainWindowError } from '$ui/error';
 
 const appVersion = await ipcInvoke('app:version');

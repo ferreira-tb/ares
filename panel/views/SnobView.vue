@@ -7,8 +7,8 @@ import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
 import { useVillage } from '$renderer/composables/village';
 import { PanelSnobViewError } from '$panel/error';
-import { decodeString } from '$common/helpers';
-import { StandardWindowName } from '$common/constants';
+import { decodeString } from '$common/utils';
+import { StandardWindowName } from '$common/enum';
 import TheMintedCoins from '$panel/components/TheMintedCoins.vue';
 
 const config = useSnobConfigStore();

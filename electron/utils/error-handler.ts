@@ -5,7 +5,7 @@ import { MainWindow, StandardWindow } from '$electron/windows';
 import { MainProcessError } from '$electron/error';
 import { appConfig } from '$electron/stores';
 import { ElectronErrorLog } from '$electron/database/models';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 export async function errorHandler(err: unknown) {
     if (!(err instanceof Error)) return;

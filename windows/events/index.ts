@@ -1,7 +1,7 @@
 import { router } from '$windows/router'; 
 import { ipcOn, ipcOnce } from '$renderer/ipc';
 import { RendererProcessError } from '$renderer/error';
-import type { StandardWindowName } from '$common/constants';
+import type { StandardWindowName } from '$common/enum';
 import {
     useGameDataStore,
     usePlunderConfigStore,

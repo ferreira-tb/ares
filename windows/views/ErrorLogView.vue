@@ -4,7 +4,7 @@ import { useWindowSize } from '@vueuse/core';
 import { NCard, NResult } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
-import { getLocaleDateString } from '$renderer/utils/helpers';
+import { toLocaleDateString } from '$renderer/utils/date';
 import ErrorLogExportButton from '$windows/components/ErrorLogExportButton.vue';
 
 const locale = await ipcInvoke('app:locale');
@@ -47,7 +47,7 @@ useIpcOn('error:did-create-electron-log', (_e, err: ErrorLogType) => updateError
                 <TransitionGroup name="tb-fade">
                     <NCard v-for="error of errors" :key="error.id" class="error-card" hoverable>
                         <template #header>{{ error.name }}</template>
-                        <template #header-extra>{{ getLocaleDateString(locale, error.time) }}</template>
+                        <template #header-extra>{{ toLocaleDateString(error.time, locale) }}</template>
                         <template #default>{{ error.message }}</template>
                     </NCard>
                 </TransitionGroup>

@@ -7,7 +7,7 @@ import { BrowserTab } from '$electron/tabs';
 import { SnobConfig, SnobHistory } from '$electron/database/models';
 import { MainProcessError } from '$electron/error';
 import { TribalWorker } from '$electron/worker';
-import { GameSearchParams, TribalWorkerName } from '$common/constants';
+import { GameSearchParams, TribalWorkerName } from '$common/enum';
 import { assertUserAlias, isUserAlias } from '$common/guards';
 import { DefaultSnobConfig, DefaultSnobHistory } from '$common/templates';
 

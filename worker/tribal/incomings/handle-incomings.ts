@@ -5,7 +5,7 @@ import { useLocalStorage } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
 import { ipcInvoke, ipcOn, ipcSend } from '$renderer/ipc';
 import { TribalWorkerError } from '$worker/error';
-import { parseGameDate } from '$renderer/utils/parser';
+import { parseGameDate } from '$renderer/utils/date';
 
 type LabeledAttack = Pick<IncomingAttack, 'arrivalTime' | 'id'>;
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shell } from 'electron';
 import { NResult, NButton, NButtonGroup } from 'naive-ui';
-import { WebsiteUrl } from '$common/constants';
+import { WebsiteUrl } from '$common/enum';
 import { ipcSend } from '$renderer/ipc';
 
 interface Props {

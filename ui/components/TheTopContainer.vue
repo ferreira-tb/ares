@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Dimensions } from '$common/constants';
+import { Dimensions } from '$common/enum';
 import WindowTabs from '$ui/components/WindowTabs.vue';
 import WindowMenu from '$ui/components/WindowMenu.vue';
 </script>

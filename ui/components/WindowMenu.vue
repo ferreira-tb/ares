@@ -6,7 +6,7 @@ import { NIcon } from 'naive-ui';
 import { DiscordSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { useIpcOn, useUserAlias } from '$renderer/composables';
-import { StandardWindowName, WebsiteUrl } from '$common/constants';
+import { StandardWindowName, WebsiteUrl } from '$common/enum';
 import TheIncomingHandler from '$ui/components/TheIncomingHandler.vue';
 import TheMintingStatus from '$ui/components/TheMintingStatus.vue';
 import TheNextIncoming from '$ui/components/TheNextIncoming.vue';

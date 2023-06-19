@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NDivider, NGrid, NGridItem, NSelect, NInputNumber } from 'naive-ui';
 import { usePlunderConfigStore } from '$renderer/stores';
-import { formatFields, parseFields, formatHours, parseHours } from '$windows/utils/input-parser';
+import { formatFields, parseFields, formatHours, parseHours } from '$renderer/utils/format-input';
 
 const config = usePlunderConfigStore();
 

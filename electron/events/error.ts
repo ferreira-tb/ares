@@ -8,7 +8,7 @@ import { sequelize } from '$electron/database';
 import { MainWindow, StandardWindow } from '$electron/windows';
 import { useCacheStore, useGameDataStore } from '$electron/stores';
 import { ErrorLog, ElectronErrorLog } from '$electron/database/models';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 export function setErrorEvents() {
     const cacheStore = useCacheStore();

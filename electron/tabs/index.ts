@@ -7,9 +7,9 @@ import { MainWindow } from '$electron/windows';
 import { browserCss, browserJs } from '$electron/utils/files';
 import { appConfig } from '$electron/stores';
 import { BrowserTabError } from '$electron/error';
-import { Dimensions, GameUrl } from '$common/constants';
+import { Dimensions, GameUrl } from '$common/enum';
 import { isAllowedOrigin } from '$common/guards';
-import { getGameRegionUrl } from '$common/helpers';
+import { getGameRegionUrl } from '$common/utils';
 
 export class BrowserTab extends EventEmitter {
     public override emit(event: string, ...args: any[]): boolean {

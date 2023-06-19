@@ -4,8 +4,8 @@ import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
 import { usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
-import { decodeString } from '$common/helpers';
-import { formatFields, parseFields, formatMilliseconds, parseMilliseconds } from '$windows/utils/input-parser';
+import { decodeString } from '$common/utils';
+import { formatFields, parseFields, formatMilliseconds, parseMilliseconds } from '$renderer/utils/format-input';
 import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
 
 const config = usePlunderConfigStore();

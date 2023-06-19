@@ -6,7 +6,7 @@ import { MainWindow, PanelWindow, StandardWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { TribalWorker } from '$electron/worker';
 import { MainProcessError } from '$electron/error';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 export function setDebugEvents() {
     ipcMain.handle('debug:is-enabled', () => appConfig.get('advanced').debug);

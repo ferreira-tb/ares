@@ -1,5 +1,5 @@
 import { assertInteger } from '$common/guards';
-import { resources } from '$common/constants';
+import { resources } from '$common/enum';
 import { PlunderAttack } from '$common/templates';
 import { usePlunderConfigStore } from '$renderer/stores';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';

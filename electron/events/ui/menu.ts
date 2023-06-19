@@ -3,8 +3,8 @@ import { MainWindow, StandardWindow, WebsiteWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { appConfig } from '$electron/stores';
 import { MainProcessError } from '$electron/error';
-import { StandardWindowName, WebsiteUrl } from '$common/constants';
-import { getGameRegionUrl } from '$common/helpers';
+import { StandardWindowName, WebsiteUrl } from '$common/enum';
+import { getGameRegionUrl } from '$common/utils';
 
 export function setMenuEvents() {
     const mainWindow = MainWindow.getInstance();

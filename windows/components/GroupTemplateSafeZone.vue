@@ -4,10 +4,10 @@ import { watchImmediate } from '@vueuse/core';
 import { useDiplomacy, useAllyVillages, usePlayerVillages } from '$renderer/composables';
 import { ipcInvoke } from '$renderer/ipc';
 import { useGameDataStore } from '$renderer/stores';
-import { formatFields, parseFields } from '$windows/utils/input-parser';
+import { formatFields, parseFields } from '$renderer/utils/format-input';
 import { RendererWorker } from '$renderer/worker';
 import { RendererProcessError } from '$renderer/error';
-import { RendererWorkerName } from '$common/constants';
+import { RendererWorkerName } from '$common/enum';
 import {
     NButton,
     NDataTable,

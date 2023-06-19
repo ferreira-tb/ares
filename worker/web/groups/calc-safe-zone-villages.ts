@@ -1,4 +1,4 @@
-import { calcDistance } from '$common/helpers';
+import { calcDistance } from '$common/utils';
 
 interface SafeZoneWorkerData {
     playerVillages: WorldVillageType[];

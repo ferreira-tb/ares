@@ -11,7 +11,7 @@ type GeneralConfigType = {
 };
 
 type WindowBoundsConfigType = {
-    [name in import('$common/constants').StandardWindowName]?: {
+    [name in import('$common/enum').StandardWindowName]?: {
         /** Posição e tamanho do módulo. */
         bounds: Electron.Rectangle | null;
     };

@@ -6,7 +6,7 @@ import { windowOptions } from '$electron/windows/options';
 import { appIcon, windowsHtml } from '$electron/utils/files';
 import { appConfig } from '$electron/stores';
 import { StandardWindowError } from '$electron/error';
-import type { StandardWindowName } from '$common/constants';
+import type { StandardWindowName } from '$common/enum';
 
 export class StandardWindow extends BaseWindow {
     public override emit(event: string, ...args: any[]): boolean {

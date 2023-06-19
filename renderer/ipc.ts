@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
 import { ipcRenderer } from 'electron';
-import type { StandardWindowName } from '$common/constants';
+import type { StandardWindowName } from '$common/enum';
 import type { PlunderAttack } from '$common/templates';
-import type { RendererWorkerName } from '$common/constants';
+import type { RendererWorkerName } from '$common/enum';
 
 const debug = {
     enabled: false

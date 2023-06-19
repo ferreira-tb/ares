@@ -8,7 +8,7 @@ import { PanelWindow } from '$electron/windows';
 import { StandardWindow } from '$electron/windows';
 import { usePlunderHistoryStore, useCacheStore } from '$electron/stores';
 import { PlunderHistory } from '$electron/database/models';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 import { DefaultPlunderHistory, PlunderHistoryVillage } from '$common/templates';
 
 export function setPlunderHistoryEvents() {

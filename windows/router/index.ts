@@ -1,5 +1,5 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 import ConfigView from '$windows/views/ConfigView.vue';
 import ConfigAdvanced from '$windows/components/ConfigAdvanced.vue';
 import ConfigBuildingsSnob from '$windows/components/ConfigBuildingsSnob.vue';

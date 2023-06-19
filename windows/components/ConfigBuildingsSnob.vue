@@ -5,7 +5,7 @@ import { computedAsync, watchDeep } from '@vueuse/core';
 import { useIpcOn, useUserAlias } from '$renderer/composables';
 import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { decodeString } from '$common/helpers';
+import { decodeString } from '$common/utils';
 import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
 
 const userAlias = useUserAlias();

@@ -3,7 +3,7 @@ import { storeToRefs } from 'mechanus';
 import { MainWindow, PanelWindow, StandardWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { useCacheStore } from '$electron/stores';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 export function setContextMenuEvents() {
     const mainWindow = MainWindow.getInstance();

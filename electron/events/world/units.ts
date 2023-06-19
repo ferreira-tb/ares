@@ -3,9 +3,9 @@ import { sequelize } from '$electron/database';
 import { WorldUnits } from '$electron/database/models';
 import { appConfig } from '$electron/stores';
 import { TribalWorker } from '$electron/worker';
-import { TribalWorkerName } from '$common/constants';
+import { TribalWorkerName } from '$common/enum';
 import { isWorld } from '$common/guards';
-import { getWorldUnitInfoUrl } from '$common/helpers';
+import { getWorldUnitInfoUrl } from '$common/utils';
 import { MainProcessError } from '$electron/error';
 
 export function setWorldUnitsEvents(world: MechanusRef<World | null>) {

@@ -1,7 +1,7 @@
 import { readonly, ref, watchEffect, toValue } from 'vue';
 import { ipcInvoke } from '$renderer/ipc';
 import { useUserAlias } from '$renderer/composables/user-alias';
-import { decodeAlly } from '$common/helpers';
+import { decodeAlly } from '$common/utils';
 
 export function useDiplomacy() {
     const diplomacy = ref<Diplomacy | null>(null);

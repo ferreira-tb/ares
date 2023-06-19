@@ -6,7 +6,7 @@ import { MainWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { useIncomingsStore } from '$electron/stores';
 import { useDelay } from '$electron/composables';
-import { GameSearchParams, TribalWorkerName } from '$common/constants';
+import { GameSearchParams, TribalWorkerName } from '$common/enum';
 import { MainProcessError } from '$electron/error';
 
 export function setIncomingAttacksEvents() {

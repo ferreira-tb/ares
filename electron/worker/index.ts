@@ -6,7 +6,7 @@ import { computed, ref, until, watchImmediate, wheneverAsync } from 'mechanus';
 import { MainWindow } from '$electron/windows';
 import { TribalWorkerError } from '$electron/error';
 import type { UntilOptions, WatchStopHandle } from 'mechanus';
-import type { TribalWorkerName } from '$common/constants';
+import type { TribalWorkerName } from '$common/enum';
 
 export class TribalWorker extends EventEmitter {
     public override emit(event: 'destroyed'): boolean;

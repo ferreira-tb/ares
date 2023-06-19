@@ -2,7 +2,7 @@ import { computed, effectScope, reactive, ref, toRef, toValue, type MaybeRefOrGe
 import { tryOnScopeDispose, watchDeep, watchImmediate } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
 import { ipcInvoke } from '$renderer/ipc';
-import { decodeString, getContinentFromCoords } from '$common/helpers';
+import { decodeString, getContinentFromCoords } from '$common/utils';
 
 export function usePlunderHistory(
     history: MaybeRefOrGetter<PlunderHistoryType>,

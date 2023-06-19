@@ -2,7 +2,7 @@ import { computed, readonly, ref, toRef, toValue, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 import { ipcInvoke } from '$renderer/ipc';
 import { useGameDataStore } from '$renderer/stores';
-import { decodeVillage } from '$common/helpers';
+import { decodeVillage } from '$common/utils';
 import type { MaybeRefOrGetter } from 'vue';
 
 export function useVillage(villageId: MaybeRefOrGetter<number | null>) {

@@ -4,7 +4,7 @@ import csvParser from 'csv-parser';
 import { promisify } from 'node:util';
 import { Readable } from 'node:stream';
 import { assertWorld } from '$common/guards';
-import { getRegionFromWorld, getAllyDataUrl, getPlayerDataUrl, getVillageDataUrl } from '$common/helpers';
+import { getRegionFromWorld, getAllyDataUrl, getPlayerDataUrl, getVillageDataUrl } from '$common/utils';
 import { ChildProcessError } from '$child-process/error';
 
 const gunzip = promisify(zlib.gunzip);
@@ -15,7 +15,7 @@ process.parentPort.once('message', async (e) => {
         const request = e.data as WorldDataRequest;
         assertWorld(request.world, ChildProcessError, `Invalid world: ${request.world}.`);
         const region = getRegionFromWorld(request.world, ChildProcessError);
-        
+
         const allies = request.ally ? await fetchAllies(request.world, region) : [];
         const players = request.player ? await fetchPlayers(request.world, region) : [];
         const villages = request.village ? await fetchVillages(request.world, region) : [];

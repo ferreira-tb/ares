@@ -1,4 +1,4 @@
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 const config: BrowserWindowOptions = {
     width: 700,
