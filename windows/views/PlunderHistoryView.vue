@@ -6,8 +6,7 @@ import { useIpcOn } from '$renderer/composables';
 import PlunderHistoryHeader from '$windows/components/PlunderHistoryHeader.vue';
 import PlunderHistoryDataTable from '$windows/components/PlunderHistoryDataTable.vue';
 
-const previousHistory = await ipcInvoke('plunder:get-history');
-const history = ref<PlunderHistoryType>(previousHistory);
+const history = ref(await ipcInvoke('plunder:get-history'));
 
 const period = ref<PlunderHistoryTimePeriod>('month');
 const headerProps = ref<PlunderHistoryDataTableHeaderProps>({

@@ -78,6 +78,11 @@ type PiniaPlunderHistoryStoreType = {
 
 type MechanusPlunderHistoryStoreType = {
     [K in keyof RemoveMethods<PlunderHistoryStore>]: MechanusRef<RemoveMethods<PlunderHistoryStore>[K]>;
+} & {
+    proxifyVillages(): PlunderHistoryType['villages'];
+    unproxifyVillages(): PlunderHistoryType['villages'];
+
+    toClonable(): PlunderHistoryType;
 };
 
 // PLUNDER CACHE

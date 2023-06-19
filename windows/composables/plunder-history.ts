@@ -1,10 +1,13 @@
-import { computed, effectScope, reactive, ref, type Ref } from 'vue';
+import { computed, effectScope, reactive, ref, toRef, toValue, type MaybeRefOrGetter } from 'vue';
 import { tryOnScopeDispose, watchDeep, watchImmediate } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
 import { ipcInvoke } from '$renderer/ipc';
 import { decodeString, getContinentFromCoords } from '$common/helpers';
 
-export function usePlunderHistory(history: Ref<PlunderHistoryType>, period: Ref<PlunderHistoryTimePeriod>) {
+export function usePlunderHistory(
+    history: MaybeRefOrGetter<PlunderHistoryType>,
+    period: MaybeRefOrGetter<PlunderHistoryTimePeriod>
+) {
     const scope = effectScope();
 
     const headerProps = ref<PlunderHistoryDataTableHeaderProps>({
@@ -16,17 +19,20 @@ export function usePlunderHistory(history: Ref<PlunderHistoryType>, period: Ref<
         destroyedWalls: 0
     });
 
+    const historyRef = toRef(history);
+    const periodRef = toRef(period);
+
     const villageData = ref<PlunderHistoryVillageData[]>([]);
     const villageMap = reactive(new Map<number, WorldVillageType>());
 
     function onHeaderInfoUpdated(callback: (newProps: PlunderHistoryDataTableHeaderProps) => void) {
         const unwatch = watchDeep(headerProps, callback);
-        tryOnScopeDispose(() => unwatch());
+        tryOnScopeDispose(unwatch);
     };
 
     scope.run(() => {
         const idList = computed<number[]>(() => {
-            return Object.keys(history.value.villages).asIntegerListStrict();
+            return Object.keys(historyRef.value.villages).asIntegerListStrict();
         });
         
         watchImmediate(idList, async (updatedList) => {
@@ -39,7 +45,7 @@ export function usePlunderHistory(history: Ref<PlunderHistoryType>, period: Ref<
             };
         });
 
-        watchImmediate([period, villageMap, () => history.value.villages], () => {
+        watchImmediate([periodRef, villageMap, () => historyRef.value.villages], () => {
             const allVillages: PlunderHistoryVillageData[] = [];
 
             let totalWood: number = 0;
@@ -48,12 +54,12 @@ export function usePlunderHistory(history: Ref<PlunderHistoryType>, period: Ref<
             let totalAttackAmount: number = 0;
             let totalDestroyedWalls: number = 0;
 
-            for (const [rawId, logs] of Object.entries(history.value.villages)) {
+            for (const [rawId, logs] of Object.entries(historyRef.value.villages)) {
                 const id = rawId.toIntegerStrict();
                 if (!villageMap.has(id) || logs.length === 0) continue;
         
                 const info = villageMap.getStrict(id);
-                const parsedLogs = parseLogs(logs, period);
+                const parsedLogs = parseLogs(logs, periodRef);
                 if (parsedLogs.attackAmount === 0) continue;
 
                 totalWood += parsedLogs.wood;
@@ -105,7 +111,7 @@ export function usePlunderHistory(history: Ref<PlunderHistoryType>, period: Ref<
     };
 };
 
-function parseLogs(logs: PlunderHistoryVillageType[], period: Ref<PlunderHistoryTimePeriod>) {
+function parseLogs(logs: PlunderHistoryVillageType[], periodRef: MaybeRefOrGetter<PlunderHistoryTimePeriod>) {
     let wood: number = 0;
     let stone: number = 0;
     let iron: number = 0;
@@ -115,10 +121,11 @@ function parseLogs(logs: PlunderHistoryVillageType[], period: Ref<PlunderHistory
     const now = Date.now();
     logs = logs.filter((log) => log.attackAmount > 0);
 
-    if (period.value === 'day') {
+    const period = toValue(periodRef);
+    if (period === 'day') {
         const midnight = new Date().setUTCHours(0, 0, 0, 0);
         logs = logs.filter((log) => log.addedAt === midnight);
-    } else if (period.value === 'week') {
+    } else if (period === 'week') {
         logs = logs.filter((log) => log.addedAt >= (now - Kronos.Week));
     } else {
         logs = logs.filter((log) => log.addedAt >= (now - Kronos.Month));

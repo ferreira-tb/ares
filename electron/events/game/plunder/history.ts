@@ -47,10 +47,10 @@ export function setPlunderHistoryEvents() {
 
         // Se a janela de histórico estiver aberta, atualiza-a.
         const historyWindow = StandardWindow.getWindow(StandardWindowName.PlunderHistory);
-        historyWindow?.webContents.send('plunder:history-did-update', plunderHistoryStore.unproxifyVillages());
+        historyWindow?.webContents.send('plunder:history-did-update', plunderHistoryStore.toClonable());
     });
 
-    ipcMain.handle('plunder:get-history', () => plunderHistoryStore.unproxifyVillages());
+    ipcMain.handle('plunder:get-history', () => plunderHistoryStore.toClonable());
 
     ipcMain.on('plunder:save-history', async () => {
         try {
@@ -71,10 +71,11 @@ export function setPlunderHistoryEvents() {
             const { villages, ...history } = previousHistory;
             plunderHistoryStore.$patch(history);
 
-            // Os webContents não mantêm `villages` em suas stores, apenas o processo principal.
+            // As stores do renderer não contêm `villages`, apenas o processo principal.
             patchAllWebContents(history);
 
             const now = Date.now();
+            plunderHistoryStore.villages = plunderHistoryStore.proxifyVillages();
             for (const [villageId, villageHistory] of Object.entries(villages)) {
                 plunderHistoryStore.villages[villageId] = villageHistory.filter((log) => {
                     return log.addedAt >= (now - Kronos.Month);
@@ -91,9 +92,8 @@ export function setPlunderHistoryEvents() {
 
 /** Comunica a mudança aos processos diferentes daquele que enviou os dados. */
 function patchAllWebContents(data: Omit<PlunderHistoryType, 'villages'>, sender?: Electron.WebContents) {
-    const channel = 'plunder:patch-history';
     for (const contents of webContents.getAllWebContents()) {
         if (sender && contents === sender) continue;
-        contents.send(channel, data);
+        contents.send('plunder:patch-history', data);
     };
 };
