@@ -101,6 +101,7 @@ export class StandardWindow extends BaseWindow {
             const previous = this.windows.get(name);
             if (previous instanceof StandardWindow && !previous.isDestroyed()) {
                 if (previous.isVisible()) previous.focus();
+                if (previous.isMinimized()) previous.restore();
                 return previous;
             };
 

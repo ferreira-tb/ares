@@ -66,6 +66,10 @@ export abstract class BaseWindow extends EventEmitter {
         return this.browser.removeBrowserView.bind(this.browser);
     };
 
+    get restore() {
+        return this.browser.restore.bind(this.browser);
+    };
+
     get setTopBrowserView() {
         return this.browser.setTopBrowserView.bind(this.browser);
     };
