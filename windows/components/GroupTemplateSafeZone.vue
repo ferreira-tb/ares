@@ -85,10 +85,10 @@ const columns: DataTableColumns<WorldAllyType> = [
     {
         title: () => h(NEllipsis, { tooltip: false, textContent: 'Pontos' }),
         key: 'points',
+        defaultSortOrder: 'descend',
         resizable: true,
         render: (row) => h(NEllipsis, { tooltip: false, textContent: row.points.toLocaleString(locale) }),
-        sorter: (a, b) => a.points - b.points,
-        defaultSortOrder: 'descend'
+        sorter: (a, b) => a.points - b.points
     }
 ];
 
