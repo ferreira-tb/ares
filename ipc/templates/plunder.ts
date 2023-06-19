@@ -1,5 +1,5 @@
 import { assertInteger, isInteger } from '$common/guards';
-import { IpcTribalModelError } from '$ipc/interface/error';
+import { IpcTribalError } from '$ipc/interface/error';
 
 export class PlunderInfo implements PlunderInfoType {
     public readonly hideAttacked: boolean;
@@ -9,7 +9,7 @@ export class PlunderInfo implements PlunderInfoType {
 
     constructor(rawPlunderInfo: RawPlunderInfo) {
         if (typeof rawPlunderInfo.hide_attacked !== 'boolean') {
-            throw new IpcTribalModelError('hide_attacked value is invalid.');
+            throw new IpcTribalError('hide_attacked value is invalid.');
         };
         this.hideAttacked = rawPlunderInfo.hide_attacked;
         
@@ -20,7 +20,7 @@ export class PlunderInfo implements PlunderInfoType {
         this.pageSize = isInteger(rawPlunderInfo.page_size) ? rawPlunderInfo.page_size : null;
 
         if (typeof rawPlunderInfo.plunders_exhausted !== 'boolean') {
-            throw new IpcTribalModelError('plunders_exhausted value is invalid.');
+            throw new IpcTribalError('plunders_exhausted value is invalid.');
         };
         this.plunderExhausted = rawPlunderInfo.plunders_exhausted;
     };
