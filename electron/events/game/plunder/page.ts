@@ -25,7 +25,7 @@ export function setPlunderPageEvents() {
             pages.value = pagesInfo;
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     // Navega para a primeira página do assistente de saque.
@@ -36,7 +36,7 @@ export function setPlunderPageEvents() {
             await e.sender.loadURL(url.href);
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     // Navega para a próxima página do assistente de saque, se possível for.
@@ -61,6 +61,6 @@ export function setPlunderPageEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return false;
-        };
+        }
     });
-};
+}

@@ -24,7 +24,7 @@ export function setConfigEvents() {
             appConfig.set(configType, value);
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     ipcMain.handle('db:clear-database', async () => {
@@ -37,6 +37,6 @@ export function setConfigEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return false;
-        };
+        }
     });
-};
+}

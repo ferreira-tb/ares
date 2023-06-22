@@ -7,7 +7,6 @@ import { setDevEvents } from '$electron/events/dev';
 import { setErrorEvents } from '$electron/events/error';
 import { setGameEvents } from '$electron/events/game';
 import { setIpcTribalEvents } from '$electron/events/ipc-tribal';
-import { setPanelEvents } from '$electron/events/panel';
 import { setTabEvents } from '$electron/events/tabs';
 import { setMainWindowEvents } from '$electron/events/ui';
 import { setWindowsEvents } from '$electron/events/windows';
@@ -40,7 +39,7 @@ export function setEvents() {
     watch(userAlias, (value) => {
         for (const contents of webContents.getAllWebContents()) {
             contents.send('user:did-change-alias', value);
-        };
+        }
     });
 
     // Outros eventos
@@ -51,9 +50,8 @@ export function setEvents() {
     setGameEvents();
     setIpcTribalEvents();
     setMainWindowEvents();
-    setPanelEvents();
     setTabEvents();
     setWindowsEvents();
     setWorkerEvents();
     setWorldEvents();
-};
+}

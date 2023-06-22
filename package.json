@@ -18,7 +18,6 @@
     "scripts": {
         "build": "npm run type-check && npm run clear && run-p build:* && npm run fix",
         "build:browser": "vite build --config browser.config.ts",
-        "build:panel": "vite build --config panel.config.ts",
         "build:rollup": "rollup --config rollup.config.ts --configPlugin typescript={tsconfig:'tsconfig.rollup.json'}",
         "build:ui": "vite build --config ui.config.ts",
         "build:win": "vite build --config windows.config.ts",

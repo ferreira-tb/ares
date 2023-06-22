@@ -25,7 +25,7 @@ export function setPlunderEvents() {
         if (newScreen !== 'am_farm') {
             if (plunderPages.value) plunderPages.value = null;
             if (plunderGroup.value) plunderGroup.value = null;
-        };
+        }
     });
 
     setPlunderConfigEvents();
@@ -34,7 +34,7 @@ export function setPlunderEvents() {
     setPlunderHistoryEvents();
     setPlunderDemolitionEvents();
     setPlunderTemplatesEvents();
-};
+}
 
 function calcCarryCapacityHandler() {
     const cacheStore = useCacheStore();
@@ -45,7 +45,7 @@ function calcCarryCapacityHandler() {
         if (!isWorld(world)) {
             currentWorldUnitsInfo.value = null;
             return;
-        };
+        }
 
         const worldUnitsRow = await WorldUnits.findByPk(world);
         currentWorldUnitsInfo.value = worldUnitsRow?.toJSON() ?? null;
@@ -64,7 +64,7 @@ function calcCarryCapacityHandler() {
                 const worldUnitsRow = await WorldUnits.findByPk(world);
                 if (!worldUnitsRow) return null;
                 units = worldUnitsRow.toJSON();
-            };
+            }
             
             const entries = Object.entries(unitsToCheck) as [keyof UnitAmount, number][];
             return entries.reduce((carryCapacity, [unit, amount]) => {
@@ -76,6 +76,6 @@ function calcCarryCapacityHandler() {
         } catch (err) {
             MainProcessError.catch(err);
             return null;
-        };
+        }
     };
-};
+}

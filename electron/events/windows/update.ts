@@ -19,14 +19,14 @@ export function setUpdateWindowEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return false;
-        };
+        }
     });
 
     ipcMain.on('app-update:update-available-dialog', async (_e, newVersion: string) => {
         try {
             if (!semverValid(newVersion)) {
                 throw new MainProcessError(`Invalid version: ${newVersion}.`);
-            };
+            }
 
             const { response } = await dialog.showMessageBox({
                 type: 'info',
@@ -42,10 +42,10 @@ export function setUpdateWindowEvents() {
                 StandardWindow.open(StandardWindowName.Update);
             } else if (response === 2) {
                 appConfig.set('update', { versionToIgnore: newVersion });
-            };
+            }
 
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
-};
+}

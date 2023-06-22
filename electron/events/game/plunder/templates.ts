@@ -28,8 +28,8 @@ export function setPlunderTemplatesEvents() {
             for (const contents of webContents.getAllWebContents()) {
                 if (contents === e.sender) continue;
                 contents.send('custom-plunder-template-saved', template);
-            };
-        };
+            }
+        }
 
         return saved;
     });
@@ -42,9 +42,9 @@ export function setPlunderTemplatesEvents() {
             for (const contents of webContents.getAllWebContents()) {
                 if (contents === e.sender) continue;
                 contents.send('custom-plunder-template-destroyed', template);
-            };
-        };
+            }
+        }
 
         return destroyed;
     });
-};
+}

@@ -41,7 +41,7 @@ export function setErrorEvents() {
 
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     ipcMain.handle('error:get-log', async () => {
@@ -57,7 +57,7 @@ export function setErrorEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return null;
-        };
+        }
     });
 
     ipcMain.handle('error:get-electron-log', async () => {
@@ -74,7 +74,7 @@ export function setErrorEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return null;
-        };
+        }
     });
 
     ipcMain.handle('error:export', async (): Promise<'canceled' | 'error' | 'sucess'> => {
@@ -98,7 +98,7 @@ export function setErrorEvents() {
                 return 'canceled';
             } else if (!savePath) {
                 throw new MainProcessError('Could not export error log.');
-            };
+            }
 
             await fs.writeFile(savePath, content, { encoding: 'utf-8' });
 
@@ -112,6 +112,6 @@ export function setErrorEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return 'error';
-        };
+        }
     });
-};
+}

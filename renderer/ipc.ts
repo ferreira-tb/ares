@@ -49,9 +49,6 @@ export async function ipcInvoke(channel: 'config:should-notify-on-error'): Promi
 // Browser
 export async function ipcInvoke(channel: 'browser:get-response-time'): Promise<number | null>;
 
-// Painel
-export async function ipcInvoke(channel: 'panel:is-visible'): Promise<boolean>;
-
 // Abas
 export async function ipcInvoke(channel: 'tab:title', tabId: number): Promise<string | null>;
 export async function ipcInvoke(channel: 'main-tab:url'): Promise<string>;
@@ -161,7 +158,6 @@ export function ipcSend(channel: 'debug:toggle', status: boolean): void;
 export function ipcSend(channel: 'debug:show-context-menu', isOptionsVisible: boolean): void;
 export function ipcSend(channel: 'dev:magic'): void;
 export function ipcSend(channel: 'dev-tools:main-window'): void;
-export function ipcSend(channel: 'dev-tools:panel-window'): void;
 export function ipcSend(channel: 'dev-tools:current-tab'): void;
 export function ipcSend(channel: 'dev-tools:main-tab'): void;
 
@@ -176,9 +172,6 @@ export function ipcSend(channel: 'open-bug-report-menu'): void;
 export function ipcSend(channel: 'browser:show-context-menu', options: BrowserContextMenuOptions): void;
 export function ipcSend(channel: 'browser:update-response-time', time: number | null): void;
 export function ipcSend(channel: 'captcha:update-status', status: boolean): void;
-
-// Painel
-export function ipcSend(channel: 'panel:toggle'): void;
 
 // Abas
 export function ipcSend(channel: 'main-tab:reload'): void;

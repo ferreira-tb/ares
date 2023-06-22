@@ -9,7 +9,7 @@ type ErrorLogBase = {
 interface ErrorLogType extends EnvironmentInfo, ErrorLogBase {
     readonly world: World | null;
     readonly url: string;
-};
+}
 
 type ElectronErrorLogType = EnvironmentInfo & ErrorLogBase;
 

@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
 import { ipcMain, Menu, webContents } from 'electron';
 import { appConfig } from '$electron/stores';
-import { MainWindow, PanelWindow, StandardWindow } from '$electron/windows';
+import { MainWindow, StandardWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { TribalWorker } from '$electron/worker';
 import { MainProcessError } from '$electron/error';
@@ -57,13 +57,11 @@ export function setDebugEvents() {
 
 function getSenderName() {
     const mainWindow = MainWindow.getInstance();
-    const panelWindow = PanelWindow.getInstance();
     const mainView = BrowserTab.main;
 
     return function(sender: Electron.WebContents): string {
         try {
             if (sender === mainWindow.webContents) return 'UI';
-            if (sender === panelWindow.webContents) return 'PANEL';
             if (sender === mainView.webContents) return 'BROWSER';
 
             const standardWindow = StandardWindow.getWindow(sender);

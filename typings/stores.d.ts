@@ -11,7 +11,7 @@ interface GameDataStore extends TribalWarsGameDataType {
 
     useCoords(): import('vue').ComputedRef<[number | null, number | null]>;
     useTotalResources(): import('vue').ComputedRef<number | null>;
-};
+}
 
 type PiniaGameDataStoreType = {
     [K in keyof GameDataStore]:
@@ -32,7 +32,7 @@ interface CacheStore {
     readonly captcha: boolean;
     /** Tempo de resposta do servidor do jogo. */
     readonly responseTime: number | null;
-};
+}
 
 type PiniaCacheStoreType = {
     [K in keyof Omit<CacheStore, 'world' | 'player' | 'userAlias'>]: import('vue').Ref<CacheStore[K]>;
@@ -55,7 +55,7 @@ type MechanusPlunderStoreType = {
 // PLUNDER CONFIG
 interface PlunderConfigStore extends PlunderConfigType {
     raw(): PlunderConfigType;
-};
+}
 
 type PiniaPlunderConfigStoreType = {
     [K in keyof PlunderConfigStore]:
@@ -69,7 +69,7 @@ type MechanusPlunderConfigStoreType = {
 // PLUNDER HISTORY
 interface PlunderHistoryStore extends PlunderHistoryType {
     useTotal(): import('vue').ComputedRef<number>;
-};
+}
 
 type PiniaPlunderHistoryStoreType = {
     [K in Exclude<keyof PlunderHistoryStore, 'villages'>]:
@@ -94,7 +94,7 @@ type MechanusPlunderCacheStoreType = {
 // UNITS
 interface UnitsStore extends UnitAmount {
     raw(): UnitAmount;
-};
+}
 
 type PiniaUnitsStoreType = {
     [K in keyof UnitsStore]:
@@ -109,7 +109,7 @@ type MechanusUnitsStoreType = {
 interface BrowserStore {
     /** Indica se o IpcTribal está pronto para receber comandos. */
     readonly isIpcTribalReady: boolean;
-};
+}
 
 type PiniaBrowserStoreType = {
     [K in keyof BrowserStore]: import('vue').Ref<BrowserStore[K]>;
@@ -121,7 +121,7 @@ interface IncomingAttacksStore {
     readonly amount: number | null;
     /** Ataques a caminho. */
     readonly incomings: IncomingAttack[];
-};
+}
 
 type PiniaIncomingAttacksStoreType = {
     [K in keyof IncomingAttacksStore]: import('vue').Ref<IncomingAttacksStore[K]>;
@@ -134,7 +134,7 @@ type MechanusIncomingAttacksStoreType = {
 // SNOB CONFIG
 interface SnobConfigStore extends SnobConfigType {
     raw(): SnobConfigType;
-};
+}
 
 type PiniaSnobConfigStoreType = {
     [K in keyof SnobConfigStore]:

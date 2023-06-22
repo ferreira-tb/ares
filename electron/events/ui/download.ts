@@ -13,8 +13,8 @@ class DownloadProgress implements DownloadProgressType {
     constructor(item: Electron.DownloadItem) {
         this.receivedBytes = item.getReceivedBytes();
         this.totalBytes = item.getTotalBytes();
-    };
-};
+    }
+}
 
 export function setMainWindowDownloadEvents() {
     const mainWindow = MainWindow.getInstance();
@@ -26,7 +26,7 @@ export function setMainWindowDownloadEvents() {
     mainSession.on('will-download', (_e, item) => {
         handleUpdateDownload(item);
     });
-};
+}
 
 function handleUpdateDownload(item: Electron.DownloadItem) {
     const updateContents = StandardWindow.getWindow(StandardWindowName.Update)?.webContents;
@@ -36,7 +36,7 @@ function handleUpdateDownload(item: Electron.DownloadItem) {
         if (state === 'progressing') {
             const contents = StandardWindow.getWindow(StandardWindowName.Update)?.webContents;
             contents?.send('update-download-progress', new DownloadProgress(item));
-        };
+        }
     });
 
     item.once('done', (_e, state) => {
@@ -49,11 +49,11 @@ function handleUpdateDownload(item: Electron.DownloadItem) {
                 if (isString(err)) {
                     const error = new MainProcessError(err);
                     MainProcessError.catch(error);
-                };
+                }
             });
 
         } else if (contents) {
             contents.send('update-download-failed');
-        };
+        }
     });
-};
+}

@@ -58,12 +58,12 @@ useIpcOn('update-download-failed', () => {
 function downloadUpdate() {
     if (!data.value?.download) return;
     ipcSend('download-from-url', data.value.download);
-};
+}
 
 function openChangelog() {
     if (!data.value?.notes) return;
     ipcSend('website:any', data.value.notes);
-};
+}
 </script>
 
 <template>

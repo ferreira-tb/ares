@@ -1,10 +1,9 @@
 import '@tb-dev/prototype';
 import { app } from 'electron';
-import { setMenu } from '$electron/menu';
 import { sequelize } from '$electron/database';
 import { setEvents } from '$electron/events';
 import { setEnv } from '$electron/utils/env';
-import { MainWindow, PanelWindow } from '$electron/windows';
+import { MainWindow, StandardWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { isUserAlias } from '$common/guards';
 import { useCacheStore } from '$electron/stores';
@@ -16,15 +15,15 @@ setEnv();
 MainProcessError.catch = errorHandler;
 
 function createWindow() {
-    MainWindow.create();
-    PanelWindow.create();
+    const mainWindow = MainWindow.create();
+    mainWindow.setMainWindowMenu(BrowserTab, StandardWindow);
+
     BrowserTab.create({ current: true });
 
     setEvents();
-    setMenu();
-};
+}
 
-app.whenReady().then(createWindow, MainProcessError.catch);
+app.whenReady().then(() => createWindow());
 
 app.on('window-all-closed', () => app.quit());
 
@@ -35,12 +34,12 @@ app.once('will-quit', async (e) => {
         const cacheStore = useCacheStore();
         if (isUserAlias(cacheStore.userAlias)) {
             await PlunderHistory.saveHistory(cacheStore.userAlias);
-        };
+        }
     } catch (err) {
         await MainProcessError.log(err);
     } finally {
         app.exit();
-    };
+    }
 });
 
 // Inicializa o banco de dados.
@@ -50,8 +49,8 @@ app.once('will-quit', async (e) => {
             await sequelize.sync({ alter: { drop: false } });
         } else {
             await sequelize.sync();
-        };   
+        }   
     } catch (err) {
         await MainProcessError.log(err);
-    };
+    }
 })();

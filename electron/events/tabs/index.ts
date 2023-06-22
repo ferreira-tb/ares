@@ -33,4 +33,4 @@ export function setTabEvents() {
     ipcMain.on('current-tab:force-reload', () => BrowserTab.current.reloadIgnoringCache());
 
     setCurrentViewNavigationEvents();
-};
+}

@@ -13,14 +13,14 @@ export function setCurrentViewNavigationEvents() {
         const navigate = navigateToScreen('snob', { mode: 'coin' });
         await navigate(e, villageId);
     });
-};
+}
 
 function navigateToScreen(screen: GameScreen, searchParams: { [key: string]: string } = {}) {
     return async function(_e: Electron.IpcMainEvent, villageId: number) {
         try {
             if (!Number.isInteger(villageId)) {
                 throw new BrowserTabError(`Cannot navigate to ${screen}: village id is invalid.`);
-            };
+            }
     
             const contents = BrowserTab.current.webContents;
             const url = new URL(contents.getURL());
@@ -28,12 +28,12 @@ function navigateToScreen(screen: GameScreen, searchParams: { [key: string]: str
             
             for (const [key, value] of Object.entries(searchParams)) {
                 url.searchParams.set(key, value);
-            };
+            }
 
             await contents.loadURL(url.href);
     
         } catch (err) {
             BrowserTabError.catch(err);
-        };
+        }
     };
-};
+}

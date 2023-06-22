@@ -21,7 +21,7 @@ export function setPlunderGroupEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return false;
-        };
+        }
     });
 
     ipcMain.on('plunder:navigate-to-next-village', (e, currentVillageId?: number | null) => {
@@ -33,13 +33,13 @@ export function setPlunderGroupEvents() {
             if (villages.length > 0 && villages.every(([, { done }]) => done)) {
                 e.sender.send('plunder-group-is-exhausted');
                 return;
-            };
+            }
 
             // Do contrário, remove as aldeias que já atacaram, além da aldeia atual se houver um id válido.
             villages = villages.filter(([, { done }]) => !done);
             if (isInteger(currentVillageId) && currentVillageId > 0) {
                 villages = villages.filter(([id]) => id !== currentVillageId);
-            };
+            }
             
             if (villages.length === 0) return;
 
@@ -61,7 +61,7 @@ export function setPlunderGroupEvents() {
 
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     ipcMain.on('plunder:navigate-to-group', async (e) => {
@@ -74,6 +74,6 @@ export function setPlunderGroupEvents() {
             await e.sender.loadURL(url.href);
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
-};
+}

@@ -16,4 +16,4 @@ export function setWindowsEvents() {
     ipcMain.on('website:repository', () => void WebsiteWindow.open(WebsiteUrl.Repository));
     
     setUpdateWindowEvents();
-};
+}

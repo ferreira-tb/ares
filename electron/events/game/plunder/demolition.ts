@@ -24,8 +24,8 @@ export function setPlunderDemolitionEvents() {
             if (alias === cacheStore.userAlias) {
                 // eslint-disable-next-line require-atomic-updates
                 demolitionTroops.value = troops;
-            };
-        };
+            }
+        }
 
         return demolitionTroops.value;
     });
@@ -34,7 +34,7 @@ export function setPlunderDemolitionEvents() {
         const saved = await DemolitionTemplate.saveDemolitionTroopsConfig(template);
         if (saved && template.alias === cacheStore.userAlias) {
             demolitionTroops.value = template;
-        };
+        }
         return saved;
     });
 
@@ -42,7 +42,7 @@ export function setPlunderDemolitionEvents() {
         const destroyed = await DemolitionTemplate.destroyDemolitionTroopsConfig(alias);
         if (destroyed && alias === cacheStore.userAlias) {
             demolitionTroops.value = null;
-        };
+        }
         return destroyed;
     });
-};
+}

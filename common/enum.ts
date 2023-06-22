@@ -82,6 +82,7 @@ export const enum StandardWindowName {
     ErrorLog = 'error-log',
     GroupTemplate = 'group-template',
     GroupTemplateSafeZone = 'group-template-safe-zone',
+    Panel = 'panel',
     PlunderHistory = 'plunder-history',
     PlunderTemplate = 'plunder-template',
     TroopsCounter = 'troops-counter',

@@ -41,6 +41,13 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
     },
     [StandardWindowName.GroupTemplate]: groupTemplate,
     [StandardWindowName.GroupTemplateSafeZone]: groupTemplate,
+    [StandardWindowName.Panel]: {
+        width: 800,
+        minWidth: 800,
+        height: 600,
+        minHeight: 600,
+        resizable: true
+    },
     [StandardWindowName.PlunderHistory]: {
         width: 1200,
         minWidth: 1200,

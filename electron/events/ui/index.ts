@@ -14,4 +14,4 @@ export function setMainWindowEvents() {
     
     setMenuEvents();
     setMainWindowDownloadEvents();
-};
+}

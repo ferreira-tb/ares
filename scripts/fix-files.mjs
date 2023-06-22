@@ -11,10 +11,9 @@ try {
     const assetsDir = path.join(distDir, 'assets');
 
     // HTML
-    const panel = path.join(distDir, 'panel.html');
     const windows = path.join(distDir, 'windows.html');
     const ui = path.join(distDir, 'ui.html');
-    await Promise.all([panel, windows, ui].map(html));
+    await Promise.all([windows, ui].map(html));
 
     // CSS
     const style = path.join(distDir, 'style.css');
