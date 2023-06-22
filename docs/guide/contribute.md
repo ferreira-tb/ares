@@ -13,14 +13,12 @@ Ao reportar um erro, é recomendado exportar o registro de erros e enviar o arqu
 
 <FlexImage src="/screenshots/error-log.png" alt="Registro de erros" />
 
-## Tradução
+## Internacionalização
 Atualmente o Ares só está disponível em português do Brasil, mas a ideia é que ele seja eventualmente traduzido para outras línguas. No entanto, não é suficiente apenas traduzir o texto, pois algumas funcionalidades são muito dependentes da região.
 
 Um exemplo simples, mas muito pertinente, é a obtenção de datas para certos cálculos. Em alguns casos, o Ares precisa analisar um texto e, a partir de seu formato, determinar quando um dado evento ocorreu. Se ele não for capaz de reconhecer o formato, não será possível obter a data.
 
-::: warning
-Por hora, os trabalhos de tradução estão interrompidos. Para saber mais, veja o tópico [Internacionalização](https://github.com/ferreira-tb/ares/discussions/328) nas discussões do repositório.
-:::
+Por hora, os trabalhos estão interrompidos. Para saber mais, veja o tópico [Internacionalização](https://github.com/ferreira-tb/ares/discussions/328) nas discussões do repositório.
 
 ## Código
 Se você é um desenvolvedor, pode contribuir de forma muito mais direta, seja corrigindo bugs, implementando novas funcionalidades ou até mesmo melhorando o código existente.
