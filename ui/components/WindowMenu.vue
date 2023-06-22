@@ -67,11 +67,11 @@ useIpcOn('tab:back-forward-status', (_e, status: BackForwardStatus) => {
             <div class="menu-icon" @click="ipcSend('open-bug-report-menu')">
                 <NIcon :size="22" :depth="3" :component="BugSharp" />
             </div>
-            <div class="menu-icon" @click="shell.openExternal(WebsiteUrl.Discord)">
-                <NIcon :size="22" :depth="3" :component="DiscordSharp" />
-            </div>
             <div class="menu-icon" @click="ipcSend('website:repository')">
                 <NIcon :size="22" :depth="3" :component="LogoGithub" />
+            </div>
+            <div class="menu-icon" @click="shell.openExternal(WebsiteUrl.Discord)">
+                <NIcon :size="22" :depth="3" :component="DiscordSharp" />
             </div>
         </div>
 

@@ -12,20 +12,20 @@ export function setAllyEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return null;
-        };
+        }
     });
-};
+}
 
 function fetchDiplomacy() {
     return new Promise<RawDiplomacy | null>((resolve, reject) => {
         const url = BrowserTab.createURL(GameSearchParams.Contracts);
         const worker = new TribalWorker(TribalWorkerName.FetchDiplomacy, url);
         worker.once('destroyed', reject);
-        worker.once('port:message', (message: RawDiplomacy | null) => {
+        worker.once('message', (message: RawDiplomacy | null) => {
             resolve(message);
             worker.destroy();
         });
 
         worker.init().catch(reject);
     });
-};
+}

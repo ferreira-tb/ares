@@ -21,7 +21,7 @@ export function setWorldConfigEvents(world: MechanusRef<World | null>) {
                 const worker = new TribalWorker(TribalWorkerName.FetchWorldConfig, url);
                 const config = await new Promise<WorldConfigType>((resolve, reject) => {
                     worker.once('destroyed', reject);
-                    worker.once('port:message', (message: WorldConfigType | null) => {
+                    worker.once('message', (message: WorldConfigType | null) => {
                         try {
                             if (!message) {
                                 throw new MainProcessError(`Could not fetch world config for ${world}.`);

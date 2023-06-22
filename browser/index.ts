@@ -40,5 +40,8 @@ window.addEventListener('DOMContentLoaded', mount, { once: true });
 window.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    ipcSend('browser:show-context-menu');
+    ipcSend('browser:show-context-menu', {
+        x: e.clientX,
+        y: e.clientY
+    });
 });

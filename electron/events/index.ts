@@ -28,7 +28,7 @@ export function setEvents() {
     ipcMain.handle('app:name', () => app.getName());
     ipcMain.handle('app:version', () => app.getVersion());
     ipcMain.handle('app:locale', () => app.getLocale());
-    ipcMain.handle('app:is-dev', () => process.env.ARES_MODE === 'dev');
+    ipcMain.handle('app:is-dev', () => process.env.ARES_MODE === 'development');
     ipcMain.handle('app:user-data-path', () => app.getPath('userData'));
     ipcMain.handle('app:desktop-path', () => app.getPath('desktop'));
 

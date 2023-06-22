@@ -89,7 +89,7 @@ export function parseGameDate(date: string): number | null {
  */
 export function parseReportDate(report: Element, ms: boolean = true): number {
     const selector = 'td.nopad table:has([class="report_ReportAttack" i]) tr:nth-of-type(2) td:nth-of-type(2)';
-    const dateField = report.queryAndAssert(selector);
+    const dateField = report.queryStrict(selector);
 
     // Exemplo: "out. 17, 2022  22:16:46:503".
     const rawDate = dateField.getTextContentStrict();

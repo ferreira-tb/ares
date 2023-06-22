@@ -87,6 +87,22 @@ type VillageGroupsType = {
     readonly allGroups: VillageGroup[];
 };
 
+type TroopCounterResult = {
+    /** Unidades próprias presentes na aldeia. */
+    readonly available: UnitAmount;
+    /** Unidades próprias fora da aldeia. */
+    readonly away: UnitAmount;
+    /** Unidades próprias em trânsito. */
+    readonly moving: UnitAmount;
+    /** Soma das unidades próprias presentes na aldeia, fora e em trânsito. */
+    readonly own: UnitAmount;
+
+    /** Diferença entre a quantidade de unidades na aldeia e a quantidade de unidades próprias presentes nela. */
+    readonly support: UnitAmount;
+    /** Quantidade total de unidades na aldeia. */
+    readonly village: UnitAmount;
+};
+
 interface TribalWarsGameDataType {
     /** Local. */
     readonly locale: string | null;
@@ -149,7 +165,7 @@ interface TribalWarsGameDataType {
         /** Capacidade de armazenamento máximo da aldeia atual. */
         readonly maxStorage: number | null;
     };
-};
+}
 
 interface TribalWarsTimingType {
     readonly addedServerTime: number;
@@ -159,4 +175,4 @@ interface TribalWarsTimingType {
     readonly offsetToServer: number;
     readonly paused: boolean;
     readonly tickInterval: number;
-};
+}

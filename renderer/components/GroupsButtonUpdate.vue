@@ -13,8 +13,8 @@ const buttonText = computed(() => {
 
 async function fetchVillageGroups() {
     loading.value = true;
-    const fetched = await ipcInvoke('game:fetch-village-groups');
-    if (fetched) {
+    const didFetch = await ipcInvoke('game:fetch-village-groups');
+    if (didFetch) {
         message.success('Lista de grupos atualizada');
     } else {
         message.error('Erro ao atualizar a lista de grupos');

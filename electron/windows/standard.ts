@@ -62,14 +62,9 @@ export class StandardWindow extends BaseWindow {
     };
 
     private setStandardWindowMenu() {
-        if (process.env.ARES_MODE !== 'dev') {
-            this.setMenu(null);
-            return;
-        };
-    
         const options: Electron.MenuItemConstructorOptions[] = [
             { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => this.reloadIgnoringCache() },
-            { label: 'Conjurar magia', accelerator: 'F9', click: () => BaseWindow.castDevMagic() },
+            { label: 'Conjurar magia', accelerator: 'CmdOrCtrl+F9', click: () => BaseWindow.castDevMagic() },
             { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => this.openDevTools() }
         ];
     
@@ -123,8 +118,7 @@ export class StandardWindow extends BaseWindow {
                     spellcheck: false,
                     nodeIntegration: true,
                     nodeIntegrationInWorker: true,
-                    contextIsolation: false,
-                    devTools: process.env.ARES_MODE === 'dev'
+                    contextIsolation: false
                 }
             };
 

@@ -42,9 +42,9 @@ const enemyVillages = useAllyVillages(enemies);
 const fields = ref(30);
 const groupName = ref<string>('Zona segura');
 
-const currentGroups = useGroups();
+const { groups: currentGroups } = useGroups();
 const currentGroupsNames = computed(() => {
-    return Array.from(currentGroups.value).map((group) => group.name);
+    return currentGroups.value.map((group) => group.name);
 });
 
 const disableCreation = computed(() => {

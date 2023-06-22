@@ -1,5 +1,5 @@
 import { IpcTribal, IpcTribalError } from '$ipc/interface';
-import { PlunderInfo, TribalWarsGameData, TribalWarsTiming, Units } from '$ipc/templates';
+import { PlunderInfo, TribalWarsGameData, TribalWarsTiming, GameUnits } from '$ipc/templates';
 
 export function setIpcTribalEvents() {
     IpcTribal.on('ipc-tribal:ui-error-message', (message: string) => UI.ErrorMessage(message));
@@ -9,7 +9,7 @@ export function setIpcTribalEvents() {
     IpcTribal.handle('ipc-tribal:current-village-units', () => {
         try {
             const rawUnits = Accountmanager.farm.current_units;
-            return new Units(rawUnits);
+            return new GameUnits(rawUnits);
         } catch (err) {
             IpcTribalError.catch(err);
             return null;

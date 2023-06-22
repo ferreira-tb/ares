@@ -6,13 +6,20 @@ import { useUserAlias } from '$renderer/composables/user-alias';
 import { RendererProcessError } from '$renderer/error';
 import { decodeVillageGroups } from '$common/utils';
 
-export function useGroups(userAlias: MaybeRefOrGetter<UserAlias | null> = useUserAlias()) {
+interface UseGroupsOptions {
+    readonly type?: 'static' | 'dynamic';
+}
+
+export function useGroups(
+    userAlias: MaybeRefOrGetter<UserAlias | null> = useUserAlias(),
+    options?: UseGroupsOptions
+) {
     const scope = effectScope();
-    const groups = ref(new Set<VillageGroup>());
+    const groups = ref<VillageGroup[]>([]);
     const userAliasRef = toRef(userAlias);
 
     scope.run(() => {
-        useIpcOn('game:did-update-village-groups-set', (_e, newGroups: Set<VillageGroup>) => {
+        useIpcOn('game:did-update-village-groups', (_e, newGroups: VillageGroup[]) => {
             groups.value = decodeVillageGroups(newGroups);
         });
 
@@ -20,21 +27,33 @@ export function useGroups(userAlias: MaybeRefOrGetter<UserAlias | null> = useUse
             const alias = toValue(userAliasRef);
             try {
                 if (alias === null) {
-                    groups.value = new Set();
+                    groups.value = [];
                     return;
-                };
+                }
     
-                const value = await ipcInvoke('game:get-all-village-groups');
+                let value = await ipcInvoke('game:get-all-village-groups');
+                if (options?.type) {
+                    value = value.filter((group) => group.type === options.type);
+                }
+
                 groups.value = decodeVillageGroups(value);
     
             } catch (err) {
                 RendererProcessError.catch(err);
-                groups.value = new Set();
-            };
+                groups.value = [];
+            }
         });
     });
 
+    async function refetch() {
+        const didFetch = await ipcInvoke('game:fetch-village-groups');
+        if (!didFetch) throw new RendererProcessError('Failed to fetch village groups');
+    }
+
     tryOnScopeDispose(() => scope.stop());
 
-    return readonly(groups);
-};
+    return {
+        groups: readonly(groups),
+        refetch
+    };
+}

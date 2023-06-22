@@ -15,7 +15,7 @@ export function setGroupsEvents() {
     const cacheStore = useCacheStore();
     const { userAlias } = storeToRefs(cacheStore);
 
-    const allGroups = ref<Set<VillageGroup>>(new Set());
+    const allGroups = ref<VillageGroup[]>([]);
     const updateGroups = createGroupsUpdater(userAlias, allGroups);
 
     ipcMain.handle('game:create-static-group', async (_e, groupName: string): Promise<VillageGroup | null> => {
@@ -29,13 +29,13 @@ export function setGroupsEvents() {
             const groups = await fetchGroups();
             await updateGroups(alias, groups);
 
-            const newGroup = Array.from(groups).find((group) => decodeString(group.name) === groupName);
+            const newGroup = groups.find((group) => decodeString(group.name) === groupName);
             return newGroup ?? null;
 
         } catch (err) {
             MainProcessError.catch(err);
             return null;
-        };
+        }
     });
 
     ipcMain.handle('game:add-villages-to-group', async (_e, group: number, villages: number[]): Promise<boolean> => {
@@ -45,11 +45,11 @@ export function setGroupsEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return false;
-        };
+        }
     });
 
     // Retorna informações sobre todos os grupos de aldeias.
-    ipcMain.handle('game:get-all-village-groups', (): Set<VillageGroup> => allGroups.value);
+    ipcMain.handle('game:get-all-village-groups', (): VillageGroup[] => allGroups.value);
 
     ipcMain.handle('game:fetch-village-groups', async (): Promise<boolean> => {
         try {
@@ -63,60 +63,62 @@ export function setGroupsEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return false;
-        };
+        }
     });
 
     watchImmediate(userAlias, async (newAlias) => {
         if (!isUserAlias(newAlias)) {
-            allGroups.value.clear();
+            allGroups.value = [];
             patchAllWebContents(allGroups.value);
             return;
-        };
+        }
 
         try {
             // Obtém os grupos do banco de dados.
             const previous = (await VillageGroups.findByPk(newAlias))?.allGroups ?? [];
-            const newGroups = previous.length > 0 ? new Set(previous) : await fetchGroups();
+            const newGroups = previous.length > 0 ? previous : await fetchGroups();
             await updateGroups(newAlias, newGroups);
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
-};
+}
 
 function fetchGroups() {
-    return new Promise<Set<VillageGroup>>((resolve, reject) => {
+    return new Promise<VillageGroup[]>((resolve, reject) => {
         // Cria o Worker na tela de grupos manuais.
         // Lá é possível obter tanto os grupos manuais quanto os dinâmicos.
         const url = BrowserTab.createURL(GameSearchParams.StaticGroups);
         const worker = new TribalWorker(TribalWorkerName.GetVillageGroups, url);
         worker.once('destroyed', reject);
-        worker.once('port:message', (message: Set<VillageGroup> | null) => {
+        worker.once('message', (message: VillageGroup[] | null) => {
             try {
-                if (!message) throw new Error('Could not fetch village groups.');
+                if (!Array.isArray(message)) {
+                    throw new MainProcessError('Could not fetch village groups.');
+                }
                 resolve(message);
             } catch (err) {
                 reject(err);
             } finally {
                 worker.destroy();
-            };
+            }
         });
 
         worker.init().catch(reject);
     });
-};
+}
 
-function patchAllWebContents(groups: Set<VillageGroup>) {
+function patchAllWebContents(groups: VillageGroup[]) {
     for (const contents of webContents.getAllWebContents()) {
-        contents.send('game:did-update-village-groups-set', groups);
-    };
-};
+        contents.send('game:did-update-village-groups', groups);
+    }
+}
 
 function createGroupsUpdater(
     userAlias: MechanusComputedRef<UserAlias | null>,
-    allGroups: MechanusRef<Set<VillageGroup>>
+    allGroups: MechanusRef<VillageGroup[]>
 ) {
-    return async function(alias: UserAlias, groups: Set<VillageGroup>) {
+    return async function(alias: UserAlias, groups: VillageGroup[]) {
         await sequelize.transaction(async () => {
             await VillageGroups.upsert({ id: alias, allGroups: [...groups] });
         });
@@ -125,9 +127,9 @@ function createGroupsUpdater(
         if (alias === userAlias.value) {
             allGroups.value = groups;
             patchAllWebContents(groups);
-        };
+        }
     };
-};
+}
 
 function createStaticGroup(groupName: string) {
     const delay = useDelay(); 
@@ -135,32 +137,32 @@ function createStaticGroup(groupName: string) {
         const url = BrowserTab.createURL(GameSearchParams.StaticGroups);
         const worker = new TribalWorker(TribalWorkerName.CreateStaticGroup, url);
         worker.once('destroyed', reject);
-        worker.once('port:message', (message) => {
+        worker.once('message', (message) => {
             if (message === 'destroy') {
                 resolve();
                 setTimeout(() => worker.destroy(), delay.value);
-            };
+            }
         });
 
         await worker.init();
         worker.port.postMessage(groupName);
     });
-};
+}
 
 function addVillagesToGroup(group: number, villages: number[]) {
     const delay = useDelay(); 
     return new Promise<void>(async (resolve, reject) => {
-        const url = BrowserTab.createURL(GameSearchParams.AddVillagesToGroup);
+        const url = BrowserTab.createURL(GameSearchParams.StaticGroupsAllVillages);
         const worker = new TribalWorker(TribalWorkerName.AddVillagesToGroup, url);
         worker.once('destroyed', reject);
-        worker.once('port:message', (message) => {
+        worker.once('message', (message) => {
             if (message === 'destroy') {
                 resolve();
                 setTimeout(() => worker.destroy(), delay.value);
-            };
+            }
         });
 
         await worker.init();
         worker.port.postMessage({ group, villages });
     });
-};
+}

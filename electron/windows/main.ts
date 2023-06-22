@@ -37,8 +37,7 @@ export class MainWindow extends BaseWindow {
             webPreferences: {
                 spellcheck: false,
                 nodeIntegration: true,
-                contextIsolation: false,
-                devTools: process.env.ARES_MODE === 'dev'
+                contextIsolation: false
             }
         };
 

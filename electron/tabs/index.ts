@@ -33,8 +33,7 @@ export class BrowserTab extends EventEmitter {
         const webPreferences: Electron.WebPreferences = {
             spellcheck: false,
             nodeIntegration: false,
-            contextIsolation: true,
-            devTools: process.env.ARES_MODE === 'dev'
+            contextIsolation: true
         };
 
         if (!BrowserTab.mainTab.value) webPreferences.preload = browserJs;
@@ -109,6 +108,10 @@ export class BrowserTab extends EventEmitter {
 
     get getURL() {
         return this.view.webContents.getURL.bind(this.view.webContents);
+    };
+
+    get inspectElement() {
+        return this.view.webContents.inspectElement.bind(this.view.webContents);
     };
 
     get insertCSS() {
@@ -191,9 +194,9 @@ export class BrowserTab extends EventEmitter {
         this.view.webContents.loadURL(url).catch(BrowserTabError.catch);
     };
 
-    public openDevTools(options?: Electron.OpenDevToolsOptions) {
-        options ??= { mode: 'detach' };
-        this.view.webContents.openDevTools(options);
+    public openDevTools(options: Electron.OpenDevToolsOptions = { mode: 'detach' }) {
+        const isEnabled = appConfig.get('advanced').devTools;
+        if (isEnabled) this.view.webContents.openDevTools(options);
     };
 
     private setTabBounds() {
@@ -253,6 +256,7 @@ export class BrowserTab extends EventEmitter {
             const mainWindow = MainWindow.getInstance();
             mainWindow.setTopBrowserView(current.view);
             current.setTabBounds();
+            current.updateBackForwardStatus();
         });
     };
 

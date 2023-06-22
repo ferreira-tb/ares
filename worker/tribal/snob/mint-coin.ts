@@ -27,7 +27,7 @@ function mintSingle(alias: UserAlias, config: SnobConfigType, history: SnobHisto
         return;
     };
 
-    const coin = coinForm.queryAndAssert<HTMLAnchorElement>('a#coin_mint_fill_max');
+    const coin = coinForm.queryStrict<HTMLAnchorElement>('a#coin_mint_fill_max');
     const amount = coin.parseIntStrict();
     coin.click();
 
@@ -53,7 +53,7 @@ function mintSingle(alias: UserAlias, config: SnobConfigType, history: SnobHisto
     today.coins += amount;
     history.coins += amount;
 
-    const submit = coinForm.queryAndAssert<HTMLInputElement>('input[type="submit"]:not([type="hidden"])');
+    const submit = coinForm.queryStrict<HTMLInputElement>('input[type="submit"]:not([type="hidden"])');
     ipcSend('tribal-worker:coin-minted', alias, config, unproxify(history));
     submit.click();
 };
@@ -66,7 +66,7 @@ function mintGroup(alias: UserAlias, config: SnobConfigType, history: SnobHistor
     };
 
     const selector = 'td:has(select.coin_amount) input#select_anchor_top[type="button"]';
-    const selectCoinsButton = coinTable.queryAndAssert<HTMLInputElement>(selector);
+    const selectCoinsButton = coinTable.queryStrict<HTMLInputElement>(selector);
     selectCoinsButton.click();
 
     const villages = Map.fromElements(
@@ -79,9 +79,9 @@ function mintGroup(alias: UserAlias, config: SnobConfigType, history: SnobHistor
     const amountSpanSelector = 'span[id*="selectedBunches_top" i]';
 
     const cellSelector = `td:has(${mintButtonSelector}):has(${amountSpanSelector})`;
-    const coinButtonTableCell = coinTable.queryAndAssert<HTMLTableCellElement>(cellSelector);
+    const coinButtonTableCell = coinTable.queryStrict<HTMLTableCellElement>(cellSelector);
 
-    const amountSpan = coinButtonTableCell.queryAndAssert<HTMLSpanElement>(amountSpanSelector);
+    const amountSpan = coinButtonTableCell.queryStrict<HTMLSpanElement>(amountSpanSelector);
     const totalCoinAmount = amountSpan.parseIntStrict();
 
     if (totalCoinAmount > 0 && villages.size === 0) {
@@ -111,7 +111,7 @@ function mintGroup(alias: UserAlias, config: SnobConfigType, history: SnobHistor
         today.coins += amount;
     };
 
-    const mintButton = coinButtonTableCell.queryAndAssert<HTMLInputElement>(mintButtonSelector);
+    const mintButton = coinButtonTableCell.queryStrict<HTMLInputElement>(mintButtonSelector);
     ipcSend('tribal-worker:coin-minted', alias, config, unproxify(history));
     mintButton.click();
 };
@@ -139,7 +139,7 @@ function unproxify(history: SnobHistoryType): SnobHistoryType {
 };
 
 function getCoinAmountFromRow(row: Element): number {
-    const select = row.queryAndAssert<HTMLSelectElement>('select.select_coins');
+    const select = row.queryStrict<HTMLSelectElement>('select.select_coins');
     const options = select.queryAsArray<HTMLOptionElement>('option[value]');
     return options.reduce((amount, option) => {
         const value = option.getAttributeAsIntStrict('value');

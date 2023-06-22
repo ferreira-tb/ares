@@ -100,7 +100,7 @@ export function queryTargetsInfo() {
     };
 
     // Dispara a função novamente caso surjam alterações na tabela.
-    const plunderList = document.queryAndAssert<HTMLTableElement>('#plunder_list');
+    const plunderList = document.queryStrict<HTMLTableElement>('#plunder_list');
     const options = { subtree: true, childList: true };
     const observer = useMutationObserver(plunderList, () => queryTargetsInfo(), options);
 
@@ -112,7 +112,7 @@ function queryReport(row: Element, info: PlunderTargetInfo, currentX: number | n
     assertInteger(currentX, `Current village X coordinate is invalid: ${currentX}.`);
     assertInteger(currentY, `Current village Y coordinate is invalid: ${currentY}.`);
 
-    const report = row.queryAndAssert('td a[href*="screen=report"]');
+    const report = row.queryStrict('td a[href*="screen=report"]');
     const coords = parseCoordsFromTextContentStrict(report.textContent);
 
     info.distance = calcDistance(currentX, currentY, coords[0], coords[1]);
@@ -153,14 +153,14 @@ function queryResourcesField(row: Element, info: PlunderTargetInfo): Element | n
     const resourcesField = row.querySelector('td:has(span > span.icon.wood)');
     if (!resourcesField) {
         // É preciso verificar se é realmente esse o caso.
-        row.queryAndAssert('span[data-title*="explorador" i]');
+        row.queryStrict('span[data-title*="explorador" i]');
         info.spyInfo = false;
         return null;
     };
 
-    const woodField = resourcesField.queryAndAssert('span span[class*="wood" i] + span');
-    const stoneField = resourcesField.queryAndAssert('span span[class*="stone" i] + span');
-    const ironField = resourcesField.queryAndAssert('span span[class*="iron" i] + span');
+    const woodField = resourcesField.queryStrict('span span[class*="wood" i] + span');
+    const stoneField = resourcesField.queryStrict('span span[class*="stone" i] + span');
+    const ironField = resourcesField.queryStrict('span span[class*="iron" i] + span');
 
     [woodField, stoneField, ironField].forEach((resField, index) => {
         // Adiciona o valor à quantia total.
@@ -217,5 +217,5 @@ function queryTemplateButtons(row: Element, info: PlunderTargetInfo) {
  * @param info Objeto `PlunderTargetInfo`.
  */
 function queryPlaceButton(row: Element, info: PlunderTargetInfo) {
-    info.button.place = row.queryAndAssert<HTMLAnchorElement>('td a[href*="screen=place" i][onclick]:has(img)');
+    info.button.place = row.queryStrict<HTMLAnchorElement>('td a[href*="screen=place" i][onclick]:has(img)');
 };

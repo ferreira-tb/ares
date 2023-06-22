@@ -93,6 +93,12 @@ function workers(): RollupOptions[] {
             external: ['electron']
         },
         {
+            input: 'worker/tribal/troops/count-troops.ts',
+            output: output('dist/worker/tribal/count-troops.js'),
+            plugins: workerPlugins,
+            external: ['electron']
+        },
+        {
             input: 'worker/tribal/ally/fetch-diplomacy.ts',
             output: output('dist/worker/tribal/fetch-diplomacy.js'),
             plugins: workerPlugins,

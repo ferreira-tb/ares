@@ -6,7 +6,7 @@ import { useGroups, useUserAlias } from '$renderer/composables';
 import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { decodeString } from '$common/utils';
-import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
+import GroupsButtonUpdate from '$renderer/components/GroupsButtonUpdate.vue';
 
 const userAlias = useUserAlias();
 const locale = await ipcInvoke('app:locale');
@@ -16,9 +16,8 @@ const previousConfig = await ipcInvoke('snob:get-config');
 if (previousConfig) config.$patch(previousConfig);
 
 const gameData = useGameDataStore();
-const gameDataFromMainProcess = await ipcInvoke('game:data');
-if (gameDataFromMainProcess) gameData.$patch(gameDataFromMainProcess);
-
+const previousGameData = await ipcInvoke('game:data');
+if (previousGameData) gameData.$patch(previousGameData);
 await nextTick();
 
 const villages = computedAsync<WorldVillageType[]>(async () => {
@@ -36,10 +35,10 @@ const villageOptions = computed(() => {
     return options;
 });
 
-const allGroups = useGroups(userAlias);
+const { groups: allGroups } = useGroups(userAlias);
 const groupOptions = computed(() => {
-    const options = Array.from(allGroups.value).map(({ id: groupId, name: groupName }) => {
-        return { label: decodeString(groupName), value: groupId };
+    const options = allGroups.value.map(({ id: groupId, name: groupName }) => {
+        return { label: groupName, value: groupId };
     });
 
     options.push({ label: 'Todos', value: 0 });
@@ -126,7 +125,7 @@ watchDeep(config, () => {
             </NGridItem>
 
             <NGridItem :span="2">
-                <ButtonGroupsUpdate />
+                <GroupsButtonUpdate />
             </NGridItem>
         </NGrid>
     </div>

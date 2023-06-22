@@ -20,8 +20,8 @@ async function createStaticGroup(port: MessagePort, groupName: string) {
         const inputSelector = '#group_management_content #group_config #add_group_form input#add_new_group_name';
         const submitSelector = '#group_management_content #group_config #add_group_form input.btn[type="submit"]';
 
-        const input = document.queryAndAssert<HTMLInputElement>(inputSelector);
-        const submit = document.queryAndAssert<HTMLInputElement>(submitSelector);
+        const input = document.queryStrict<HTMLInputElement>(inputSelector);
+        const submit = document.queryStrict<HTMLInputElement>(submitSelector);
 
         input.value = groupName;
         const responseTime = (await ipcInvoke('browser:get-response-time')) ?? 1000;
@@ -33,5 +33,5 @@ async function createStaticGroup(port: MessagePort, groupName: string) {
     } catch (err) {
         await TribalWorkerError.catch(err);
         port.postMessage('destroy');
-    };
-};
+    }
+}

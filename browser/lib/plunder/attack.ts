@@ -46,7 +46,7 @@ export function prepareAttack(plunderAttack: PlunderAttack, button: HTMLAnchorEl
 function sendAttack(button: HTMLAnchorElement) {
     return new Promise<void>(async (resolve, reject) => {
         const selector = '#farm_units #units_home tr:has(td#spear):has(td#sword)';
-        const unitsRow = document.queryAndAssert<HTMLTableRowElement>(selector);
+        const unitsRow = document.queryStrict<HTMLTableRowElement>(selector);
 
         const observer = useMutationObserver(unitsRow, () => {
             observer.stop();
@@ -75,20 +75,20 @@ export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<bool
             throw new PlunderError('Could not determine if world is archer world.');
         };
         
-        const commandForm = document.queryAndAssert('#command-data-form[action*="place" i]');
+        const commandForm = document.queryStrict('#command-data-form[action*="place" i]');
         for (const [key, value] of Object.entries(units)) {
             if (!isArcherWorld && /archer/.test(key)) continue;
             assertInteger(value, `Expected integer value for ${key}, but got ${value}.`);
 
             const selector = `input#unit_input_${key}[name*="${key}" i][class*="unitsInput" i]`;
-            const input = commandForm.queryAndAssert<HTMLInputElement>(selector);
+            const input = commandForm.queryStrict<HTMLInputElement>(selector);
             input.value = value.toString(10);
         };
 
         await submitAndWaitConfirmationPopup(commandForm);
 
         const buttonSelector = '#troop_confirm_submit[class*="troop_confirm_go" i][type="submit"]';
-        const confirmationButton = document.queryAndAssert<HTMLAnchorElement>(buttonSelector);
+        const confirmationButton = document.queryStrict<HTMLAnchorElement>(buttonSelector);
 
         const unitsSelector = '#place_confirm_units tr.units-row td[class*="unit-item" i]:not(.hidden)';
         const unitsBeingSent = document.queryAsArray(unitsSelector);
@@ -135,7 +135,7 @@ function submitAndWaitConfirmationPopup(commandForm: Element) {
         }, { subtree: true, childList: true });
 
         const selector = '#target_attack[class*="attack" i][type="submit"]';
-        const submitButton = commandForm.queryAndAssert<HTMLInputElement>(selector);
+        const submitButton = commandForm.queryStrict<HTMLInputElement>(selector);
 
         // É preciso esperar um breve intervalo antes de emitir o clique.
         // Do contrário, o servidor não tem tempo suficiente para processar o comando.

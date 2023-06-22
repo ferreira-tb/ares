@@ -3,10 +3,9 @@ import { computed, toRef } from 'vue';
 import { NButton, NButtonGroup } from 'naive-ui';
 import { computedAsync, watchDeep, watchImmediate, whenever } from '@vueuse/core';
 import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
-import { ipcInvoke, ipcSend } from '$renderer/ipc';
+import { ipcSend } from '$renderer/ipc';
 import { useGroups, useVillage } from '$renderer/composables';
 import { PanelSnobViewError } from '$panel/error';
-import { decodeString } from '$common/utils';
 import { StandardWindowName } from '$common/enum';
 import TheMintedCoins from '$panel/components/TheMintedCoins.vue';
 
@@ -29,21 +28,18 @@ const villageName = computed<string | null>(() => {
     return village.value.name;
 });
 
-const allGroups = useGroups();
+const { groups: allGroups, refetch } = useGroups();
 const groupName = computedAsync<string | null>(async () => {
     try {
         if (config.group === 0) return 'Todas as aldeias';
-        const group = Array.from(allGroups.value).find((g) => g.id === config.group);
+        const group = allGroups.value.find((g) => g.id === config.group);
 
         if (!group) {
-            const fetched = await ipcInvoke('game:fetch-village-groups');
-            if (!fetched) {
-                throw new PanelSnobViewError('Error fetching village groups');
-            };
+            await refetch();
             return null;
         };
 
-        return decodeString(group.name);
+        return group.name;
         
     } catch (err) {
         PanelSnobViewError.catch(err);

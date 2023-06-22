@@ -14,8 +14,8 @@ export function setCaptchaEvents() {
         for (const contents of webContents.getAllWebContents()) {
             if (contents !== e.sender) {
                 contents.send('captcha:did-update-status', status);
-            };
-        };
+            }
+        }
     });
 
     watch(captcha, async (status) => {
@@ -23,15 +23,15 @@ export function setCaptchaEvents() {
             if (!status) return;
             for (const contents of webContents.getAllWebContents()) {
                 contents.send('plunder:stop');
-            };
+            }
 
             const alias = userAlias.value;
             if (isUserAlias(alias)) {
                 await PlunderHistory.saveHistory(alias);
-            };
+            }
             
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
-};
+}

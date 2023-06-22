@@ -21,17 +21,17 @@ export function setWorldUnitsEvents(world: MechanusRef<World | null>) {
                 const worker = new TribalWorker(TribalWorkerName.FetchWorldUnits, url);
                 const info = await new Promise<WorldUnitsType>((resolve, reject) => {
                     worker.once('destroyed', reject);
-                    worker.once('port:message', (message: WorldUnitsType | null) => {
+                    worker.once('message', (message: WorldUnitsType | null) => {
                         try {
                             if (!message) {
                                 throw new MainProcessError(`Could not fetch world units for ${newWorld}.`);
-                            };
+                            }
                             resolve(message);
                         } catch (err) {
                             reject(err);
                         } finally {
                             worker.destroy();
-                        };
+                        }
                     });
 
                     worker.init().catch(reject);
@@ -41,10 +41,10 @@ export function setWorldUnitsEvents(world: MechanusRef<World | null>) {
                 await sequelize.transaction(async () => {
                     await WorldUnits.create({ id: newWorld, ...info });
                 });
-            };
+            }
     
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
-};
+}

@@ -30,7 +30,7 @@ watchDeep(config, () => {
     <section v-if="userAlias" class="plunder-config">
         <ConfigPlunderGridAttack />
         <ConfigPlunderGridTemplateC />
-        <ConfigPlunderGridGroups />
+        <ConfigPlunderGridGroups :user-alias="userAlias" />
         <ConfigPlunderGridWall :user-alias="userAlias" />
         <ConfigPlunderGridOthers />
     </section>

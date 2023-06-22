@@ -1,6 +1,6 @@
 export const enum AresAPI {
     Latest = 'https://tb.dev.br/ares/latest.json'
-};
+}
 
 export const enum GameUrl {
     Brazil = 'https://www.tribalwars.com.br',
@@ -9,7 +9,7 @@ export const enum GameUrl {
     Portugal = 'https://www.tribalwars.com.pt',
     UnitedKingdom = 'https://www.tribalwars.co.uk',
     UnitedStates = 'https://www.tribalwars.us'
-};
+}
 
 export const enum GameEndpoints {
     GetConfig = 'interface.php?func=get_config',
@@ -32,20 +32,30 @@ export const enum GameEndpoints {
     KillAttTribe = 'map/kill_att_tribe.txt.gz',
     KillDefTribe = 'map/kill_def_tribe.txt.gz',
     KillAllTribe = 'map/kill_all_tribe.txt.gz'
-};
+}
 
 export const enum GameSearchParams {
-    AddVillagesToGroup = 'screen=overview_villages&mode=groups&type=static&group=0&page=-1&type=static',
+    /** Diplomacia da tribo. */
     Contracts = 'screen=ally&mode=contracts',
+    /** Assistente de saque. */
     Farm = 'screen=am_farm&order=distance&dir=asc&Farm_page=0',
+    /** Ataques a caminho (todas as aldeias). */
     Incomings = 'screen=overview_villages&mode=incomings&type=unignored&subtype=attacks&group=0&page=-1&subtype=attacks',
+    /** Academia (recrutamento). */
     SnobTrain = 'screen=snob&mode=train',
+    /** Academia (cunhagem em massa). */
     SnobCoin = 'screen=snob&mode=coin&from=-1',
-    StaticGroups = 'screen=overview_villages&&mode=groups&type=static'
-};
+    /** Grupos manuais. */
+    StaticGroups = 'screen=overview_villages&mode=groups&type=static',
+    /** Grupos manuais, mas com todas as aldeias. */
+    StaticGroupsAllVillages = 'screen=overview_villages&mode=groups&type=static&group=0&page=-1',
+    /** Visualização geral: tropas. */
+    OverviewUnitsComplete = 'screen=overview_villages&mode=units&type=complete&page=-1'
+}
 
 export const enum TribalWorkerName {
     AddVillagesToGroup = 'add-villages-to-group',
+    CountTroops = 'count-troops',
     CreateStaticGroup = 'create-static-group',
     FetchDiplomacy = 'fetch-diplomacy',
     FetchWorldConfig = 'fetch-world-config',
@@ -53,11 +63,11 @@ export const enum TribalWorkerName {
     GetVillageGroups = 'get-village-groups',
     HandleIncomings = 'handle-incomings',
     MintCoin = 'mint-coin'
-};
+}
 
 export const enum RendererWorkerName {
     CalcSafeZoneVillages = 'calc-safe-zone-villages'
-};
+}
 
 export const enum StandardWindowName {
     Config = 'config',
@@ -76,7 +86,7 @@ export const enum StandardWindowName {
     PlunderTemplate = 'plunder-template',
     TroopCounter = 'troop-counter',
     Update = 'update'
-};
+}
 
 export const enum WebsiteUrl {
     Ares = 'https://tb.dev.br/ares',
@@ -85,14 +95,15 @@ export const enum WebsiteUrl {
     HowToUse = 'https://tb.dev.br/ares/guide/how-to-use.html',
     Issues = 'https://github.com/ferreira-tb/ares/issues',
     Repository = 'https://github.com/ferreira-tb/ares'
-};
+}
 
 export const enum Dimensions {
     /** Altura do container do menu superior da UI. */
     TopContainerHeight = 80
-};
+}
 
 // Jogo.
+// TODO: transformar em JSON.
 export const resources = ['wood', 'stone', 'iron'] as const;
 export const farmUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'marcher', 'heavy', 'knight'] as const;
 export const allUnits = ['spear', 'sword', 'axe', 'archer', 'spy', 'light', 'marcher', 'heavy', 'ram', 'catapult', 'knight', 'snob', 'militia'] as const;

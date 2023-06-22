@@ -1,30 +1,27 @@
 <script setup lang="ts">
-import { computed, watchEffect } from 'vue';
+import { computed, toRef } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
 import { usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke } from '$renderer/ipc';
 import { useGroups } from '$renderer/composables';
-import { decodeString } from '$common/utils';
 import { formatFields, parseFields, formatMilliseconds, parseMilliseconds } from '$renderer/utils/format-input';
-import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
+import GroupsButtonUpdate from '$renderer/components/GroupsButtonUpdate.vue';
+
+const props = defineProps<{
+    userAlias: UserAlias | null;
+}>();
 
 const config = usePlunderConfigStore();
 const locale = await ipcInvoke('app:locale');
 
-const allGroups = useGroups();
+const { groups: allGroups } = useGroups(toRef(() => props.userAlias), { type: 'dynamic' });
 const plunderGroupOptions = computed(() => {
-    const groupsArray = Array.from(allGroups.value).filter((group) => group.type === 'dynamic');
-    const options = groupsArray.map((group) => ({
-        label: decodeString(group.name),
+    const options = allGroups.value.map((group) => ({
+        label: group.name,
         value: group.id
     }));
 
     return options.sort((a, b) => a.label.localeCompare(b.label, locale));
-});
-
-watchEffect(() => {
-    const plunderGroup = Array.from(allGroups.value).find((group) => group.id === config.plunderGroupId);
-    if (plunderGroup?.type !== 'dynamic') config.plunderGroupId = null;
 });
 </script>
 
@@ -79,7 +76,7 @@ watchEffect(() => {
             </NGridItem>
 
             <NGridItem :span="2">
-                <ButtonGroupsUpdate />
+                <GroupsButtonUpdate />
             </NGridItem>
         </NGrid>
     </div>

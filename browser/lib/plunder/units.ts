@@ -24,7 +24,7 @@ export async function queryAvailableUnits() {
 
 function queryUnitsRow(unitStore: ReturnType<typeof useUnitsStore>) {
     const selector = '#farm_units #units_home tr:has(td#spear):has(td#sword)';
-    const unitsRow = document.queryAndAssert<HTMLTableRowElement>(selector);
+    const unitsRow = document.queryStrict<HTMLTableRowElement>(selector);
 
     const unitFields = unitsRow.queryAsArray('td[id][class*="unit" i]');
     if (unitFields.length < 7) throw new PlunderError('Could not find all unit fields.');

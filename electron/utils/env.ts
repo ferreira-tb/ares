@@ -4,7 +4,7 @@ import { useGameDataStore } from '$electron/stores';
 
 /** Define as variáveis de ambiente. */
 export function setEnv() {
-    process.env.ARES_MODE = 'dev';
+    process.env.ARES_MODE = 'development';
     process.env.ARES_VERSION = app.getVersion();
     process.env.CHROME_VERSION = process.versions.chrome;
     process.env.ELECTRON_VERSION = process.versions.electron;

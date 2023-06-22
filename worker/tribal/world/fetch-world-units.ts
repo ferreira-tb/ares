@@ -21,31 +21,31 @@ class EachUnit implements UnitDetails {
     public readonly carry: number;
 
     constructor(element: Element) {
-        const buildTime = element.queryAndAssert('build_time');
+        const buildTime = element.queryStrict('build_time');
         this.buildTime = buildTime.parseIntStrict();
 
-        const pop = element.queryAndAssert('pop');
+        const pop = element.queryStrict('pop');
         this.pop = pop.parseIntStrict();
 
-        const speed = element.queryAndAssert('speed');
+        const speed = element.queryStrict('speed');
         this.speed = speed.parseFloatStrict();
 
-        const attack = element.queryAndAssert('attack');
+        const attack = element.queryStrict('attack');
         this.attack = attack.parseIntStrict();
 
-        const defense = element.queryAndAssert('defense');
+        const defense = element.queryStrict('defense');
         this.defense = defense.parseIntStrict();
 
-        const defenseCavalry = element.queryAndAssert('defense_cavalry');
+        const defenseCavalry = element.queryStrict('defense_cavalry');
         this.defenseCavalry = defenseCavalry.parseIntStrict();
 
-        const defenseArcher = element.queryAndAssert('defense_archer');
+        const defenseArcher = element.queryStrict('defense_archer');
         this.defenseArcher = defenseArcher.parseIntStrict();
 
-        const carry = element.queryAndAssert('carry');
+        const carry = element.queryStrict('carry');
         this.carry = carry.parseIntStrict();
-    };
-};
+    }
+}
 
 class WorldUnits implements WorldUnitsType {
     public readonly spear: EachUnit;
@@ -63,25 +63,25 @@ class WorldUnits implements WorldUnitsType {
     public readonly militia: EachUnit;
 
     constructor() {
-        this.spear = new EachUnit(document.queryAndAssert('spear'));
-        this.sword = new EachUnit(document.queryAndAssert('sword'));
-        this.axe = new EachUnit(document.queryAndAssert('axe'));
-        this.spy = new EachUnit(document.queryAndAssert('spy'));
-        this.light = new EachUnit(document.queryAndAssert('light'));
-        this.heavy = new EachUnit(document.queryAndAssert('heavy'));
-        this.ram = new EachUnit(document.queryAndAssert('ram'));
-        this.catapult = new EachUnit(document.queryAndAssert('catapult'));
-        this.knight = new EachUnit(document.queryAndAssert('knight'));
-        this.snob = new EachUnit(document.queryAndAssert('snob'));
-        this.militia = new EachUnit(document.queryAndAssert('militia'));
+        this.spear = new EachUnit(document.queryStrict('spear'));
+        this.sword = new EachUnit(document.queryStrict('sword'));
+        this.axe = new EachUnit(document.queryStrict('axe'));
+        this.spy = new EachUnit(document.queryStrict('spy'));
+        this.light = new EachUnit(document.queryStrict('light'));
+        this.heavy = new EachUnit(document.queryStrict('heavy'));
+        this.ram = new EachUnit(document.queryStrict('ram'));
+        this.catapult = new EachUnit(document.queryStrict('catapult'));
+        this.knight = new EachUnit(document.queryStrict('knight'));
+        this.snob = new EachUnit(document.queryStrict('snob'));
+        this.militia = new EachUnit(document.queryStrict('militia'));
 
         const archer = document.querySelector('archer');
         this.archer = archer ? new EachUnit(archer) : null;
 
         const marcher = document.querySelector('marcher');
         this.marcher = marcher ? new EachUnit(marcher) : null;
-    };
-};
+    }
+}
 
 function fetchWorldUnits(port: MessagePort) {
     try {
@@ -94,5 +94,5 @@ function fetchWorldUnits(port: MessagePort) {
         
     } finally {
         port.close();
-    };
-};
+    }
+}

@@ -7,7 +7,8 @@ const schema: Schema<AppConfigType> = {
         additionalProperties: false,
         default: {},
         properties: {
-            debug: { type: 'boolean', default: false }
+            debug: { type: 'boolean', default: false },
+            devTools: { type: 'boolean', default: false }
         }
     },
     general: {

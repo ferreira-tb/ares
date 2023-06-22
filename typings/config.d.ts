@@ -1,6 +1,8 @@
 type AdvancedConfigType = {
     /** Habilita o modo de depuração. */
     debug: boolean;
+    /** Habilita o DevTools. */
+    devTools: boolean;
 };
 
 type GeneralConfigType = {
@@ -39,7 +41,7 @@ type UpdateConfigType = {
     versionToIgnore: string | null;
 };
 
-interface AppConfigType {
+type AppConfigType = {
     /** Configurações avançadas. */
     advanced: AdvancedConfigType;
     /** Configurações gerais. */

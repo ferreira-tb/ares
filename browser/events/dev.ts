@@ -1,19 +1,22 @@
+/* eslint-disable no-console */
 import { RendererProcessError } from '$renderer/error';
 import { ipcInvoke, ipcOn } from '$renderer/ipc';
 
-export async function setDevEvents() {
-    const isDev = await ipcInvoke('app:is-dev');
-    if (!isDev) return;
-    
-    // A callback desse evento varia conforme o que está sendo testado no momento.
-    ipcOn('dev:magic', () => {
-        console.log('It\'s dev magic!');
-        mockRendererProcessError();
-    });
+export function setDevEvents() {
+    ipcInvoke('app:is-dev').then((isDev) => {
+        if (!isDev) return;
 
-    ipcOn('dev:mock-captcha', () => mockCaptcha());
-    ipcOn('dev:mock-error', () => mockRendererProcessError());
-};
+        // A callback desse evento varia conforme o que está sendo testado no momento.
+        ipcOn('dev:magic', async () => {
+            console.log('It\'s dev magic!');
+            const troops = await ipcInvoke('game:count-troops');
+            console.log('Troops:', troops);
+        });
+
+        ipcOn('dev:mock-captcha', () => mockCaptcha());
+        ipcOn('dev:mock-error', () => mockRendererProcessError());
+    });
+}
 
 function mockCaptcha() {
     const previous = document.querySelector('#bot_check[ares="test"]');
@@ -24,12 +27,12 @@ function mockCaptcha() {
         botCheck.setAttribute('id', 'bot_check');
         botCheck.setAttribute('ares', 'test');
 
-        const content = document.queryAndAssert('table#contentContainer');
+        const content = document.queryStrict('table#contentContainer');
         content.appendChild(botCheck);
-    };
-};
+    }
+}
 
 function mockRendererProcessError() {
-    const err = new RendererProcessError('Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+    const err = new RendererProcessError('This is a mock error.');
     RendererProcessError.catch(err);
-};
+}

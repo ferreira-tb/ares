@@ -39,7 +39,7 @@ async function fetchDiplomacy(port: MessagePort) {
                 continue;
             };
 
-            const anchor = row.queryAndAssert<HTMLAnchorElement>(anchorSelector);
+            const anchor = row.queryStrict<HTMLAnchorElement>(anchorSelector);
             const anchorUrl = new URL(anchor.href, location.origin);
             const id = anchorUrl.searchParams.getAsIntegerStrict('id');
 
