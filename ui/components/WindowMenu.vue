@@ -19,7 +19,6 @@ import {
     HomeSharp,
     ReloadSharp,
     SettingsSharp,
-    EarthSharp,
     BugSharp,
     LogoGithub
 } from '@vicons/ionicons5';
@@ -60,9 +59,6 @@ useIpcOn('tab:back-forward-status', (_e, status: BackForwardStatus) => {
             </div>
             <div class="menu-icon" @click="ipcSend('config:open', StandardWindowName.ConfigGeneral)">
                 <NIcon :size="22" :depth="3" :component="SettingsSharp" />
-            </div>
-            <div class="menu-icon" @click="ipcSend('open-region-select-menu')">
-                <NIcon :size="22" :depth="3" :component="EarthSharp" />
             </div>
             <div class="menu-icon" @click="ipcSend('open-bug-report-menu')">
                 <NIcon :size="22" :depth="3" :component="BugSharp" />

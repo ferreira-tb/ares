@@ -9,4 +9,4 @@ export function getRegionFromWorld<T extends typeof AresError>(world: World, Som
     const region = world.slice(0, 2);
     assertGameRegion(region, SomeError, `Could not get region from world: ${world}.`);
     return region;
-};
+}

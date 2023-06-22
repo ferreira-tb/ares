@@ -170,7 +170,6 @@ export function ipcSend(channel: 'config:open', route: StandardWindowName): void
 export function ipcSend<T extends keyof AppConfigType>(channel: 'config:update', configType: T, value: AppConfigType[T]): void;
 
 // Menu
-export function ipcSend(channel: 'open-region-select-menu'): void;
 export function ipcSend(channel: 'open-bug-report-menu'): void;
 
 // Browser

@@ -32,9 +32,9 @@ export async function errorHandler(err: unknown) {
         if (shouldNotify) {
             const mainWindow = MainWindow.getInstance();
             mainWindow.webContents.send('notify-electron-error', errorLog);
-        };
+        }
 
     } catch {
         await MainProcessError.log(err);
-    };
-};
+    }
+}
