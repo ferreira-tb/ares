@@ -17,13 +17,13 @@ export function setUnitsEvents() {
 }
 
 function countTroops(group: number) {
-    return new Promise<TroopCounterResult | null>((resolve, reject) => {
+    return new Promise<Map<number, TroopsCounterResultType> | null>((resolve, reject) => {
         const url = BrowserTab.createURL(GameSearchParams.OverviewUnitsComplete);
         url.searchParams.set('group', group.toString(10));
 
         const worker = new TribalWorker(TribalWorkerName.CountTroops, url);
         worker.once('destroyed', reject);
-        worker.once('message', (message: TroopCounterResult | null) => {
+        worker.once('message', (message: Map<number, TroopsCounterResultType> | null) => {
             resolve(message);
             worker.destroy();
         });

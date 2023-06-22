@@ -44,8 +44,8 @@ const villageMap = computedAsync<Map<number, WorldVillageType>>(async () => {
         const villages = await ipcInvoke('world-data:get-village', keys);
         for (const village of villages) {
             map.set(village.id, village);
-        };
-    };
+        }
+    }
     
     return map;
 }, new Map());
@@ -83,22 +83,22 @@ watchImmediate([period, villageMap, villageHistory], () => {
         };
 
         allVillages.push(data);
-    };
+    }
 
     if (allVillages.length > 0) {
         const weightedSum = allVillages.reduce((acc, curr) => acc + (curr.total * curr.attackAmount), 0);
         for (const village of allVillages) {
             totalAttackAmount += village.attackAmount;
             totalDestroyedWalls += village.destroyedWalls;
-        };
+        }
 
         if (totalAttackAmount > 0) {
             average = Math.ceil(weightedSum / totalAttackAmount);
             for (const village of allVillages) {
                 village.score = (village.total / average) * 100;
-            };
-        };
-    };
+            }
+        }
+    }
 
     villageData.value = allVillages;
     headerProps.value.average = average;
@@ -126,7 +126,7 @@ function parseLogs(logs: PlunderHistoryVillageType[]): PlunderAttackLog {
         logs = logs.filter((log) => log.addedAt >= (now - Kronos.Week));
     } else {
         logs = logs.filter((log) => log.addedAt >= (now - Kronos.Month));
-    };
+    }
 
     for (const log of logs) {
         wood += log.wood;
@@ -134,7 +134,7 @@ function parseLogs(logs: PlunderHistoryVillageType[]): PlunderAttackLog {
         iron += log.iron;
         attackAmount += log.attackAmount;
         destroyedWalls += log.destroyedWalls;
-    };
+    }
 
     return {
         wood,
@@ -143,7 +143,7 @@ function parseLogs(logs: PlunderHistoryVillageType[]): PlunderAttackLog {
         attackAmount,
         destroyedWalls
     };
-};
+}
 </script>
 
 <template>

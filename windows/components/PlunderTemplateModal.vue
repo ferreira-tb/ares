@@ -42,7 +42,7 @@ interface Props {
     light: number;
     marcher: number;
     heavy: number;
-};
+}
 
 const props = withDefaults(defineProps<Props>(), {
     show: false,
@@ -100,7 +100,7 @@ const unitRule: FormItemRule = {
             return new Error('Valor inválido');
         } else if (value > 9999) {
             return new Error('Valor inválido');
-        };
+        }
 
         return true;
     }
@@ -117,7 +117,7 @@ const rules: FormRules = {
                     return new Error('Nome inválido');
                 } else if (templates.value.some((t) => t.type === value && t.alias === props.userAlias)) {
                     return new Error('Já existe um modelo com esse nome');
-                };
+                }
 
                 return true;
             },
@@ -162,12 +162,12 @@ async function save() {
             await resetTemplate();
         } else {
             message.error('Ocorreu algum erro :(');
-        };
+        }
 
     } catch (err) {
         RendererProcessError.catch(err);
-    };
-};
+    }
+}
 
 function reset() {
     const status = dialog.warning({
@@ -181,22 +181,22 @@ function reset() {
             message.success('Tudo certo!');
         }
     });
-};
+}
 
 async function cancel() {
     show.value = false;
     await resetTemplate();
-};
+}
 
 async function resetTemplate() {
     templateUnits.type = '';
     templateUnits.description = null;
     for (const unit of Object.keys(templateUnits.units) as (keyof typeof templateUnits.units)[]) {
         templateUnits.units[unit] = 0;
-    };
+    }
 
     await nextTick();
-};
+}
 </script>
 
 <template>

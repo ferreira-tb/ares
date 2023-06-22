@@ -20,7 +20,7 @@ export default [
                 if (warning.message.includes('node_modules/wkx/lib')) return;
                 if (warning.message.includes('node_modules/sequelize')) return;
                 if (warning.message.includes('node_modules/semver')) return;
-            };
+            }
 
             show(warning);
         }
@@ -49,7 +49,7 @@ function output(file: string, format: 'cjs' | 'iife' = 'cjs') {
         format,
         generatedCode: 'es2015'
     } as const;
-};
+}
 
 type PluginOptions = {
     exportConditions?: RollupNodeResolveOptions['exportConditions'];
@@ -62,12 +62,12 @@ function plugins(tsconfig: string, options: PluginOptions = {}) {
     const nodeResolveOptions: RollupNodeResolveOptions = { extensions };
     if (Array.isArray(options.exportConditions)) {
         nodeResolveOptions.exportConditions = options.exportConditions;
-    };
+    }
 
     const commonjsOptions: NonNullable<Parameters<typeof commonjs>[0]> = {};
     if (typeof options.ignoreDynamicRequires === 'boolean') {
         commonjsOptions.ignoreDynamicRequires = options.ignoreDynamicRequires;
-    };
+    }
 
     return [
         nodeResolve(nodeResolveOptions),
@@ -75,7 +75,7 @@ function plugins(tsconfig: string, options: PluginOptions = {}) {
         json(),
         typescript({ tsconfig })
     ];
-};
+}
 
 function workers(): RollupOptions[] {
     const workerPlugins = plugins('worker/tsconfig.json');
@@ -93,7 +93,7 @@ function workers(): RollupOptions[] {
             external: ['electron']
         },
         {
-            input: 'worker/tribal/troops/count-troops.ts',
+            input: 'worker/tribal/units/count-troops.ts',
             output: output('dist/worker/tribal/count-troops.js'),
             plugins: workerPlugins,
             external: ['electron']
@@ -142,4 +142,4 @@ function workers(): RollupOptions[] {
             external: ['electron']
         }
     ];
-};
+}

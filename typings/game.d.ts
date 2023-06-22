@@ -87,7 +87,7 @@ type VillageGroupsType = {
     readonly allGroups: VillageGroup[];
 };
 
-type TroopCounterResult = {
+type TroopsCounterResultType = {
     /** Unidades próprias presentes na aldeia. */
     readonly available: UnitAmount;
     /** Unidades próprias fora da aldeia. */
@@ -99,7 +99,7 @@ type TroopCounterResult = {
 
     /** Diferença entre a quantidade de unidades na aldeia e a quantidade de unidades próprias presentes nela. */
     readonly support: UnitAmount;
-    /** Quantidade total de unidades na aldeia. */
+    /** Quantidade total de unidades na aldeia (soma das disponíveis e dos apoios). */
     readonly village: UnitAmount;
 };
 

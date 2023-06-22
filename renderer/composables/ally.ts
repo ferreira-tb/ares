@@ -1,25 +1,25 @@
-import { readonly, ref, toRef, toValue, watchEffect, type MaybeRefOrGetter } from 'vue';
+import { readonly, ref, toRef } from 'vue';
+import { watchImmediate } from '@vueuse/core';
 import { ipcInvoke } from '$renderer/ipc';
 import { useUserAlias } from '$renderer/composables/user-alias';
 import { decodeAlly } from '$common/utils';
+import type { MaybeRefOrGetter } from 'vue';
 
 export function useDiplomacy(userAlias: MaybeRefOrGetter<UserAlias | null> = useUserAlias()) {
     const diplomacy = ref<Diplomacy | null>(null);
-
-    // Se o usuário mudar, a diplomacia deve ser atualizada.
     const userAliasRef = toRef(userAlias);
-    watchEffect(async () => {
-        const alias = toValue(userAliasRef);
+    
+    watchImmediate(userAliasRef, async (alias) => {
         if (!alias) {
             diplomacy.value = null;
             return;
-        };
+        }
 
         const raw = await ipcInvoke('game:fetch-diplomacy');
         if (!raw || Object.values(raw).every((value) => value.length === 0)) {
             diplomacy.value = null;
             return;
-        };
+        }
 
         const [allies, nap, enemies] = await Promise.all([
             ipcInvoke('world-data:get-ally', raw.allies),
@@ -35,4 +35,4 @@ export function useDiplomacy(userAlias: MaybeRefOrGetter<UserAlias | null> = use
     });
 
     return readonly(diplomacy);
-};
+}

@@ -435,6 +435,7 @@
         "vue/match-component-file-name": ["error", { "extensions": ["vue"], "shouldMatchCase": true }],
         "vue/match-component-import-name": "error",
         "vue/next-tick-style": ["error", "promise"],
+        "vue/no-console": "error",
         "vue/no-multiple-objects-in-class": "error",
         "vue/no-ref-object-destructure": "error",
         "vue/no-static-inline-styles": "error",

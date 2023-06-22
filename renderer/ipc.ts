@@ -8,10 +8,9 @@ const debug = {
     enabled: false
 };
 
-ipcRenderer.invoke('debug:is-enabled').then(
-    (isEnabled) => void (debug.enabled = isEnabled),
-    (err: unknown) => console.error(err)
-);
+ipcRenderer.invoke('debug:is-enabled').then((isEnabled: boolean) => {
+    debug.enabled = isEnabled;
+});
 
 ipcRenderer.on('debug:did-update-status', (_e, isEnabled: boolean) => {
     debug.enabled = isEnabled;
@@ -64,7 +63,9 @@ export async function ipcInvoke(channel: 'current-tab:can-go-forward'): Promise<
 
 // Jogo
 export async function ipcInvoke(channel: 'game:add-villages-to-group', group: number, villages: number[]): Promise<boolean>;
-export async function ipcInvoke(channel: 'game:count-troops', group?: number): Promise<TroopCounterResult | null>;
+export async function ipcInvoke(
+    channel: 'game:count-troops', group?: number
+): Promise<Map<number, TroopsCounterResultType> | null>;
 export async function ipcInvoke(channel: 'game:create-static-group', groupName: string): Promise<VillageGroup | null>;
 export async function ipcInvoke(channel: 'game:data'): Promise<TribalWarsGameDataType | null>;
 export async function ipcInvoke(channel: 'game:fetch-diplomacy'): Promise<RawDiplomacy | null>;
@@ -158,6 +159,7 @@ export function ipcSend(channel: 'electron:show-message-box', options: MessageBo
 // Desenvolvedor
 export function ipcSend(channel: 'debug:toggle', status: boolean): void;
 export function ipcSend(channel: 'debug:show-context-menu', isOptionsVisible: boolean): void;
+export function ipcSend(channel: 'dev:magic'): void;
 export function ipcSend(channel: 'dev-tools:main-window'): void;
 export function ipcSend(channel: 'dev-tools:panel-window'): void;
 export function ipcSend(channel: 'dev-tools:current-tab'): void;

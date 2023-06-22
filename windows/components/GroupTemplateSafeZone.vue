@@ -47,7 +47,9 @@ const currentGroupsNames = computed(() => {
     return currentGroups.value.map((group) => group.name);
 });
 
+const isCreating = ref(false);
 const disableCreation = computed(() => {
+    if (isCreating.value) return true;
     if (!diplomacy.value) return true;
     if (diplomacy.value.enemies.length === 0) return true;
     if (playerVillages.value.length === 0) return true;
@@ -56,7 +58,6 @@ const disableCreation = computed(() => {
     return false;
 });
 
-const isCreating = ref(false);
 const buttonText = computed(() => {
     if (isCreating.value) return 'Criando grupo...';
     return 'Criar grupo';
@@ -99,16 +100,16 @@ const columns: DataTableColumns<WorldAllyType> = [
 ];
 
 function createGroup() {
-    const status = dialog.warning({
+    const dialogModal = dialog.warning({
         title: 'Deseja continuar?',
         content: 'A criação do grupo pode levar algum tempo.',
         positiveText: 'Sim',
         negativeText: 'Cancelar',
         onPositiveClick: async () => {
-            status.loading = true;
             isCreating.value = true;
-
             let worker: RendererWorker | null = null;
+            dialogModal.destroy();
+
             try {
                 worker = await RendererWorker.create(RendererWorkerName.CalcSafeZoneVillages);
                 if (!worker) throw new RendererProcessError('Failed to create worker');
@@ -128,7 +129,7 @@ function createGroup() {
                     message.success('Grupo criado com sucesso');
                 } else {
                     throw new RendererProcessError('Failed to add villages to group');
-                };
+                }
 
             } catch (err) {
                 RendererProcessError.catch(err);
@@ -137,10 +138,10 @@ function createGroup() {
             } finally {
                 isCreating.value = false;
                 worker?.destroy();
-            };
+            }
         }
     });
-};
+}
 </script>
 
 <template>
@@ -184,7 +185,7 @@ function createGroup() {
         </div>
 
         <div class="button-area">
-            <NButton :disabled="disableCreation" @click="createGroup">
+            <NButton :disabled="disableCreation" :loading="isCreating" @click="createGroup">
                 {{ buttonText }}
             </NButton>
         </div>

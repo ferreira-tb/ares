@@ -18,10 +18,10 @@ async function fetchVillageGroups() {
         message.success('Lista de grupos atualizada');
     } else {
         message.error('Erro ao atualizar a lista de grupos');
-    };
+    }
 
     loading.value = false;
-};
+}
 </script>
 
 <template>

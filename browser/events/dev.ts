@@ -1,16 +1,13 @@
 /* eslint-disable no-console */
 import { RendererProcessError } from '$renderer/error';
-import { ipcInvoke, ipcOn } from '$renderer/ipc';
+import { ipcInvoke, ipcSend, ipcOn } from '$renderer/ipc';
 
 export function setDevEvents() {
     ipcInvoke('app:is-dev').then((isDev) => {
         if (!isDev) return;
 
-        // A callback desse evento varia conforme o que está sendo testado no momento.
-        ipcOn('dev:magic', async () => {
-            console.log('It\'s dev magic!');
-            const troops = await ipcInvoke('game:count-troops');
-            console.log('Troops:', troops);
+        ipcOn('dev:magic', () => {
+            ipcSend('dev:magic');
         });
 
         ipcOn('dev:mock-captcha', () => mockCaptcha());

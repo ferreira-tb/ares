@@ -1,10 +1,11 @@
-import { effectScope, readonly, ref, toRef, toValue, watchEffect, type MaybeRefOrGetter } from 'vue';
-import { tryOnScopeDispose } from '@vueuse/core';
+import { effectScope, readonly, ref, toRef } from 'vue';
+import { tryOnScopeDispose, watchImmediate } from '@vueuse/core';
 import { ipcInvoke } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables/ipc';
 import { useUserAlias } from '$renderer/composables/user-alias';
 import { RendererProcessError } from '$renderer/error';
 import { decodeVillageGroups } from '$common/utils';
+import type { MaybeRefOrGetter } from 'vue';
 
 interface UseGroupsOptions {
     readonly type?: 'static' | 'dynamic';
@@ -23,8 +24,7 @@ export function useGroups(
             groups.value = decodeVillageGroups(newGroups);
         });
 
-        watchEffect(async () => {
-            const alias = toValue(userAliasRef);
+        watchImmediate(userAliasRef, async (alias) => {
             try {
                 if (alias === null) {
                     groups.value = [];
