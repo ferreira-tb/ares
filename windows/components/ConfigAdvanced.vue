@@ -44,6 +44,14 @@ function dropDatabase() {
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem :span="2">
                 <div class="config-checkbox">
+                    <NCheckbox v-model:checked="config.devTools" size="large">
+                        Habilitar DevTools
+                    </NCheckbox>
+                </div>
+            </NGridItem>
+
+            <NGridItem :span="2">
+                <div class="config-checkbox">
                     <NCheckbox v-model:checked="config.debug" size="large">
                         Habilitar modo de depuração
                     </NCheckbox>

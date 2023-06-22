@@ -1,5 +1,5 @@
 import { assertInteger } from '$common/guards';
-import { IpcTribalModelError } from '$ipc/interface/error';
+import { IpcTribalError } from '$ipc/interface/error';
 
 export class TribalWarsTiming implements TribalWarsTimingType {
     public readonly addedServerTime: number;
@@ -17,7 +17,7 @@ export class TribalWarsTiming implements TribalWarsTimingType {
         assertInteger(timing.initial_server_time, 'initial_server_time is not an integer');
         this.initialServerTime = timing.initial_server_time;
 
-        if (typeof timing.is_ready !== 'boolean') throw new IpcTribalModelError('is_ready is not a boolean');
+        if (typeof timing.is_ready !== 'boolean') throw new IpcTribalError('is_ready is not a boolean');
         this.isReady = timing.is_ready;
 
         assertInteger(timing.offset_from_server, 'offset_from_server is not an integer');
@@ -26,7 +26,7 @@ export class TribalWarsTiming implements TribalWarsTimingType {
         assertInteger(timing.offset_to_server, 'offset_to_server is not an integer');
         this.offsetToServer = timing.offset_to_server;
 
-        if (typeof timing.paused !== 'boolean') throw new IpcTribalModelError('paused is not a boolean');
+        if (typeof timing.paused !== 'boolean') throw new IpcTribalError('paused is not a boolean');
         this.paused = timing.paused;
 
         assertInteger(timing.tick_interval, 'tick_interval is not an integer');

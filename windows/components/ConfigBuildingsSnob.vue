@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue';
+import { computed, nextTick } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NResult, NSelect } from 'naive-ui';
 import { computedAsync, watchDeep } from '@vueuse/core';
-import { useIpcOn, useUserAlias } from '$renderer/composables';
+import { useGroups, useUserAlias } from '$renderer/composables';
 import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { decodeString } from '$common/helpers';
-import ButtonGroupsUpdate from '$renderer/components/ButtonGroupsUpdate.vue';
+import { decodeString } from '$common/utils';
+import GroupsButtonUpdate from '$renderer/components/GroupsButtonUpdate.vue';
 
 const userAlias = useUserAlias();
 const locale = await ipcInvoke('app:locale');
@@ -16,9 +16,8 @@ const previousConfig = await ipcInvoke('snob:get-config');
 if (previousConfig) config.$patch(previousConfig);
 
 const gameData = useGameDataStore();
-const gameDataFromMainProcess = await ipcInvoke('game:data');
-if (gameDataFromMainProcess) gameData.$patch(gameDataFromMainProcess);
-
+const previousGameData = await ipcInvoke('game:data');
+if (previousGameData) gameData.$patch(previousGameData);
 await nextTick();
 
 const villages = computedAsync<WorldVillageType[]>(async () => {
@@ -36,10 +35,10 @@ const villageOptions = computed(() => {
     return options;
 });
 
-const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
+const { groups: allGroups } = useGroups(userAlias);
 const groupOptions = computed(() => {
-    const options = Array.from(allGroups.value).map(({ id: groupId, name: groupName }) => {
-        return { label: decodeString(groupName), value: groupId };
+    const options = allGroups.value.map(({ id: groupId, name: groupName }) => {
+        return { label: groupName, value: groupId };
     });
 
     options.push({ label: 'Todos', value: 0 });
@@ -60,10 +59,6 @@ const timeUnitOptions = [
 
 watchDeep(config, () => {
     ipcSend('snob:update-config', config.raw());
-});
-
-useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
-    allGroups.value = groups;
 });
 </script>
 
@@ -130,7 +125,7 @@ useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) =
             </NGridItem>
 
             <NGridItem :span="2">
-                <ButtonGroupsUpdate />
+                <GroupsButtonUpdate />
             </NGridItem>
         </NGrid>
     </div>

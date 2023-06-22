@@ -2,7 +2,7 @@ import { ipcMain, webContents } from 'electron';
 import { StandardWindow } from '$electron/windows';
 import { useCacheStore } from '$electron/stores';
 import { CustomPlunderTemplate } from '$electron/database/models';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 import { isUserAlias } from '$common/guards';
 
 export function setPlunderTemplatesEvents() {

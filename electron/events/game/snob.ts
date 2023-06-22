@@ -7,7 +7,7 @@ import { BrowserTab } from '$electron/tabs';
 import { SnobConfig, SnobHistory } from '$electron/database/models';
 import { MainProcessError } from '$electron/error';
 import { TribalWorker } from '$electron/worker';
-import { GameSearchParams, TribalWorkerName } from '$common/constants';
+import { GameSearchParams, TribalWorkerName } from '$common/enum';
 import { assertUserAlias, isUserAlias } from '$common/guards';
 import { DefaultSnobConfig, DefaultSnobHistory } from '$common/templates';
 
@@ -39,7 +39,7 @@ export function setSnobEvents() {
             isMinting.value = snobConfig.active;
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     ipcMain.on('tribal-worker:coin-minted', async (
@@ -55,7 +55,7 @@ export function setSnobEvents() {
 
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     ipcMain.on('tribal-worker:no-coin-to-mint', (_e, ...args: Parameters<typeof toNextMint>) => toNextMint(...args));
@@ -67,7 +67,7 @@ export function setSnobEvents() {
             if (!isUserAlias(newAlias)) {
                 isMinting.value = false;
                 return;
-            };
+            }
 
             const previousConfig = (await SnobConfig.findByPk(newAlias))?.toJSON();
             if (previousConfig) {
@@ -76,18 +76,18 @@ export function setSnobEvents() {
             } else {
                 patchAllWebContents('config', new DefaultSnobConfig());
                 isMinting.value = false;
-            };
+            }
 
             const snobHistory = (await SnobHistory.findByPk(newAlias))?.toJSON();
             if (snobHistory) {
                 patchAllWebContents('history', snobHistory);
             } else {
                 patchAllWebContents('history', new DefaultSnobHistory());
-            };
+            }
 
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     watch(isMinting, async (newValue) => {
@@ -95,7 +95,7 @@ export function setSnobEvents() {
             if (!newValue) {
                 stopMinting();
                 return;
-            };
+            }
 
             const alias = userAlias.value;
             assertUserAlias(alias, MainProcessError, 'Cannot start minting without a valid user alias.');
@@ -103,9 +103,9 @@ export function setSnobEvents() {
         } catch (err) {
             isMinting.value = false;
             MainProcessError.catch(err);
-        };
+        }
     });
-};
+}
 
 function patchAllWebContents<T extends 'config' | 'history'>(
     dataType: T,
@@ -116,8 +116,8 @@ function patchAllWebContents<T extends 'config' | 'history'>(
     for (const contents of webContents.getAllWebContents()) {
         if (sender && contents === sender) continue;
         contents.send(channel, data);
-    };
-};
+    }
+}
 
 function getConfig(userAlias: MechanusComputedRef<UserAlias | null>) {
     return async function(): Promise<SnobConfigType | null> {
@@ -129,9 +129,9 @@ function getConfig(userAlias: MechanusComputedRef<UserAlias | null>) {
         } catch (err) {
             MainProcessError.catch(err);
             return null;
-        };
+        }
     };
-};
+}
 
 function getHistory(userAlias: MechanusComputedRef<UserAlias | null>) {
     return async function(): Promise<SnobHistoryType | null> {
@@ -143,9 +143,9 @@ function getHistory(userAlias: MechanusComputedRef<UserAlias | null>) {
         } catch (err) {
             MainProcessError.catch(err);
             return null;
-        };
+        }
     };
-};
+}
 
 async function mint(alias: UserAlias): Promise<TribalWorker> {
     // Destrói qualquer worker que por ventura esteja ativo.
@@ -154,7 +154,7 @@ async function mint(alias: UserAlias): Promise<TribalWorker> {
     const snobConfig = (await SnobConfig.findByPk(alias))?.toJSON();
     if (!snobConfig) {
         throw new MainProcessError('Cannot start minting without a valid snob config.');
-    };
+    }
 
     const { mode, village, group } = snobConfig;
     const search = mode === 'single' ? GameSearchParams.SnobTrain : GameSearchParams.SnobCoin;
@@ -165,11 +165,11 @@ async function mint(alias: UserAlias): Promise<TribalWorker> {
     if (mode === 'single') {
         if (!village) {
             throw new MainProcessError('Cannot mint coins on single mode without a village being set.');
-        };
+        }
         url.searchParams.set('village', village.toString(10));
     } else {
         url.searchParams.set('group', group.toString(10));
-    };
+    }
 
     const worker = new TribalWorker(TribalWorkerName.MintCoin, url);
     worker.once('ready', (contents) => {
@@ -178,7 +178,7 @@ async function mint(alias: UserAlias): Promise<TribalWorker> {
     
     await worker.init();
     return worker;
-};
+}
 
 function onMint(
     timeout: MechanusRef<NodeJS.Timeout | null>,
@@ -198,7 +198,7 @@ function onMint(
             if (captcha.value) {
                 timeout.value?.refresh();
                 return;
-            };
+            }
 
             worker.value.webContents.reload();
             worker.value.whenReady().then(
@@ -207,13 +207,13 @@ function onMint(
             );
         }, delay);
     };
-};
+}
 
 function getBaseDelay(timeUnit: SnobConfigType['timeUnit']): Kronos {
     if (timeUnit === 'seconds') return Kronos.Second;
     if (timeUnit === 'minutes') return Kronos.Minute;
     return Kronos.Hour;
-};
+}
 
 function mintingStopper(
     timeout: MechanusRef<NodeJS.Timeout | null>,
@@ -223,11 +223,11 @@ function mintingStopper(
         if (timeout.value) {
             clearTimeout(timeout.value);
             timeout.value = null;
-        };
+        }
     
         if (worker.value) {
             worker.value.destroy();
             worker.value = null;
-        };
+        }
     };
-};
+}

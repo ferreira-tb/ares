@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watchEffect } from 'vue';
+import { computed, nextTick, watchEffect } from 'vue';
 import { watchDeep } from '@vueuse/core';
 import { NButton, NButtonGroup, NGrid, NGridItem, NSwitch } from 'naive-ui';
 import { useGameDataStore, usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { useIpcOn } from '$renderer/composables';
-import { StandardWindowName } from '$common/constants';
+import { useGroups, useUserAlias } from '$renderer/composables';
+import { StandardWindowName } from '$common/enum';
 import ThePlunderedResources from '$panel/components/ThePlunderedResources.vue';
+
+const userAlias = useUserAlias();
 
 const config = usePlunderConfigStore();
 const gameData = useGameDataStore();
@@ -21,10 +23,9 @@ if (previousConfig) {
 const plunderButtonText = computed(() => config.active ? 'Parar' : 'Saquear');
 
 // Não deve ser possível ativar o ataque em grupo se não houver grupos dinâmicos.
-const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
+const { groups } = useGroups(userAlias, { type: 'dynamic' });
 const hasDynamicGroup = computed<boolean>(() => {
-    const groups = Array.from(allGroups.value);
-    return groups.some((group) => group.type === 'dynamic');
+    return groups.value.length > 0;
 });
 
 const canUseGroupAttack = computed<boolean>(() => {
@@ -42,10 +43,6 @@ watchEffect(() => {
     } else if (gameData.features.farmAssistant === false) {
         config.active = false;
     };
-});
-
-useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
-    allGroups.value = groups;
 });
 </script>
 

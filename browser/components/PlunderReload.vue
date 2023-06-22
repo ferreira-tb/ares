@@ -16,7 +16,7 @@ const props = defineProps<{
 /** EventTarget interno do componente. */
 const eventTarget = new EventTarget();
 /** Título da tabela. */
-const plunderListTitle = document.queryAndAssert('div[id="am_widget_Farm" i] > h4:has(a)');
+const plunderListTitle = document.queryStrict('div[id="am_widget_Farm" i] > h4:has(a)');
 /** Milisegundos entre cada recarregamento automático da página. */
 const plunderTimeout = ref<number>(props.minutesUntilReload * Kronos.Minute);
 

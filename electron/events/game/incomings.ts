@@ -6,7 +6,7 @@ import { MainWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { useIncomingsStore } from '$electron/stores';
 import { useDelay } from '$electron/composables';
-import { GameSearchParams, TribalWorkerName } from '$common/constants';
+import { GameSearchParams, TribalWorkerName } from '$common/enum';
 import { MainProcessError } from '$electron/error';
 
 export function setIncomingAttacksEvents() {
@@ -38,7 +38,7 @@ export function setIncomingAttacksEvents() {
     });
 
     watch(amount, createIncomingsHandler());
-};
+}
 
 function createIncomingsHandler() {
     const delay = useDelay();
@@ -53,22 +53,22 @@ function createIncomingsHandler() {
                 timeout.refresh();
             } else {
                 timeout = setTimeout(createWorker, Kronos.Second * 5);
-            };
+            }
 
         } else {
             const url = BrowserTab.createURL(GameSearchParams.Incomings);
             worker = new TribalWorker(TribalWorkerName.HandleIncomings, url);
-            worker.once('port:message', (message) => {
+            worker.once('message', (message) => {
                 if (message === 'destroy') {
                     setTimeout(() => worker?.destroy(), delay.value);
-                };
+                }
             });
 
             worker.init().catch(MainProcessError.catch);
-        };
-    };
+        }
+    }
 
     return function(value: number | null) {
         if (value !== null) createWorker();
     };
-};
+}

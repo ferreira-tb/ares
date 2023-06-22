@@ -3,8 +3,8 @@ import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { MainProcessError } from '$electron/error';
 import { usePlunderStore, usePlunderConfigStore, usePlunderCacheStore } from '$electron/stores';
-import { GameSearchParams } from '$common/constants';
-import { generateRandomDelay } from '$common/helpers';
+import { GameSearchParams } from '$common/enum';
+import { generateRandomDelay } from '$common/utils';
 
 export function setPlunderPageEvents() {
     const plunderStore = usePlunderStore();

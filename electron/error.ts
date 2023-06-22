@@ -11,7 +11,7 @@ export class MainProcessError extends AresError {
     public static mock() {
         const error = new this('This is a mock error.');
         this.catch(error);
-    };
+    }
 
     /** Gera um arquivo de log com a data e a pilha de erros. */
     public static async log(err: unknown) {
@@ -32,25 +32,25 @@ export class MainProcessError extends AresError {
         const content = this.generateLogContent(errorLog);
         const logPath = path.join(app.getPath('userData'), 'error.log');
         await fs.appendFile(logPath, content, { encoding: 'utf-8' });
-    };
-};
+    }
+}
 
 export class DatabaseError extends MainProcessError {
     public override readonly name = 'DatabaseError';
-};
+}
 
 export class TribalWorkerError extends MainProcessError {
     public override readonly name = 'TribalWorkerError';
-};
+}
 
 export class StandardWindowError extends MainProcessError {
     public override readonly name = 'StandardWindowError';
-};
+}
 
 export class WebsiteWindowError extends MainProcessError {
     public override readonly name = 'WebsiteWindowError';
-};
+}
 
 export class BrowserTabError extends MainProcessError {
     public override readonly name = 'BrowserTabError';
-};
+}

@@ -4,7 +4,7 @@ import { StandardWindow } from '$electron/windows';
 import { isUserAlias } from '$common/guards';
 import { useCacheStore, usePlunderCacheStore } from '$electron/stores';
 import { DemolitionTemplate } from '$electron/database/models';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 export function setPlunderDemolitionEvents() {
     const cacheStore = useCacheStore();

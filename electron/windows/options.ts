@@ -1,4 +1,4 @@
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 const config: BrowserWindowOptions = {
     width: 700,
@@ -56,6 +56,16 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
         height: 600,
         title: 'Modelos',
         minimizable: true
+    },
+    [StandardWindowName.TroopsCounter]: {
+        width: 600,
+        minWidth: 600,
+        maxWidth: 1000,
+        height: 400,
+        minHeight: 400,
+        maxHeight: 400,
+        resizable: true,
+        title: 'Contador de tropas'
     },
     [StandardWindowName.Update]: {
         width: 350,

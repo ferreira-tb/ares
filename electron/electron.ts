@@ -46,7 +46,7 @@ app.once('will-quit', async (e) => {
 // Inicializa o banco de dados.
 (async () => {
     try {
-        if (process.env.ARES_MODE === 'dev') {
+        if (process.env.ARES_MODE === 'development') {
             await sequelize.sync({ alter: { drop: false } });
         } else {
             await sequelize.sync();

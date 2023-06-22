@@ -1,27 +1,30 @@
 import { assertString, isString } from '$common/guards';
+import { Units } from '$common/templates';
 
 interface MaybeNotArcherWorld extends Omit<UnitsAmountAsStrings, 'archer' | 'marcher'> {
     archer?: string;
     marcher?: string;
 };
 
-export class Units implements UnitAmount {
-    public readonly spear: number;
-    public readonly sword: number;
-    public readonly axe: number;
-    public readonly spy: number;
-    public readonly light: number;
-    public readonly heavy: number;
-    public readonly knight: number;
-    public readonly ram: number;
-    public readonly catapult: number;
-    public readonly snob: number;
-    public readonly militia: number;
+export class GameUnits extends Units {
+    public override readonly spear: number;
+    public override readonly sword: number;
+    public override readonly axe: number;
+    public override readonly spy: number;
+    public override readonly light: number;
+    public override readonly heavy: number;
+    public override readonly knight: number;
+    public override readonly ram: number;
+    public override readonly catapult: number;
+    public override readonly snob: number;
+    public override readonly militia: number;
 
-    public readonly archer: number;
-    public readonly marcher: number;
+    public override readonly archer: number;
+    public override readonly marcher: number;
 
     constructor(units: MaybeNotArcherWorld) {
+        super();
+        
         for (const unit of Object.keys(units)) {
             assertString(unit, 'Invalid unit name');
         };

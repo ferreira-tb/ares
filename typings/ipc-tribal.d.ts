@@ -117,7 +117,7 @@ interface RawTribalWarsGameData {
     readonly version: string;
     readonly village: Readonly<Village>;
     readonly world: string;
-};
+}
 
 interface RawPlunderInfo {
     // Accountmanager.farm
@@ -133,7 +133,7 @@ interface RawPlunderInfo {
 
     init(): void;
     setPageSize(size: number): boolean;
-};
+}
 
 type MarketDataTrader = {
     readonly amount: number;
@@ -161,4 +161,4 @@ interface RawTiming {
     getElapsedTimeSinceData(): number;
     getElapsedTimeSinceLoad(): number;
     getReturnTimeFromServer(): number;
-};
+}

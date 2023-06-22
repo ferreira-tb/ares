@@ -1,7 +1,8 @@
 import { ipcMain } from 'electron';
-import { MainWindow, PanelWindow } from '$electron/windows';
+import { MainWindow, PanelWindow, StandardWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { setDebugEvents } from '$electron/events/dev/debug';
+import { StandardWindowName } from '$common/enum';
 
 export function setDevEvents() {
     const mainWindow = MainWindow.getInstance();
@@ -12,5 +13,9 @@ export function setDevEvents() {
     ipcMain.on('dev-tools:current-tab', () => BrowserTab.current.openDevTools());
     ipcMain.on('dev-tools:main-tab', () => BrowserTab.main.openDevTools());
 
+    ipcMain.on('dev:magic', () => {
+        StandardWindow.open(StandardWindowName.GroupTemplate);
+    });
+
     setDebugEvents();
-};
+}

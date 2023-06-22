@@ -3,8 +3,8 @@ import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
 import { isInteger } from '$common/guards';
 import { MainProcessError } from '$electron/error';
-import { GameSearchParams } from '$common/constants';
-import { generateRandomDelay } from '$common/helpers';
+import { GameSearchParams } from '$common/enum';
+import { generateRandomDelay } from '$common/utils';
 import { usePlunderConfigStore, usePlunderCacheStore } from '$electron/stores';
 
 export function setPlunderGroupEvents() {

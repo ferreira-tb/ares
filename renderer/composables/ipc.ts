@@ -8,4 +8,4 @@ export function useIpcOn(channel: string, listener: Parameters<typeof Electron.i
     tryOnScopeDispose(() => {
         ipcRenderer.removeListener(channel, listener);
     });
-};
+}

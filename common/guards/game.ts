@@ -1,5 +1,5 @@
 import { isInteger, isString } from '$common/guards/base';
-import { farmUnits, allUnits } from '$common/constants';
+import { farmUnits, allUnits } from '$common/enum';
 import { regionRegex, worldRegex } from '$common/regex';
 import type { AresError } from '$common/error';
 

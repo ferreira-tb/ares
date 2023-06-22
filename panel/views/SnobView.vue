@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import { NButton, NButtonGroup } from 'naive-ui';
 import { computedAsync, watchDeep, watchImmediate, whenever } from '@vueuse/core';
 import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
-import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { useIpcOn } from '$renderer/composables';
-import { useVillage } from '$renderer/composables/village';
+import { ipcSend } from '$renderer/ipc';
+import { useGroups, useVillage } from '$renderer/composables';
 import { PanelSnobViewError } from '$panel/error';
-import { decodeString } from '$common/helpers';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 import TheMintedCoins from '$panel/components/TheMintedCoins.vue';
 
 const config = useSnobConfigStore();
@@ -30,21 +28,18 @@ const villageName = computed<string | null>(() => {
     return village.value.name;
 });
 
-const allGroups = ref(await ipcInvoke('game:get-all-village-groups'));
+const { groups: allGroups, refetch } = useGroups();
 const groupName = computedAsync<string | null>(async () => {
     try {
         if (config.group === 0) return 'Todas as aldeias';
-        const group = Array.from(allGroups.value).find((g) => g.id === config.group);
+        const group = allGroups.value.find((g) => g.id === config.group);
 
         if (!group) {
-            const fetched = await ipcInvoke('game:fetch-village-groups');
-            if (!fetched) {
-                throw new PanelSnobViewError('Error fetching village groups');
-            };
+            await refetch();
             return null;
         };
 
-        return decodeString(group.name);
+        return group.name;
         
     } catch (err) {
         PanelSnobViewError.catch(err);
@@ -68,10 +63,6 @@ whenever(() => config.active, () => {
     if (config.mode === 'single') {
         config.village = gameData.village.id;
     };
-});
-
-useIpcOn('game:did-update-village-groups-set', (_e, groups: Set<VillageGroup>) => {
-    allGroups.value = groups;
 });
 </script>
 

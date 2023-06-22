@@ -8,7 +8,7 @@ import {
     parseMilliseconds,
     formatPercentage,
     parsePercentage
-} from '$windows/utils/input-parser';
+} from '$renderer/utils/format-input';
 
 const config = usePlunderConfigStore();
 </script>

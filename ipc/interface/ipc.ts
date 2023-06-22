@@ -1,6 +1,6 @@
 import { assertString, isString } from '$common/guards';
 import { IpcTribalError } from '$ipc/interface/error';
-import type { PlunderInfo, TribalWarsGameData, TribalWarsTiming, Units } from '$ipc/templates';
+import type { PlunderInfo, TribalWarsGameData, TribalWarsTiming, GameUnits } from '$ipc/templates';
 
 // Arquivos no diretório "interface" não podem importar de outras partes do IpcTribal.
 // Isso é para evitar que a importações dos protótipos feitas no index vazem para o resto do código.
@@ -25,7 +25,7 @@ export class IpcTribal {
         window.postMessage(ipc, '*');
     };
 
-    public static invoke(channel: 'ipc-tribal:current-village-units'): Promise<Units | null>;
+    public static invoke(channel: 'ipc-tribal:current-village-units'): Promise<GameUnits | null>;
     public static invoke(channel: 'get-game-data'): Promise<TribalWarsGameData | null>;
     public static invoke(channel: 'ipc-tribal:incoming-attacks'): Promise<number>;
     public static invoke(channel: 'ipc-tribal:plunder-info'): Promise<PlunderInfo | null>;
@@ -53,7 +53,7 @@ export class IpcTribal {
         });
     };
 
-    public static handle(channel: 'ipc-tribal:current-village-units', listener: () => Units | null): void;
+    public static handle(channel: 'ipc-tribal:current-village-units', listener: () => GameUnits | null): void;
     public static handle(channel: 'get-game-data', listener: () => TribalWarsGameData | null): void;
     public static handle(channel: 'ipc-tribal:incoming-attacks' | 'get-response-time', listener: () => number | null): void;
     public static handle(channel: 'ipc-tribal:plunder-info', listener: () => PlunderInfo | null): void;

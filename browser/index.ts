@@ -25,7 +25,7 @@ app.config.errorHandler = (err: unknown) => {
 setBrowserEvents();
 setNavigationGuards(router);
 
-window.addEventListener('DOMContentLoaded', async () => {
+async function mount() {
     try {
         await router.push('/');
         const ares = document.createElement('ares');
@@ -33,10 +33,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     } catch (err) {
         BrowserError.catch(err);
     };
-}, { once: true });
+};
+
+window.addEventListener('DOMContentLoaded', mount, { once: true });
 
 window.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    ipcSend('browser:show-context-menu');
+    ipcSend('browser:show-context-menu', {
+        x: e.clientX,
+        y: e.clientY
+    });
 });

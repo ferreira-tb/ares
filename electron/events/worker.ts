@@ -2,7 +2,7 @@ import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { ipcMain } from 'electron';
 import { MainProcessError } from '$electron/error';
-import type { RendererWorkerName } from '$common/constants';
+import type { RendererWorkerName } from '$common/enum';
 
 export function setWorkerEvents() {
     ipcMain.handle('renderer-worker:get-js-file', async (_e, workerName: RendererWorkerName) => {

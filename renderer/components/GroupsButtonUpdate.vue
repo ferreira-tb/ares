@@ -13,15 +13,15 @@ const buttonText = computed(() => {
 
 async function fetchVillageGroups() {
     loading.value = true;
-    const fetched = await ipcInvoke('game:fetch-village-groups');
-    if (fetched) {
+    const didFetch = await ipcInvoke('game:fetch-village-groups');
+    if (didFetch) {
         message.success('Lista de grupos atualizada');
     } else {
         message.error('Erro ao atualizar a lista de grupos');
-    };
+    }
 
     loading.value = false;
-};
+}
 </script>
 
 <template>
@@ -33,9 +33,9 @@ async function fetchVillageGroups() {
 </template>
 
 <style scoped lang="scss">
-@use '$renderer/assets/utils.scss';
+@use '$renderer/assets/mixins.scss';
 
 .button-groups-update {
-    @include utils.flex-x-center-y-center;
+    @include mixins.flex-x-center-y-center;
 }
 </style>

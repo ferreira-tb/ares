@@ -88,28 +88,28 @@ export async function queryTemplateData() {
     allTemplates.set(templateB.type, templateB);
 
     // Corpo da tabela com os modelos do assistente de saque.
-    const table = document.queryAndAssert('#content_value form tbody:has(td input[type="text"][name^="spear" i])');
+    const table = document.queryStrict('#content_value form tbody:has(td input[type="text"][name^="spear" i])');
 
     // Campos do modelo A.
-    const aRow = table.queryAndAssert('tr:nth-of-type(2):has(td input[type="text"][name^="spear" i])');
+    const aRow = table.queryStrict('tr:nth-of-type(2):has(td input[type="text"][name^="spear" i])');
     const aFields = aRow.queryAsArray('td input[type="text"][name]');
     if (aFields.length < 7) {
         throw new PlunderError(`Could not find all text fields for template A: ${aFields.length} found.`);
     };
     parseUnitAmount('a', aFields);
 
-    const aCarryField = aRow.queryAndAssert('td:not(:has(input[data-tb-template-a])):not(:has(input[type*="hidden"]))');
+    const aCarryField = aRow.queryStrict('td:not(:has(input[data-tb-template-a])):not(:has(input[type*="hidden"]))');
     templateA.carry.value = aCarryField.parseIntStrict();
 
     // Campos do modelo B.
-    const bRow = table.queryAndAssert('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
+    const bRow = table.queryStrict('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
     const bFields = bRow.queryAsArray('td input[type="text"][name]');
     if (bFields.length < 7) {
         throw new PlunderError(`Could not find all text fields for template B: ${bFields.length} found.`);
     }; 
     parseUnitAmount('b', bFields);
 
-    const bCarryField = bRow.queryAndAssert('td:not(:has(input[data-tb-template-b])):not(:has(input[type*="hidden"]))');
+    const bCarryField = bRow.queryStrict('td:not(:has(input[data-tb-template-b])):not(:has(input[type*="hidden"]))');
     templateB.carry.value = bCarryField.parseIntStrict();
 
     // Cria um modelo vazio para o tipo 'C'.

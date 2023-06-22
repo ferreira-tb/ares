@@ -1,63 +1,71 @@
 <script setup lang="ts">
-import { h, toRef } from 'vue';
-import { useVModel } from '@vueuse/core';
-import { NDataTable, type DataTableColumns } from 'naive-ui';
+import { h } from 'vue';
+import { NDataTable, NEllipsis, type DataTableColumns } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import { usePlunderHistory } from '$windows/composables/plunder-history';
 
-const props = defineProps<{
+defineProps<{
+    villageData: PlunderHistoryVillageData[];
     headerProps: PlunderHistoryDataTableHeaderProps;
+    period: 'day' | 'week' | 'month';
     maxHeight: number;
-    history: PlunderHistoryType;
-    period: PlunderHistoryTimePeriod;
-}>();
-
-const emit = defineEmits<{
-    (e: 'update:header', header: PlunderHistoryDataTableHeaderProps): void;
 }>();
 
 const locale = await ipcInvoke('app:locale');
-const header = useVModel(props, 'headerProps', emit);
-const villagesHistory = toRef(props, 'history');
-const timePeriod = toRef(props, 'period');
-const { villageData, onHeaderInfoUpdated } = usePlunderHistory(villagesHistory, timePeriod);
-
-onHeaderInfoUpdated((newValue) => (header.value = newValue));
 
 const columns: DataTableColumns<PlunderHistoryVillageData> = [
     {
-        title: 'Coordenadas',
-        key: 'coords'
+        title: () => h(NEllipsis, { tooltip: false, textContent: 'Coordenadas' }),
+        key: 'coords',
+        resizable: true,
+        render: (row) => h(NEllipsis, { tooltip: false, textContent: row.coords })
     },
     { 
-        title: 'Nome',
+        title: () => h(NEllipsis, { tooltip: false, textContent: 'Nome' }),
         key: 'name',
+        resizable: true,
+        render: (row) => h(NEllipsis, { tooltip: false, textContent: row.name }),
         sorter: (a, b) => a.name.localeCompare(b.name, locale)
     },
     { 
-        title: 'Desempenho',
+        title: () => h(NEllipsis, { tooltip: false, textContent: 'Desempenho' }),
         key: 'score',
+        resizable: true,
         sorter: (a, b) => a.score - b.score,
-        render: (rowData) => h('span', `${Math.ceil(rowData.score).toString(10)}%`)
+        render: (row) => h(NEllipsis, {
+            tooltip: false,
+            textContent: `${Math.ceil(row.score).toString(10)}%`
+        })
     },
     { 
-        title: 'Recursos saqueados',
+        title: () => h(NEllipsis, { tooltip: false, textContent: 'Recursos saqueados' }),
         key: 'total',
         defaultSortOrder: 'descend',
+        resizable: true,
         sorter: (a, b) => a.total - b.total,
-        render: (rowData) => h('span', rowData.total.toLocaleString(locale))
+        render: (row) => h(NEllipsis, {
+            tooltip: false,
+            textContent: row.total.toLocaleString(locale)
+        })
     },
     { 
-        title: 'Ataques',
+        title: () => h(NEllipsis, { tooltip: false, textContent: 'Ataques' }),
         key: 'attackAmount',
+        resizable: true,
         sorter: (a, b) => a.attackAmount - b.attackAmount,
-        render: (rowData) => h('span', rowData.attackAmount.toLocaleString(locale))
+        render: (row) => h(NEllipsis, {
+            tooltip: false,
+            textContent: row.attackAmount.toLocaleString(locale)
+        })
     },
     { 
-        title: 'Muralhas destruídas',
+        title: () => h(NEllipsis, { tooltip: false, textContent: 'Muralhas destruídas' }),
         key: 'destroyedWalls',
+        resizable: true,
         sorter: (a, b) => a.destroyedWalls - b.destroyedWalls,
-        render: (rowData) => h('span', rowData.destroyedWalls.toLocaleString(locale))
+        render: (row) => h(NEllipsis, {
+            tooltip: false,
+            textContent: row.destroyedWalls.toLocaleString(locale)
+        })
     }
 ];
 </script>

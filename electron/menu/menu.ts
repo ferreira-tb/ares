@@ -2,7 +2,7 @@ import { Menu } from 'electron';
 import { MainWindow, PanelWindow, StandardWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { appendDevMenu } from '$electron/menu/dev';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 export function setMenu() {
     const mainWindow = MainWindow.getInstance();

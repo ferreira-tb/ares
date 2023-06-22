@@ -22,7 +22,7 @@ interface NumberCellProps {
     showButton?: boolean;
     readonly?: boolean;
     validator?: (value: number) => boolean;
-};
+}
 
 const props = withDefaults(defineProps<NumberCellProps>(), {
     min: 0,
@@ -56,14 +56,14 @@ async function handleClick() {
     isEdit.value = true;
     await nextTick();
     inputRef.value?.focus();
-};
+}
 
 function endEditMode() {
     isEdit.value = false;
     if (props.validator(inputValue.value)) {
         emit('cell-updated', inputValue.value);
-    };
-};
+    }
+}
 </script>
 
 <template>

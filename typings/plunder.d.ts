@@ -129,14 +129,14 @@ type PlunderAttackLog = {
 
 interface PlunderHistoryVillageType extends PlunderAttackLog {
     readonly addedAt: number;
-};
+}
 
 interface PlunderHistoryType extends PlunderAttackLog {
     /** Histórico individual de cada aldeia nos últimos 30 dias. */
     readonly villages: {
         [id: string]: PlunderHistoryVillageType[];
     };
-};
+}
 
 type PlunderHistoryVillageData = {
     readonly coords: string;
@@ -146,8 +146,6 @@ type PlunderHistoryVillageData = {
     readonly destroyedWalls: number;
     score: number;
 };
-
-type PlunderHistoryTimePeriod = 'day' | 'month' | 'week';
 
 type PlunderHistoryDataTableHeaderProps = PlunderAttackLog & { average: number };
 

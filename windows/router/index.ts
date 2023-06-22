@@ -1,5 +1,5 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 import ConfigView from '$windows/views/ConfigView.vue';
 import ConfigAdvanced from '$windows/components/ConfigAdvanced.vue';
 import ConfigBuildingsSnob from '$windows/components/ConfigBuildingsSnob.vue';
@@ -14,6 +14,7 @@ import GroupTemplateView from '$windows/views/GroupTemplateView.vue';
 import GroupTemplateSafeZone from '$windows/components/GroupTemplateSafeZone.vue';
 import PlunderHistoryView from '$windows/views/PlunderHistoryView.vue';
 import PlunderTemplateView from '$windows/views/PlunderTemplateView.vue';
+import TroopsCounterView from '$windows/views/TroopsCounterView.vue';
 import UpdateView from '$windows/views/UpdateView.vue';
 
 // Os componentes devem ser passados diretamente.
@@ -93,6 +94,11 @@ const routes: RouteRecordRaw[] = [
         path: '/plunder-template',
         name: StandardWindowName.PlunderTemplate,
         component: PlunderTemplateView
+    },
+    {
+        path: '/troops-counter',
+        name: StandardWindowName.TroopsCounter,
+        component: TroopsCounterView
     },
     {
         path: '/update',

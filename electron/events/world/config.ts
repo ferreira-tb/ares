@@ -3,9 +3,9 @@ import { sequelize } from '$electron/database';
 import { WorldConfig } from '$electron/database/models';
 import { appConfig } from '$electron/stores';
 import { TribalWorker } from '$electron/worker';
-import { TribalWorkerName } from '$common/constants';
+import { TribalWorkerName } from '$common/enum';
 import { isWorld } from '$common/guards';
-import { getWorldConfigUrl } from '$common/helpers';
+import { getWorldConfigUrl } from '$common/utils';
 import { MainProcessError } from '$electron/error';
 
 export function setWorldConfigEvents(world: MechanusRef<World | null>) {
@@ -21,7 +21,7 @@ export function setWorldConfigEvents(world: MechanusRef<World | null>) {
                 const worker = new TribalWorker(TribalWorkerName.FetchWorldConfig, url);
                 const config = await new Promise<WorldConfigType>((resolve, reject) => {
                     worker.once('destroyed', reject);
-                    worker.once('port:message', (message: WorldConfigType | null) => {
+                    worker.once('message', (message: WorldConfigType | null) => {
                         try {
                             if (!message) {
                                 throw new MainProcessError(`Could not fetch world config for ${world}.`);

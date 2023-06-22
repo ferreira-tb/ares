@@ -15,8 +15,8 @@ const history = usePlunderHistoryStore();
 const total = history.useTotal();
 
 watchImmediate(active, async () => {
-    const lastPlundered = await ipcInvoke('plunder:get-history');
-    history.$patch(lastPlundered);
+    const previous = await ipcInvoke('plunder:get-history', true);
+    history.$patch(previous);
 });
 </script>
 

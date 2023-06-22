@@ -4,7 +4,7 @@ import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from '$windows/router';
-import { setModuleEvents } from '$windows/events';
+import { setWindowEvents } from '$windows/events';
 import { RendererProcessError } from '$renderer/error';
 import App from '$windows/App.vue';
 
@@ -21,7 +21,7 @@ app.config.errorHandler = (err: unknown) => {
 };
 
 // Eventos
-setModuleEvents();
+setWindowEvents();
 
 router.push('/')
     .then(() => app.mount('#app'))

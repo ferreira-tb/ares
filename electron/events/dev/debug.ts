@@ -6,7 +6,7 @@ import { MainWindow, PanelWindow, StandardWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { TribalWorker } from '$electron/worker';
 import { MainProcessError } from '$electron/error';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 export function setDebugEvents() {
     ipcMain.handle('debug:is-enabled', () => appConfig.get('advanced').debug);
@@ -15,7 +15,7 @@ export function setDebugEvents() {
         for (const contents of webContents.getAllWebContents()) {
             if (contents === e.sender) continue;
             contents.send('debug:did-update-status', value);
-        };
+        }
     });
 
     const sender = getSenderName();
@@ -26,7 +26,7 @@ export function setDebugEvents() {
         const data = args.map((arg) => {
             if (arg instanceof Set || arg instanceof Map) {
                 return Array.from<unknown>(arg);
-            };
+            }
 
             return arg;
         });
@@ -53,7 +53,7 @@ export function setDebugEvents() {
         const menu = Menu.buildFromTemplate(template);
         menu.popup();
     });
-};
+}
 
 function getSenderName() {
     const mainWindow = MainWindow.getInstance();
@@ -74,8 +74,8 @@ function getSenderName() {
 
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
 
         return sender.id.toString(10);
     };
-};
+}

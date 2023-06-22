@@ -6,26 +6,26 @@ import { computed, ref, until, watchImmediate, wheneverAsync } from 'mechanus';
 import { MainWindow } from '$electron/windows';
 import { TribalWorkerError } from '$electron/error';
 import type { UntilOptions, WatchStopHandle } from 'mechanus';
-import type { TribalWorkerName } from '$common/constants';
+import type { TribalWorkerName } from '$common/enum';
 
 export class TribalWorker extends EventEmitter {
     public override emit(event: 'destroyed'): boolean;
     public override emit(event: 'ready', webContents: Electron.WebContents): boolean;
-    public override emit(event: 'port:message', message: unknown): boolean;
+    public override emit(event: 'message', message: unknown): boolean;
     public override emit(event: string, ...args: any[]): boolean {
         return super.emit(event, ...args);
     };
 
     public override on(event: 'destroyed', listener: () => void): this;
     public override on(event: 'ready', listener: (webContents: Electron.WebContents) => void): this;
-    public override on(event: 'port:message', listener: (message: unknown) => void): this;
+    public override on(event: 'message', listener: (message: unknown) => void): this;
     public override on(event: string, listener: (...args: any[]) => void): this {
         return super.on(event, listener);
     };
 
     public override once(event: 'destroyed', listener: () => void): this;
     public override once(event: 'ready', listener: (webContents: Electron.WebContents) => void): this;
-    public override once(event: 'port:message', listener: (message: unknown) => void): this;
+    public override once(event: 'message', listener: (message: unknown) => void): this;
     public override once(event: string, listener: (...args: any[]) => void): this {
         return super.once(event, listener);
     };
@@ -145,8 +145,7 @@ export class TribalWorker extends EventEmitter {
                 spellcheck: false,
                 preload: this.path,
                 nodeIntegration: false,
-                contextIsolation: true,
-                devTools: process.env.ARES_MODE === 'dev'
+                contextIsolation: true
             }
         });
 
@@ -186,7 +185,7 @@ export class TribalWorker extends EventEmitter {
         
         this.messagePort.value = port1;
         port1.on('message', (e: Electron.MessageEvent) => {
-            this.emit('port:message', e.data);
+            this.emit('message', e.data);
         });
 
         this.webContents.postMessage('port', null, [port2]);

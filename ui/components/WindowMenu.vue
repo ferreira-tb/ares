@@ -6,7 +6,7 @@ import { NIcon } from 'naive-ui';
 import { DiscordSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { useIpcOn, useUserAlias } from '$renderer/composables';
-import { StandardWindowName, WebsiteUrl } from '$common/constants';
+import { StandardWindowName, WebsiteUrl } from '$common/enum';
 import TheIncomingHandler from '$ui/components/TheIncomingHandler.vue';
 import TheMintingStatus from '$ui/components/TheMintingStatus.vue';
 import TheNextIncoming from '$ui/components/TheNextIncoming.vue';
@@ -19,7 +19,6 @@ import {
     HomeSharp,
     ReloadSharp,
     SettingsSharp,
-    EarthSharp,
     BugSharp,
     LogoGithub
 } from '@vicons/ionicons5';
@@ -61,17 +60,14 @@ useIpcOn('tab:back-forward-status', (_e, status: BackForwardStatus) => {
             <div class="menu-icon" @click="ipcSend('config:open', StandardWindowName.ConfigGeneral)">
                 <NIcon :size="22" :depth="3" :component="SettingsSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('open-region-select-menu')">
-                <NIcon :size="22" :depth="3" :component="EarthSharp" />
-            </div>
             <div class="menu-icon" @click="ipcSend('open-bug-report-menu')">
                 <NIcon :size="22" :depth="3" :component="BugSharp" />
             </div>
-            <div class="menu-icon" @click="shell.openExternal(WebsiteUrl.Discord)">
-                <NIcon :size="22" :depth="3" :component="DiscordSharp" />
-            </div>
             <div class="menu-icon" @click="ipcSend('website:repository')">
                 <NIcon :size="22" :depth="3" :component="LogoGithub" />
+            </div>
+            <div class="menu-icon" @click="shell.openExternal(WebsiteUrl.Discord)">
+                <NIcon :size="22" :depth="3" :component="DiscordSharp" />
             </div>
         </div>
 

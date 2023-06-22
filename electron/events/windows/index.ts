@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { StandardWindow, WebsiteWindow } from '$electron/windows';
 import { setUpdateWindowEvents } from '$electron/events/windows/update';
-import { StandardWindowName, WebsiteUrl } from '$common/constants';
+import { StandardWindowName, WebsiteUrl } from '$common/enum';
 
 export function setWindowsEvents() {
     ipcMain.on('error:open-log-window', () => {

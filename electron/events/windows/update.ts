@@ -4,7 +4,7 @@ import semverValid from 'semver/functions/valid';
 import { StandardWindow } from '$electron/windows';
 import { appConfig } from '$electron/stores';
 import { MainProcessError } from '$electron/error';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 export function setUpdateWindowEvents() {
     ipcMain.on('app-update:open', () => {

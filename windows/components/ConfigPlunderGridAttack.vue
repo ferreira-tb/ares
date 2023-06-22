@@ -8,7 +8,7 @@ import {
     parseHours,
     formatMilliseconds,
     parseMilliseconds
-} from '$windows/utils/input-parser';
+} from '$renderer/utils/format-input';
 
 const config = usePlunderConfigStore();
 

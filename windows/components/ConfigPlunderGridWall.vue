@@ -4,7 +4,7 @@ import { usePlunderConfigStore } from '$renderer/stores';
 import { assertUserAlias } from '$common/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { RendererProcessError } from '$renderer/error';
-import { formatFields, parseFields, formatWallLevel, parseWallLevel } from '$windows/utils/input-parser';
+import { formatFields, parseFields, formatWallLevel, parseWallLevel } from '$renderer/utils/format-input';
 
 const props = defineProps<{
     userAlias: UserAlias | null;

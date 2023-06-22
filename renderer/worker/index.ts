@@ -1,6 +1,6 @@
 import { ipcInvoke } from '$renderer/ipc';
 import { RendererWorkerError } from '$renderer/error';
-import type { RendererWorkerName } from '$common/constants';
+import type { RendererWorkerName } from '$common/enum';
 
 export class RendererWorker {
     private active = false;

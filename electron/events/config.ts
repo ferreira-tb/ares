@@ -6,7 +6,7 @@ import { StandardWindow } from '$electron/windows';
 import { MainProcessError } from '$electron/error';
 import { database } from '$electron/utils/files';
 import { restartAres } from '$electron/utils/helpers';
-import type { StandardWindowName } from '$common/constants';
+import type { StandardWindowName } from '$common/enum';
 
 export function setConfigEvents() {
     ipcMain.on('config:open', (_e, route: StandardWindowName) => StandardWindow.open(route));

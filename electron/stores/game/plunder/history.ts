@@ -31,6 +31,17 @@ export function definePlunderHistoryStore(mechanus: Mechanus) {
             return { ...villages.value };
         };
 
+        function toClonable(omitVillages: boolean = false) {
+            return {
+                wood: wood.value,
+                stone: stone.value,
+                iron: iron.value,
+                destroyedWalls: destroyedWalls.value,
+                attackAmount: attackAmount.value,
+                villages: omitVillages ? {} : unproxifyVillages()
+            };
+        };
+
         return {
             wood,
             stone,
@@ -40,7 +51,8 @@ export function definePlunderHistoryStore(mechanus: Mechanus) {
             villages,
 
             proxifyVillages,
-            unproxifyVillages
-        };
+            unproxifyVillages,
+            toClonable
+        } satisfies MechanusPlunderHistoryStoreType;
     });
 };

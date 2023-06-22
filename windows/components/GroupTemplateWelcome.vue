@@ -2,7 +2,7 @@
 import { useVModel } from '@vueuse/core';
 import { NButton, NSelect } from 'naive-ui';
 import { router } from '$windows/router';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 import GroupTemplateCard from '$windows/components/GroupTemplateCard.vue';
 
 const props = defineProps<{

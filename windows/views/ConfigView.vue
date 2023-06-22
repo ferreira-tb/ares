@@ -3,7 +3,7 @@ import { h, onMounted, ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 import { NLayout, NLayoutSider, NMenu, type MenuInst, type MenuOption } from 'naive-ui';
 import { router } from '$windows/router';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 const menuInst = ref<MenuInst | null>(null);
 const selectedKey = ref<StandardWindowName>(StandardWindowName.ConfigGeneral);

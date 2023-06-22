@@ -1,8 +1,10 @@
 import { computed, readonly, ref, toRef, toValue, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
+import { watchImmediate } from '@vueuse/core';
 import { ipcInvoke } from '$renderer/ipc';
 import { useGameDataStore } from '$renderer/stores';
-import { decodeVillage } from '$common/helpers';
+import { decodeVillage } from '$common/utils';
+import { useUserAlias } from '$renderer/composables/user-alias';
 import type { MaybeRefOrGetter } from 'vue';
 
 export function useVillage(villageId: MaybeRefOrGetter<number | null>) {
@@ -17,11 +19,11 @@ export function useVillage(villageId: MaybeRefOrGetter<number | null>) {
             else village.value = decodeVillage(raw[0]);
         } else {
             village.value = null;
-        };
+        }
     });
 
     return readonly(village);
-};
+}
 
 export function useAllyVillages(allyId: MaybeRefOrGetter<number | number[] | null>) {
     const villages = ref<WorldVillageType[]>([]);
@@ -39,33 +41,36 @@ export function useAllyVillages(allyId: MaybeRefOrGetter<number | number[] | nul
         } else {
             const raw = await ipcInvoke('world-data:get-ally-villages', ids);
             villages.value = raw.map(decodeVillage);
-        };
+        }
     });
 
     return readonly(villages);
-};
+}
 
-export function usePlayerVillages(playerId: MaybeRefOrGetter<number | number[] | null>) {
+export function usePlayerVillages(
+    playerId: MaybeRefOrGetter<number | number[] | null>,
+    userAlias: MaybeRefOrGetter<UserAlias | null> = useUserAlias()
+) {
     const villages = ref<WorldVillageType[]>([]);
     const playerIdRef = toRef(playerId);
+    const userAliasRef = toRef(userAlias);
 
-    const idList = computed(() => {
+    const ids = computed(() => {
         if (!playerIdRef.value) return [];
         return Array.isArray(playerIdRef.value) ? playerIdRef.value : [playerIdRef.value];
     });
 
-    watchEffect(async () => {
-        const ids = toValue(idList);
-        if (ids.length === 0) {
+    watchImmediate([ids, userAliasRef], async () => {
+        if (ids.value.length === 0) {
             villages.value = [];
         } else {
-            const raw = await ipcInvoke('world-data:get-player-villages', ids);
+            const raw = await ipcInvoke('world-data:get-player-villages', ids.value);
             villages.value = raw.map(decodeVillage);
-        };
+        }
     });
 
     return readonly(villages);
-};
+}
 
 export function useWorldVillages() {
     const gameDataStore = useGameDataStore();
@@ -80,8 +85,8 @@ export function useWorldVillages() {
             villages.value = raw.map(decodeVillage);  
         } else {
             villages.value = [];
-        };
+        }
     });
 
     return readonly(villages);
-};
+}

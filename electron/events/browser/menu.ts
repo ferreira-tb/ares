@@ -1,31 +1,29 @@
 import { ipcMain, Menu } from 'electron';
-import { storeToRefs } from 'mechanus';
-import { MainWindow, PanelWindow, StandardWindow } from '$electron/windows';
+import { MainWindow, PanelWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
-import { useCacheStore } from '$electron/stores';
-import { StandardWindowName } from '$common/constants';
+import { appConfig } from '$electron/stores';
 
 export function setContextMenuEvents() {
     const mainWindow = MainWindow.getInstance();
     const panelWindow = PanelWindow.getInstance();
 
-    const cacheStore = useCacheStore();
-    const { userAlias } = storeToRefs(cacheStore);
+    ipcMain.on('browser:show-context-menu', (_e, options: BrowserContextMenuOptions) => {
+        const template: Electron.MenuItemConstructorOptions[] = [
+            { label: 'Voltar', id: 'go-back', click: () => BrowserTab.current.goBack() },
+            { label: 'Avançar', id: 'go-forward', click: () => BrowserTab.current.goForward() },
+            { label: 'Atualizar', id: 'reload', click: () => BrowserTab.current.reload() }
+        ];
 
-    ipcMain.on('browser:show-context-menu', () => {
-        const template: Electron.MenuItemConstructorOptions[] = [];
+        template.forEach((item) => {
+            if (item.id === 'reload') return;
+            if (item.id === 'go-back' && !BrowserTab.current.canGoBack()) item.enabled = false;
+            if (item.id === 'go-forward' && !BrowserTab.current.canGoForward()) item.enabled = false;
+        });
 
-        if (userAlias.value) {
-            const groupsTemplate: Electron.MenuItemConstructorOptions[] = [
-                { label: 'Modelos', click: () => StandardWindow.open(StandardWindowName.GroupTemplate) }
-            ];
-
-            template.push({ label: 'Grupos', submenu: groupsTemplate });
-        };
-
-        if (process.env.ARES_MODE === 'dev') {
+        const devTools = appConfig.get('advanced').devTools;
+        if (devTools) {
             const inspectTemplate: Electron.MenuItemConstructorOptions[] = [
-                { label: 'Aba', click: () => BrowserTab.current.openDevTools() },
+                { label: 'Página', click: () => BrowserTab.current.inspectElement(options.x, options.y) },
                 { label: 'Janela', click: () => mainWindow.openDevTools() },
                 { label: 'Painel', click: () => panelWindow.openDevTools() }
             ];
@@ -37,10 +35,10 @@ export function setContextMenuEvents() {
             ];
 
             template.push(...devTemplate);
-        };
+        }
 
         if (template.length === 0) return;
         const menu = Menu.buildFromTemplate(template);
         menu.popup();
     });
-};
+}

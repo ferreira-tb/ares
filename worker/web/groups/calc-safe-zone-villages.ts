@@ -1,10 +1,10 @@
-import { calcDistance } from '$common/helpers';
+import { calcDistance } from '$common/utils';
 
 interface SafeZoneWorkerData {
     playerVillages: WorldVillageType[];
     enemyVillages: WorldVillageType[];
     fields: number;
-};
+}
 
 self.onmessage = (e) => {
     const safe: WorldVillageType[] = [];
@@ -18,8 +18,8 @@ self.onmessage = (e) => {
             });
 
             if (!enemyVillage) safe.push(village);
-        };
-    };
+        }
+    }
 
     self.postMessage(safe);
 };

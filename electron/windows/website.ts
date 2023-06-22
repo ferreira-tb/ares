@@ -35,18 +35,15 @@ export class WebsiteWindow extends BaseWindow {
     };
 
     public setWebsiteWindowMenu() {
-        if (process.env.ARES_MODE !== 'dev') {
-            this.setMenu(null);
-            return;
-        };
-    
         const options: Electron.MenuItemConstructorOptions[] = [
             { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => this.reloadIgnoringCache() },
-            { label: 'Conjurar magia', accelerator: 'F9', click: () => BaseWindow.castDevMagic() },
+            { label: 'Conjurar magia', accelerator: 'CmdOrCtrl+F9', click: () => BaseWindow.castDevMagic() },
             { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => this.openDevTools() }
         ];
     
-        options.forEach((option) => (option.visible = false));
+        options.forEach((option) => {
+            option.visible = false;
+        });
     
         const menu = Menu.buildFromTemplate(options);
         this.setMenu(menu);
@@ -73,8 +70,7 @@ export class WebsiteWindow extends BaseWindow {
                 webPreferences: {
                     spellcheck: false,
                     nodeIntegration: false,
-                    contextIsolation: true,
-                    devTools: process.env.ARES_MODE === 'dev'
+                    contextIsolation: true
                 }
             };
 

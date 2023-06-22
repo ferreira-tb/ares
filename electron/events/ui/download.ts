@@ -4,7 +4,7 @@ import { isString } from '$common/guards';
 import { MainWindow } from '$electron/windows';
 import { StandardWindow } from '$electron/windows';
 import { MainProcessError } from '$electron/error';
-import { StandardWindowName } from '$common/constants';
+import { StandardWindowName } from '$common/enum';
 
 class DownloadProgress implements DownloadProgressType {
     public readonly receivedBytes: number;

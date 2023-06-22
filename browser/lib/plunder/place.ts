@@ -1,6 +1,6 @@
 import { useMutationObserver } from '@vueuse/core';
 import { isInstanceOf, assertInstanceOf } from '$common/guards';
-import { wait } from '$browser/utils/helpers';
+import { wait } from '$renderer/utils/timers';
 import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
 
 export function openPlace(placeButton: PlunderTargetInfo['button']['place']) {

@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { RouterView } from 'vue-router';
 import { useUserAlias } from '$renderer/composables';
 import GroupTemplateWelcome from '$windows/components/GroupTemplateWelcome.vue';
-import type { StandardWindowName } from '$common/constants';
+import type { StandardWindowName } from '$common/enum';
 import {
     NEllipsis,
     NLayout,

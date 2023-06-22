@@ -1,31 +1,37 @@
-import { months } from '$common/constants';
-import { assertInteger, assertString } from '$common/guards';
+import { months } from '$common/enum';
 import { RendererProcessError } from '$renderer/error';
 
-/**
- * Analisa o texto contido num elemento a procura de coordenadas válidas.
- * @param text Texto do elemento.
- * @returns Tupla com as coordenadas ou `null` se elas não forem encontradas.
- */
-export function parseCoordsFromTextContent(text: string | null): [number, number] | null {
-    if (!text) return null;
-
-    const targetCoords = text.trim().match(/\d{3}\|\d{3}/m);
-    if (!targetCoords) return null;
-
-    const coords = targetCoords[0].splitAsIntegerListStrict('|');
-    if (coords.length !== 2) {
-        throw new RendererProcessError('Expected a XY tuple, but got a different length.');
-    };
-    return coords as [number, number];
+type LocaleDateStringOptions = {
+    seconds?: boolean;
 };
 
-export function parseCoordsFromTextContentStrict(text: string | null): [number, number] {
-    const coords = parseCoordsFromTextContent(text);
-    if (!Array.isArray(coords)) {
-        throw new RendererProcessError('Could not parse coords from text content.');
+/**
+ * Transforma um número em uma string com o formato de data local.
+ * @param raw Número representando a data. Se omitido, utiliza `Date.now()`.
+ * @param includeTime Indica se a string resultante deve incluir a hora.
+ */
+export function toLocaleDateString(
+    raw: number = Date.now(),
+    locale: Intl.LocalesArgument = 'pt-br',
+    options?: LocaleDateStringOptions
+) {
+    const dateOptions: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
     };
-    return coords;
+
+    const timeOptions: Intl.DateTimeFormatOptions = {
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+
+    if (options?.seconds) timeOptions.second = '2-digit';
+
+    const date = new Date(raw);
+    const dateString = date.toLocaleDateString(locale, dateOptions);
+    const timeString = date.toLocaleTimeString(locale, timeOptions);
+    return `${dateString} ${timeString}`;
 };
 
 /**
@@ -83,7 +89,7 @@ export function parseGameDate(date: string): number | null {
  */
 export function parseReportDate(report: Element, ms: boolean = true): number {
     const selector = 'td.nopad table:has([class="report_ReportAttack" i]) tr:nth-of-type(2) td:nth-of-type(2)';
-    const dateField = report.queryAndAssert(selector);
+    const dateField = report.queryStrict(selector);
 
     // Exemplo: "out. 17, 2022  22:16:46:503".
     const rawDate = dateField.getTextContentStrict();
@@ -94,7 +100,9 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
     const dateFields = rawDateFields.map((field, index) => {
         if (index === 0) {
             const rawMonth: string = field.replace(/\W/g, '').slice(0, 3);
-            assertString(rawMonth, `Invalid month: ${rawMonth}.`);
+            if (typeof rawMonth !== 'string' || rawMonth.length === 0) {
+                throw new RendererProcessError(`Invalid month: ${rawMonth}.`);
+            };
 
             // Date.prototype.setFullYear() usa índice zero para os meses.
             const monthIndex = months.findIndex((month) => month === rawMonth);
@@ -117,7 +125,9 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
 
     const [hour, minute, second, millisec] = dateFields[3] as number[];
     const date = new Date(fullYear).setHours(hour, minute, second, millisec);
-    assertInteger(date, `Invalid report date: ${date}.`);
+    if (!Number.isInteger(date)) {
+        throw new RendererProcessError(`Invalid report date: ${date}.`);
+    };
 
     if (!ms) return Math.ceil(date / 1000);
     return date;

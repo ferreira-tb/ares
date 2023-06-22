@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$common/guards';
 import { DatabaseError } from '$electron/error';
-import { unitsToDestroyWall } from '$common/constants';
+import { unitsToDestroyWall } from '$common/enum';
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class DemolitionTemplate extends Model<

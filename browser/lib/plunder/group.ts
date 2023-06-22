@@ -65,7 +65,7 @@ async function queryVillagesFromPopup(config: ReturnType<typeof usePlunderConfig
         
         groupInfo = new PlunderGroup(groupId);
 
-        const selectedGroup = popup.queryAndAssert('#group_id option[selected]');
+        const selectedGroup = popup.queryStrict('#group_id option[selected]');
         const selectedGroupId = selectedGroup.getAttributeAsIntStrict('value');
         if (selectedGroupId !== groupId) {
             queueMicrotask(() => ipcSend('plunder:navigate-to-group'));
@@ -123,7 +123,7 @@ async function openGroupPopup(): Promise<{ popup: HTMLElement, cleanup: (() => v
     }, { subtree: true, childList: true });
 
     const removeStyle = await setPopupStyle(selector);
-    const opener = document.queryAndAssert<HTMLAnchorElement>('#menu_row2 td #open_groups');
+    const opener = document.queryStrict<HTMLAnchorElement>('#menu_row2 td #open_groups');
     opener.click();
 
     try {
