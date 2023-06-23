@@ -88,7 +88,7 @@ onMounted(() => {
         </NLayoutSider>
 
         <NLayout :native-scrollbar="false">
-            <div id="config-content">
+            <div id="config-router-view">
                 <RouterView #default="{ Component }">
                     <template v-if="Component">
                         <Transition name="tb-fade" mode="out-in">
@@ -109,7 +109,7 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-#config-content {
+#config-router-view {
     margin-bottom: 1rem;
 }
 </style>

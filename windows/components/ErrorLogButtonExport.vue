@@ -22,10 +22,10 @@ async function exportLog() {
         emit('export');
     } else if (status === 'error') {
         message.error('Erro ao exportar o registro de erros');
-    };
+    }
 
     loading.value = false;
-};
+}
 </script>
 
 <template>

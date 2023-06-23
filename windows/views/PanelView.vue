@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { shell } from 'electron';
-import { ref } from 'vue';
-import { useElementSize } from '@vueuse/core';
+import { ref, nextTick } from 'vue';
+import { RouterView } from 'vue-router';
 import { MenuSharp } from '@vicons/ionicons5';
+import { useElementSize } from '$renderer/composables';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
-import { StandardWindowName, WebsiteUrl } from '$common/enum';
+import { useGameDataStore } from '$renderer/stores';
+import { WebsiteUrl } from '$common/enum';
 import {
     NButton,
-    NButtonGroup,
     NDropdown,
     NEllipsis,
     NIcon,
-    NList,
-    NListItem,
     NLayout,
     NLayoutHeader,
     NLayoutSider,
@@ -21,8 +20,16 @@ import {
 
 const version = await ipcInvoke('app:version');
 
+// Sincroniza com o processo principal.
+const gameData = useGameDataStore();
+const currentData = await ipcInvoke('game:data');
+if (currentData) {
+    gameData.$patch(currentData);
+    await nextTick();
+}
+
 const pageHeader = ref<HTMLDivElement | null>(null);
-const { height: headerHeight } = useElementSize(pageHeader, { width: 0, height: 0 }, { box: 'border-box' });
+const { height: headerHeight } = useElementSize(pageHeader);
 
 const routeTitle = ref('Visão Geral');
 
@@ -58,7 +65,9 @@ function handleSelect(key: WebsiteUrl) {
                 <div id="header-wrapper" ref="pageHeader">
                     <NPageHeader>
                         <template #title>
-                            <span id="header-title">{{ routeTitle }}</span>
+                            <Transition name="tb-fade" mode="out-in">
+                                <span id="header-title" :key="routeTitle">{{ routeTitle }}</span>
+                            </Transition>
                         </template>
                         <template #extra>
                             <div id="header-extra">
@@ -77,29 +86,30 @@ function handleSelect(key: WebsiteUrl) {
                 </div>
             </NLayoutHeader>
             <NLayout id="panel-layout-content" position="absolute" has-sider>
-                <NLayoutSider bordered :native-scrollbar="false">
+                <NLayoutSider bordered :native-scrollbar="false" :width="200">
                     Teste
                 </NLayoutSider>
         
                 <NLayout :native-scrollbar="false">
-                    <NList hoverable :show-divider="false">
-                        <NListItem>
-                            <NEllipsis :tooltip="false">Saque</NEllipsis>
-                            <template #suffix>
-                                <NButtonGroup>
-                                    <NButton round @click="ipcSend('window:open', StandardWindowName.PlunderTemplate)">
-                                        Modelos
-                                    </NButton>
-                                    <NButton>
-                                        Saquear
-                                    </NButton>
-                                    <NButton round @click="ipcSend('window:open', StandardWindowName.ConfigPlunder)">
-                                        Configurações
-                                    </NButton>
-                                </NButtonGroup>
+                    <div id="panel-router-view">
+                        <RouterView #default="{ Component }">
+                            <template v-if="Component">
+                                <Transition name="tb-fade" mode="out-in">
+                                    <KeepAlive>
+                                        <Suspense>
+                                            <component
+                                                :is="Component"
+                                                @title="(newTitle: string) => routeTitle = newTitle"
+                                            />
+                                            <template #fallback>
+                                                <span class="bold-green to-center">Carregando...</span>
+                                            </template>
+                                        </Suspense>
+                                    </KeepAlive>
+                                </Transition>
                             </template>
-                        </NListItem>
-                    </NList>
+                        </RouterView>
+                    </div>
                 </NLayout>
             </NLayout>
         </NLayout>
@@ -142,5 +152,9 @@ function handleSelect(key: WebsiteUrl) {
 
 #panel-layout-content {
     top: v-bind("`${headerHeight}px`");
+
+    #panel-router-view {
+        margin-bottom: 1rem;
+    }
 }
 </style>

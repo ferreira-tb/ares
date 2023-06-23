@@ -4,6 +4,7 @@ import { assertUserAlias } from '$common/guards';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { RendererProcessError } from '$renderer/error';
 import { formatFields, parseFields, formatWallLevel, parseWallLevel } from '$renderer/utils/format-input';
+import { StandardWindowName } from '$common/enum';
 import {
     NButton,
     NButtonGroup,
@@ -123,7 +124,7 @@ function resetDemolitionConfig() {
             </NGridItem>
             <NGridItem>
                 <NButtonGroup>
-                    <NButton @click="ipcSend('plunder:open-demolition-config-window')">Configurar</NButton>
+                    <NButton @click="ipcSend('window:open', StandardWindowName.DemolitionTemplate)">Configurar</NButton>
                     <NButton @click="resetDemolitionConfig">Resetar</NButton>
                 </NButtonGroup>
             </NGridItem>

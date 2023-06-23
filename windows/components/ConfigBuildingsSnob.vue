@@ -14,8 +14,8 @@ const locale = await ipcInvoke('app:locale');
 const gameData = useGameDataStore();
 
 const config = useSnobConfigStore();
-const previousConfig = await ipcInvoke('snob:get-config');
-if (previousConfig) config.$patch(previousConfig);
+const currentConfig = await ipcInvoke('snob:get-config');
+if (currentConfig) config.$patch(currentConfig);
 await nextTick();
 
 const villages = computedAsync<WorldVillageType[]>(async () => {

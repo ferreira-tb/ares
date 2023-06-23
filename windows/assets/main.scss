@@ -30,11 +30,6 @@ html {
     margin-right: 0.5rem;
 }
 
-.result-info, .result-sucess {
-    padding: 1em;
-    user-select: none;
-}
-
 .labeled-switch-wrapper {
     @include mixins.flex-x-center-y-center($height: 100%);
 
@@ -42,4 +37,14 @@ html {
         @include mixins.flex-x-start-y-center($height: 100%);
         padding-left: 0.5rem;
     }
+}
+
+.panel-overview-thing-header {
+    @include mixins.flex-x-start-y-center($height: 100%);
+    gap: 0.5rem;
+}
+
+.result-info, .result-sucess {
+    padding: 1em;
+    user-select: none;
 }

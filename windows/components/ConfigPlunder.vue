@@ -15,9 +15,9 @@ const userAlias = useUserAlias();
 
 // Sincroniza a configuração com o processo principal.
 const config = usePlunderConfigStore();
-const previousConfig = await ipcInvoke('plunder:get-config');
-if (previousConfig) {
-    config.$patch(previousConfig);
+const currentConfig = await ipcInvoke('plunder:get-config');
+if (currentConfig) {
+    config.$patch(currentConfig);
     await nextTick();
 }
 

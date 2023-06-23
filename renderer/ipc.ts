@@ -186,7 +186,6 @@ export function ipcSend(channel: 'tab:destroy-all', exclude?: number | number[])
 export function ipcSend(channel: 'tab:show-context-menu', tabId: number): void;
 
 // Erros
-export function ipcSend(channel: 'error:open-log-window'): void;
 export function ipcSend(channel: 'error:create-log', err: OmitOptionalErrorLogProps<ErrorLogBase>): void;
 
 // Jogo
@@ -197,13 +196,11 @@ export function ipcSend(channel: 'game:update-incomings-info', incomingAttacks: 
 export function ipcSend(channel: 'plunder:update-config', config: PlunderConfigType): void;
 export function ipcSend(channel: 'plunder:attack-sent', currentVillageId: number | null, plunderAttack: PlunderAttack): void;
 export function ipcSend(channel: 'plunder:save-history'): void;
-export function ipcSend(channel: 'plunder:show-history'): void;
 export function ipcSend(channel: 'plunder:update-pages-info', villageInfo: PlunderPageListType | null): void;
 export function ipcSend(channel: 'plunder:update-group-info', groupInfo: PlunderGroupType | null): void;
 export function ipcSend(channel: 'plunder:navigate-to-next-village', currentVillageId?: number | null): void;
 export function ipcSend(channel: 'plunder:navigate-to-group'): void;
 export function ipcSend(channel: 'plunder:navigate-to-first-page'): void;
-export function ipcSend(channel: 'plunder:open-demolition-config-window'): void;
 
 // Academia
 export function ipcSend(channel: 'snob:update-config', config: SnobConfigType): void;

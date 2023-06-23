@@ -14,6 +14,7 @@ import ErrorLogView from '$windows/views/ErrorLogView.vue';
 import GroupTemplateView from '$windows/views/GroupTemplateView.vue';
 import GroupTemplateSafeZone from '$windows/components/GroupTemplateSafeZone.vue';
 import PanelView from '$windows/views/PanelView.vue';
+import PanelOverview from '$windows/components/PanelOverview.vue';
 import PlunderHistoryView from '$windows/views/PlunderHistoryView.vue';
 import PlunderTemplateView from '$windows/views/PlunderTemplateView.vue';
 import TroopsCounterView from '$windows/views/TroopsCounterView.vue';
@@ -95,7 +96,14 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/panel',
         name: StandardWindowName.Panel,
-        component: PanelView
+        component: PanelView,
+        children: [
+            {
+                path: 'overview',
+                name: StandardWindowName.PanelOverview,
+                component: PanelOverview
+            }
+        ]
     },
     {
         path: '/plunder-history',
