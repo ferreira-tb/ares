@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
-import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
-import { usePlunderConfigStore } from '$renderer/stores';
+import { NDivider, NGrid, NGridItem, NInputNumber, NSelect, NSwitch } from 'naive-ui';
+import { useGameDataStore, usePlunderConfigStore } from '$renderer/stores';
 import { ipcInvoke } from '$renderer/ipc';
 import { useGroups } from '$renderer/composables';
 import { formatFields, parseFields, formatMilliseconds, parseMilliseconds } from '$renderer/utils/format-input';
@@ -11,17 +11,23 @@ const props = defineProps<{
     userAlias: UserAlias | null;
 }>();
 
+const gameData = useGameDataStore();
 const config = usePlunderConfigStore();
 const locale = await ipcInvoke('app:locale');
 
-const { groups: allGroups } = useGroups(toRef(() => props.userAlias), { type: 'dynamic' });
+const { groups: dynamicGroups } = useGroups(toRef(() => props.userAlias), { type: 'dynamic' });
 const plunderGroupOptions = computed(() => {
-    const options = allGroups.value.map((group) => ({
+    const options = dynamicGroups.value.map((group) => ({
         label: group.name,
         value: group.id
     }));
 
     return options.sort((a, b) => a.label.localeCompare(b.label, locale));
+});
+
+const canUseGroupAttack = computed(() => {
+    if (gameData.features.premium === false) return false;
+    return dynamicGroups.value.length > 0;
 });
 </script>
 
@@ -29,6 +35,13 @@ const plunderGroupOptions = computed(() => {
     <div>
         <NDivider title-placement="left" class="config-divider">Grupo</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
+            <NGridItem :span="2">
+                <div class="labeled-switch-wrapper">
+                    <NSwitch v-model:value="config.groupAttack" round size="small" :disabled="!canUseGroupAttack" />
+                    <div class="switch-label">Ataque em grupo</div>
+                </div>
+            </NGridItem>
+
             <NGridItem>
                 <div class="config-label">Grupo de ataque</div>
             </NGridItem>
@@ -38,7 +51,7 @@ const plunderGroupOptions = computed(() => {
                         v-model:value="config.plunderGroupId"
                         placeholder="Selecione um grupo"
                         :options="plunderGroupOptions"
-                        :disabled="plunderGroupOptions.length === 0"
+                        :disabled="!config.groupAttack || plunderGroupOptions.length === 0"
                     />
                 </div>
             </NGridItem>
@@ -50,6 +63,7 @@ const plunderGroupOptions = computed(() => {
                 <NInputNumber
                     v-model:value="config.fieldsPerWave"
                     class="config-input"
+                    :disabled="!config.groupAttack"
                     :min="5"
                     :max="9999"
                     :step="1"
@@ -66,6 +80,7 @@ const plunderGroupOptions = computed(() => {
                 <NInputNumber
                     v-model:value="config.villageDelay"
                     class="config-input"
+                    :disabled="!config.groupAttack"
                     :min="100"
                     :max="60000"
                     :step="100"
@@ -81,3 +96,9 @@ const plunderGroupOptions = computed(() => {
         </NGrid>
     </div>
 </template>
+
+<style scoped lang="scss">
+.labeled-switch-wrapper {
+    margin-bottom: 0.5rem;
+}
+</style>

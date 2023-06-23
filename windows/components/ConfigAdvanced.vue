@@ -28,14 +28,14 @@ function dropDatabase() {
                     message.success('O Ares reiniciará em instantes...');
                 } else {
                     message.error('Ocorreu algum erro :(');
-                };
+                }
                 
             } catch (err) {
                 RendererProcessError.catch(err);
-            };
+            }
         }
     });
-};
+}
 </script>
 
 <template>

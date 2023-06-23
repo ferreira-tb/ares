@@ -11,13 +11,11 @@ import GroupsButtonUpdate from '$renderer/components/GroupsButtonUpdate.vue';
 const userAlias = useUserAlias();
 const locale = await ipcInvoke('app:locale');
 
+const gameData = useGameDataStore();
+
 const config = useSnobConfigStore();
 const previousConfig = await ipcInvoke('snob:get-config');
 if (previousConfig) config.$patch(previousConfig);
-
-const gameData = useGameDataStore();
-const previousGameData = await ipcInvoke('game:data');
-if (previousGameData) gameData.$patch(previousGameData);
 await nextTick();
 
 const villages = computedAsync<WorldVillageType[]>(async () => {

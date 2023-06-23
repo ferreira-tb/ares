@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NDivider, NGrid, NGridItem, NSelect, NInputNumber } from 'naive-ui';
+import { NDivider, NGrid, NGridItem, NInputNumber, NSelect, NSwitch } from 'naive-ui';
 import { usePlunderConfigStore } from '$renderer/stores';
 import { formatFields, parseFields, formatHours, parseHours } from '$renderer/utils/format-input';
 
@@ -16,12 +16,23 @@ const useCOptions = [
     <div>
         <NDivider title-placement="left" class="config-divider">Modelo C</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
+            <NGridItem :span="2">
+                <div class="labeled-switch-wrapper">
+                    <NSwitch v-model:value="config.useC" round size="small" />
+                    <div class="switch-label">Usar modelo C</div>
+                </div>
+            </NGridItem>
+
             <NGridItem>
                 <div class="config-label">Padrão do modelo C</div>
             </NGridItem>
             <NGridItem>
                 <div class="config-select">
-                    <NSelect v-model:value="config.useCPattern" :options="useCOptions" />
+                    <NSelect
+                        v-model:value="config.useCPattern"
+                        :options="useCOptions"
+                        :disabled="!config.useC"
+                    />
                 </div>
             </NGridItem>
 
@@ -32,6 +43,7 @@ const useCOptions = [
                 <NInputNumber
                     v-model:value="config.maxDistanceC"
                     class="config-input"
+                    :disabled="!config.useC"
                     :min="1"
                     :max="9999"
                     :step="1"
@@ -48,6 +60,7 @@ const useCOptions = [
                 <NInputNumber
                     v-model:value="config.ignoreOlderThanC"
                     class="config-input"
+                    :disabled="!config.useC"
                     :min="1"
                     :max="9999"
                     :step="1"
@@ -64,7 +77,7 @@ const useCOptions = [
                 <NInputNumber
                     v-model:value="config.useCWhenResourceRatioIsBiggerThan"
                     class="config-input"
-                    :disabled="config.useCPattern !== 'excess'"
+                    :disabled="!config.useC || config.useCPattern !== 'excess'"
                     :min="1"
                     :max="9999"
                     :step="1"
@@ -74,3 +87,9 @@ const useCOptions = [
         </NGrid>
     </div>
 </template>
+
+<style scoped lang="scss">
+.labeled-switch-wrapper {
+    margin-bottom: 0.5rem;
+}
+</style>

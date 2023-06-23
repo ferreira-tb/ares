@@ -19,7 +19,7 @@ const previousConfig = await ipcInvoke('plunder:get-config');
 if (previousConfig) {
     config.$patch(previousConfig);
     await nextTick();
-};
+}
 
 watchDeep(config, () => {
     ipcSend('plunder:update-config', config.raw());

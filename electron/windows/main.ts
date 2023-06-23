@@ -94,7 +94,7 @@ export class MainWindow extends BaseWindow {
             { label: 'Avançar', accelerator: 'CmdOrCtrl+Right', click: () => BrowserTab.current.goForward() },
     
             { label: 'Focar view principal', accelerator: 'F1', click: () => this.webContents.send('main-tab:focus') },
-            { label: 'Configurações', accelerator: 'F3', click: () => void StandardWindow.open(StandardWindowName.Config) },
+            { label: 'Configurações', accelerator: 'F3', click: () => void StandardWindow.open(StandardWindowName.ConfigGeneral) },
     
             { label: 'Desenvolvedor', submenu: devTemplate },
             

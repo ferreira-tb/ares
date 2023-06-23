@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { h, onMounted, ref } from 'vue';
+import { h, nextTick, onMounted, ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 import { NLayout, NLayoutSider, NMenu, type MenuInst, type MenuOption } from 'naive-ui';
 import { router } from '$windows/router';
+import { useGameDataStore } from '$renderer/stores';
+import { ipcInvoke } from '$renderer/ipc';
 import { StandardWindowName } from '$common/enum';
+
+const gameData = useGameDataStore();
+const previousGameData = await ipcInvoke('game:data');
+if (previousGameData) gameData.$patch(previousGameData);
+await nextTick();
 
 const menuInst = ref<MenuInst | null>(null);
 const selectedKey = ref<StandardWindowName>(StandardWindowName.ConfigGeneral);
@@ -41,7 +48,7 @@ function renderLabel(routeName: StandardWindowName, label: string) {
     return () => h('span', { style: 'padding-right: 20px;' }, [
          h(RouterLink, { to: { name: routeName } }, label)
     ]);
-};
+}
 
 function isRoute(routeName: string, options: MenuOption[] = menuOptions): boolean {
     return options.some((o) => {
@@ -49,18 +56,18 @@ function isRoute(routeName: string, options: MenuOption[] = menuOptions): boolea
             return true;
         } else if (Array.isArray(o.children)) {
             return isRoute(routeName, o.children);
-        };
+        }
 
         return false;
     });
-};
+}
 
 onMounted(() => {
     const routeName = router.currentRoute.value.name;
     if (typeof routeName === 'string' && isRoute(routeName)) {
         selectedKey.value = routeName as StandardWindowName;
         menuInst.value?.showOption(routeName);
-    };
+    }
 });
 </script>
 
@@ -81,20 +88,28 @@ onMounted(() => {
         </NLayoutSider>
 
         <NLayout :native-scrollbar="false">
-            <RouterView #default="{ Component }">
-                <template v-if="Component">
-                    <Transition name="tb-fade" mode="out-in">
-                        <KeepAlive>
-                            <Suspense>
-                                <component :is="Component" />
-                                <template #fallback>
-                                    <span class="bold-green to-center">Carregando...</span>
-                                </template>
-                            </Suspense>
-                        </KeepAlive>
-                    </Transition>
-                </template>
-            </RouterView>
+            <div id="config-content">
+                <RouterView #default="{ Component }">
+                    <template v-if="Component">
+                        <Transition name="tb-fade" mode="out-in">
+                            <KeepAlive>
+                                <Suspense>
+                                    <component :is="Component" />
+                                    <template #fallback>
+                                        <span class="bold-green to-center">Carregando...</span>
+                                    </template>
+                                </Suspense>
+                            </KeepAlive>
+                        </Transition>
+                    </template>
+                </RouterView>
+            </div>
         </NLayout>
     </NLayout>
 </template>
+
+<style scoped lang="scss">
+#config-content {
+    margin-bottom: 1rem;
+}
+</style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
+import { NDivider, NGrid, NGridItem, NInputNumber, NSelect, NSwitch } from 'naive-ui';
 import { usePlunderConfigStore } from '$renderer/stores';
 import {
     formatFields,
@@ -22,6 +22,19 @@ const blindAttackOptions = [
     <div>
         <NDivider title-placement="left" class="config-divider">Ataque</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
+            <NGridItem>
+                <div class="labeled-switch-wrapper">
+                    <NSwitch v-model:value="config.ignoreDelay" round size="small" />
+                    <div class="switch-label">Ignorar delay</div>
+                </div>
+            </NGridItem>
+            <NGridItem>
+                <div class="labeled-switch-wrapper">
+                    <NSwitch v-model:value="config.blindAttack" round size="small" />
+                    <div class="switch-label">Ataque às cegas</div>
+                </div>
+            </NGridItem>
+
             <NGridItem>
                 <div class="config-label">Distância máxima</div>
             </NGridItem>
@@ -61,6 +74,7 @@ const blindAttackOptions = [
                 <NInputNumber
                     v-model:value="config.attackDelay"
                     class="config-input"
+                    :disabled="config.ignoreDelay"
                     :min="100"
                     :max="60000"
                     :step="10"
@@ -89,9 +103,19 @@ const blindAttackOptions = [
             </NGridItem>
             <NGridItem>
                 <div class="config-select">
-                    <NSelect v-model:value="config.blindAttackPattern" :options="blindAttackOptions" />
+                    <NSelect
+                        v-model:value="config.blindAttackPattern"
+                        :options="blindAttackOptions"
+                        :disabled="!config.blindAttack"
+                    />
                 </div>
             </NGridItem>
         </NGrid>
     </div>
 </template>
+
+<style scoped lang="scss">
+.labeled-switch-wrapper {
+    margin-bottom: 0.5rem;
+}
+</style>
