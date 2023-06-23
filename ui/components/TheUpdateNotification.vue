@@ -4,8 +4,8 @@ import { computed, watchEffect } from 'vue';
 import { useFetch } from '@vueuse/core';
 import { NTag } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { AresAPI } from '$common/enum';
 import { MainWindowError } from '$ui/error';
+import { AresAPI, StandardWindowName } from '$common/enum';
 
 const appVersion = await ipcInvoke('app:version');
 const { data, onFetchError } = useFetch(AresAPI.Latest).json<LatestVersion>();
@@ -20,8 +20,8 @@ watchEffect(async () => {
     if (data.value && updateAvailable.value) {
         const isIgnored = await ipcInvoke('app-update:is-ignored-version', data.value.version);
         if (isIgnored) return;
-        ipcSend('app-update:update-available-dialog', data.value.version);
-    };
+        ipcSend('update:update-available-dialog', data.value.version);
+    }
 });
 </script>
 
@@ -34,7 +34,7 @@ watchEffect(async () => {
                     type="success"
                     size="small"
                     round
-                    @click="ipcSend('app-update:open')"
+                    @click="ipcSend('window:open', StandardWindowName.Update)"
                 >
                     Nova versão disponível
                 </NTag>

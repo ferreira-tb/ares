@@ -46,7 +46,8 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
         minWidth: 800,
         height: 600,
         minHeight: 600,
-        resizable: true
+        resizable: true,
+        title: 'Painel'
     },
     [StandardWindowName.PlunderHistory]: {
         width: 1200,

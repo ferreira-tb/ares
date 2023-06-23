@@ -3,7 +3,7 @@ import { shell } from 'electron';
 import { computed, ref } from 'vue';
 import { useElementSize, useMediaQuery } from '@vueuse/core';
 import { NIcon } from 'naive-ui';
-import { DiscordSharp } from '@vicons/material';
+import { DiscordSharp, ViewQuiltSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { useIpcOn, useUserAlias } from '$renderer/composables';
 import { StandardWindowName, WebsiteUrl } from '$common/enum';
@@ -58,16 +58,19 @@ useIpcOn('tab:back-forward-status', (_e, status: BackForwardStatus) => {
             <div class="menu-icon" @click="ipcSend('current-tab:home')">
                 <NIcon :size="22" :depth="3" :component="HomeSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('config:open', StandardWindowName.ConfigGeneral)">
+            <div class="menu-icon" @click="ipcSend('window:open', StandardWindowName.Panel)">
+                <NIcon :size="26" :depth="3" :component="ViewQuiltSharp" />
+            </div>
+            <div class="menu-icon" @click="ipcSend('window:open', StandardWindowName.ConfigGeneral)">
                 <NIcon :size="22" :depth="3" :component="SettingsSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('open-bug-report-menu')">
+            <div class="menu-icon" @click="ipcSend('menu:bug')">
                 <NIcon :size="22" :depth="3" :component="BugSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('website:how-to-use')">
-                <NIcon :size="24" :depth="3" :component="HelpCircleSharp" />
+            <div class="menu-icon" @click="ipcSend('website:open', WebsiteUrl.HowToUse)">
+                <NIcon :size="26" :depth="3" :component="HelpCircleSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('website:repository')">
+            <div class="menu-icon" @click="ipcSend('website:open', WebsiteUrl.Repository)">
                 <NIcon :size="22" :depth="3" :component="LogoGithub" />
             </div>
             <div class="menu-icon" @click="shell.openExternal(WebsiteUrl.Discord)">

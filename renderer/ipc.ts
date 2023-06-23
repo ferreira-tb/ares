@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
 import { ipcRenderer } from 'electron';
-import type { StandardWindowName } from '$common/enum';
+import type { RendererWorkerName, StandardWindowName, WebsiteUrl } from '$common/enum';
 import type { PlunderAttack } from '$common/templates';
-import type { RendererWorkerName } from '$common/enum';
 
 const debug = {
     enabled: false
@@ -144,14 +143,11 @@ export function ipcSend(channel: 'ui:close'): void;
 
 // Geral
 export function ipcSend(channel: 'website:any', url: string): void;
-export function ipcSend(channel: 'website:ares'): void;
-export function ipcSend(channel: 'website:how-to-use'): void;
-export function ipcSend(channel: 'website:issues'): void;
-export function ipcSend(channel: 'website:repository'): void;
-export function ipcSend(channel: 'app-update:open'): void;
+export function ipcSend(channel: 'website:open', url: WebsiteUrl): void;
 export function ipcSend(channel: 'download-from-url', url: string): void;
-export function ipcSend(channel: 'app-update:update-available-dialog', newVersion: string): void;
+export function ipcSend(channel: 'update:update-available-dialog', newVersion: string): void;
 export function ipcSend(channel: 'electron:show-message-box', options: MessageBoxOptions): void;
+export function ipcSend(channel: 'window:open', route: StandardWindowName): void;
 
 // Desenvolvedor
 export function ipcSend(channel: 'debug:toggle', status: boolean): void;
@@ -162,11 +158,10 @@ export function ipcSend(channel: 'dev-tools:current-tab'): void;
 export function ipcSend(channel: 'dev-tools:main-tab'): void;
 
 // Configurações
-export function ipcSend(channel: 'config:open', route: StandardWindowName): void;
 export function ipcSend<T extends keyof AppConfigType>(channel: 'config:update', configType: T, value: AppConfigType[T]): void;
 
 // Menu
-export function ipcSend(channel: 'open-bug-report-menu'): void;
+export function ipcSend(channel: 'menu:bug'): void;
 
 // Browser
 export function ipcSend(channel: 'browser:show-context-menu', options: BrowserContextMenuOptions): void;
