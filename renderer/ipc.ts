@@ -19,12 +19,6 @@ function report(processType: 'main' | 'renderer', channel: string, ...args: unkn
     ipcRenderer.send('debug:report', processType, channel, ...args);
 }
 
-// Janela
-export async function ipcInvoke(channel: 'ui:is-maximized'): Promise<boolean>;
-
-// Geral
-export async function ipcInvoke(channel: 'user:get-alias'): Promise<UserAlias | null>;
-
 // Aplicação
 export async function ipcInvoke(channel: 'app:name'): Promise<string>;
 export async function ipcInvoke(channel: 'app:version'): Promise<string>;
@@ -34,14 +28,20 @@ export async function ipcInvoke(channel: 'app:user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'app:desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'app-update:is-ignored-version', version: string): Promise<boolean>;
 
+// Geral
+export async function ipcInvoke(channel: 'user:get-alias'): Promise<UserAlias | null>;
+
 // Desenvolvedor
 export async function ipcInvoke(channel: 'debug:is-enabled'): Promise<boolean>;
 
+// Janela
+export async function ipcInvoke(channel: 'ui:is-maximized'): Promise<boolean>;
+
 // Configurações
 export async function ipcInvoke(channel: 'db:clear-database'): Promise<boolean>;
-export async function ipcInvoke(channel: 'config:advanced'): Promise<AdvancedConfigType>;
-export async function ipcInvoke(channel: 'config:general'): Promise<GeneralConfigType>;
-export async function ipcInvoke(channel: 'config:notifications'): Promise<NotificationsConfigType>;
+export async function ipcInvoke<T extends keyof AppConfigType>(
+    channel: 'config:get', configType: T
+): Promise<AppConfigType[T]>;
 export async function ipcInvoke(channel: 'config:should-reload-after-captcha'): Promise<boolean>;
 export async function ipcInvoke(channel: 'config:should-notify-on-error'): Promise<boolean>;
 
@@ -136,18 +136,14 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
     return response;
 }
 
-// Janela
-export function ipcSend(channel: 'ui:minimize'): void;
-export function ipcSend(channel: 'ui:maximize'): void;
-export function ipcSend(channel: 'ui:close'): void;
-
 // Geral
+export function ipcSend(channel: 'download-from-url', url: string): void;
+export function ipcSend(channel: 'electron:show-message-box', options: MessageBoxOptions): void;
 export function ipcSend(channel: 'website:any', url: string): void;
 export function ipcSend(channel: 'website:open', url: WebsiteUrl): void;
-export function ipcSend(channel: 'download-from-url', url: string): void;
-export function ipcSend(channel: 'update:update-available-dialog', newVersion: string): void;
-export function ipcSend(channel: 'electron:show-message-box', options: MessageBoxOptions): void;
 export function ipcSend(channel: 'window:open', route: StandardWindowName): void;
+export function ipcSend(channel: 'window:show-context-menu', options: ContextMenuOptions): void;
+export function ipcSend(channel: 'update:update-available-dialog', newVersion: string): void;
 
 // Desenvolvedor
 export function ipcSend(channel: 'debug:toggle', status: boolean): void;
@@ -157,6 +153,11 @@ export function ipcSend(channel: 'dev-tools:main-window'): void;
 export function ipcSend(channel: 'dev-tools:current-tab'): void;
 export function ipcSend(channel: 'dev-tools:main-tab'): void;
 
+// Janela
+export function ipcSend(channel: 'ui:minimize'): void;
+export function ipcSend(channel: 'ui:maximize'): void;
+export function ipcSend(channel: 'ui:close'): void;
+
 // Configurações
 export function ipcSend<T extends keyof AppConfigType>(channel: 'config:update', configType: T, value: AppConfigType[T]): void;
 
@@ -164,7 +165,7 @@ export function ipcSend<T extends keyof AppConfigType>(channel: 'config:update',
 export function ipcSend(channel: 'menu:bug'): void;
 
 // Browser
-export function ipcSend(channel: 'browser:show-context-menu', options: BrowserContextMenuOptions): void;
+export function ipcSend(channel: 'browser:show-context-menu', options: ContextMenuOptions): void;
 export function ipcSend(channel: 'browser:update-response-time', time: number | null): void;
 export function ipcSend(channel: 'captcha:update-status', status: boolean): void;
 
@@ -193,7 +194,6 @@ export function ipcSend(channel: 'game:update-incomings-amount', incomingAttacks
 export function ipcSend(channel: 'game:update-incomings-info', incomingAttacks: IncomingAttack[]): void;
 
 // Plunder
-export function ipcSend(channel: 'plunder:open-custom-template-window'): void;
 export function ipcSend(channel: 'plunder:update-config', config: PlunderConfigType): void;
 export function ipcSend(channel: 'plunder:attack-sent', currentVillageId: number | null, plunderAttack: PlunderAttack): void;
 export function ipcSend(channel: 'plunder:save-history'): void;

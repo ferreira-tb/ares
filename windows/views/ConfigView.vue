@@ -35,6 +35,10 @@ const menuOptions: MenuOption[] = [
         key: StandardWindowName.ConfigPlunder
     },
     {
+        label: renderLabel(StandardWindowName.ConfigTags, 'Etiquetas'),
+        key: StandardWindowName.ConfigTags
+    },
+    {
         label: renderLabel(StandardWindowName.ConfigNotifications, 'Notificações'),
         key: StandardWindowName.ConfigNotifications
     },
@@ -73,12 +77,8 @@ onMounted(() => {
 
 <template>
     <NLayout has-sider position="absolute">
-        <NLayoutSider
-            bordered
-            content-style="padding: 6px;"
-            :width="150"
-        >
-            <NMenu 
+        <NLayoutSider bordered content-style="padding: 6px;" :width="150">
+            <NMenu
                 ref="menuInst"
                 v-model:value="selectedKey"
                 :options="menuOptions"

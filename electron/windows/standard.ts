@@ -68,7 +68,9 @@ export class StandardWindow extends BaseWindow {
             { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => this.openDevTools() }
         ];
     
-        options.forEach((option) => (option.visible = false));
+        options.forEach((option) => {
+            option.visible = false;
+        });
     
         const menu = Menu.buildFromTemplate(options);
         this.setMenu(menu);

@@ -15,7 +15,7 @@ type MessageBoxOptions = Pick<Electron.MessageBoxOptions,
     'buttons' | 'cancelId' | 'defaultId' | 'message' | 'noLink' | 'title' | 'type'
 >;
 
-type BrowserContextMenuOptions = {
+type ContextMenuOptions = {
     readonly x: number;
     readonly y: number;
 };

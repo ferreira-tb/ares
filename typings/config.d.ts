@@ -24,6 +24,13 @@ type NotificationsConfigType = {
     notifyOnError: boolean;
 };
 
+type TagsConfigType = {
+    nextIncoming: boolean;
+    plunder: boolean;
+    responseTime: boolean;
+    snob: boolean;
+};
+
 type UIConfigType = {
     /** Posição e tamanho da janela principal. */
     bounds: Electron.Rectangle | null;
@@ -41,6 +48,8 @@ type AppConfigType = {
     general: GeneralConfigType;
     /** Configurações de notificações. */
     notifications: NotificationsConfigType;
+    /** Configurações das etiquetas da interface do usuário. */
+    tags: TagsConfigType;
     /** Configurações da interface do usuário. */
     ui: UIConfigType;
     /** Configurações de atualização. */

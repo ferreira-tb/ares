@@ -19,6 +19,7 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
     [StandardWindowName.ConfigGeneral]: config,
     [StandardWindowName.ConfigNotifications]: config,
     [StandardWindowName.ConfigPlunder]: config,
+    [StandardWindowName.ConfigTags]: config,
     [StandardWindowName.Debug]: {
         width: 1000,
         height: 600,

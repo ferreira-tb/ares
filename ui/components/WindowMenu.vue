@@ -5,13 +5,13 @@ import { useElementSize, useMediaQuery } from '@vueuse/core';
 import { NIcon } from 'naive-ui';
 import { DiscordSharp, ViewQuiltSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
-import { useIpcOn, useUserAlias } from '$renderer/composables';
+import { useIpcOn, useTagsConfig, useUserAlias } from '$renderer/composables';
 import { StandardWindowName, WebsiteUrl } from '$common/enum';
-import TheIncomingHandler from '$ui/components/TheIncomingHandler.vue';
-import TheMintingStatus from '$ui/components/TheMintingStatus.vue';
-import TheNextIncoming from '$ui/components/TheNextIncoming.vue';
-import TheResponseTime from '$ui/components/TheResponseTime.vue';
-import TheUpdateNotification from '$ui/components/TheUpdateNotification.vue';
+import TagIncomingHandler from '$ui/components/TagIncomingHandler.vue';
+import TagMintingStatus from '$ui/components/TagMintingStatus.vue';
+import TagNextIncoming from '$ui/components/TagNextIncoming.vue';
+import TagResponseTime from '$ui/components/TagResponseTime.vue';
+import TagUpdateNotification from '$ui/components/TagUpdateNotification.vue';
 
 import {
     ArrowBackSharp,
@@ -25,6 +25,7 @@ import {
 } from '@vicons/ionicons5';
 
 const userAlias = useUserAlias();
+const tagsConfig = useTagsConfig();
 
 const mainWindowMenu = ref<HTMLElement | null>(null);
 const { width } = useElementSize(mainWindowMenu);
@@ -80,11 +81,11 @@ useIpcOn('tab:back-forward-status', (_e, status: BackForwardStatus) => {
 
         <Suspense>
             <div v-show="!isSmallScreen" class="menu-tag-area">
-                <TheIncomingHandler :user-alias="userAlias" />
-                <TheNextIncoming :user-alias="userAlias" />
-                <TheUpdateNotification />
-                <TheMintingStatus :user-alias="userAlias" />
-                <TheResponseTime :user-alias="userAlias" />
+                <TagIncomingHandler :user-alias="userAlias" />
+                <TagNextIncoming v-show="tagsConfig?.nextIncoming" :user-alias="userAlias" />
+                <TagMintingStatus v-show="tagsConfig?.snob" :user-alias="userAlias" />
+                <TagUpdateNotification />
+                <TagResponseTime v-show="tagsConfig?.responseTime" :user-alias="userAlias" />
             </div>
         </Suspense>
     </div>

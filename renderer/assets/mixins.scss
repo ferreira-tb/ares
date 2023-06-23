@@ -24,6 +24,16 @@
     transform: translate(-50%, -50%);
 }
 
+@mixin flex-x-end-y-center($height: null) {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    
+    @if $height {
+        height: $height;
+    }
+}
+
 @mixin flex-x-start-y-center($height: null) {
     display: flex;
     justify-content: start;

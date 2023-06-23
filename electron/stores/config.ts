@@ -28,6 +28,17 @@ const schema: Schema<AppConfigType> = {
             notifyOnError: { type: 'boolean', default: true }
         }
     },
+    tags: {
+        type: 'object',
+        additionalProperties: false,
+        default: {},
+        properties: {
+            nextIncoming: { type: 'boolean', default: true },
+            plunder: { type: 'boolean', default: true },
+            responseTime: { type: 'boolean', default: true },
+            snob: { type: 'boolean', default: true }
+        }
+    },
     ui: {
         type: 'object',
         additionalProperties: false,

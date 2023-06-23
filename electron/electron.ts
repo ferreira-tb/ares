@@ -5,11 +5,11 @@ import { setEvents } from '$electron/events';
 import { setEnv } from '$electron/utils/env';
 import { MainWindow, StandardWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
-import { isUserAlias } from '$common/guards';
 import { useCacheStore } from '$electron/stores';
 import { PlunderHistory } from '$electron/database/models';
 import { MainProcessError } from '$electron/error';
 import { errorHandler } from '$electron/utils/error-handler';
+import { isUserAlias } from '$common/guards';
 
 setEnv();
 MainProcessError.catch = errorHandler;

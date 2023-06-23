@@ -41,14 +41,14 @@ function destroyTemplate() {
                     message.success('O modelo foi excluído');
                 } else {
                     message.error('Ocorreu algum erro :(');
-                };
+                }
 
             } catch (err) {
                 RendererProcessError.catch(err);
-            };
+            }
         }
     });
-};
+}
 </script>
 
 <template>

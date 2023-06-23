@@ -6,6 +6,7 @@ import ConfigBuildingsSnob from '$windows/components/ConfigBuildingsSnob.vue';
 import ConfigGeneral from '$windows/components/ConfigGeneral.vue';
 import ConfigNotifications from '$windows/components/ConfigNotifications.vue';
 import ConfigPlunder from '$windows/components/ConfigPlunder.vue';
+import ConfigTags from '$windows/components/ConfigTags.vue';
 import DebugView from '$windows/views/DebugView.vue';
 import DefaultView from '$renderer/views/DefaultView.vue';
 import DemolitionView from '$windows/views/DemolitionView.vue';
@@ -56,6 +57,11 @@ const routes: RouteRecordRaw[] = [
                 path: 'plunder',
                 name: StandardWindowName.ConfigPlunder,
                 component: ConfigPlunder
+            },
+            {
+                path: 'tags',
+                name: StandardWindowName.ConfigTags,
+                component: ConfigTags
             }
         ]
     },

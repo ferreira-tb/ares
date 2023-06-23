@@ -35,7 +35,7 @@ whenever(amount, () => trigger());
 
 function trigger() {
     filteredIncomings.trigger();
-};
+}
 </script>
 
 <template>

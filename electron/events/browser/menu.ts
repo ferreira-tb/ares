@@ -6,7 +6,7 @@ import { appConfig } from '$electron/stores';
 export function setContextMenuEvents() {
     const mainWindow = MainWindow.getInstance();
 
-    ipcMain.on('browser:show-context-menu', (_e, options: BrowserContextMenuOptions) => {
+    ipcMain.on('browser:show-context-menu', (_e, options: ContextMenuOptions) => {
         const template: Electron.MenuItemConstructorOptions[] = [
             { label: 'Voltar', id: 'go-back', click: () => BrowserTab.current.goBack() },
             { label: 'Avançar', id: 'go-forward', click: () => BrowserTab.current.goForward() },

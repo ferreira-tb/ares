@@ -26,9 +26,8 @@
         "docs:build": "vitepress build docs",
         "docs:preview": "vitepress preview docs",
         "fix": "node scripts/fix-files.mjs",
-        "forge:start": "electron-forge start",
-        "forge:package": "npm run build && electron-forge package",
-        "forge:make": "npm run build && electron-forge make",
+        "make": "npm run build && electron-forge make",
+        "package": "npm run build && electron-forge package",
         "start": "npm run build && electron .",
         "taze": "npx taze -w",
         "type-check": "vue-tsc --noEmit"

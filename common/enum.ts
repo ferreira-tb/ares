@@ -76,6 +76,7 @@ export const enum StandardWindowName {
     ConfigGeneral = 'config-general',
     ConfigNotifications = 'config-notifications',
     ConfigPlunder = 'config-plunder',
+    ConfigTags = 'config-tags',
     Debug = 'debug',
     Default = 'default',
     DemolitionTemplate = 'demolition-template',

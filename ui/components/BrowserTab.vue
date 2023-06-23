@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { NEllipsis, NSpin } from 'naive-ui';
-import { useBrowserTab } from '$ui/composables';
+import { useIpcOn } from '$renderer/composables';
 import { ipcSend } from '$renderer/ipc';
 import LightIcon18 from '$icons/units/LightIcon18.vue';
 
@@ -12,12 +12,9 @@ const props = defineProps<{
 }>();
 
 const browserTab = ref<HTMLDivElement | null>(null);
-const { title, favicon, isLoading } = useBrowserTab(props.id);
-
-const tabTitle = computed(() => {
-    if (props.isMainTab) return 'Ares';
-    return title.value ?? 'Ares';
-});
+const title = ref('Nova aba');
+const favicon = ref<string | null>(null);
+const isLoading = ref(false);
 
 useEventListener(browserTab, 'contextmenu', (e) => {
     if (props.isMainTab) return;
@@ -25,6 +22,21 @@ useEventListener(browserTab, 'contextmenu', (e) => {
     e.preventDefault();
     e.stopPropagation();
     ipcSend('tab:show-context-menu', props.id);
+});
+
+useIpcOn('tab:loading-status', (_e, loadingTabId: number, status: boolean) => {
+    if (props.id !== loadingTabId) return;
+    isLoading.value = status;
+});
+
+useIpcOn('tab:did-update-title', (_e, updatedTabId: number, newTitle: string) => {
+    if (props.id !== updatedTabId) return;
+    title.value = newTitle;
+});
+
+useIpcOn('tab:did-update-favicon', (_e, updatedTabId: number, newFavicon: string) => {
+    if (props.id !== updatedTabId) return;
+    favicon.value = newFavicon;
 });
 </script>
 
@@ -37,9 +49,10 @@ useEventListener(browserTab, 'contextmenu', (e) => {
                 <img v-else :src="favicon">
             </Transition>
         </div>
+        
         <div class="tab-title">
             <NEllipsis :tooltip="false">
-                {{ tabTitle }}
+                {{ props.isMainTab ? 'Ares' : title }}
             </NEllipsis>
         </div>
     </div>
