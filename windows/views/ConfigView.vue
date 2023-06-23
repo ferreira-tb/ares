@@ -5,6 +5,7 @@ import { NLayout, NLayoutSider, NMenu, type MenuInst, type MenuOption } from 'na
 import { router } from '$windows/router';
 import { useGameDataStore } from '$renderer/stores';
 import { ipcInvoke } from '$renderer/ipc';
+import { isMenuRoute } from '$renderer/utils';
 import { StandardWindowName } from '$common/enum';
 
 const gameData = useGameDataStore();
@@ -19,20 +20,6 @@ const menuOptions: MenuOption[] = [
     {
         label: renderLabel(StandardWindowName.ConfigGeneral, 'Geral'),
         key: StandardWindowName.ConfigGeneral
-    },
-    {
-        label: () => h('span', { style: 'padding-right: 20px;' }, 'Edifícios'),
-        key: 'config-buildings',
-        children: [
-            {
-                label: renderLabel(StandardWindowName.ConfigBuildingsSnob, 'Academia'),
-                key: StandardWindowName.ConfigBuildingsSnob
-            }
-        ]
-    },
-    {
-        label: renderLabel(StandardWindowName.ConfigPlunder, 'Saque'),
-        key: StandardWindowName.ConfigPlunder
     },
     {
         label: renderLabel(StandardWindowName.ConfigTags, 'Etiquetas'),
@@ -54,21 +41,9 @@ function renderLabel(routeName: StandardWindowName, label: string) {
     ]);
 }
 
-function isRoute(routeName: string, options: MenuOption[] = menuOptions): boolean {
-    return options.some((o) => {
-        if (o.key === routeName) {
-            return true;
-        } else if (Array.isArray(o.children)) {
-            return isRoute(routeName, o.children);
-        }
-
-        return false;
-    });
-}
-
 onMounted(() => {
     const routeName = router.currentRoute.value.name;
-    if (typeof routeName === 'string' && isRoute(routeName)) {
+    if (typeof routeName === 'string' && isMenuRoute(routeName, menuOptions)) {
         selectedKey.value = routeName as StandardWindowName;
         menuInst.value?.showOption(routeName);
     }

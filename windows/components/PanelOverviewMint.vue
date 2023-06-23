@@ -52,7 +52,7 @@ watchDeep(config, () => {
                     <NButton disabled>
                         Histórico
                     </NButton>
-                    <NButton @click="ipcSend('window:open', StandardWindowName.ConfigBuildingsSnob)">
+                    <NButton @click="$router.push({ name: StandardWindowName.PanelBuildingsSnob })">
                         Configurações
                     </NButton>
                 </NButtonGroup>

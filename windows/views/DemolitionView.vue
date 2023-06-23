@@ -21,7 +21,7 @@ import type { PaginationProps, DataTableBaseColumn } from 'naive-ui';
 
 interface DemolitionData extends DemolitionTroops {
     level: number;
-};
+}
 
 const message = useMessage();
 
@@ -35,10 +35,10 @@ if (template) {
         const level = Number.parseIntStrict(wallLevel);
         if (level === 0) continue;
         demolitionData.push({ level, ...units });
-    };
+    }
     
     demolitionData.sort((a, b) => a.level - b.level);
-};
+}
 
 const columns: DataTableBaseColumn[] = [
     { title: 'Nível', key: 'level' },
@@ -56,7 +56,7 @@ const columns: DataTableBaseColumn[] = [
 if (isArcherWorld) {
     columns.splice(4, 0, { title: () => h(ArcherIcon18), key: 'archer' });
     columns.splice(7, 0, { title: () => h(MarcherIcon18), key: 'marcher' });
-};
+}
 
 for (const column of columns) {
     column.align = 'center';
@@ -75,13 +75,13 @@ for (const column of columns) {
                     throw new RendererProcessError('Could not find the correct column in the table.');
                 } else if (typeof newValue !== typeof dataItem[column.key as T]) {
                     throw new RendererProcessError('Old and new values are not of the same type.');
-                };
+                }
 
                 dataItem[column.key as T] = newValue;
             }
         });
-    };
-};
+    }
+}
 
 const page = ref<number>(1);
 const pagination = computed<PaginationProps>(() => ({
@@ -98,21 +98,21 @@ watch(demolitionData, async (newData) => {
             const key = level.toString(10) as StringWallLevel;
             if (!(key in template.units)) {
                 throw new RendererProcessError(`There is no wall level ${key} in the demolition troops template.`);
-            };
+            }
 
             template.units[key] = units;
-        };
+        }
 
         const saved = await ipcInvoke('plunder:save-demolition-config', template);
         if (saved) {
             message.success('Tudo certo!');
         } else {
             message.error('Ocorreu algum erro :(');
-        };
+        }
 
     } catch (err) {
         RendererProcessError.catch(err);
-    };
+    }
 });
 </script>
 

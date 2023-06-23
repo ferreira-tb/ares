@@ -2,16 +2,17 @@
 import { nextTick } from 'vue';
 import { watchDeep } from '@vueuse/core';
 import { NResult } from 'naive-ui';
-import { useUserAlias } from '$renderer/composables';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { usePlunderConfigStore } from '$renderer/stores';
-import ConfigPlunderGridAttack from '$windows/components/ConfigPlunderGridAttack.vue';
-import ConfigPlunderGridGroups from '$windows/components/ConfigPlunderGridGroups.vue';
-import ConfigPlunderGridTemplateC from '$windows/components/ConfigPlunderGridTemplateC.vue';
-import ConfigPlunderGridWall from '$windows/components/ConfigPlunderGridWall.vue';
-import ConfigPlunderGridOthers from '$windows/components/ConfigPlunderGridOthers.vue';
+import PanelPlunderGridAttack from '$windows/components/PanelPlunderGridAttack.vue';
+import PanelPlunderGridGroups from '$windows/components/PanelPlunderGridGroups.vue';
+import PanelPlunderGridTemplateC from '$windows/components/PanelPlunderGridTemplateC.vue';
+import PanelPlunderGridWall from '$windows/components/PanelPlunderGridWall.vue';
+import PanelPlunderGridOthers from '$windows/components/PanelPlunderGridOthers.vue';
 
-const userAlias = useUserAlias();
+defineProps<{
+    userAlias: UserAlias | null;
+}>();
 
 // Sincroniza a configuração com o processo principal.
 const config = usePlunderConfigStore();
@@ -27,12 +28,12 @@ watchDeep(config, () => {
 </script>
 
 <template>
-    <section v-if="userAlias" class="plunder-config">
-        <ConfigPlunderGridAttack />
-        <ConfigPlunderGridTemplateC />
-        <ConfigPlunderGridGroups :user-alias="userAlias" />
-        <ConfigPlunderGridWall :user-alias="userAlias" />
-        <ConfigPlunderGridOthers />
+    <section v-if="userAlias" id="panel-plunder">
+        <PanelPlunderGridAttack />
+        <PanelPlunderGridTemplateC />
+        <PanelPlunderGridGroups :user-alias="userAlias" />
+        <PanelPlunderGridWall :user-alias="userAlias" />
+        <PanelPlunderGridOthers />
     </section>
 
     <div v-else class="result-info">
@@ -45,7 +46,14 @@ watchDeep(config, () => {
 </template>
 
 <style scoped lang="scss">
-.plunder-config {
+@use '$windows/assets/main.scss';
+
+#panel-plunder {
     padding: 0.5em;
+}
+
+.result-info {
+    @include main.to-center;
+    width: 100%;
 }
 </style>

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { shell } from 'electron';
-import { ref, nextTick } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { RouterView } from 'vue-router';
 import { MenuSharp } from '@vicons/ionicons5';
-import { useElementSize } from '$renderer/composables';
+import { useElementSize, useUserAlias } from '$renderer/composables';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { useGameDataStore } from '$renderer/stores';
 import { WebsiteUrl } from '$common/enum';
+import PanelMenu from '$windows/components/PanelMenu.vue';
 import {
     NButton,
     NDropdown,
@@ -18,6 +19,7 @@ import {
     NPageHeader
 } from 'naive-ui';
 
+const userAlias = useUserAlias();
 const version = await ipcInvoke('app:version');
 
 // Sincroniza com o processo principal.
@@ -28,10 +30,13 @@ if (currentData) {
     await nextTick();
 }
 
+const playerName = computed(() => {
+    if (!userAlias.value) return 'Ares';
+    return gameData.player.name ?? 'Ares';
+});
+
 const pageHeader = ref<HTMLDivElement | null>(null);
 const { height: headerHeight } = useElementSize(pageHeader);
-
-const routeTitle = ref('Visão Geral');
 
 const dropdown = [
     {
@@ -66,7 +71,7 @@ function handleSelect(key: WebsiteUrl) {
                     <NPageHeader>
                         <template #title>
                             <Transition name="tb-fade" mode="out-in">
-                                <span id="header-title" :key="routeTitle">{{ routeTitle }}</span>
+                                <span id="header-title" :key="playerName">{{ playerName }}</span>
                             </Transition>
                         </template>
                         <template #extra>
@@ -87,7 +92,7 @@ function handleSelect(key: WebsiteUrl) {
             </NLayoutHeader>
             <NLayout id="panel-layout-content" position="absolute" has-sider>
                 <NLayoutSider bordered :native-scrollbar="false" :width="200">
-                    Teste
+                    <PanelMenu />
                 </NLayoutSider>
         
                 <NLayout :native-scrollbar="false">
@@ -97,10 +102,7 @@ function handleSelect(key: WebsiteUrl) {
                                 <Transition name="tb-fade" mode="out-in">
                                     <KeepAlive>
                                         <Suspense>
-                                            <component
-                                                :is="Component"
-                                                @title="(newTitle: string) => routeTitle = newTitle"
-                                            />
+                                            <component :is="Component" :user-alias="userAlias" />
                                             <template #fallback>
                                                 <span class="bold-green to-center">Carregando...</span>
                                             </template>

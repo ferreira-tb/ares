@@ -2,10 +2,8 @@ import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-rout
 import { StandardWindowName } from '$common/enum';
 import ConfigView from '$windows/views/ConfigView.vue';
 import ConfigAdvanced from '$windows/components/ConfigAdvanced.vue';
-import ConfigBuildingsSnob from '$windows/components/ConfigBuildingsSnob.vue';
 import ConfigGeneral from '$windows/components/ConfigGeneral.vue';
 import ConfigNotifications from '$windows/components/ConfigNotifications.vue';
-import ConfigPlunder from '$windows/components/ConfigPlunder.vue';
 import ConfigTags from '$windows/components/ConfigTags.vue';
 import DebugView from '$windows/views/DebugView.vue';
 import DefaultView from '$renderer/views/DefaultView.vue';
@@ -13,8 +11,10 @@ import DemolitionView from '$windows/views/DemolitionView.vue';
 import ErrorLogView from '$windows/views/ErrorLogView.vue';
 import GroupTemplateView from '$windows/views/GroupTemplateView.vue';
 import GroupTemplateSafeZone from '$windows/components/GroupTemplateSafeZone.vue';
-import PanelView from '$windows/views/PanelView.vue';
+import PanelBuildingsSnob from '$windows/components/PanelBuildingsSnob.vue';
 import PanelOverview from '$windows/components/PanelOverview.vue';
+import PanelPlunder from '$windows/components/PanelPlunder.vue';
+import PanelView from '$windows/views/PanelView.vue';
 import PlunderHistoryView from '$windows/views/PlunderHistoryView.vue';
 import PlunderTemplateView from '$windows/views/PlunderTemplateView.vue';
 import TroopsCounterView from '$windows/views/TroopsCounterView.vue';
@@ -40,11 +40,6 @@ const routes: RouteRecordRaw[] = [
                 component: ConfigAdvanced
             },
             {
-                path: 'buildings-snob',
-                name: StandardWindowName.ConfigBuildingsSnob,
-                component: ConfigBuildingsSnob
-            },
-            {
                 path: 'general',
                 name: StandardWindowName.ConfigGeneral,
                 component: ConfigGeneral
@@ -53,11 +48,6 @@ const routes: RouteRecordRaw[] = [
                 path: 'notifications',
                 name: StandardWindowName.ConfigNotifications,
                 component: ConfigNotifications
-            },
-            {
-                path: 'plunder',
-                name: StandardWindowName.ConfigPlunder,
-                component: ConfigPlunder
             },
             {
                 path: 'tags',
@@ -99,9 +89,19 @@ const routes: RouteRecordRaw[] = [
         component: PanelView,
         children: [
             {
+                path: 'buildings-snob',
+                name: StandardWindowName.PanelBuildingsSnob,
+                component: PanelBuildingsSnob
+            },
+            {
                 path: 'overview',
                 name: StandardWindowName.PanelOverview,
                 component: PanelOverview
+            },
+            {
+                path: 'plunder',
+                name: StandardWindowName.PanelPlunder,
+                component: PanelPlunder
             }
         ]
     },

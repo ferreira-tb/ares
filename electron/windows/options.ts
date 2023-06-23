@@ -26,10 +26,8 @@ const panel: BrowserWindowOptions = {
 export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions } = {
     [StandardWindowName.Config]: config,
     [StandardWindowName.ConfigAdvanced]: config,
-    [StandardWindowName.ConfigBuildingsSnob]: config,
     [StandardWindowName.ConfigGeneral]: config,
     [StandardWindowName.ConfigNotifications]: config,
-    [StandardWindowName.ConfigPlunder]: config,
     [StandardWindowName.ConfigTags]: config,
     [StandardWindowName.Debug]: {
         width: 1000,
@@ -54,7 +52,9 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
     [StandardWindowName.GroupTemplate]: groupTemplate,
     [StandardWindowName.GroupTemplateSafeZone]: groupTemplate,
     [StandardWindowName.Panel]: panel,
+    [StandardWindowName.PanelBuildingsSnob]: panel,
     [StandardWindowName.PanelOverview]: panel,
+    [StandardWindowName.PanelPlunder]: panel,
     [StandardWindowName.PlunderHistory]: {
         width: 1200,
         minWidth: 1200,

@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { computed, nextTick } from 'vue';
+import { computed, nextTick, toRef } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NResult, NSelect } from 'naive-ui';
 import { computedAsync, watchDeep } from '@vueuse/core';
-import { useGroups, useUserAlias } from '$renderer/composables';
+import { useGroups } from '$renderer/composables';
 import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { decodeString } from '$common/utils';
 import GroupsButtonUpdate from '$renderer/components/GroupsButtonUpdate.vue';
 
-const userAlias = useUserAlias();
+const props = defineProps<{
+    userAlias: UserAlias | null;
+}>();
+
+const alias = toRef(() => props.userAlias);
 const locale = await ipcInvoke('app:locale');
 
 const gameData = useGameDataStore();
@@ -19,7 +23,7 @@ if (currentConfig) config.$patch(currentConfig);
 await nextTick();
 
 const villages = computedAsync<WorldVillageType[]>(async () => {
-    if (!userAlias.value || typeof gameData.player.id !== 'number') return [];
+    if (!alias.value || typeof gameData.player.id !== 'number') return [];
     const playerVillages = await ipcInvoke('world-data:get-player-villages', gameData.player.id);
     return playerVillages;
 }, []);
@@ -33,7 +37,7 @@ const villageOptions = computed(() => {
     return options;
 });
 
-const { groups: allGroups } = useGroups(userAlias);
+const { groups: allGroups } = useGroups(alias);
 const groupOptions = computed(() => {
     const options = allGroups.value.map(({ id: groupId, name: groupName }) => {
         return { label: groupName, value: groupId };
@@ -61,7 +65,7 @@ watchDeep(config, () => {
 </script>
 
 <template>
-    <div v-if="userAlias" class="config-buildings-snob">
+    <div v-if="alias" id="panel-buildings-snob">
         <NDivider title-placement="left" class="config-divider">Cunhagem</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
@@ -138,7 +142,14 @@ watchDeep(config, () => {
 </template>
 
 <style scoped lang="scss">
-.config-buildings-snob {
+@use '$windows/assets/main.scss';
+
+#panel-buildings-snob {
     padding: 0.5em;
+}
+
+.result-info {
+    @include main.to-center;
+    width: 100%;
 }
 </style>
