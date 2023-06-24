@@ -122,14 +122,19 @@ function fetchWorldData() {
     return async function(world: World | null) {
         if (!isWorld(world)) return;
         try {
-            const now = Date.now();
             const worldData = await WorldDataFetchHistory.findByPk(world);
 
-            // O dados são atualizados a cada 24 horas.
+            // O dados são atualizados a cada 6 horas.
+            const now = Date.now();
+            const shouldFetch = (date?: number) => {
+                if (!date) return true;
+                return (now - date) >= (Kronos.Hour * 6);
+            };
+
             const request: WorldDataRequest = {
-                ally: worldData?.ally ? (now - worldData.ally) <= Kronos.Day : true,
-                player: worldData?.player ? (now - worldData.player) <= Kronos.Day : true,
-                village: worldData?.village ? (now - worldData.village) <= Kronos.Day : true,
+                ally: shouldFetch(worldData?.ally),
+                player: shouldFetch(worldData?.player),
+                village: shouldFetch(worldData?.village),
                 world
             };
 

@@ -10,13 +10,13 @@ export function getGameRegionUrl(region: unknown): GameUrl {
         case 'uk': return GameUrl.UnitedKingdom;
         case 'us': return GameUrl.UnitedStates;
         default: return GameUrl.Brazil;
-    };
-};
+    }
+}
 
 export function getWorldUrl(world: World, region: GameRegion) {
     const url = getGameRegionUrl(region).replace('www', world);
     return new URL(url);
-};
+}
 
 function getEndPointUrl(world: World, region: GameRegion, endpoint: keyof typeof GameEndpoints) {
     const { origin } = getWorldUrl(world, region);
@@ -29,8 +29,8 @@ function getEndPointUrl(world: World, region: GameRegion, endpoint: keyof typeof
         case 'Player': return url(GameEndpoints.Player);
         case 'Village': return url(GameEndpoints.Village);
         default: throw new TypeError(`Invalid endpoint: ${endpoint}.`);
-    };
-};
+    }
+}
 
 export const getWorldConfigUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'GetConfig');
 export const getWorldUnitInfoUrl = (world: World, region: GameRegion) => getEndPointUrl(world, region, 'GetUnitInfo');
