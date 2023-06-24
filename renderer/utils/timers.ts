@@ -12,4 +12,4 @@ export function wait(extra?: number) {
     return new Promise<void>((resolve) => {
         setTimeout(() => resolve(), responseTime);
     });
-};
+}

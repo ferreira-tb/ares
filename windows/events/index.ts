@@ -7,6 +7,7 @@ import {
     usePlunderConfigStore,
     usePlunderHistoryStore,
     useSnobConfigStore,
+    useSnobHistoryStore,
     useUnitsStore
 } from '$renderer/stores';
 
@@ -15,6 +16,7 @@ export function setWindowEvents() {
     const plunderConfigStore = usePlunderConfigStore();
     const plunderHistoryStore = usePlunderHistoryStore();
     const snobConfigStore = useSnobConfigStore();
+    const snobHistoryStore = useSnobHistoryStore();
     const unitStore = useUnitsStore();
 
     ipcOnce('window:set-route', async (_e, name: StandardWindowName) => {
@@ -22,7 +24,7 @@ export function setWindowEvents() {
             await router.push({ name });
         } catch (err) {
             RendererProcessError.catch(err);
-        };
+        }
     });
 
     ipcOn('game:patch-game-data', (_e, data: TribalWarsGameDataType) => gameDataStore.$patch(data));
@@ -30,4 +32,5 @@ export function setWindowEvents() {
     ipcOn('plunder:patch-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
     ipcOn('plunder:patch-history', (_e, history: PlunderHistoryType) => plunderHistoryStore.$patch(history));
     ipcOn('snob:patch-config', (_e, config: SnobConfigType) => snobConfigStore.$patch(config));
-};
+    ipcOn('snob:patch-history', (_e, history: SnobHistoryType) => snobHistoryStore.$patch(history));
+}

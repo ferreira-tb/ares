@@ -1,19 +1,14 @@
 {
     "include": [
         "browser.config.*",
-        "panel.config.*",
         "ui.config.*",
         "windows.config.*",
-
-        "taze.config.*",
 
         "common/**/*",
         "typings/**/*",
 
         "browser/**/*",
         "browser/**/*.vue",
-        "panel/**/*",
-        "panel/**/*.vue",
         "renderer/**/*",
         "renderer/**/*.vue",
         "ui/**/*",
@@ -29,7 +24,6 @@
             "$icons/*": ["./renderer/components/icons/*"],
             "$ipc/*": ["./ipc/*"],
             "$lib/*": ["./browser/lib/*"],
-            "$panel/*": ["./panel/*"],
             "$renderer/*": ["./renderer/*"],
             "$ui/*": ["./ui/*"],
             "$windows/*": ["./windows/*"]

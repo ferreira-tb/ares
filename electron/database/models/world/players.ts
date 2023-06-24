@@ -13,7 +13,7 @@ export async function getPlayersTable(world: World) {
     
     playersTableMap.set(world, newTable);
     return newTable;
-};
+}
 
 function createPlayersTable(world: World) {
     const PlayersTable = class extends Model<InferAttributes<WorldPlayersModel>, InferCreationAttributes<WorldPlayersModel>> {};
@@ -52,4 +52,4 @@ function createPlayersTable(world: World) {
     }, { sequelize, tableName, modelName, timestamps: true });
 
     return PlayersTable;
-};
+}

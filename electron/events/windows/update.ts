@@ -7,10 +7,6 @@ import { MainProcessError } from '$electron/error';
 import { StandardWindowName } from '$common/enum';
 
 export function setUpdateWindowEvents() {
-    ipcMain.on('app-update:open', () => {
-        StandardWindow.open(StandardWindowName.Update);
-    });
-
     ipcMain.handle('app-update:is-ignored-version', (_e, version: string): boolean => {
         try {
             const versionToIgnore = appConfig.get('update').versionToIgnore;
@@ -19,14 +15,14 @@ export function setUpdateWindowEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return false;
-        };
+        }
     });
 
-    ipcMain.on('app-update:update-available-dialog', async (_e, newVersion: string) => {
+    ipcMain.on('update:update-available-dialog', async (_e, newVersion: string) => {
         try {
             if (!semverValid(newVersion)) {
                 throw new MainProcessError(`Invalid version: ${newVersion}.`);
-            };
+            }
 
             const { response } = await dialog.showMessageBox({
                 type: 'info',
@@ -42,10 +38,10 @@ export function setUpdateWindowEvents() {
                 StandardWindow.open(StandardWindowName.Update);
             } else if (response === 2) {
                 appConfig.set('update', { versionToIgnore: newVersion });
-            };
+            }
 
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
-};
+}

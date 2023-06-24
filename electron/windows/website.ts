@@ -8,15 +8,15 @@ import { isAllowedOrigin } from '$common/guards';
 export class WebsiteWindow extends BaseWindow {
     public override emit(event: string, ...args: any[]): boolean {
         return super.emit(event, ...args);
-    };
+    }
 
     public override on(event: string, listener: (...args: any[]) => void): this {
         return super.on(event, listener);
-    };
+    }
 
     public override once(event: string, listener: (...args: any[]) => void): this {
         return super.once(event, listener);
-    };
+    }
 
     private constructor(url: string, options: BrowserWindowOptions) {
         super(options);
@@ -32,7 +32,7 @@ export class WebsiteWindow extends BaseWindow {
         this.browser.webContents.on('will-navigate', (e, targetUrl) => {
             if (!isAllowedOrigin(targetUrl)) e.preventDefault();
         });
-    };
+    }
 
     public setWebsiteWindowMenu() {
         const options: Electron.MenuItemConstructorOptions[] = [
@@ -47,7 +47,7 @@ export class WebsiteWindow extends BaseWindow {
     
         const menu = Menu.buildFromTemplate(options);
         this.setMenu(menu);
-    };
+    }
 
     public static open(url: string): WebsiteWindow | null {
         try {
@@ -79,6 +79,6 @@ export class WebsiteWindow extends BaseWindow {
         } catch (err) {
             WebsiteWindowError.catch(err);
             return null;
-        };
-    };
-};
+        }
+    }
+}

@@ -32,7 +32,7 @@ export function toLocaleDateString(
     const dateString = date.toLocaleDateString(locale, dateOptions);
     const timeString = date.toLocaleTimeString(locale, timeOptions);
     return `${dateString} ${timeString}`;
-};
+}
 
 /**
  * Converte uma data para milisegundos.
@@ -76,10 +76,10 @@ export function parseGameDate(date: string): number | null {
         const anyDay = new Date().setHours(hours, minutes, seconds, milliseconds);
         // O valor para o mês possui índice zero, por isso é preciso diminuí-lo em 1.
         return new Date(anyDay).setMonth(month - 1, day);
-    };
+    }
 
     return null;
-};
+}
 
 /**
  * Analisa um relatório aberto e retorna a data de quando ele foi gerado.
@@ -102,18 +102,18 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
             const rawMonth: string = field.replace(/\W/g, '').slice(0, 3);
             if (typeof rawMonth !== 'string' || rawMonth.length === 0) {
                 throw new RendererProcessError(`Invalid month: ${rawMonth}.`);
-            };
+            }
 
             // Date.prototype.setFullYear() usa índice zero para os meses.
             const monthIndex = months.findIndex((month) => month === rawMonth);
             if (monthIndex === -1) {
                 throw new RendererProcessError(`Invalid month: ${rawMonth}.`);
-            };
+            }
             return monthIndex;
 
         } else if (index === 3) {
             return field.split(':').map((value) => getDigits(value));
-        };
+        }
 
         return getDigits(field);
     });
@@ -127,8 +127,8 @@ export function parseReportDate(report: Element, ms: boolean = true): number {
     const date = new Date(fullYear).setHours(hour, minute, second, millisec);
     if (!Number.isInteger(date)) {
         throw new RendererProcessError(`Invalid report date: ${date}.`);
-    };
+    }
 
     if (!ms) return Math.ceil(date / 1000);
     return date;
-};
+}

@@ -11,15 +11,15 @@ import type { StandardWindowName } from '$common/enum';
 export class StandardWindow extends BaseWindow {
     public override emit(event: string, ...args: any[]): boolean {
         return super.emit(event, ...args);
-    };
+    }
 
     public override on(event: string, listener: (...args: any[]) => void): this {
         return super.on(event, listener);
-    };
+    }
 
     public override once(event: string, listener: (...args: any[]) => void): this {
         return super.once(event, listener);
-    };
+    }
 
     public readonly name: StandardWindowName;
 
@@ -38,7 +38,7 @@ export class StandardWindow extends BaseWindow {
         if (windowConfig) {
             const { bounds } = windowConfig;
             if (bounds) this.browser.setBounds(bounds);
-        };
+        }
 
         this.browser.on('system-context-menu', (e) => e.preventDefault());
 
@@ -54,12 +54,12 @@ export class StandardWindow extends BaseWindow {
             this.browser.removeAllListeners();
             StandardWindow.windows.delete(this.name);
         });
-    };
+    }
 
     private saveBounds() {
         const rectangle = this.browser.getBounds();
-        appConfig.set('window', { [this.name]: { bounds: rectangle } } satisfies WindowBoundsConfigType);
-    };
+        appConfig.set(`window.${this.name}`, { bounds: rectangle });
+    }
 
     private setStandardWindowMenu() {
         const options: Electron.MenuItemConstructorOptions[] = [
@@ -68,11 +68,13 @@ export class StandardWindow extends BaseWindow {
             { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => this.openDevTools() }
         ];
     
-        options.forEach((option) => (option.visible = false));
+        options.forEach((option) => {
+            option.visible = false;
+        });
     
         const menu = Menu.buildFromTemplate(options);
         this.setMenu(menu);
-    };
+    }
 
     /** Janelas ativas. */
     private static readonly windows = new Map<StandardWindowName, StandardWindow>();
@@ -82,14 +84,14 @@ export class StandardWindow extends BaseWindow {
     public static getWindow(nameOrContents: Electron.WebContents | StandardWindowName): StandardWindow | null {
         if (typeof nameOrContents === 'string') {
             return this.windows.get(nameOrContents) ?? null;
-        };
+        }
 
         for (const standardWindow of this.windows.values()) {
             if (standardWindow.webContents === nameOrContents) return standardWindow;
-        };
+        }
 
         return null;
-    };
+    }
 
     public static open<T extends keyof BrowserWindowOptions>(name: StandardWindowName): StandardWindow | null {
         try {
@@ -98,7 +100,7 @@ export class StandardWindow extends BaseWindow {
                 if (previous.isVisible()) previous.focus();
                 if (previous.isMinimized()) previous.restore();
                 return previous;
-            };
+            }
 
             const mainWindow = MainWindow.getInstance();
             const options: BrowserWindowOptions = {
@@ -124,7 +126,7 @@ export class StandardWindow extends BaseWindow {
 
             for (const [key, value] of Object.entries(windowOptions[name]) as [T, BrowserWindowOptions[T]][]) {
                 options[key] = value;
-            };
+            }
 
             const standardWindow = new StandardWindow(name, options);
             StandardWindow.windows.set(name, standardWindow);
@@ -133,6 +135,6 @@ export class StandardWindow extends BaseWindow {
         } catch (err) {
             StandardWindowError.catch(err);
             return null;
-        };
-    };
-};
+        }
+    }
+}

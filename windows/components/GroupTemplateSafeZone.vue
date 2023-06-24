@@ -39,7 +39,7 @@ const playerVillages = usePlayerVillages(toRef(() => gameData.player.id));
 const enemies = computed(() => diplomacy.value?.enemies.map((ally) => ally.id) ?? []);
 const enemyVillages = useAllyVillages(enemies);
 
-const fields = ref(30);
+const fields = ref(20);
 const groupName = ref<string>('Zona segura');
 
 const { groups: currentGroups } = useGroups();

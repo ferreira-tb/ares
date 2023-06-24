@@ -27,7 +27,7 @@ async function next() {
     if (!selectedTemplate.value) return;
     await router.push({ name: selectedTemplate.value });
     emit('next');
-};
+}
 </script>
 
 <template>
@@ -65,9 +65,7 @@ async function next() {
 @use '$windows/assets/main.scss';
 
 .group-template-welcome {
-    @include main.flex-x-center-y-center;
-    flex-direction: column;
-    gap: 1em;
+    @include main.flex-x-center-y-center($flex-direction: column, $gap: 1em);
 
     .select-title {
         margin-top: 1em;

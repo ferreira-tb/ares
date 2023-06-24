@@ -38,7 +38,7 @@ export function setPlunderConfigEvents() {
 
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     watch(userAlias, async (alias) => {
@@ -52,9 +52,9 @@ export function setPlunderConfigEvents() {
             const defaultConfig = new DefaultPlunderConfig();
             plunderConfigStore.$patch(defaultConfig);
             patchAllWebContents(defaultConfig);
-        };
+        }
     });
-};
+}
 
 /** Comunica a mudança aos processos diferentes daquele que enviou os dados. */
 function patchAllWebContents(data: PlunderConfigType, sender?: Electron.WebContents) {
@@ -62,5 +62,5 @@ function patchAllWebContents(data: PlunderConfigType, sender?: Electron.WebConte
     for (const contents of webContents.getAllWebContents()) {
         if (sender && contents === sender) continue;
         contents.send(channel, data);
-    };
-};
+    }
+}

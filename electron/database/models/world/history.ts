@@ -12,7 +12,7 @@ export class WorldDataFetchHistory extends Model<
     declare public readonly village: CreationOptional<number>;
     declare public readonly player: CreationOptional<number>;
     declare public readonly ally: CreationOptional<number>;
-};
+}
 
 WorldDataFetchHistory.init({
     world: {
@@ -41,4 +41,4 @@ WorldDataFetchHistory.init({
         allowNull: false,
         defaultValue: 0
     }
-}, { sequelize, tableName: 'world_fetch_history', timestamps: false });
+}, { sequelize, tableName: 'world_fetch_history', timestamps: true });

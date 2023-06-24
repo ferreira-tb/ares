@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { shell } from 'electron';
 import { NResult, NButton, NButtonGroup } from 'naive-ui';
-import { WebsiteUrl } from '$common/enum';
 import { ipcSend } from '$renderer/ipc';
+import { StandardWindowName, WebsiteUrl } from '$common/enum';
 
 interface Props {
     title?: string;
@@ -39,8 +39,10 @@ const props = withDefaults(defineProps<Props>(), {
                 <slot name="footer">
                     <template v-if="props.showDefaultFooter">
                         <NButtonGroup>
-                            <NButton round @click="ipcSend('website:issues')">Issues</NButton>
-                            <NButton round @click="ipcSend('error:open-log-window')">Registro de Erros</NButton>
+                            <NButton round @click="ipcSend('website:open', WebsiteUrl.Issues)">Issues</NButton>
+                            <NButton round @click="ipcSend('window:open', StandardWindowName.ErrorLog)">
+                                Registro de Erros
+                            </NButton>
                             <NButton round @click="shell.openExternal(WebsiteUrl.Discord)">Discord</NButton>
                         </NButtonGroup>
                     </template>

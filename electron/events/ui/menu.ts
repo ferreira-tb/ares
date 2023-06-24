@@ -6,7 +6,7 @@ import { StandardWindowName, WebsiteUrl } from '$common/enum';
 export function setMenuEvents() {
     const mainWindow = MainWindow.getInstance();
 
-    ipcMain.on('open-bug-report-menu', () => {
+    ipcMain.on('menu:bug', () => {
         const template: Electron.MenuItemConstructorOptions[] = [
             { label: 'Registro de erros', click: () => void StandardWindow.open(StandardWindowName.ErrorLog) },
             { label: 'Problemas conhecidos', click: () => void WebsiteWindow.open(WebsiteUrl.Issues) }

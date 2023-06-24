@@ -28,23 +28,15 @@ const schema: Schema<AppConfigType> = {
             notifyOnError: { type: 'boolean', default: true }
         }
     },
-    panel: {
+    tags: {
         type: 'object',
         additionalProperties: false,
         default: {},
         properties: {
-            show: { type: 'boolean', default: true },
-            bounds: {
-                type: ['object', 'null'],
-                additionalProperties: false,
-                default: null,
-                properties: {
-                    x: { type: 'integer' },
-                    y: { type: 'integer' },
-                    width: { type: 'integer' },
-                    height: { type: 'integer' }
-                }
-            }
+            nextIncoming: { type: 'boolean', default: true },
+            plunder: { type: 'boolean', default: true },
+            responseTime: { type: 'boolean', default: true },
+            snob: { type: 'boolean', default: true }
         }
     },
     ui: {

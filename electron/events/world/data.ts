@@ -25,7 +25,7 @@ export function setWorldDataEvents(cachedWorld: MechanusRef<World | null>) {
         const VillagesTable = await getVillagesTable(world);
         if (!villageId || (Array.isArray(villageId) && villageId.length === 0)) {
             return (await VillagesTable.findAll()).map((v) => v.toJSON());
-        };
+        }
 
         const idList = Array.isArray(villageId) ? villageId : [villageId];
         const villages = await VillagesTable.findAll({
@@ -63,7 +63,7 @@ export function setWorldDataEvents(cachedWorld: MechanusRef<World | null>) {
         const AlliesTable = await getAlliesTable(world);
         if (!allyId || (Array.isArray(allyId) && allyId.length === 0)) {
             return (await AlliesTable.findAll()).map((a) => a.toJSON());
-        };
+        }
 
         const idList = Array.isArray(allyId) ? allyId : [allyId];
         const allies = await AlliesTable.findAll({
@@ -116,7 +116,7 @@ export function setWorldDataEvents(cachedWorld: MechanusRef<World | null>) {
 
     // Obtêm informações do mundo sempre que ele for alterado.
     watch(cachedWorld, fetchWorldData());
-};
+}
 
 function fetchWorldData() {
     return async function(world: World | null) {
@@ -145,14 +145,14 @@ function fetchWorldData() {
                     try {
                         if (!e.data) {
                             throw new MainProcessError(`No data received for world ${world}.`);
-                        };
+                        }
                         resolve(e.data);
                     } catch (err) {
                         reject(err);
                     } finally {
                         port1.close();
                         child.kill();
-                    };
+                    }
                 });
 
                 port1.start();
@@ -168,7 +168,7 @@ function fetchWorldData() {
                         });
 
                         history.ally = Date.now();
-                    };
+                    }
 
                     if (newData.players.length > 0) {
                         const Players = await getPlayersTable(world);
@@ -177,7 +177,7 @@ function fetchWorldData() {
                         });
 
                         history.player = Date.now();
-                    };
+                    }
 
                     if (newData.villages.length > 0) {
                         const Villages = await getVillagesTable(world);
@@ -186,19 +186,19 @@ function fetchWorldData() {
                         });
                         
                         history.village = Date.now();
-                    };
+                    }
                     
                     if (Object.keys(history).length > 0) {
                         await WorldDataFetchHistory.upsert({ world, ...history });
-                    };
+                    }
                 });
                 
             } else {
                 throw new MainProcessError(`No data received for world ${world}.`);
-            };
+            }
 
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     };
-};
+}

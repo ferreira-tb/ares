@@ -3,12 +3,12 @@ import { computed, ref } from 'vue';
 import { RouterView } from 'vue-router';
 import { useUserAlias } from '$renderer/composables';
 import GroupTemplateWelcome from '$windows/components/GroupTemplateWelcome.vue';
+import ResultGuest from '$renderer/components/ResultGuest.vue';
 import type { StandardWindowName } from '$common/enum';
 import {
     NEllipsis,
     NLayout,
     NLayoutSider,
-    NResult,
     NSpace,
     NSteps,
     NStep,
@@ -72,13 +72,10 @@ const templateTitle = computed(() => templateName.value ? templateName.value : '
         </NLayout>
     </main>
 
-    <div v-else class="result-info">
-        <NResult
-            status="info"
-            title="Você está logado?"
-            description="É necessário estar logado para criar grupos."
-        />
-    </div>
+    <ResultGuest
+        v-else
+        description="É necessário estar logado para criar grupos."
+    />
 </template>
 
 <style scoped lang="scss">

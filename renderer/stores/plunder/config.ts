@@ -75,7 +75,7 @@ export const usePlunderConfigStore = defineStore('plunder-config', () => {
             plunderedResourcesRatio: plunderedResourcesRatio.value,
             pageDelay: pageDelay.value  
         };
-    };
+    }
 
     return {
         // Painel

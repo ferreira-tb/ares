@@ -4,7 +4,7 @@ import { watchDeep } from '@vueuse/core';
 import { NCheckbox, NDivider, NGrid, NGridItem } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 
-const config = ref(await ipcInvoke('config:general'));
+const config = ref(await ipcInvoke('config:get', 'general'));
 watchDeep(config, (newValue) => ipcSend('config:update', 'general', toRaw(newValue)));
 </script>
 

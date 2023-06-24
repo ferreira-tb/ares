@@ -89,13 +89,6 @@ type PlunderConfigType = {
     pageDelay: number;
 };
 
-type PlunderPanelConfig = Pick<PlunderConfigType,
-    'active' | 'blindAttack' | 'destroyWall' | 'groupAttack' | 'ignoreDelay' | 'ignoreWall' | 'useC'
->;
-
-type PlunderPanelConfigKeys = keyof PlunderPanelConfig;
-type PlunderPanelConfigValues = PlunderPanelConfig[PlunderPanelConfigKeys];
-
 type PlunderCacheType = {
     /** Páginas do assistente de saque referentes à aldeia atual. */
     readonly pages: PlunderPageListType | null;

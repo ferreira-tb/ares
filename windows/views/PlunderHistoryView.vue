@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, type ComponentPublicInstance } from 'vue';
 import { computedAsync, useElementSize, useWindowSize, watchImmediate } from '@vueuse/core';
-import { NResult } from 'naive-ui';
 import { Kronos } from '@tb-dev/kronos';
 import { useIpcOn, useUserAlias } from '$renderer/composables';
 import { ipcInvoke } from '$renderer/ipc';
 import { decodeString, getContinentFromCoords } from '$common/utils';
 import PlunderHistoryHeader from '$windows/components/PlunderHistoryHeader.vue';
 import PlunderHistoryDataTable from '$windows/components/PlunderHistoryDataTable.vue';
+import ResultGuest from '$renderer/components/ResultGuest.vue';
 
 const userAlias = useUserAlias();
 
@@ -164,20 +164,9 @@ function parseLogs(logs: PlunderHistoryVillageType[]): PlunderAttackLog {
         </Transition>
     </main>
 
-    <div v-else class="result-info">
-        <NResult
-            status="info"
-            title="Você está logado?"
-            description="É necessário estar logado para acessar o histórico de saque."
-        />
-    </div>
+    <ResultGuest
+        v-else
+        description="É necessário estar logado para acessar o histórico de saque."
+        to-center
+    />
 </template>
-
-<style scoped lang="scss">
-@use '$windows/assets/main.scss';
-
-.result-info {
-    @include main.to-center;
-    width: 100%;
-}
-</style>

@@ -1,18 +1,15 @@
 import * as fs from 'node:fs/promises';
-import { ipcMain } from 'electron';
+import { ipcMain, webContents } from 'electron';
 import { sequelize } from '$electron/database';
 import { appConfig } from '$electron/stores';
-import { StandardWindow } from '$electron/windows';
 import { MainProcessError } from '$electron/error';
 import { database } from '$electron/utils/files';
 import { restartAres } from '$electron/utils/helpers';
-import type { StandardWindowName } from '$common/enum';
 
 export function setConfigEvents() {
-    ipcMain.on('config:open', (_e, route: StandardWindowName) => StandardWindow.open(route));
-    ipcMain.handle('config:advanced', () => ({ ...appConfig.get('advanced') }));
-    ipcMain.handle('config:general', () => ({ ...appConfig.get('general') }));
-    ipcMain.handle('config:notifications', () => ({ ...appConfig.get('notifications') }));
+    ipcMain.handle('config:get', (_e, configType: keyof AppConfigType) => {
+        return { ...appConfig.get(configType) };
+    });
     
     ipcMain.handle('config:should-reload-after-captcha', () => appConfig.get('general').reloadAfterCaptcha);
     ipcMain.handle('config:should-notify-on-error', () => appConfig.get('notifications').notifyOnError);
@@ -22,9 +19,16 @@ export function setConfigEvents() {
     ) => {
         try {
             appConfig.set(configType, value);
+            
+            if (configType === 'tags') {
+                for (const contents of webContents.getAllWebContents()) {
+                    contents.send('config:did-update', configType);
+                }
+            }
+
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     ipcMain.handle('db:clear-database', async () => {
@@ -37,6 +41,6 @@ export function setConfigEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return false;
-        };
+        }
     });
-};
+}

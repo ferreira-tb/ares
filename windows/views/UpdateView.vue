@@ -5,8 +5,8 @@ import { computedEager, useFetch, useWindowSize } from '@vueuse/core';
 import { NButton, NButtonGroup, NSpin, NProgress } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
-import { AresAPI } from '$common/enum';
 import { RendererProcessError } from '$renderer/error';
+import { AresAPI, StandardWindowName } from '$common/enum';
 
 const appVersion = await ipcInvoke('app:version');
 const { isFetching, data, onFetchError } = useFetch(AresAPI.Latest).json<LatestVersion>();
@@ -58,12 +58,12 @@ useIpcOn('update-download-failed', () => {
 function downloadUpdate() {
     if (!data.value?.download) return;
     ipcSend('download-from-url', data.value.download);
-};
+}
 
 function openChangelog() {
     if (!data.value?.notes) return;
     ipcSend('website:any', data.value.notes);
-};
+}
 </script>
 
 <template>
@@ -74,7 +74,11 @@ function openChangelog() {
                     <div>Versão atual: {{ appVersion }}</div>
                     <div v-if="isLatest" class="is-latest">Você está com a versão mais recente!</div>
                     <div v-else-if="data">Nova versão: {{ data.version }}</div>
-                    <div v-else-if="wentWrong" class="went-wrong" @click="ipcSend('error:open-log-window')">
+                    <div
+                        v-else-if="wentWrong"
+                        class="went-wrong"
+                        @click="ipcSend('window:open', StandardWindowName.ErrorLog)"
+                    >
                         Erro ao verificar a versão mais recente.
                     </div>
                 </div>

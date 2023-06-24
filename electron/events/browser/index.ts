@@ -17,4 +17,4 @@ export function setBrowserEvents() {
 
     setCaptchaEvents();
     setContextMenuEvents();
-};
+}

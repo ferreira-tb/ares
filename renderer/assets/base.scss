@@ -32,6 +32,11 @@ a {
     @include mixins.bold-text-color(var(--color-green));
 }
 
+.result-info, .result-sucess {
+    padding: 1em;
+    user-select: none;
+}
+
 .to-center {
     @include mixins.to-center;
 }

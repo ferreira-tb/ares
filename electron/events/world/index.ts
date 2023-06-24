@@ -34,7 +34,7 @@ export function setWorldEvents() {
     setWorldConfigEvents(cachedWorld);
     setWorldDataEvents(cachedWorld);
     setWorldUnitsEvents(cachedWorld);
-};
+}
 
 function isArcherWorldHandler(cachedWorld: MechanusRef<World | null>) {
     const isArcherWorld = ref<boolean | null>(null);
@@ -42,7 +42,7 @@ function isArcherWorldHandler(cachedWorld: MechanusRef<World | null>) {
         if (!isWorld(world)) {
             isArcherWorld.value = null;
             return;
-        };
+        }
 
         const worldConfig = await WorldConfig.findByPk(world);
         isArcherWorld.value = worldConfig?.archer ?? null;
@@ -51,4 +51,4 @@ function isArcherWorldHandler(cachedWorld: MechanusRef<World | null>) {
     return function(): boolean | null {
         return isArcherWorld.value;
     };
-};
+}

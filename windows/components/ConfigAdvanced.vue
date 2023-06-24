@@ -8,7 +8,7 @@ import { RendererProcessError } from '$renderer/error';
 const dialog = useDialog();
 const message = useMessage();
 
-const config = reactive(await ipcInvoke('config:advanced'));
+const config = reactive(await ipcInvoke('config:get', 'advanced'));
 watchDeep(config, (newValue) => ipcSend('config:update', 'advanced', toRaw(newValue)));
 
 const isDebugModeEnabled = toRef(config, 'debug');
@@ -28,21 +28,21 @@ function dropDatabase() {
                     message.success('O Ares reiniciará em instantes...');
                 } else {
                     message.error('Ocorreu algum erro :(');
-                };
+                }
                 
             } catch (err) {
                 RendererProcessError.catch(err);
-            };
+            }
         }
     });
-};
+}
 </script>
 
 <template>
-    <section class="advanced-config">
+    <section id="advanced-config">
         <NDivider title-placement="left" class="config-divider">Desenvolvedor</NDivider>
-        <NGrid :cols="2" :x-gap="6" :y-gap="10">
-            <NGridItem :span="2">
+        <NGrid :cols="1" :x-gap="6" :y-gap="10">
+            <NGridItem>
                 <div class="config-checkbox">
                     <NCheckbox v-model:checked="config.devTools" size="large">
                         Habilitar DevTools
@@ -50,7 +50,7 @@ function dropDatabase() {
                 </div>
             </NGridItem>
 
-            <NGridItem :span="2">
+            <NGridItem>
                 <div class="config-checkbox">
                     <NCheckbox v-model:checked="config.debug" size="large">
                         Habilitar modo de depuração
@@ -72,7 +72,7 @@ function dropDatabase() {
 </template>
 
 <style scoped lang="scss">
-.advanced-config {
+#advanced-config {
     padding: 0.5em;
 }
 </style>

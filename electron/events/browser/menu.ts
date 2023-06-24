@@ -1,13 +1,12 @@
 import { ipcMain, Menu } from 'electron';
-import { MainWindow, PanelWindow } from '$electron/windows';
+import { MainWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { appConfig } from '$electron/stores';
 
 export function setContextMenuEvents() {
     const mainWindow = MainWindow.getInstance();
-    const panelWindow = PanelWindow.getInstance();
 
-    ipcMain.on('browser:show-context-menu', (_e, options: BrowserContextMenuOptions) => {
+    ipcMain.on('browser:show-context-menu', (_e, options: ContextMenuOptions) => {
         const template: Electron.MenuItemConstructorOptions[] = [
             { label: 'Voltar', id: 'go-back', click: () => BrowserTab.current.goBack() },
             { label: 'Avançar', id: 'go-forward', click: () => BrowserTab.current.goForward() },
@@ -24,8 +23,7 @@ export function setContextMenuEvents() {
         if (devTools) {
             const inspectTemplate: Electron.MenuItemConstructorOptions[] = [
                 { label: 'Página', click: () => BrowserTab.current.inspectElement(options.x, options.y) },
-                { label: 'Janela', click: () => mainWindow.openDevTools() },
-                { label: 'Painel', click: () => panelWindow.openDevTools() }
+                { label: 'Interface', click: () => mainWindow.openDevTools() }
             ];
 
             if (template.length > 0) template.push({ type: 'separator' });

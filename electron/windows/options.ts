@@ -12,13 +12,23 @@ const groupTemplate: BrowserWindowOptions = {
     title: 'Modelos de grupo'
 };
 
+const panel: BrowserWindowOptions = {
+    width: 800,
+    minWidth: 800,
+    height: 600,
+    minHeight: 600,
+    title: 'Painel',
+    minimizable: true,
+    maximizable: true,
+    resizable: true
+};
+
 export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions } = {
     [StandardWindowName.Config]: config,
     [StandardWindowName.ConfigAdvanced]: config,
-    [StandardWindowName.ConfigBuildingsSnob]: config,
     [StandardWindowName.ConfigGeneral]: config,
     [StandardWindowName.ConfigNotifications]: config,
-    [StandardWindowName.ConfigPlunder]: config,
+    [StandardWindowName.ConfigTags]: config,
     [StandardWindowName.Debug]: {
         width: 1000,
         height: 600,
@@ -41,6 +51,12 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
     },
     [StandardWindowName.GroupTemplate]: groupTemplate,
     [StandardWindowName.GroupTemplateSafeZone]: groupTemplate,
+    [StandardWindowName.Panel]: panel,
+    [StandardWindowName.PanelBot]: panel,
+    [StandardWindowName.PanelBotBuildingsSnob]: panel,
+    [StandardWindowName.PanelBotOverview]: panel,
+    [StandardWindowName.PanelBotPlunder]: panel,
+    [StandardWindowName.PanelTools]: panel,
     [StandardWindowName.PlunderHistory]: {
         width: 1200,
         minWidth: 1200,
@@ -64,8 +80,8 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
         height: 400,
         minHeight: 400,
         maxHeight: 400,
-        resizable: true,
-        title: 'Contador de tropas'
+        title: 'Contador de tropas',
+        resizable: true
     },
     [StandardWindowName.Update]: {
         width: 350,

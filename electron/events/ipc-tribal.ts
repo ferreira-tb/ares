@@ -1,6 +1,5 @@
 import * as fs from 'node:fs/promises';
 import { ipcMain, webContents } from 'electron';
-import { PanelWindow } from '$electron/windows';
 import { ipcTribalJs } from '$electron/utils/files';
 import { MainProcessError } from '$electron/error';
 import {
@@ -34,7 +33,7 @@ export function setIpcTribalEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return null;
-        };
+        }
     });
 
     // Recebe os dados do jogo, salva-os localmente e então envia-os ao painel.
@@ -44,7 +43,7 @@ export function setIpcTribalEvents() {
                 cacheStore.player = null;
                 cacheStore.world = null;
                 return;
-            };
+            }
 
             gameDataStore.$patch(gameData);
             cacheStore.player = gameData.player.name;
@@ -53,12 +52,12 @@ export function setIpcTribalEvents() {
             for (const contents of webContents.getAllWebContents()) {
                 if (contents !== e.sender) {
                     contents.send('game:patch-game-data', gameData);
-                };
-            };
+                }
+            }
 
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     // Recebe as informações referentes ao assistente de saque, salva-as localmente e então envia-as ao painel.
@@ -68,16 +67,14 @@ export function setIpcTribalEvents() {
         try {
             for (const [key, value] of Object.entries(plunderInfo) as [T, typeof plunderStore[T]][]) {
                 plunderStore[key] = value;
-            };
-    
-            const panelWindow = PanelWindow.getInstance();
-            panelWindow.webContents.send('plunder:patch-info', plunderInfo);
+            }
+            
             return true;
 
         } catch (err) {
             MainProcessError.catch(err);
             return false;
-        };
+        }
     });
 
     // Recebe as informações referentes às unidades da aldeia atual, salva-as localmente e então envia-as ao painel.
@@ -87,19 +84,19 @@ export function setIpcTribalEvents() {
         try {
             for (const [key, value] of Object.entries(units) as [T, typeof unitsStore[T]][]) {
                 unitsStore[key] = value;
-            };
+            }
     
             for (const contents of webContents.getAllWebContents()) {
                 if (contents !== e.sender) {
                     contents.send('game:patch-village-units', units);
-                };
-            };
+                }
+            }
 
             return true;
 
         } catch (err) {
             MainProcessError.catch(err);
             return false;
-        };
+        }
     });
-};
+}

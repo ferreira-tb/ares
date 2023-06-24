@@ -18,7 +18,6 @@ export const childProcess = {
 
 // HTML
 export const windowsHtml = path.join(__dirname, 'windows.html');
-export const panelHtml = path.join(__dirname, 'panel.html');
 export const uiHtml = path.join(__dirname, 'ui.html');
 
 // CSS

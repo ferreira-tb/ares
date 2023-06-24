@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
 import { ipcRenderer } from 'electron';
-import type { StandardWindowName } from '$common/enum';
+import type { RendererWorkerName, StandardWindowName, WebsiteUrl } from '$common/enum';
 import type { PlunderAttack } from '$common/templates';
-import type { RendererWorkerName } from '$common/enum';
 
 const debug = {
     enabled: false
@@ -20,12 +19,6 @@ function report(processType: 'main' | 'renderer', channel: string, ...args: unkn
     ipcRenderer.send('debug:report', processType, channel, ...args);
 }
 
-// Janela
-export async function ipcInvoke(channel: 'ui:is-maximized'): Promise<boolean>;
-
-// Geral
-export async function ipcInvoke(channel: 'user:get-alias'): Promise<UserAlias | null>;
-
 // Aplicação
 export async function ipcInvoke(channel: 'app:name'): Promise<string>;
 export async function ipcInvoke(channel: 'app:version'): Promise<string>;
@@ -35,22 +28,25 @@ export async function ipcInvoke(channel: 'app:user-data-path'): Promise<string>;
 export async function ipcInvoke(channel: 'app:desktop-path'): Promise<string>;
 export async function ipcInvoke(channel: 'app-update:is-ignored-version', version: string): Promise<boolean>;
 
+// Geral
+export async function ipcInvoke(channel: 'user:get-alias'): Promise<UserAlias | null>;
+
 // Desenvolvedor
 export async function ipcInvoke(channel: 'debug:is-enabled'): Promise<boolean>;
 
+// Janela
+export async function ipcInvoke(channel: 'ui:is-maximized'): Promise<boolean>;
+
 // Configurações
 export async function ipcInvoke(channel: 'db:clear-database'): Promise<boolean>;
-export async function ipcInvoke(channel: 'config:advanced'): Promise<AdvancedConfigType>;
-export async function ipcInvoke(channel: 'config:general'): Promise<GeneralConfigType>;
-export async function ipcInvoke(channel: 'config:notifications'): Promise<NotificationsConfigType>;
+export async function ipcInvoke<T extends keyof AppConfigType>(
+    channel: 'config:get', configType: T
+): Promise<AppConfigType[T]>;
 export async function ipcInvoke(channel: 'config:should-reload-after-captcha'): Promise<boolean>;
 export async function ipcInvoke(channel: 'config:should-notify-on-error'): Promise<boolean>;
 
 // Browser
 export async function ipcInvoke(channel: 'browser:get-response-time'): Promise<number | null>;
-
-// Painel
-export async function ipcInvoke(channel: 'panel:is-visible'): Promise<boolean>;
 
 // Abas
 export async function ipcInvoke(channel: 'tab:title', tabId: number): Promise<string | null>;
@@ -140,45 +136,38 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
     return response;
 }
 
-// Janela
-export function ipcSend(channel: 'ui:minimize'): void;
-export function ipcSend(channel: 'ui:maximize'): void;
-export function ipcSend(channel: 'ui:close'): void;
-
 // Geral
-export function ipcSend(channel: 'website:any', url: string): void;
-export function ipcSend(channel: 'website:ares'): void;
-export function ipcSend(channel: 'website:how-to-use'): void;
-export function ipcSend(channel: 'website:issues'): void;
-export function ipcSend(channel: 'website:repository'): void;
-export function ipcSend(channel: 'app-update:open'): void;
 export function ipcSend(channel: 'download-from-url', url: string): void;
-export function ipcSend(channel: 'app-update:update-available-dialog', newVersion: string): void;
 export function ipcSend(channel: 'electron:show-message-box', options: MessageBoxOptions): void;
+export function ipcSend(channel: 'website:any', url: string): void;
+export function ipcSend(channel: 'website:open', url: WebsiteUrl): void;
+export function ipcSend(channel: 'window:open', route: StandardWindowName): void;
+export function ipcSend(channel: 'window:show-context-menu', options: ContextMenuOptions): void;
+export function ipcSend(channel: 'update:update-available-dialog', newVersion: string): void;
 
 // Desenvolvedor
 export function ipcSend(channel: 'debug:toggle', status: boolean): void;
 export function ipcSend(channel: 'debug:show-context-menu', isOptionsVisible: boolean): void;
 export function ipcSend(channel: 'dev:magic'): void;
 export function ipcSend(channel: 'dev-tools:main-window'): void;
-export function ipcSend(channel: 'dev-tools:panel-window'): void;
 export function ipcSend(channel: 'dev-tools:current-tab'): void;
 export function ipcSend(channel: 'dev-tools:main-tab'): void;
 
+// Janela
+export function ipcSend(channel: 'ui:minimize'): void;
+export function ipcSend(channel: 'ui:maximize'): void;
+export function ipcSend(channel: 'ui:close'): void;
+
 // Configurações
-export function ipcSend(channel: 'config:open', route: StandardWindowName): void;
 export function ipcSend<T extends keyof AppConfigType>(channel: 'config:update', configType: T, value: AppConfigType[T]): void;
 
 // Menu
-export function ipcSend(channel: 'open-bug-report-menu'): void;
+export function ipcSend(channel: 'menu:bug'): void;
 
 // Browser
-export function ipcSend(channel: 'browser:show-context-menu', options: BrowserContextMenuOptions): void;
+export function ipcSend(channel: 'browser:show-context-menu', options: ContextMenuOptions): void;
 export function ipcSend(channel: 'browser:update-response-time', time: number | null): void;
 export function ipcSend(channel: 'captcha:update-status', status: boolean): void;
-
-// Painel
-export function ipcSend(channel: 'panel:toggle'): void;
 
 // Abas
 export function ipcSend(channel: 'main-tab:reload'): void;
@@ -197,7 +186,6 @@ export function ipcSend(channel: 'tab:destroy-all', exclude?: number | number[])
 export function ipcSend(channel: 'tab:show-context-menu', tabId: number): void;
 
 // Erros
-export function ipcSend(channel: 'error:open-log-window'): void;
 export function ipcSend(channel: 'error:create-log', err: OmitOptionalErrorLogProps<ErrorLogBase>): void;
 
 // Jogo
@@ -205,17 +193,14 @@ export function ipcSend(channel: 'game:update-incomings-amount', incomingAttacks
 export function ipcSend(channel: 'game:update-incomings-info', incomingAttacks: IncomingAttack[]): void;
 
 // Plunder
-export function ipcSend(channel: 'plunder:open-custom-template-window'): void;
 export function ipcSend(channel: 'plunder:update-config', config: PlunderConfigType): void;
 export function ipcSend(channel: 'plunder:attack-sent', currentVillageId: number | null, plunderAttack: PlunderAttack): void;
 export function ipcSend(channel: 'plunder:save-history'): void;
-export function ipcSend(channel: 'plunder:show-history'): void;
 export function ipcSend(channel: 'plunder:update-pages-info', villageInfo: PlunderPageListType | null): void;
 export function ipcSend(channel: 'plunder:update-group-info', groupInfo: PlunderGroupType | null): void;
 export function ipcSend(channel: 'plunder:navigate-to-next-village', currentVillageId?: number | null): void;
 export function ipcSend(channel: 'plunder:navigate-to-group'): void;
 export function ipcSend(channel: 'plunder:navigate-to-first-page'): void;
-export function ipcSend(channel: 'plunder:open-demolition-config-window'): void;
 
 // Academia
 export function ipcSend(channel: 'snob:update-config', config: SnobConfigType): void;

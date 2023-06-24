@@ -32,8 +32,8 @@ useIpcOn('tab:destroyed', (_e, tabId: number) => {
         } else {
             const previousTab = allTabs[allTabs.indexOf(tabId) - 1] as number | undefined;
             currentTabId.value = previousTab ?? mainTabId;
-        };
-    };
+        }
+    }
 
     allTabs.splice(allTabs.indexOf(tabId), 1);
 });

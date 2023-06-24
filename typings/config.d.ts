@@ -24,11 +24,11 @@ type NotificationsConfigType = {
     notifyOnError: boolean;
 };
 
-type PanelConfigType = {
-    /** Indica se o painel deve ser exibido. */
-    show: boolean;
-    /** Posição e tamanho do painel. */
-    bounds: Electron.Rectangle | null;
+type TagsConfigType = {
+    nextIncoming: boolean;
+    plunder: boolean;
+    responseTime: boolean;
+    snob: boolean;
 };
 
 type UIConfigType = {
@@ -48,8 +48,8 @@ type AppConfigType = {
     general: GeneralConfigType;
     /** Configurações de notificações. */
     notifications: NotificationsConfigType;
-    /** Configurações do painel. */
-    panel: PanelConfigType;
+    /** Configurações das etiquetas da interface do usuário. */
+    tags: TagsConfigType;
     /** Configurações da interface do usuário. */
     ui: UIConfigType;
     /** Configurações de atualização. */

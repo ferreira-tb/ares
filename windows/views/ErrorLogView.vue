@@ -5,7 +5,7 @@ import { NCard, NResult } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
 import { useIpcOn } from '$renderer/composables';
 import { toLocaleDateString } from '$renderer/utils/date';
-import ErrorLogExportButton from '$windows/components/ErrorLogExportButton.vue';
+import ErrorLogButtonExport from '$windows/components/ErrorLogButtonExport.vue';
 
 const locale = await ipcInvoke('app:locale');
 
@@ -16,7 +16,7 @@ const errorCardContainer = ref<HTMLDivElement | null>(null);
 const isContainerOverflowing = computed(() => {
     if (errorCardContainer.value) {
         return errorCardContainer.value.scrollHeight > errorCardContainer.value.clientHeight;
-    };
+    }
 
     return false;
 });
@@ -34,7 +34,7 @@ watchEffect(() => errors.value.sort((a, b) => b.time - a.time));
 function updateErrorList(err: ElectronErrorLogType | ErrorLogType, type: 'electron' | 'general') {
     const newError = { ...err, id: `${type}-${err.id}` };
     errors.value.push(newError);
-};
+}
 
 useIpcOn('error:did-create-log', (_e, err: ErrorLogType) => updateErrorList(err, 'general'));
 useIpcOn('error:did-create-electron-log', (_e, err: ErrorLogType) => updateErrorList(err, 'electron'));
@@ -53,7 +53,7 @@ useIpcOn('error:did-create-electron-log', (_e, err: ErrorLogType) => updateError
                 </TransitionGroup>
             </div>
 
-            <ErrorLogExportButton :top="contentHeight" @export="errors = []" />
+            <ErrorLogButtonExport :top="contentHeight" @export="errors = []" />
         </template>
 
         <div v-else class="result-sucess">

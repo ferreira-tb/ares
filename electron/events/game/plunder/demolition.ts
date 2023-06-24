@@ -1,19 +1,13 @@
 import { ipcMain } from 'electron';
 import { storeToRefs } from 'mechanus';
-import { StandardWindow } from '$electron/windows';
 import { isUserAlias } from '$common/guards';
 import { useCacheStore, usePlunderCacheStore } from '$electron/stores';
 import { DemolitionTemplate } from '$electron/database/models';
-import { StandardWindowName } from '$common/enum';
 
 export function setPlunderDemolitionEvents() {
     const cacheStore = useCacheStore();
     const plunderCacheStore = usePlunderCacheStore();
     const { demolitionTroops } = storeToRefs(plunderCacheStore);
-
-    ipcMain.on('plunder:open-demolition-config-window', () => {
-        StandardWindow.open(StandardWindowName.DemolitionTemplate);
-    });
 
     ipcMain.handle('plunder:get-demolition-config', async (_e, alias: UserAlias | null): Promise<DemolitionTemplateType | null> => {
         alias ??= cacheStore.userAlias;
@@ -24,8 +18,8 @@ export function setPlunderDemolitionEvents() {
             if (alias === cacheStore.userAlias) {
                 // eslint-disable-next-line require-atomic-updates
                 demolitionTroops.value = troops;
-            };
-        };
+            }
+        }
 
         return demolitionTroops.value;
     });
@@ -34,7 +28,7 @@ export function setPlunderDemolitionEvents() {
         const saved = await DemolitionTemplate.saveDemolitionTroopsConfig(template);
         if (saved && template.alias === cacheStore.userAlias) {
             demolitionTroops.value = template;
-        };
+        }
         return saved;
     });
 
@@ -42,7 +36,7 @@ export function setPlunderDemolitionEvents() {
         const destroyed = await DemolitionTemplate.destroyDemolitionTroopsConfig(alias);
         if (destroyed && alias === cacheStore.userAlias) {
             demolitionTroops.value = null;
-        };
+        }
         return destroyed;
     });
-};
+}

@@ -33,13 +33,13 @@ export function setPlunderHistoryEvents() {
         if (!today) {
             today = new PlunderHistoryVillage();
             village.push(today);
-        };
+        }
 
         for (const [key, value] of Object.entries(attackLog) as [T, PlunderAttackLog[T]][]) {
             assertInteger(value, `Could not update plunder history: ${key} is not an integer.`);
             plunderHistoryStore[key] += value;
             today[key] += value;
-        };
+        }
 
         patchAllWebContents(plunderHistoryStore.toClonable());
     });
@@ -59,7 +59,7 @@ export function setPlunderHistoryEvents() {
             await PlunderHistory.saveHistory(alias);
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
 
     watch(userAlias, async (alias) => {
@@ -77,7 +77,7 @@ export function setPlunderHistoryEvents() {
                 plunderHistoryStore.villages[villageId] = villageHistory.filter((log) => {
                     return log.addedAt >= (now - Kronos.Month);
                 });
-            };
+            }
 
             patchAllWebContents(plunderHistoryStore.toClonable());
 
@@ -85,9 +85,9 @@ export function setPlunderHistoryEvents() {
             const defaultHistory = new DefaultPlunderHistory();
             plunderHistoryStore.$patch({ ...defaultHistory, villages: plunderHistoryStore.proxifyVillages() });
             patchAllWebContents(defaultHistory);
-        };
+        }
     });
-};
+}
 
 /** Comunica a mudança aos processos diferentes daquele que enviou os dados. */
 function patchAllWebContents<T extends keyof PlunderHistoryType>(
@@ -109,5 +109,5 @@ function patchAllWebContents<T extends keyof PlunderHistoryType>(
 
         // Para os outros, envia apenas a quantidade total, sem dados detalhados.
         contents.send('plunder:patch-history', partial);
-    };
-};
+    }
+}

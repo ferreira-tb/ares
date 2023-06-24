@@ -24,12 +24,12 @@ process.parentPort.once('message', async (e) => {
     } catch (err) {
         if (err instanceof Error) {
             await ChildProcessError.catch(err);
-        };
+        }
         port.postMessage(null);
         
     } finally {
         port.close();
-    };
+    }
 });
 
 async function fetchDataCSV(url: URL, world: World): Promise<Buffer> {
@@ -40,7 +40,7 @@ async function fetchDataCSV(url: URL, world: World): Promise<Buffer> {
     const gzip = await blob.arrayBuffer();
     const csv = await gunzip(gzip);
     return csv;
-};
+}
 
 async function fetchAllies(world: World, region: GameRegion): Promise<WorldAllyType[]> {
     try {
@@ -76,8 +76,8 @@ async function fetchAllies(world: World, region: GameRegion): Promise<WorldAllyT
     } catch (err) {
         await ChildProcessError.catch(err);
         return [];
-    };
-};
+    }
+}
 
 async function fetchPlayers(world: World, region: GameRegion): Promise<WorldPlayerType[]> {
     try {
@@ -111,8 +111,8 @@ async function fetchPlayers(world: World, region: GameRegion): Promise<WorldPlay
     } catch (err) {
         await ChildProcessError.catch(err);
         return [];
-    };
-};
+    }
+}
 
 async function fetchVillages(world: World, region: GameRegion): Promise<WorldVillageType[]> {
     try {
@@ -147,5 +147,5 @@ async function fetchVillages(world: World, region: GameRegion): Promise<WorldVil
     } catch (err) {
         await ChildProcessError.catch(err);
         return [];
-    };
-};
+    }
+}

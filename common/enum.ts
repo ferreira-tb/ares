@@ -1,8 +1,8 @@
-export const enum AresAPI {
+export enum AresAPI {
     Latest = 'https://tb.dev.br/ares/latest.json'
 }
 
-export const enum GameUrl {
+export enum GameUrl {
     Brazil = 'https://www.tribalwars.com.br',
     Global = 'https://www.tribalwars.net',
     Netherlands = 'https://www.tribalwars.nl',
@@ -11,7 +11,7 @@ export const enum GameUrl {
     UnitedStates = 'https://www.tribalwars.us'
 }
 
-export const enum GameEndpoints {
+export enum GameEndpoints {
     GetConfig = 'interface.php?func=get_config',
     GetUnitInfo = 'interface.php?func=get_unit_info',
     GetBuildingInfo = 'interface.php?func=get_building_info',
@@ -34,7 +34,7 @@ export const enum GameEndpoints {
     KillAllTribe = 'map/kill_all_tribe.txt.gz'
 }
 
-export const enum GameSearchParams {
+export enum GameSearchParams {
     /** Diplomacia da tribo. */
     Contracts = 'screen=ally&mode=contracts',
     /** Assistente de saque. */
@@ -53,7 +53,7 @@ export const enum GameSearchParams {
     OverviewUnitsComplete = 'screen=overview_villages&mode=units&type=complete&page=-1'
 }
 
-export const enum TribalWorkerName {
+export enum TribalWorkerName {
     AddVillagesToGroup = 'add-villages-to-group',
     CountTroops = 'count-troops',
     CreateStaticGroup = 'create-static-group',
@@ -65,30 +65,35 @@ export const enum TribalWorkerName {
     MintCoin = 'mint-coin'
 }
 
-export const enum RendererWorkerName {
+export enum RendererWorkerName {
     CalcSafeZoneVillages = 'calc-safe-zone-villages'
 }
 
-export const enum StandardWindowName {
+export enum StandardWindowName {
     Config = 'config',
     ConfigAdvanced = 'config-advanced',
-    ConfigBuildingsSnob = 'config-buildings-snob',
     ConfigGeneral = 'config-general',
     ConfigNotifications = 'config-notifications',
-    ConfigPlunder = 'config-plunder',
+    ConfigTags = 'config-tags',
     Debug = 'debug',
     Default = 'default',
     DemolitionTemplate = 'demolition-template',
     ErrorLog = 'error-log',
     GroupTemplate = 'group-template',
     GroupTemplateSafeZone = 'group-template-safe-zone',
+    Panel = 'panel',
+    PanelBot = 'panel-bot',
+    PanelBotBuildingsSnob = 'panel-bot-buildings-snob',
+    PanelBotOverview = 'panel-bot-overview',
+    PanelBotPlunder = 'panel-bot-plunder',
+    PanelTools = 'panel-tools',
     PlunderHistory = 'plunder-history',
     PlunderTemplate = 'plunder-template',
     TroopsCounter = 'troops-counter',
     Update = 'update'
 }
 
-export const enum WebsiteUrl {
+export enum WebsiteUrl {
     Ares = 'https://tb.dev.br/ares',
     Author = 'https://github.com/ferreira-tb',
     Discord = 'https://discord.gg/tNQbrqbmdK',
@@ -97,7 +102,7 @@ export const enum WebsiteUrl {
     Repository = 'https://github.com/ferreira-tb/ares'
 }
 
-export const enum Dimensions {
+export enum Dimensions {
     /** Altura do container do menu superior da UI. */
     TopContainerHeight = 80
 }

@@ -1,16 +1,10 @@
 import { ipcMain, webContents } from 'electron';
-import { StandardWindow } from '$electron/windows';
 import { useCacheStore } from '$electron/stores';
 import { CustomPlunderTemplate } from '$electron/database/models';
-import { StandardWindowName } from '$common/enum';
 import { isUserAlias } from '$common/guards';
 
 export function setPlunderTemplatesEvents() {
     const cacheStore = useCacheStore();
-
-    ipcMain.on('plunder:open-custom-template-window', () => {
-        StandardWindow.open(StandardWindowName.PlunderTemplate);
-    });
 
     ipcMain.handle('plunder:get-custom-templates', async (_e, alias: UserAlias | null): Promise<CustomPlunderTemplateType[] | null> => {
         alias ??= cacheStore.userAlias;
@@ -28,8 +22,8 @@ export function setPlunderTemplatesEvents() {
             for (const contents of webContents.getAllWebContents()) {
                 if (contents === e.sender) continue;
                 contents.send('custom-plunder-template-saved', template);
-            };
-        };
+            }
+        }
 
         return saved;
     });
@@ -42,9 +36,9 @@ export function setPlunderTemplatesEvents() {
             for (const contents of webContents.getAllWebContents()) {
                 if (contents === e.sender) continue;
                 contents.send('custom-plunder-template-destroyed', template);
-            };
-        };
+            }
+        }
 
         return destroyed;
     });
-};
+}

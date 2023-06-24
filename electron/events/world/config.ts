@@ -25,13 +25,13 @@ export function setWorldConfigEvents(world: MechanusRef<World | null>) {
                         try {
                             if (!message) {
                                 throw new MainProcessError(`Could not fetch world config for ${world}.`);
-                            };
+                            }
                             resolve(message);
                         } catch (err) {
                             reject(err);
                         } finally {
                             worker.destroy();
-                        };
+                        }
                     });
 
                     worker.init().catch(reject);
@@ -41,10 +41,10 @@ export function setWorldConfigEvents(world: MechanusRef<World | null>) {
                 await sequelize.transaction(async () => {
                     await WorldConfig.create({ id: newWorld, ...config });
                 });
-            };
+            }
     
         } catch (err) {
             MainProcessError.catch(err);
-        };
+        }
     });
-};
+}

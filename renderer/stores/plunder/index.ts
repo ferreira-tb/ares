@@ -29,7 +29,7 @@ export const usePlunderHistoryStore = defineStore('plunder-history', () => {
 
     function useTotal() {
         return computed(() => wood.value + stone.value + iron.value);
-    };
+    }
 
     return {
         wood,

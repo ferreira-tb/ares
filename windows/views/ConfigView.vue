@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { h, onMounted, ref } from 'vue';
+import { h, nextTick, ref, watch } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 import { NLayout, NLayoutSider, NMenu, type MenuInst, type MenuOption } from 'naive-ui';
 import { router } from '$windows/router';
+import { useGameDataStore } from '$renderer/stores';
+import { ipcInvoke } from '$renderer/ipc';
+import { isMenuRoute } from '$renderer/utils';
 import { StandardWindowName } from '$common/enum';
+
+const gameData = useGameDataStore();
+const previousGameData = await ipcInvoke('game:data');
+if (previousGameData) gameData.$patch(previousGameData);
+await nextTick();
 
 const menuInst = ref<MenuInst | null>(null);
 const selectedKey = ref<StandardWindowName>(StandardWindowName.ConfigGeneral);
@@ -14,18 +22,8 @@ const menuOptions: MenuOption[] = [
         key: StandardWindowName.ConfigGeneral
     },
     {
-        label: () => h('span', { style: 'padding-right: 20px;' }, 'Edifícios'),
-        key: 'config-buildings',
-        children: [
-            {
-                label: renderLabel(StandardWindowName.ConfigBuildingsSnob, 'Academia'),
-                key: StandardWindowName.ConfigBuildingsSnob
-            }
-        ]
-    },
-    {
-        label: renderLabel(StandardWindowName.ConfigPlunder, 'Saque'),
-        key: StandardWindowName.ConfigPlunder
+        label: renderLabel(StandardWindowName.ConfigTags, 'Etiquetas'),
+        key: StandardWindowName.ConfigTags
     },
     {
         label: renderLabel(StandardWindowName.ConfigNotifications, 'Notificações'),
@@ -41,37 +39,21 @@ function renderLabel(routeName: StandardWindowName, label: string) {
     return () => h('span', { style: 'padding-right: 20px;' }, [
          h(RouterLink, { to: { name: routeName } }, label)
     ]);
-};
+}
 
-function isRoute(routeName: string, options: MenuOption[] = menuOptions): boolean {
-    return options.some((o) => {
-        if (o.key === routeName) {
-            return true;
-        } else if (Array.isArray(o.children)) {
-            return isRoute(routeName, o.children);
-        };
-
-        return false;
-    });
-};
-
-onMounted(() => {
+watch([router.currentRoute, menuInst], () => {
     const routeName = router.currentRoute.value.name;
-    if (typeof routeName === 'string' && isRoute(routeName)) {
+    if (typeof routeName === 'string' && isMenuRoute(routeName, menuOptions)) {
         selectedKey.value = routeName as StandardWindowName;
         menuInst.value?.showOption(routeName);
-    };
+    }
 });
 </script>
 
 <template>
     <NLayout has-sider position="absolute">
-        <NLayoutSider
-            bordered
-            content-style="padding: 6px;"
-            :width="150"
-        >
-            <NMenu 
+        <NLayoutSider bordered content-style="padding: 6px;" :width="150">
+            <NMenu
                 ref="menuInst"
                 v-model:value="selectedKey"
                 :options="menuOptions"
@@ -81,20 +63,28 @@ onMounted(() => {
         </NLayoutSider>
 
         <NLayout :native-scrollbar="false">
-            <RouterView #default="{ Component }">
-                <template v-if="Component">
-                    <Transition name="tb-fade" mode="out-in">
-                        <KeepAlive>
-                            <Suspense>
-                                <component :is="Component" />
-                                <template #fallback>
-                                    <span class="bold-green to-center">Carregando...</span>
-                                </template>
-                            </Suspense>
-                        </KeepAlive>
-                    </Transition>
-                </template>
-            </RouterView>
+            <div id="config-router-view">
+                <RouterView #default="{ Component }">
+                    <template v-if="Component">
+                        <Transition name="tb-fade" mode="out-in">
+                            <KeepAlive>
+                                <Suspense>
+                                    <component :is="Component" />
+                                    <template #fallback>
+                                        <span class="bold-green to-center">Carregando...</span>
+                                    </template>
+                                </Suspense>
+                            </KeepAlive>
+                        </Transition>
+                    </template>
+                </RouterView>
+            </div>
         </NLayout>
     </NLayout>
 </template>
+
+<style scoped lang="scss">
+#config-router-view {
+    margin-bottom: 1rem;
+}
+</style>

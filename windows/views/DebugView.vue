@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, type Ref } from 'vue';
-import { useElementSize } from '@vueuse/core';
 import { NCard, NSelect, NSpace, NTag } from 'naive-ui';
 import { ipcSend } from '$renderer/ipc';
-import { useIpcOn } from '$renderer/composables';
+import { useIpcOn, useElementSize } from '$renderer/composables';
 import { scopeRegex } from '$common/regex';
 
 const debugView = ref<HTMLElement | null>(null);
 
 const isOptionsVisible = ref(false);
 const optionsContainer = ref<HTMLElement | null>(null);
-const { height: optionsHeight } = useElementSize(optionsContainer, { height: 0, width: 0 }, { box: 'border-box' });
+const { height: optionsHeight } = useElementSize(optionsContainer);
 const cardsContainerTop = computed(() => `${optionsHeight.value + 10}px`);
 
 const debugInfo = ref<AppDebugInfo[]>([]);
@@ -53,7 +52,7 @@ const cards = computed(() => {
             if (!scope) return false;
             scope = scope.slice(0, scope.indexOf(':'));
             if (!selectedScopes.value.includes(scope)) return false;
-        };
+        }
 
         return true;
     });
@@ -80,7 +79,7 @@ function onCardClose(uuid: string) {
     if (index === -1) return;
 
     debugInfo.value.splice(index, 1);
-};
+}
 
 function useOptions(sourceRef: Ref<string[]>) {
     const selected = ref<string[]>([]);
@@ -91,7 +90,7 @@ function useOptions(sourceRef: Ref<string[]>) {
     });
 
     return { selected, options };
-};
+}
 
 useIpcOn('debug:did-receive-report', (_e, info: AppDebugInfo) => {
     debugInfo.value.push(info);

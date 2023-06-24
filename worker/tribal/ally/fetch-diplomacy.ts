@@ -18,7 +18,7 @@ async function fetchDiplomacy(port: MessagePort) {
         if (!partners) {
             port.postMessage(null);
             return;
-        };
+        }
 
         const rowsSelector = `tbody tr:where(:has(th), :has(${anchorSelector}))`;
         const rows = partners.queryAsArray<HTMLTableRowElement>(rowsSelector);
@@ -26,7 +26,7 @@ async function fetchDiplomacy(port: MessagePort) {
             throw new TribalWorkerError('Failed to parse diplomacy partners: no rows found.');
         } else if (!rows[0].matches('tr:has(th)')) {
             throw new TribalWorkerError('Failed to parse diplomacy partners: first row is not a header.');
-        };
+        }
 
         const allies: number[] = [];
         const nap: number[] = [];
@@ -37,7 +37,7 @@ async function fetchDiplomacy(port: MessagePort) {
             if (row.matches('tr:has(th)')) {
                 headerCount++;
                 continue;
-            };
+            }
 
             const anchor = row.queryStrict<HTMLAnchorElement>(anchorSelector);
             const anchorUrl = new URL(anchor.href, location.origin);
@@ -46,7 +46,7 @@ async function fetchDiplomacy(port: MessagePort) {
             if (headerCount === 1) allies.push(id);
             else if (headerCount === 2) nap.push(id);
             else if (headerCount === 3) enemies.push(id);
-        };
+        }
 
         port.postMessage({ allies, nap, enemies } satisfies RawDiplomacy);
 
@@ -56,5 +56,5 @@ async function fetchDiplomacy(port: MessagePort) {
 
     } finally {
         port.close();
-    };
-};
+    }
+}

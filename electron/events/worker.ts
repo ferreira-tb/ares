@@ -15,6 +15,6 @@ export function setWorkerEvents() {
         } catch (err) {
             MainProcessError.catch(err);
             return null;
-        };
+        }
     });
-};
+}

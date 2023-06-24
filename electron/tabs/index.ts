@@ -43,6 +43,7 @@ export class BrowserTab extends EventEmitter {
         this.setWindowOpenHandler();
 
         const mainWindow = MainWindow.getInstance();
+        this.setTabBounds(mainWindow);
 
         this.view.webContents.on('will-navigate', (e, url) => {
             if (!isAllowedOrigin(url)) e.preventDefault();
@@ -199,8 +200,7 @@ export class BrowserTab extends EventEmitter {
         if (isEnabled) this.view.webContents.openDevTools(options);
     }
 
-    private setTabBounds() {
-        const mainWindow = MainWindow.getInstance();
+    private setTabBounds(mainWindow: MainWindow = MainWindow.getInstance()) {
         const { width, height } = mainWindow.getContentBounds();
         this.view.setBounds({
             x: 0,
@@ -246,16 +246,13 @@ export class BrowserTab extends EventEmitter {
     private static readonly css = readFileSync(browserCss, { encoding: 'utf8' });
 
     static {
-        wheneverAsync(this.currentTab, async (current, previous: BrowserTab | null) => {
-            previous?.view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
-
+        wheneverAsync(this.currentTab, (current) => {
             this.removeAutoResize?.();
             this.setAutoResize(current);
 
-            await current.insertCSS(this.css);
             const mainWindow = MainWindow.getInstance();
+            current.setTabBounds(mainWindow);
             mainWindow.setTopBrowserView(current.view);
-            current.setTabBounds();
             current.updateBackForwardStatus();
         });
     }
@@ -283,17 +280,19 @@ export class BrowserTab extends EventEmitter {
             const mainWindow = MainWindow.getInstance();
             mainWindow.addBrowserView(tab.view);
 
-            if (options.current || this.currentTab.value === null) {
+            if (options.current || !this.currentTab.value) {
                 this.currentTab.value = tab;
+            } else {
+                // Adicionar uma nova BrowserView faz com que ela fique por cima das anteriores.
+                // Sendo assim, é necessário garantir que a aba atual continue por cima das outras.
+                // @see https://github.com/electron/electron/pull/27007
+                mainWindow.setTopBrowserView(this.currentTab.value.view);
             }
 
             tab.loadURL(options.url).catch(BrowserTabError.catch);
 
             if (this.mainTab.value) {
-                // Envia o id e o título da aba para a janela principal.
-                // Isso é necessário para que ela possa renderizar a nova aba.
-                const title = tab.getTitle() || tab.getURL();
-                mainWindow.webContents.send('tab:created', tabId, title);
+                mainWindow.webContents.send('tab:created', tabId);
             } else {
                 this.mainTab.value = tab;
             }
@@ -349,17 +348,17 @@ export class BrowserTab extends EventEmitter {
      * @returns Função para remover o evento.
      */
     private static setAutoResize(browserTab: BrowserTab): void {
-        
+        const mainWindow = MainWindow.getInstance();
         let timeout: NodeJS.Immediate | null = null;
+
         function resize(e: Electron.IpcMainEvent) {
             e.preventDefault();
             timeout = setImmediate(() => {
                 if (timeout) clearImmediate(timeout);
-                browserTab.setTabBounds();
+                browserTab.setTabBounds(mainWindow);
             });
         }
 
-        const mainWindow = MainWindow.getInstance();
         mainWindow.browser.on('resize', resize);
         this.removeAutoResize = () => {
             mainWindow.browser.removeListener('resize', resize);

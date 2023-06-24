@@ -32,8 +32,8 @@ async function mount() {
         app.mount(ares);
     } catch (err) {
         BrowserError.catch(err);
-    };
-};
+    }
+}
 
 window.addEventListener('DOMContentLoaded', mount, { once: true });
 
