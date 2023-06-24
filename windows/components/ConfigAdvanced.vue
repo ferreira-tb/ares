@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, toRaw, toRef, watch } from 'vue';
+import { reactive, toRaw, watch } from 'vue';
 import { watchDeep } from '@vueuse/core';
 import { NAlert, NCheckbox, NDivider, NGrid, NGridItem, NButton, useDialog, useMessage } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
@@ -11,8 +11,14 @@ const message = useMessage();
 const config = reactive(await ipcInvoke('config:get', 'advanced'));
 watchDeep(config, (newValue) => ipcSend('config:update', 'advanced', toRaw(newValue)));
 
-const isDebugModeEnabled = toRef(config, 'debug');
-watch(isDebugModeEnabled, (newValue) => ipcSend('debug:toggle', newValue));
+watch(() => config.debug, (newValue) => {
+    ipcSend('debug:toggle', newValue);
+});
+
+watch(() => config.visibleWorkers, () => {
+    ipcSend('app:relaunch');
+    showMessage(true);
+});
 
 function dropDatabase() {
     const status = dialog.warning({
@@ -23,18 +29,21 @@ function dropDatabase() {
         onPositiveClick: async () => {
             status.loading = true;
             try {
-                const cleared = await ipcInvoke('db:clear-database');
-                if (cleared) {
-                    message.success('O Ares reiniciará em instantes...');
-                } else {
-                    message.error('Ocorreu algum erro :(');
-                }
-                
+                const didClear = await ipcInvoke('db:clear-database');
+                showMessage(didClear);
             } catch (err) {
                 RendererProcessError.catch(err);
             }
         }
     });
+}
+
+function showMessage(success: boolean) {
+    if (success) {
+        message.success('O Ares reiniciará em instantes...');
+    } else {
+        message.error('Ocorreu algum erro :(');
+    }
 }
 </script>
 

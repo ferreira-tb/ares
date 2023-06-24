@@ -136,6 +136,9 @@ export async function ipcInvoke(channel: string, ...args: any[]): Promise<unknow
     return response;
 }
 
+// Aplicação
+export function ipcSend(channel: 'app:relaunch'): void;
+
 // Geral
 export function ipcSend(channel: 'download-from-url', url: string): void;
 export function ipcSend(channel: 'electron:show-message-box', options: MessageBoxOptions): void;

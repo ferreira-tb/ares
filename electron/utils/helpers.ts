@@ -1,6 +1,11 @@
 import { app } from 'electron';
 
-export function restartAres() {
-    app.relaunch();
-    app.quit();
+export function relaunch(timeout?: number) {
+    const fn = () => {
+        app.relaunch();
+        app.quit();
+    };
+
+    if (timeout) setTimeout(fn, timeout);
+    else fn();
 }

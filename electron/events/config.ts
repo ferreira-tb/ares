@@ -4,7 +4,7 @@ import { sequelize } from '$electron/database';
 import { appConfig } from '$electron/stores';
 import { MainProcessError } from '$electron/error';
 import { database } from '$electron/utils/files';
-import { restartAres } from '$electron/utils/helpers';
+import { relaunch } from '$electron/utils/helpers';
 
 export function setConfigEvents() {
     ipcMain.handle('config:get', (_e, configType: keyof AppConfigType) => {
@@ -36,7 +36,7 @@ export function setConfigEvents() {
             await sequelize.close();
             if (!sequelize.isClosed) sequelize.isClosed = true;
             await fs.rm(database, { recursive: true, maxRetries: 5 });
-            setTimeout(restartAres, 3000);
+            relaunch(3000);
             return true;
         } catch (err) {
             MainProcessError.catch(err);

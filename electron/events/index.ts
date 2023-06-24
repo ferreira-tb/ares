@@ -14,6 +14,7 @@ import { setWorkerEvents } from '$electron/events/worker';
 import { setWorldEvents } from '$electron/events/world';
 import { useCacheStore } from '$electron/stores';
 import { MainProcessError } from '$electron/error';
+import { relaunch } from '$electron/utils/helpers';
 
 export function setEvents() {
     const mainWindow = MainWindow.getInstance();
@@ -30,6 +31,8 @@ export function setEvents() {
     ipcMain.handle('app:user-data-path', () => app.getPath('userData'));
     ipcMain.handle('app:desktop-path', () => app.getPath('desktop'));
     ipcMain.handle('app:is-dev', () => process.env.ARES_MODE === 'development');
+
+    ipcMain.on('app:relaunch', () => relaunch(3000));
 
     // Electron
     ipcMain.on('electron:show-message-box', (_e, options: MessageBoxOptions) => {
