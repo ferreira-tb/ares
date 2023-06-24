@@ -4,6 +4,9 @@ import { EventEmitter } from 'node:events';
 import { BrowserView, MessageChannelMain } from 'electron';
 import { computed, ref, until, watchImmediate, wheneverAsync } from 'mechanus';
 import { MainWindow } from '$electron/windows';
+import { BrowserTab } from '$electron/tabs';
+import { appConfig } from '$electron/stores';
+import { TribalWorkerDebugger } from '$electron/worker/dev';
 import { TribalWorkerError } from '$electron/error';
 import type { UntilOptions, WatchStopHandle } from 'mechanus';
 import type { TribalWorkerName } from '$common/enum';
@@ -147,11 +150,23 @@ export class TribalWorker extends EventEmitter {
             }
         });
 
-        const mainWindow = MainWindow.getInstance();
-        mainWindow.addBrowserView(tribalWorker);
+        const visible = appConfig.get('advanced').visibleWorkers;
+        if (visible) {
+            const debugWindow = new TribalWorkerDebugger(this, BrowserTab.main.session);
+            debugWindow.addBrowserView(tribalWorker);
 
-        tribalWorker.setBounds({ x: 0, y: 0, width: 0, height: 0 });
-        tribalWorker.setAutoResize({ width: false, height: false, horizontal: false, vertical: false });
+            const bounds = debugWindow.getContentBounds();
+            tribalWorker.setBounds({ x: 0, y: 0, width: bounds.width, height: bounds.height });
+            tribalWorker.setAutoResize({ width: true, height: true, horizontal: true, vertical: true });
+
+        } else {
+            const mainWindow = MainWindow.getInstance();
+            mainWindow.addBrowserView(tribalWorker);
+
+            tribalWorker.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+            tribalWorker.setAutoResize({ width: false, height: false, horizontal: false, vertical: false });
+        }
+
         tribalWorker.webContents.setAudioMuted(true);
 
         this.browserView.value = tribalWorker;

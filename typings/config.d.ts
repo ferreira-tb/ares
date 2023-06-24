@@ -3,6 +3,8 @@ type AdvancedConfigType = {
     debug: boolean;
     /** Habilita o DevTools. */
     devTools: boolean;
+    /** Inicia workers em janela separada e visível. */
+    visibleWorkers: boolean;
 };
 
 type GeneralConfigType = {

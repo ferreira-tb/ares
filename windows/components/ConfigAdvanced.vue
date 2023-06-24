@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, toRaw, toRef, watch } from 'vue';
 import { watchDeep } from '@vueuse/core';
-import { NCheckbox, NDivider, NGrid, NGridItem, NButton, useDialog, useMessage } from 'naive-ui';
+import { NAlert, NCheckbox, NDivider, NGrid, NGridItem, NButton, useDialog, useMessage } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { RendererProcessError } from '$renderer/error';
 
@@ -43,6 +43,12 @@ function dropDatabase() {
         <NDivider title-placement="left" class="config-divider">Desenvolvedor</NDivider>
         <NGrid :cols="1" :x-gap="6" :y-gap="10">
             <NGridItem>
+                <NAlert type="warning" title="Aviso">
+                    Apenas altere essas configurações se você souber bem o que está fazendo.
+                </NAlert>
+            </NGridItem>
+
+            <NGridItem>
                 <div class="config-checkbox">
                     <NCheckbox v-model:checked="config.devTools" size="large">
                         Habilitar DevTools
@@ -54,6 +60,14 @@ function dropDatabase() {
                 <div class="config-checkbox">
                     <NCheckbox v-model:checked="config.debug" size="large">
                         Habilitar modo de depuração
+                    </NCheckbox>
+                </div>
+            </NGridItem>
+
+            <NGridItem>
+                <div class="config-checkbox">
+                    <NCheckbox v-model:checked="config.visibleWorkers" size="large">
+                        Abrir workers em janela separada
                     </NCheckbox>
                 </div>
             </NGridItem>

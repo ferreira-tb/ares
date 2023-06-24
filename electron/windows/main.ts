@@ -82,7 +82,7 @@ export class MainWindow extends BaseWindow {
     public setMainWindowMenu(BrowserTab: typeof BrowserTabType, StandardWindow: typeof StandardWindowType) {
         const devTemplate: Electron.MenuItemConstructorOptions[] = [
             { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => this.reloadIgnoringCache() },
-            { label: 'Conjurar magia', accelerator: 'CmdOrCtrl+F9', click: () => BaseWindow.castDevMagic() },
+            { label: 'Iniciar teste', accelerator: 'CmdOrCtrl+F9', click: () => BaseWindow.dev() },
             { label: 'Inspecionar aba', accelerator: 'CmdOrCtrl+F10', click: () => BrowserTab.current.openDevTools() },
             { label: 'Inspecionar interface', accelerator: 'CmdOrCtrl+F11', click: () => this.openDevTools() }
         ];

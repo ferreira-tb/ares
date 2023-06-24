@@ -52,7 +52,6 @@ export class BrowserTab extends EventEmitter {
         this.view.webContents.on('did-navigate', async () => {
             try {
                 await this.view.webContents.insertCSS(BrowserTab.css);
-                
                 if (BrowserTab.currentTab.value !== this) return;
                 this.updateBackForwardStatus();
             } catch (err) {
@@ -133,6 +132,10 @@ export class BrowserTab extends EventEmitter {
 
     get reloadIgnoringCache() {
         return this.view.webContents.reloadIgnoringCache.bind(this.view.webContents);
+    }
+
+    get session() {
+        return this.view.webContents.session;
     }
 
     get webContents() {

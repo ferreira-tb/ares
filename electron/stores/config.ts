@@ -8,7 +8,8 @@ const schema: Schema<AppConfigType> = {
         default: {},
         properties: {
             debug: { type: 'boolean', default: false },
-            devTools: { type: 'boolean', default: false }
+            devTools: { type: 'boolean', default: false },
+            visibleWorkers: { type: 'boolean', default: false }
         }
     },
     general: {

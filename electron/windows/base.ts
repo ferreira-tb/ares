@@ -97,7 +97,7 @@ export abstract class BaseWindow extends EventEmitter {
     }
 
     /** Usado para situações de teste durante o desenvolvimento. */
-    public static castDevMagic() {
+    public static dev() {
         if (process.env.ARES_MODE !== 'development') return;
         const allWebContents = webContents.getAllWebContents();
         for (const contents of allWebContents) {

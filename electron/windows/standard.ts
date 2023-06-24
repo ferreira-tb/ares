@@ -64,7 +64,7 @@ export class StandardWindow extends BaseWindow {
     private setStandardWindowMenu() {
         const options: Electron.MenuItemConstructorOptions[] = [
             { label: 'Forçar atualização', accelerator: 'CmdOrCtrl+F5', click: () => this.reloadIgnoringCache() },
-            { label: 'Conjurar magia', accelerator: 'CmdOrCtrl+F9', click: () => BaseWindow.castDevMagic() },
+            { label: 'Iniciar teste', accelerator: 'CmdOrCtrl+F9', click: () => BaseWindow.dev() },
             { label: 'Inspecionar', accelerator: 'CmdOrCtrl+F12', click: () => this.openDevTools() }
         ];
     
