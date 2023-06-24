@@ -1,11 +1,8 @@
 import { ipcMain, Menu } from 'electron';
-import { MainWindow } from '$electron/windows';
 import { BrowserTab } from '$electron/tabs';
 import { appConfig } from '$electron/stores';
 
 export function setContextMenuEvents() {
-    const mainWindow = MainWindow.getInstance();
-
     ipcMain.on('browser:show-context-menu', (_e, options: ContextMenuOptions) => {
         const template: Electron.MenuItemConstructorOptions[] = [
             { label: 'Voltar', id: 'go-back', click: () => BrowserTab.current.goBack() },
@@ -14,28 +11,20 @@ export function setContextMenuEvents() {
         ];
 
         template.forEach((item) => {
-            if (item.id === 'reload') return;
-            if (item.id === 'go-back' && !BrowserTab.current.canGoBack()) item.enabled = false;
-            if (item.id === 'go-forward' && !BrowserTab.current.canGoForward()) item.enabled = false;
+            if (item.id === 'go-back') item.enabled = BrowserTab.current.canGoBack();
+            else if (item.id === 'go-forward') item.enabled = BrowserTab.current.canGoForward();
         });
 
         const devTools = appConfig.get('advanced').devTools;
         if (devTools) {
-            const inspectTemplate: Electron.MenuItemConstructorOptions[] = [
-                { label: 'Página', click: () => BrowserTab.current.inspectElement(options.x, options.y) },
-                { label: 'Interface', click: () => mainWindow.openDevTools() }
-            ];
-
-            if (template.length > 0) template.push({ type: 'separator' });
-
             const devTemplate: Electron.MenuItemConstructorOptions[] = [
-                { label: 'Inspecionar', submenu: inspectTemplate }
+                { type: 'separator' },
+                { label: 'Inspecionar', click: () => BrowserTab.current.inspectElement(options.x, options.y) }
             ];
 
             template.push(...devTemplate);
         }
 
-        if (template.length === 0) return;
         const menu = Menu.buildFromTemplate(template);
         menu.popup();
     });
