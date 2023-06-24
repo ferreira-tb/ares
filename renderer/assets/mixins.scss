@@ -24,32 +24,57 @@
     transform: translate(-50%, -50%);
 }
 
-@mixin flex-x-end-y-center($height: null) {
+@mixin _flexbox(
+    $justify-content,
+    $align-items,
+    $width: null,
+    $height: null
+) {
     display: flex;
-    justify-content: end;
-    align-items: center;
+    justify-content: $justify-content;
+    align-items: $align-items;
+
+    @if width {
+        width: $width;
+    }
     
     @if $height {
         height: $height;
     }
 }
 
-@mixin flex-x-start-y-center($height: null) {
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    
-    @if $height {
-        height: $height;
-    }
+@mixin flex-x-between-y-center($width: null, $height: null) {
+    @include _flexbox(
+        $justify-content: space-between,
+        $align-items: center,
+        $width: $width,
+        $height: $height
+    );
 }
 
-@mixin flex-x-center-y-center($height: null) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    @if $height {
-        height: $height;
-    }
+@mixin flex-x-end-y-center($width: null, $height: null) {
+    @include _flexbox(
+        $justify-content: end,
+        $align-items: center,
+        $width: $width,
+        $height: $height
+    );
+}
+
+@mixin flex-x-start-y-center($width: null, $height: null) {
+    @include _flexbox(
+        $justify-content: start,
+        $align-items: center,
+        $width: $width,
+        $height: $height
+    );
+}
+
+@mixin flex-x-center-y-center($width: null, $height: null) {
+    @include _flexbox(
+        $justify-content: center,
+        $align-items: center,
+        $width: $width,
+        $height: $height
+    );
 }

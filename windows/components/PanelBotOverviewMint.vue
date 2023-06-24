@@ -52,7 +52,7 @@ watchDeep(config, () => {
                     <NButton disabled>
                         Histórico
                     </NButton>
-                    <NButton @click="$router.push({ name: StandardWindowName.PanelBuildingsSnob })">
+                    <NButton @click="$router.push({ name: StandardWindowName.PanelBotBuildingsSnob })">
                         Configurações
                     </NButton>
                 </NButtonGroup>

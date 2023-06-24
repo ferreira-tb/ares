@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, nextTick, onMounted, ref } from 'vue';
+import { h, nextTick, ref, watch } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 import { NLayout, NLayoutSider, NMenu, type MenuInst, type MenuOption } from 'naive-ui';
 import { router } from '$windows/router';
@@ -41,7 +41,7 @@ function renderLabel(routeName: StandardWindowName, label: string) {
     ]);
 }
 
-onMounted(() => {
+watch([router.currentRoute, menuInst], () => {
     const routeName = router.currentRoute.value.name;
     if (typeof routeName === 'string' && isMenuRoute(routeName, menuOptions)) {
         selectedKey.value = routeName as StandardWindowName;

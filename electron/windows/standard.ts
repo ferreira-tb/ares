@@ -58,7 +58,7 @@ export class StandardWindow extends BaseWindow {
 
     private saveBounds() {
         const rectangle = this.browser.getBounds();
-        appConfig.set('window', { [this.name]: { bounds: rectangle } } satisfies WindowBoundsConfigType);
+        appConfig.set(`window.${this.name}`, { bounds: rectangle });
     }
 
     private setStandardWindowMenu() {

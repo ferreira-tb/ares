@@ -59,7 +59,7 @@ watchDeep(config, () => {
                     <NButton @click="ipcSend('window:open', StandardWindowName.PlunderHistory)">
                         Histórico
                     </NButton>
-                    <NButton @click="$router.push({ name: StandardWindowName.PanelPlunder })">
+                    <NButton @click="$router.push({ name: StandardWindowName.PanelBotPlunder })">
                         Configurações
                     </NButton>
                 </NButtonGroup>

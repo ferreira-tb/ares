@@ -59,7 +59,7 @@ useIpcOn('tab:back-forward-status', (_e, status: BackForwardStatus) => {
             <div class="menu-icon" @click="ipcSend('current-tab:home')">
                 <NIcon :size="22" :depth="3" :component="HomeSharp" />
             </div>
-            <div class="menu-icon" @click="ipcSend('window:open', StandardWindowName.PanelOverview)">
+            <div class="menu-icon" @click="ipcSend('window:open', StandardWindowName.PanelBotOverview)">
                 <NIcon :size="26" :depth="3" :component="ViewQuiltSharp" />
             </div>
             <div class="menu-icon" @click="ipcSend('window:open', StandardWindowName.ConfigGeneral)">

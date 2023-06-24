@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NList, NResult } from 'naive-ui';
-import PanelOverviewPlunder from '$windows/components/PanelOverviewPlunder.vue';
-import PanelOverviewMint from '$windows/components/PanelOverviewMint.vue';
+import PanelBotOverviewPlunder from '$windows/components/PanelBotOverviewPlunder.vue';
+import PanelBotOverviewMint from '$windows/components/PanelBotOverviewMint.vue';
 
 defineProps<{
     userAlias: UserAlias | null;
@@ -11,8 +11,8 @@ defineProps<{
 <template>
 	<section v-if="userAlias">
         <NList hoverable :show-divider="false">
-            <PanelOverviewPlunder />
-            <PanelOverviewMint />
+            <PanelBotOverviewPlunder />
+            <PanelBotOverviewMint />
         </NList>
     </section>
 

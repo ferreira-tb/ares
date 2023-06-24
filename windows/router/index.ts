@@ -11,9 +11,11 @@ import DemolitionView from '$windows/views/DemolitionView.vue';
 import ErrorLogView from '$windows/views/ErrorLogView.vue';
 import GroupTemplateView from '$windows/views/GroupTemplateView.vue';
 import GroupTemplateSafeZone from '$windows/components/GroupTemplateSafeZone.vue';
-import PanelBuildingsSnob from '$windows/components/PanelBuildingsSnob.vue';
-import PanelOverview from '$windows/components/PanelOverview.vue';
-import PanelPlunder from '$windows/components/PanelPlunder.vue';
+import PanelBot from '$windows/components/PanelBot.vue';
+import PanelBotBuildingsSnob from '$windows/components/PanelBotBuildingsSnob.vue';
+import PanelBotOverview from '$windows/components/PanelBotOverview.vue';
+import PanelBotPlunder from '$windows/components/PanelBotPlunder.vue';
+import PanelTools from '$windows/components/PanelTools.vue';
 import PanelView from '$windows/views/PanelView.vue';
 import PlunderHistoryView from '$windows/views/PlunderHistoryView.vue';
 import PlunderTemplateView from '$windows/views/PlunderTemplateView.vue';
@@ -89,19 +91,31 @@ const routes: RouteRecordRaw[] = [
         component: PanelView,
         children: [
             {
-                path: 'buildings-snob',
-                name: StandardWindowName.PanelBuildingsSnob,
-                component: PanelBuildingsSnob
+                path: 'bot',
+                name: StandardWindowName.PanelBot,
+                component: PanelBot,
+                children: [
+                    {
+                        path: 'buildings-snob',
+                        name: StandardWindowName.PanelBotBuildingsSnob,
+                        component: PanelBotBuildingsSnob
+                    },
+                    {
+                        path: 'overview',
+                        name: StandardWindowName.PanelBotOverview,
+                        component: PanelBotOverview
+                    },
+                    {
+                        path: 'plunder',
+                        name: StandardWindowName.PanelBotPlunder,
+                        component: PanelBotPlunder
+                    }
+                ]
             },
             {
-                path: 'overview',
-                name: StandardWindowName.PanelOverview,
-                component: PanelOverview
-            },
-            {
-                path: 'plunder',
-                name: StandardWindowName.PanelPlunder,
-                component: PanelPlunder
+                path: 'tools',
+                name: StandardWindowName.PanelTools,
+                component: PanelTools
             }
         ]
     },

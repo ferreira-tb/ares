@@ -7,26 +7,26 @@ import { isMenuRoute } from '$renderer/utils';
 import { StandardWindowName } from '$common/enum';
 
 const menuInst = shallowRef<MenuInst | null>(null);
-const selectedKey = ref<StandardWindowName>(StandardWindowName.PanelOverview);
+const selectedKey = ref<StandardWindowName>(StandardWindowName.PanelBotOverview);
 
 const menuOptions: MenuOption[] = [
     {
-        label: renderLabel(StandardWindowName.PanelOverview, 'Visão geral'),
-        key: StandardWindowName.PanelOverview
+        label: renderLabel(StandardWindowName.PanelBotOverview, 'Visão geral'),
+        key: StandardWindowName.PanelBotOverview
     },
     {
         label: () => h('span', { style: 'padding-right: 20px;' }, 'Edifícios'),
         key: 'config-buildings',
         children: [
             {
-                label: renderLabel(StandardWindowName.PanelBuildingsSnob, 'Academia'),
-                key: StandardWindowName.PanelBuildingsSnob
+                label: renderLabel(StandardWindowName.PanelBotBuildingsSnob, 'Academia'),
+                key: StandardWindowName.PanelBotBuildingsSnob
             }
         ]
     },
     {
-        label: renderLabel(StandardWindowName.PanelPlunder, 'Saque'),
-        key: StandardWindowName.PanelPlunder
+        label: renderLabel(StandardWindowName.PanelBotPlunder, 'Saque'),
+        key: StandardWindowName.PanelBotPlunder
     }
 ];
 

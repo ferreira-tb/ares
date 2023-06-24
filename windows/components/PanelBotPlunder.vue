@@ -4,11 +4,11 @@ import { watchDeep } from '@vueuse/core';
 import { NResult } from 'naive-ui';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { usePlunderConfigStore } from '$renderer/stores';
-import PanelPlunderGridAttack from '$windows/components/PanelPlunderGridAttack.vue';
-import PanelPlunderGridGroups from '$windows/components/PanelPlunderGridGroups.vue';
-import PanelPlunderGridTemplateC from '$windows/components/PanelPlunderGridTemplateC.vue';
-import PanelPlunderGridWall from '$windows/components/PanelPlunderGridWall.vue';
-import PanelPlunderGridOthers from '$windows/components/PanelPlunderGridOthers.vue';
+import PanelBotPlunderGridAttack from '$windows/components/PanelBotPlunderGridAttack.vue';
+import PanelBotPlunderGridGroups from '$windows/components/PanelBotPlunderGridGroups.vue';
+import PanelBotPlunderGridTemplateC from '$windows/components/PanelBotPlunderGridTemplateC.vue';
+import PanelBotPlunderGridWall from '$windows/components/PanelBotPlunderGridWall.vue';
+import PanelBotPlunderGridOthers from '$windows/components/PanelBotPlunderGridOthers.vue';
 
 defineProps<{
     userAlias: UserAlias | null;
@@ -29,11 +29,11 @@ watchDeep(config, () => {
 
 <template>
     <section v-if="userAlias" id="panel-plunder">
-        <PanelPlunderGridAttack />
-        <PanelPlunderGridTemplateC />
-        <PanelPlunderGridGroups :user-alias="userAlias" />
-        <PanelPlunderGridWall :user-alias="userAlias" />
-        <PanelPlunderGridOthers />
+        <PanelBotPlunderGridAttack />
+        <PanelBotPlunderGridTemplateC />
+        <PanelBotPlunderGridGroups :user-alias="userAlias" />
+        <PanelBotPlunderGridWall :user-alias="userAlias" />
+        <PanelBotPlunderGridOthers />
     </section>
 
     <div v-else class="result-info">
