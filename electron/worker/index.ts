@@ -10,25 +10,25 @@ import type { TribalWorkerName } from '$common/enum';
 
 export class TribalWorker extends EventEmitter {
     public override emit(event: 'destroyed'): boolean;
-    public override emit(event: 'ready', webContents: Electron.WebContents): boolean;
     public override emit(event: 'message', message: unknown): boolean;
+    public override emit(event: 'ready', webContents: Electron.WebContents): boolean;
     public override emit(event: string, ...args: any[]): boolean {
         return super.emit(event, ...args);
-    };
+    }
 
     public override on(event: 'destroyed', listener: () => void): this;
-    public override on(event: 'ready', listener: (webContents: Electron.WebContents) => void): this;
     public override on(event: 'message', listener: (message: unknown) => void): this;
+    public override on(event: 'ready', listener: (webContents: Electron.WebContents) => void): this;
     public override on(event: string, listener: (...args: any[]) => void): this {
         return super.on(event, listener);
-    };
+    }
 
     public override once(event: 'destroyed', listener: () => void): this;
-    public override once(event: 'ready', listener: (webContents: Electron.WebContents) => void): this;
     public override once(event: 'message', listener: (message: unknown) => void): this;
+    public override once(event: 'ready', listener: (webContents: Electron.WebContents) => void): this;
     public override once(event: string, listener: (...args: any[]) => void): this {
         return super.once(event, listener);
-    };
+    }
 
     /** Nome do Worker. */
     public readonly name: TribalWorkerName;
@@ -69,28 +69,28 @@ export class TribalWorker extends EventEmitter {
             readyWatcher,
             this.setBrowserViewWatcher()
         ]);
-    };
+    }
 
     get destroyed(): boolean {
         return this.isDestroyed.value;
-    };
+    }
 
     /** Porta do MessageChannel usado pelo Worker. */
     get port(): Electron.MessagePortMain {
         if (!this.messagePort.value) {
             throw new TribalWorkerError(`There is no message port for TribalWorker "${this.name}".`);
-        };
+        }
         return this.messagePort.value;
-    };
+    }
 
     /** WebContents do Worker. */
     get webContents(): Electron.WebContents {
         if (!(this.browserView.value instanceof BrowserView)) {
             throw new TribalWorkerError(`TribalWorker "${this.name}" is not initialized.`);
-        };
+        }
 
         return this.browserView.value.webContents;
-    };
+    }
 
     /**
      * Destroi a instância do Worker, removendo-a da janela mãe.
@@ -103,13 +103,13 @@ export class TribalWorker extends EventEmitter {
             if (this.messagePort.value) {
                 this.messagePort.value.removeAllListeners().close();
                 this.messagePort.value = null;
-            };
+            }
 
             if (this.browserView.value) {
-                const mainWindow = MainWindow.getInstance();
                 this.browserView.value.webContents.removeAllListeners();
+                const mainWindow = MainWindow.getInstance();
                 mainWindow.removeBrowserView(this.browserView.value);
-            };
+            }
 
             this.watchers.forEach((stop) => stop());
             this.watchers.clear();
@@ -123,8 +123,8 @@ export class TribalWorker extends EventEmitter {
         } catch (err) {
             TribalWorkerError.catch(err);
             return false;
-        };
-    };
+        }
+    }
 
     /**
      * Inicializa uma instância do Worker, anexando-a à janela mãe.
@@ -133,12 +133,10 @@ export class TribalWorker extends EventEmitter {
     public async init(): Promise<void> {
         if (this.isDestroyed.value) {
             throw new TribalWorkerError(`TribalWorker "${this.name}" is destroyed.`);
-        };
+        }
 
-        const aliveWorker = TribalWorker.getWorker(this.name);
-        if (aliveWorker instanceof TribalWorker) {
-            aliveWorker.destroy();
-        };
+        const alive = TribalWorker.getWorker(this.name);
+        if (alive instanceof TribalWorker) alive.destroy();
 
         const tribalWorker = new BrowserView({
             webPreferences: {
@@ -161,24 +159,28 @@ export class TribalWorker extends EventEmitter {
 
         TribalWorker.setWorker(this.name, this);
         this.setupMessageChannel();
-    };
+    }
 
     public openDevTools() {
         this.webContents.openDevTools({ mode: 'detach' });
-    };
+    }
 
     private setBrowserViewWatcher(): () => void {
         return watchImmediate(this.browserView, (view) => {
             if (!(view instanceof BrowserView)) return;
             const contents = view.webContents;
-            contents.on('did-start-loading', () => (this.isLoading.value = contents.isLoading()));
-            contents.on('did-stop-loading', () => (this.isLoading.value = contents.isLoading()));
-            contents.on('did-finish-load', () => (this.isLoading.value = contents.isLoading()));
-            contents.on('did-fail-load', () => (this.isLoading.value = contents.isLoading()));
-            contents.on('did-fail-provisional-load', () => (this.isLoading.value = contents.isLoading()));
-            contents.on('dom-ready', () => (this.isLoading.value = contents.isLoading()));
+            const update = () => {
+                this.isLoading.value = contents.isLoading();
+            };
+
+            contents.on('did-start-loading', update);
+            contents.on('did-stop-loading', update);
+            contents.on('did-finish-load', update);
+            contents.on('did-fail-load', update);
+            contents.on('did-fail-provisional-load', update);
+            contents.on('dom-ready', update);
         });
-    };
+    }
 
     private setupMessageChannel(): void {
         const { port1, port2 } = new MessageChannelMain();
@@ -190,7 +192,7 @@ export class TribalWorker extends EventEmitter {
 
         this.webContents.postMessage('port', null, [port2]);
         port1.start();
-    };
+    }
 
     /** Permite aguardar até que o webContents do Worker esteja carregado. */
     public whenReady(
@@ -200,7 +202,7 @@ export class TribalWorker extends EventEmitter {
     ): Promise<void> {
         this.isLoading.value = this.webContents.isLoading();
         return until(this.isReady).toBe(true, { timeout, throwOnTimeout, timeoutReason });
-    };
+    }
 
     /** Instâncias ativas do Worker. */
     private static readonly active = new Map<TribalWorkerName, TribalWorker>();
@@ -212,30 +214,30 @@ export class TribalWorker extends EventEmitter {
      */
     public static destroyWorker(tribalWorker: TribalWorker | TribalWorkerName): boolean {
         if (tribalWorker instanceof TribalWorker) {
-            tribalWorker.destroy();
-        } else {
-            const worker = this.getWorker(tribalWorker);
-            if (worker instanceof TribalWorker) {
-                return worker.destroy();
-            };
-        };
+            return tribalWorker.destroy();
+        }
+
+        const worker = this.getWorker(tribalWorker);
+        if (worker instanceof TribalWorker) {
+            return worker.destroy();
+        }
 
         return false;
-    };
+    }
 
     public static getWorker(name: TribalWorkerName): TribalWorker | null;
     public static getWorker(contents: Electron.WebContents): TribalWorker | null;
     public static getWorker(nameOrContents: Electron.WebContents | TribalWorkerName): TribalWorker | null {
         if (typeof nameOrContents === 'string') {
             return this.active.get(nameOrContents) ?? null;
-        };
+        }
 
         for (const worker of this.active.values()) {
             if (worker.webContents === nameOrContents) return worker;
-        };
+        }
 
         return null;
-    };
+    }
 
     /**
      * Guarda a instância do Worker na lista de instâncias ativas.
@@ -245,5 +247,5 @@ export class TribalWorker extends EventEmitter {
     private static setWorker(name: TribalWorkerName, worker: TribalWorker): void {
         worker.once('destroyed', () => this.active.delete(name));
         this.active.set(name, worker);
-    };
-};
+    }
+}
