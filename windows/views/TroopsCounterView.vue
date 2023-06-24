@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { h, computed, nextTick, reactive, ref, toRef, toValue, watchEffect } from 'vue';
 import { computedAsync } from '@vueuse/core';
-import { NGrid, NGridItem, NPageHeader, NResult, NSelect, NSpin } from 'naive-ui';
+import { NGrid, NGridItem, NPageHeader, NSelect, NSpin } from 'naive-ui';
 import { useArcherWorld, useGroups, usePlayerVillages, useUserAlias } from '$renderer/composables';
 import { useGameDataStore } from '$renderer/stores';
 import { ipcInvoke } from '$renderer/ipc';
@@ -10,6 +10,7 @@ import { Units } from '$common/templates';
 import { RendererProcessError } from '$renderer/error';
 import GroupsButtonUpdate from '$renderer/components/GroupsButtonUpdate.vue';
 import LabelAmount from '$renderer/components/LabelAmount.vue';
+import ResultGuest from '$renderer/components/ResultGuest.vue';
 import ArcherIcon18 from '$icons/units/ArcherIcon18.vue';
 import AxeIcon18 from '$icons/units/AxeIcon18.vue';
 import HeavyIcon18 from '$icons/units/HeavyIcon18.vue';
@@ -216,23 +217,19 @@ const typeOptions: NSelectOptions<keyof TroopsCounterResultType> = [
         </Transition>
     </main>
 
-    <div v-else class="result-info">
-        <NResult
-            status="info"
-            title="Você está logado?"
-            description="É necessário estar logado para usar o contador de tropas."
-        />
-    </div>
+    <ResultGuest
+        v-else
+        description="É necessário estar logado para usar o contador de tropas."
+        to-center
+    />
 </template>
 
 <style scoped lang="scss">
-@use '$windows/assets/main.scss';
-
 .header-select-wrapper {
     display: flex;
-    flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+    flex-direction: column;
     height: 100%;
 
     .header-select-label {
@@ -244,10 +241,5 @@ const typeOptions: NSelectOptions<keyof TroopsCounterResultType> = [
 
 #troops-counter-content {
     margin-top: 1.5em;
-}
-
-.result-info {
-    @include main.to-center;
-    width: 100%;
 }
 </style>

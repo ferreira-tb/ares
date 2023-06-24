@@ -31,32 +31,30 @@ watchDeep(config, () => {
 </script>
 
 <template>
-	<section>
-        <NListItem>
-            <NThing>
-                <template #header>
-                    <div class="panel-overview-thing-header">
-                        <NEllipsis :tooltip="false">Cunhagem</NEllipsis>
-                        <TagActiveStatus :active="config.active" />
-                    </div>
-                </template>
-
-                <LabelAmount :amount="coins" :icon="() => h(CoinIcon18)" />
-            </NThing>
-
-            <template #suffix>
-                <NButtonGroup>
-                    <NButton @click="config.active = !config.active">
-                        {{ buttonText }}
-                    </NButton>
-                    <NButton disabled>
-                        Histórico
-                    </NButton>
-                    <NButton @click="$router.push({ name: StandardWindowName.PanelBotBuildingsSnob })">
-                        Configurações
-                    </NButton>
-                </NButtonGroup>
+    <NListItem>
+        <NThing>
+            <template #header>
+                <div class="panel-overview-thing-header">
+                    <NEllipsis :tooltip="false">Cunhagem</NEllipsis>
+                    <TagActiveStatus :active="config.active" />
+                </div>
             </template>
-        </NListItem>
-    </section>
+
+            <LabelAmount :amount="coins" :icon="() => h(CoinIcon18)" />
+        </NThing>
+
+        <template #suffix>
+            <NButtonGroup>
+                <NButton @click="config.active = !config.active">
+                    {{ buttonText }}
+                </NButton>
+                <NButton disabled>
+                    Histórico
+                </NButton>
+                <NButton @click="$router.push({ name: StandardWindowName.PanelBotBuildingsSnob })">
+                    Configurações
+                </NButton>
+            </NButtonGroup>
+        </template>
+    </NListItem>
 </template>

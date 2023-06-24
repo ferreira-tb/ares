@@ -1,11 +1,10 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { Kronos } from '@tb-dev/kronos';
 
 export const useSnobConfigStore = defineStore('snob-config', () => {
     const active = ref<boolean>(false);
     const mode = ref<'group' | 'single'>('single');
-    const delay = ref<number>(Kronos.Minute * 5);
+    const delay = ref<number>(5);
     const timeUnit = ref<'hours' | 'minutes' | 'seconds'>('minutes');
     const village = ref<number | null>(null);
     const group = ref<number>(0);
@@ -19,7 +18,7 @@ export const useSnobConfigStore = defineStore('snob-config', () => {
             village: village.value,
             group: group.value
         };
-    };
+    }
 
     return {
         active,

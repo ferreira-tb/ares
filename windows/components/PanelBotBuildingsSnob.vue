@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, toRef } from 'vue';
-import { NDivider, NGrid, NGridItem, NInputNumber, NResult, NSelect } from 'naive-ui';
+import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
 import { computedAsync, watchDeep } from '@vueuse/core';
 import { useGroups } from '$renderer/composables';
 import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
@@ -65,7 +65,7 @@ watchDeep(config, () => {
 </script>
 
 <template>
-    <div v-if="alias" id="panel-buildings-snob">
+    <div id="panel-buildings-snob">
         <NDivider title-placement="left" class="config-divider">Cunhagem</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
             <NGridItem>
@@ -109,6 +109,7 @@ watchDeep(config, () => {
                         v-model:value="config.village"
                         :disabled="config.mode !== 'single'"
                         :options="villageOptions"
+                        placeholder="Selecione uma aldeia"
                     />
                 </div>
             </NGridItem>
@@ -122,6 +123,7 @@ watchDeep(config, () => {
                         v-model:value="config.group"
                         :disabled="config.mode !== 'group'"
                         :options="groupOptions"
+                        placeholder="Selecione um grupo"
                     />
                 </div>
             </NGridItem>
@@ -131,25 +133,10 @@ watchDeep(config, () => {
             </NGridItem>
         </NGrid>
     </div>
-
-    <div v-else class="result-info">
-        <NResult
-            status="info"
-            title="Você está logado?"
-            description="É necessário estar logado para acessar as configurações da academia."
-        />
-    </div>
 </template>
 
 <style scoped lang="scss">
-@use '$windows/assets/main.scss';
-
 #panel-buildings-snob {
     padding: 0.5em;
-}
-
-.result-info {
-    @include main.to-center;
-    width: 100%;
 }
 </style>

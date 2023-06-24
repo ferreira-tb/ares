@@ -43,8 +43,3 @@ html {
     @include mixins.flex-x-start-y-center($height: 100%);
     gap: 0.5rem;
 }
-
-.result-info, .result-sucess {
-    padding: 1em;
-    user-select: none;
-}

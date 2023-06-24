@@ -29,7 +29,7 @@ async function exportLog() {
 </script>
 
 <template>
-    <div class="error-log-button-area">
+    <div id="error-log-button-area">
         <NButton :loading="loading" :disabled="loading" @click="exportLog">
             Exportar
         </NButton>
@@ -37,13 +37,12 @@ async function exportLog() {
 </template>
 
 <style scoped lang="scss">
-.error-log-button-area {
+@use '$windows/assets/main.scss';
+
+#error-log-button-area {
+    @include main.flex-x-center-y-center($width: 100%);
     position: absolute;
     top: v-bind("top");
     bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
 }
 </style>

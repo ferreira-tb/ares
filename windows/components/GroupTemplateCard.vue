@@ -19,9 +19,7 @@ defineProps<{
 @use '$windows/assets/main.scss';
 
 .group-template-card {
-    @include main.flex-x-center-y-center;
-    flex-direction: column;
-    width: 100%;
+    @include main.flex-x-center-y-center($flex-direction: column, $width: 100%);
     
     .card-title {
         @include main.bold-text-color;

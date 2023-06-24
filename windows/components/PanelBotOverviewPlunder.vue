@@ -36,34 +36,33 @@ watchDeep(config, () => {
 </script>
 
 <template>
-	<section>
-        <NListItem>
-            <NThing>
-                <template #header>
-                    <div class="panel-overview-thing-header">
-                        <NEllipsis :tooltip="false">Saque</NEllipsis>
-                        <TagActiveStatus :active="config.active" />
-                    </div>
-                </template>
-
-                <LabelAmount :amount="resources" :icon="() => h(StorageIcon18)" />
-            </NThing>
-            <template #suffix>
-                <NButtonGroup>
-                    <NButton :disabled="disabled" @click="config.active = !config.active">
-                        {{ buttonText }}
-                    </NButton>
-                    <NButton @click="ipcSend('window:open', StandardWindowName.PlunderTemplate)">
-                        Modelos
-                    </NButton>
-                    <NButton @click="ipcSend('window:open', StandardWindowName.PlunderHistory)">
-                        Histórico
-                    </NButton>
-                    <NButton @click="$router.push({ name: StandardWindowName.PanelBotPlunder })">
-                        Configurações
-                    </NButton>
-                </NButtonGroup>
+    <NListItem>
+        <NThing>
+            <template #header>
+                <div class="panel-overview-thing-header">
+                    <NEllipsis :tooltip="false">Saque</NEllipsis>
+                    <TagActiveStatus :active="config.active" />
+                </div>
             </template>
-        </NListItem>
-    </section>
+
+            <LabelAmount :amount="resources" :icon="() => h(StorageIcon18)" />
+        </NThing>
+        
+        <template #suffix>
+            <NButtonGroup>
+                <NButton :disabled="disabled" @click="config.active = !config.active">
+                    {{ buttonText }}
+                </NButton>
+                <NButton @click="ipcSend('window:open', StandardWindowName.PlunderTemplate)">
+                    Modelos
+                </NButton>
+                <NButton @click="ipcSend('window:open', StandardWindowName.PlunderHistory)">
+                    Histórico
+                </NButton>
+                <NButton @click="$router.push({ name: StandardWindowName.PanelBotPlunder })">
+                    Configurações
+                </NButton>
+            </NButtonGroup>
+        </template>
+    </NListItem>
 </template>

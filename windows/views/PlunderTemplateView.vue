@@ -16,7 +16,7 @@ const previousTemplates = await ipcInvoke('plunder:get-custom-templates');
 
 if (typeof isArcherWorld !== 'boolean') {
     throw new RendererProcessError('Could not determine if world is archer world.');
-};
+}
 
 const showTemplateModal = ref<boolean>(false);
 const templates = ref<CustomPlunderTemplateType[]>(previousTemplates ?? []);
@@ -29,7 +29,7 @@ function removeTemplate(template: CustomPlunderTemplateType) {
     const index = templates.value.findIndex((t) => t.alias === template.alias && t.type === template.type);
     if (index === -1) return;
     templates.value.splice(index, 1);
-};
+}
 </script>
 
 <template>

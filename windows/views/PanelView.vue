@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { shell } from 'electron';
-import { computed, nextTick, ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { RouterView } from 'vue-router';
 import { NButton, NDropdown, NEllipsis, NIcon, NLayout, NLayoutHeader } from 'naive-ui';
 import { MenuSharp } from '@vicons/ionicons5';
@@ -23,10 +23,6 @@ if (currentData) {
 
 const layoutHeader = ref<HTMLDivElement | null>(null);
 const { height: headerHeight } = useElementSize(layoutHeader);
-
-const hasSider = computed(() => {
-    return true;
-});
 
 const dropdown = [
     {
@@ -76,7 +72,7 @@ function handleSelect(key: WebsiteUrl) {
                 </div>
             </NLayoutHeader>
 
-            <NLayout id="panel-layout-content" position="absolute" :has-sider="hasSider">
+            <NLayout id="panel-layout-content" position="absolute">
                 <RouterView #default="{ Component }">
                     <template v-if="Component">
                         <Transition name="tb-fade" mode="out-in">
@@ -112,8 +108,7 @@ function handleSelect(key: WebsiteUrl) {
     }
 
     #header-extra {
-        @include main.flex-x-end-y-center($height: 100%);
-        gap: 1em;
+        @include main.flex-x-end-y-center($gap: 1em, $height: 100%);
 
         #app-version {
             font-size: 0.8em;

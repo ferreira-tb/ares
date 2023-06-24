@@ -11,7 +11,7 @@ export class WorldConfig extends Model<InferAttributes<WorldConfig>, InferCreati
     declare public readonly archer: boolean;
     declare public readonly church: boolean;
     declare public readonly watchtower: boolean;
-};
+}
 
 WorldConfig.init({
     id: {
