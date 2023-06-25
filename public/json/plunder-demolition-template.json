@@ -3,7 +3,6 @@
     "alias": null,
     "name": "Modelo padrão",
     "description": null,
-    "default": true,
     "units": {
         "0": {
             "spear": 0,
