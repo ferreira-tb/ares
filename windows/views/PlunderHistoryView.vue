@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, type ComponentPublicInstance } from 'vue';
-import { useElementSize, useWindowSize, watchImmediate } from '@vueuse/core';
+import { computedAsync, useElementSize, useWindowSize, watchImmediate } from '@vueuse/core';
 import { Kronos } from '@tb-dev/kronos';
-import { computedAsync, useIpcOn, useUserAlias } from '$renderer/composables';
+import { useIpcOn, useUserAlias } from '$renderer/composables';
 import { ipcInvoke } from '$renderer/ipc';
 import { decodeString, getContinentFromCoords } from '$common/utils';
 import PlunderHistoryHeader from '$windows/components/PlunderHistoryHeader.vue';
@@ -35,7 +35,7 @@ const headerProps = ref<PlunderHistoryDataTableHeaderProps>({
 });
 
 const villageData = ref<PlunderHistoryVillageData[]>([]);
-const villageMap = computedAsync<Map<number, WorldVillageType>>(new Map(), async () => {
+const villageMap = computedAsync<Map<number, WorldVillageType>>(async () => {
     const map = new Map<number, WorldVillageType>();
     if (!userAlias.value) return map;
 
@@ -48,7 +48,7 @@ const villageMap = computedAsync<Map<number, WorldVillageType>>(new Map(), async
     }
     
     return map;
-});
+}, new Map());
 
 watchImmediate([period, villageMap, villageHistory], () => {
     const allVillages: PlunderHistoryVillageData[] = [];

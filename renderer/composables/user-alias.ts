@@ -22,4 +22,4 @@ export function useUserAlias() {
     tryOnScopeDispose(() => scope.stop());
 
     return readonly(userAlias);
-};
+}

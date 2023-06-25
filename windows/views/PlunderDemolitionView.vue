@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { h, computed, nextTick, ref, toValue } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useWindowSize } from '@vueuse/core';
+import { computedAsync, useWindowSize } from '@vueuse/core';
 import { NDataTable, NSelect/* , useMessage */ } from 'naive-ui';
 import { ipcInvoke } from '$renderer/ipc';
-import { computedAsync, useArcherWorld, useElementSize, useUserAlias } from '$renderer/composables';
+import { useArcherWorld, useElementSize, useUserAlias } from '$renderer/composables';
 import { usePlunderConfigStore } from '$renderer/stores';
 import { RendererProcessError } from '$renderer/error';
 import PlunderDemolitionTableCell from '$windows/components/PlunderDemolitionTableCell.vue';
@@ -39,7 +39,7 @@ const { height: headerHeight } = useElementSize(header);
 const { height: windowHeight } = useWindowSize();
 const tableHeight = computed(() => windowHeight.value - headerHeight.value - 20);
 
-const templates = computedAsync(null, async () => {
+const templates = computedAsync(async () => {
     const alias = toValue(userAlias);
     if (!alias) return null;
 
@@ -48,7 +48,7 @@ const templates = computedAsync(null, async () => {
 
     const defaultTemplate = await ipcInvoke('plunder:default-demolition-template');
     return [defaultTemplate];
-});
+}, null);
 
 const selectOptions = computed(() => {
     if (!templates.value) return [];
@@ -63,7 +63,7 @@ const selectOptions = computed(() => {
     return mapped;
 });
 
-const selectedTemplate = computedAsync(null, async () => {
+const selectedTemplate = computedAsync(async () => {
     if (!demolitionTemplate.value || !templates.value) return null;
 
     const alias = toValue(userAlias);
@@ -75,7 +75,7 @@ const selectedTemplate = computedAsync(null, async () => {
     const template = templates.value.find(({ id }) => id === demolitionTemplate.value);
     if (!template || (template.alias !== alias)) return null;
     return template;
-});
+}, null);
 
 const data = computed<PlunderDemolitionTemplateTableRow[]>(() => {
     if (!templates.value || templates.value.length === 0) return [];
