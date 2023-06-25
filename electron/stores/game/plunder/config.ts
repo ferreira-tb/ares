@@ -39,7 +39,7 @@ export function definePlunderConfigStore(mechanus: Mechanus) {
     const estimate = ref<number>(config.estimate);
     const pageDelay = ref<number>(config.pageDelay);
     
-    return mechanus.define('plunderConfig', {
+    return mechanus.define('plunder-config', {
         active,
         mode,
         village,

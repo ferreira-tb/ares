@@ -26,4 +26,4 @@ export function defineCacheStore(mechanus: Mechanus) {
             responseTime
         } satisfies MechanusCacheStoreType;
     });
-};
+}

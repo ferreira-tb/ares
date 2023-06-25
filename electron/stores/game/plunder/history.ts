@@ -19,17 +19,17 @@ export function definePlunderHistoryStore(mechanus: Mechanus) {
                     if (typeof villageId !== 'string') villageId = String(villageId);
                     if (!(villageId in target) && !Number.isNaN(Number.parseInt(villageId, 10))) {
                         target[villageId] = [new PlunderHistoryVillage()];
-                    };
+                    }
                     
                     return Reflect.get(target, villageId);
                 }
             });
-        };
+        }
 
         /** Retorna uma versão não proxificada do objeto `villages` presente na store. */
         function unproxifyVillages() {
             return { ...villages.value };
-        };
+        }
 
         function toClonable(omitVillages: boolean = false) {
             return {
@@ -40,7 +40,7 @@ export function definePlunderHistoryStore(mechanus: Mechanus) {
                 attackAmount: attackAmount.value,
                 villages: omitVillages ? {} : unproxifyVillages()
             };
-        };
+        }
 
         return {
             wood,
@@ -55,4 +55,4 @@ export function definePlunderHistoryStore(mechanus: Mechanus) {
             toClonable
         } satisfies MechanusPlunderHistoryStoreType;
     });
-};
+}

@@ -32,4 +32,4 @@ export function defineUnitsStore(mechanus: Mechanus) {
             militia
         } satisfies MechanusUnitsStoreType;
     });
-};
+}

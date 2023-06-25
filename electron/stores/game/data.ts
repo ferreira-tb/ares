@@ -54,4 +54,4 @@ export function defineGameDataStore(mechanus: Mechanus) {
             village
         } satisfies MechanusGameDataStoreType;
     });
-};
+}
