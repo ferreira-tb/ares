@@ -30,10 +30,6 @@ type UnitAmount = { [key in AllUnits]: number };
 type UnitsAmountAsStrings = { [key in AllUnits]: string };
 type PlaceUnitsAmount = Partial<Omit<UnitAmount, 'militia'>>;
 
-// CONSTRUÇÕES
-type WallLevel = IntRange<0, 21>;
-type StringWallLevel = IntRangeToString<0, 21>;
-
 // ATAQUE A CAMINHO
 type IncomingAttack = {
     /** ID do ataque. */
@@ -62,10 +58,6 @@ type Diplomacy = {
     readonly enemies: WorldAllyType[];
     readonly nap: WorldAllyType[];
 };
-
-// OUTROS
-type DemolitionTroops = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
-type UnitsToDestroyWall = Record<StringWallLevel, DemolitionTroops>;
 
 type GameScreen =
     'am_farm' | 'info_player' | 'market' | 'overview_villages' | 'overview' | 'place' | 'report' | 'snob';

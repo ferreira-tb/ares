@@ -16,6 +16,6 @@ export function setIpcTribalEvents() {
 
         } catch (err) {
             BrowserError.catch(err);
-        };
+        }
     });
-};
+}

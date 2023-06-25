@@ -29,7 +29,7 @@ a {
 }
 
 .bold-green {
-    @include mixins.bold-text-color(var(--color-green));
+    @include mixins.bold-text-color;
 }
 
 .result-info, .result-sucess {

@@ -2,14 +2,14 @@ type SnobConfigType = {
     /** Indica se a cunhagem automática está ativa. */
     active: boolean;
     /** Indica o modo de cunhagem. */
-    mode: 'group' | 'single';
+    mode: 'single' | 'group';
     /** Intervalo entre as cunhagens. A unidade de tempo é definida por `timeUnit`. */
     delay: number;
     /** Unidade de tempo do intervalo. */
-    timeUnit: 'hours' | 'minutes' | 'seconds';
-    /** Aldeia onde cunhagens simples serão feitas. */
+    timeUnit: 'seconds' | 'minutes' | 'hours';
+    /** Aldeia onde a cunhagem será feita quando no modo `single`. */
     village: number | null;
-    /** Grupo onde cunhagens em grupo serão feitas. */
+    /** Grupo a partir do qual ocorrerá a cunhagem quando no modo `group`. */
     group: number;
 };
 

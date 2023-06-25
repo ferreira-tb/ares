@@ -2,62 +2,23 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$common/guards';
 import { DatabaseError } from '$electron/error';
-import { unitsToDestroyWall } from '$common/enum';
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 
-export class DemolitionTemplate extends Model<
-    InferAttributes<DemolitionTemplate>,
-    InferCreationAttributes<DemolitionTemplate>>
-implements DemolitionTemplateType {
+export class PlunderDemolitionTemplate extends Model<
+    InferAttributes<PlunderDemolitionTemplate>,
+    InferCreationAttributes<PlunderDemolitionTemplate>>
+implements PlunderDemolitionTemplateType {
     declare public readonly id: CreationOptional<number>;
     declare public readonly alias: UserAlias;
-    declare public readonly units: UnitsToDestroyWall;
+    declare public readonly name: string;
+    declare public readonly description: string | null;
+    declare public readonly units: PlunderDemolitionTemplateType['units'];
 
-    public static async getDemolitionTroopsConfig(alias: UserAlias): Promise<DemolitionTemplateType | null> {
-        try {
-            assertUserAlias(alias, DatabaseError);
-            const demolitionTemplate = await DemolitionTemplate.findOne({ where: { alias } });
-            if (!demolitionTemplate) {
-                return { alias, units: unitsToDestroyWall };
-            };
-            
-            return demolitionTemplate.toJSON();
+    declare public readonly createdAt: CreationOptional<Date>;
+    declare public readonly updatedAt: CreationOptional<Date>;
+}
 
-        } catch (err) {
-            DatabaseError.catch(err);
-            return null;
-        };
-    };
-
-    public static async saveDemolitionTroopsConfig(template: DemolitionTemplateType): Promise<boolean> {
-        try {
-            await sequelize.transaction(async () => {
-                await DemolitionTemplate.upsert({ ...template });
-            });
-            return true;
-
-        } catch (err) {
-            DatabaseError.catch(err);
-            return false;
-        };
-    };
-
-    public static async destroyDemolitionTroopsConfig(alias: UserAlias): Promise<boolean> {
-        try {
-            assertUserAlias(alias, DatabaseError);
-            await sequelize.transaction(async () => {
-                await DemolitionTemplate.destroy({ where: { alias } });
-            });
-            return true;
-
-        } catch (err) {
-            DatabaseError.catch(err);
-            return false;
-        };
-    };
-};
-
-DemolitionTemplate.init({
+PlunderDemolitionTemplate.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -66,15 +27,24 @@ DemolitionTemplate.init({
     alias: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         validate: {
             isUserAlias(value: unknown) {
                 assertUserAlias(value, DatabaseError);
             }
         }
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     units: {
         type: DataTypes.JSON,
         allowNull: false
-    }
-}, { sequelize, tableName: 'demolition_template', timestamps: true });
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE
+}, { sequelize, tableName: 'plunder_demolition_templates', timestamps: true });

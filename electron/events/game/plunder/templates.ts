@@ -1,21 +1,21 @@
 import { ipcMain, webContents } from 'electron';
 import { useCacheStore } from '$electron/stores';
-import { CustomPlunderTemplate } from '$electron/database/models';
+import { PlunderCustomTemplate } from '$electron/database/models';
 import { isUserAlias } from '$common/guards';
 
 export function setPlunderTemplatesEvents() {
     const cacheStore = useCacheStore();
 
-    ipcMain.handle('plunder:get-custom-templates', async (_e, alias: UserAlias | null): Promise<CustomPlunderTemplateType[] | null> => {
+    ipcMain.handle('plunder:get-custom-templates', async (_e, alias: UserAlias | null): Promise<PlunderCustomTemplateType[] | null> => {
         alias ??= cacheStore.userAlias;
         if (!isUserAlias(alias)) return null;
-        const customPlunderTemplates = await CustomPlunderTemplate.getCustomPlunderTemplates(alias);
+        const customPlunderTemplates = await PlunderCustomTemplate.getCustomPlunderTemplates(alias);
         if (!Array.isArray(customPlunderTemplates)) return null;
         return customPlunderTemplates;
     });
 
-    ipcMain.handle('plunder:save-custom-template', async (e, template: CustomPlunderTemplateType): Promise<boolean> => {
-        const saved = await CustomPlunderTemplate.saveCustomPlunderTemplate(template);
+    ipcMain.handle('plunder:save-custom-template', async (e, template: PlunderCustomTemplateType): Promise<boolean> => {
+        const saved = await PlunderCustomTemplate.saveCustomPlunderTemplate(template);
         
         // Se o template foi salvo com sucesso, notifica o browser.
         if (saved) {
@@ -28,8 +28,8 @@ export function setPlunderTemplatesEvents() {
         return saved;
     });
 
-    ipcMain.handle('plunder:destroy-custom-template', async (e, template: CustomPlunderTemplateType): Promise<boolean> => {
-        const destroyed = await CustomPlunderTemplate.destroyCustomPlunderTemplate(template);
+    ipcMain.handle('plunder:destroy-custom-template', async (e, template: PlunderCustomTemplateType): Promise<boolean> => {
+        const destroyed = await PlunderCustomTemplate.destroyCustomPlunderTemplate(template);
 
         // Se o template foi excluído com sucesso, notifica o browser.
         if (destroyed) {

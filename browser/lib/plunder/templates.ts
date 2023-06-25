@@ -20,7 +20,7 @@ class TemplateUnits implements FarmUnitsAmount {
     public marcher = 0;
 };
 
-export class PlunderTemplate {
+export class PlunderCustomTemplate {
     /** Tipo do modelo. */
     public readonly type: string;
     /** Alias do criador do modelo. Somente válido para modelos personalizados. */
@@ -60,14 +60,14 @@ export class PlunderTemplate {
 };
 
 /** Representa todos os modelos de saque. */
-const allTemplates = new Map<string, PlunderTemplate>();
+const allTemplates = new Map<string, PlunderCustomTemplate>();
 
-ipcOn('custom-plunder-template-saved', async (_e, template: CustomPlunderTemplateType) => {
+ipcOn('custom-plunder-template-saved', async (_e, template: PlunderCustomTemplateType) => {
     const plunderTemplate = await parseCustomPlunderTemplate(template);
     allTemplates.set(plunderTemplate.type, plunderTemplate);
 });
 
-ipcOn('custom-plunder-template-destroyed', (_e, template: CustomPlunderTemplateType) => {
+ipcOn('custom-plunder-template-destroyed', (_e, template: PlunderCustomTemplateType) => {
     const templateInMap = allTemplates.get(template.type);
     if (templateInMap && templateInMap.alias === template.alias) {
         allTemplates.delete(templateInMap.type);
@@ -76,14 +76,14 @@ ipcOn('custom-plunder-template-destroyed', (_e, template: CustomPlunderTemplateT
 
 /** Retorna uma versão somente leitura do mapa de modelos de saque. */
 export function getAllTemplates() {
-    return allTemplates as ReadonlyMap<string, Readonly<PlunderTemplate>>;
+    return allTemplates as ReadonlyMap<string, Readonly<PlunderCustomTemplate>>;
 };
 
 /** Obtêm informações sobre os modelos de saque. */
 export async function queryTemplateData() {
     // Cria os modelos de saque base e os adiciona ao mapa.
-    const templateA = new PlunderTemplate('a');
-    const templateB = new PlunderTemplate('b');
+    const templateA = new PlunderCustomTemplate('a');
+    const templateB = new PlunderCustomTemplate('b');
     allTemplates.set(templateA.type, templateA);
     allTemplates.set(templateB.type, templateB);
 
@@ -113,7 +113,7 @@ export async function queryTemplateData() {
     templateB.carry.value = bCarryField.parseIntStrict();
 
     // Cria um modelo vazio para o tipo 'C'.
-    const templateC = new PlunderTemplate('c');
+    const templateC = new PlunderCustomTemplate('c');
     allTemplates.set(templateC.type, templateC);
 
     // Obtêm os modelos personalizados.
@@ -153,7 +153,7 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * @param resources Recursos na aldeia-alvo.
  * @param template Modelo atacante.
  */
-function calcResourceRatio(resources: number, template: PlunderTemplate) {
+function calcResourceRatio(resources: number, template: PlunderCustomTemplate) {
     return resources / template.carry.value;
 };
 
@@ -171,8 +171,8 @@ async function filterTemplates(info: PlunderTargetInfo, config: ReturnType<typeo
     // Separa os modelos em dois grupos, de acordo com sua capacidade de carga.
     // Os modelos com capacidade de carga maior que a quantidade de recursos são colocados no grupo `bigger`.
     // Os demais são colocados no grupo `smaller`.
-    let bigger: PlunderTemplate[] = [];
-    const smaller: PlunderTemplate[] = [];
+    let bigger: PlunderCustomTemplate[] = [];
+    const smaller: PlunderCustomTemplate[] = [];
 
     // Aguarda para certificar-se de que a lista de modelos foi atualizada.
     await nextTick();
@@ -205,7 +205,7 @@ async function filterTemplates(info: PlunderTargetInfo, config: ReturnType<typeo
     // Isso impede que sejam enviadas tropas em excesso para a aldeia-alvo.
     // Quanto menor for a razão, maior a quantidade de tropas sendo enviada desnecessariamente.
     // Não é necessário filtrar os modelos com capacidade de carga menor que a quantidade de recursos, pois eles sempre são válidos.
-    bigger = bigger.filter((template) => calcResourceRatio(resources, template) >= config.resourceRatio);
+    bigger = bigger.filter((template) => calcResourceRatio(resources, template) >= config.ratio);
     return [...smaller, ...bigger];
 };
 
@@ -237,7 +237,7 @@ export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnTy
     if (
         config.useC &&
         config.useCPattern === 'excess' &&
-        calcResourceRatio(info.res.total, best) > config.useCWhenResourceRatioIsBiggerThan
+        calcResourceRatio(info.res.total, best) > config.useCWhenRatioIsBiggerThan
     ) {
         const templateC = await getTemplateC(info, config);
         if (templateC) return templateC;
@@ -299,8 +299,8 @@ async function calcCarryCapacity(units: TemplateUnits) {
     return carry;
 };
 
-async function parseCustomPlunderTemplate(template: CustomPlunderTemplateType) {
-    const plunderTemplate = new PlunderTemplate(template.type, template.alias);
+async function parseCustomPlunderTemplate(template: PlunderCustomTemplateType) {
+    const plunderTemplate = new PlunderCustomTemplate(template.type, template.alias);
 
     for (const [unit, amount] of Object.entries(template.units) as [FarmUnits, number][]) {
         assertFarmUnit(unit, PlunderError, `${unit} is not a valid farm unit.`);

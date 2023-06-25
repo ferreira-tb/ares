@@ -28,9 +28,9 @@ export class PlunderHistory extends Model<InferAttributes<PlunderHistory>, Infer
 
         } catch (err) {
             DatabaseError.catch(err);
-        };
-    };
-};
+        }
+    }
+}
 
 PlunderHistory.init({
     id: {

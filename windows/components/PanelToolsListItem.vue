@@ -17,7 +17,7 @@ defineEmits<{
             <div class="list-item-thing">
                 <NThing>
                     <template #header>
-                        <NEllipsis :tooltip="false">{{ title }}</NEllipsis>
+                        <NEllipsis class="list-item-title" :tooltip="false">{{ title }}</NEllipsis>
                     </template>
 
                     <span class="list-item-slot">
@@ -36,6 +36,8 @@ defineEmits<{
 </template>
 
 <style scoped lang="scss">
+@use '$windows/assets/main.scss';
+
 .panel-tools-list-item {
     height: 120px;
     border: 1px solid var(--color-border);
@@ -49,6 +51,10 @@ defineEmits<{
 
     .list-item-thing {
         padding-left: 0.5em;
+    }
+
+    .list-item-title {
+        @include main.bold-text-color($font-weight: 500)
     }
 
     .list-item-slot {

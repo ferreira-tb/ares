@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { usePlunderConfigStore } from '$renderer/stores';
-import { assertUserAlias } from '$common/guards';
-import { ipcInvoke, ipcSend } from '$renderer/ipc';
-import { RendererProcessError } from '$renderer/error';
+import { ipcSend } from '$renderer/ipc';
 import { formatFields, parseFields, formatWallLevel, parseWallLevel } from '$renderer/utils/format-input';
 import { StandardWindowName } from '$common/enum';
 import {
@@ -12,43 +10,10 @@ import {
     NGrid,
     NGridItem,
     NInputNumber,
-    NSwitch,
-    useDialog,
-    useMessage
+    NSwitch
 } from 'naive-ui';
 
-const props = defineProps<{
-    userAlias: UserAlias | null;
-}>();
-
-const dialog = useDialog();
-const message = useMessage();
-
 const config = usePlunderConfigStore();
-
-function resetDemolitionConfig() {
-    const status = dialog.warning({
-        title: 'Tem certeza?',
-        content: 'Essa ação é irreversível!',
-        positiveText: 'Sim',
-        negativeText: 'Cancelar',
-        onPositiveClick: async () => {
-            status.loading = true;
-            try {
-                assertUserAlias(props.userAlias, RendererProcessError);
-                const destroyed = await ipcInvoke('plunder:destroy-demolition-config', props.userAlias);
-                if (destroyed) {
-                    message.success('Resetado com sucesso!');
-                } else {
-                    message.error('Ocorreu algum erro :(');
-                }
-                
-            } catch (err) {
-                RendererProcessError.catch(err);
-            }
-        }
-    });
-}
 </script>
 
 <template>
@@ -64,7 +29,7 @@ function resetDemolitionConfig() {
             <NGridItem>
                 <div class="labeled-switch-wrapper">
                     <NSwitch v-model:value="config.destroyWall" round size="small" />
-                    <div class="switch-label">Destruir muralha</div>
+                    <div class="switch-label">Demolir muralha</div>
                 </div>
             </NGridItem>
 
@@ -124,8 +89,9 @@ function resetDemolitionConfig() {
             </NGridItem>
             <NGridItem>
                 <NButtonGroup>
-                    <NButton @click="ipcSend('window:open', StandardWindowName.DemolitionTemplate)">Configurar</NButton>
-                    <NButton @click="resetDemolitionConfig">Resetar</NButton>
+                    <NButton @click="ipcSend('window:open', StandardWindowName.PlunderDemolitionTemplate)">
+                        Configurar
+                    </NButton>
                 </NButtonGroup>
             </NGridItem>
         </NGrid>

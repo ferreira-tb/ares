@@ -1,56 +1,67 @@
-/**
- * Padrão de ataque quando o Plunder não tem informações dos exploradores.
- * 
- * `bigger`: Ataca com a maior capacidade de carga possível.
- * 
- * `smaller`: Ataca com a menor capacidade de carga possível.
- */
-type BlindAttackPattern = 'bigger' | 'smaller';
-
-/**
- * Padrão de ataque quando o Plunder está usando o modelo C.
- * 
- * `normal`: Tenta utilizar o modelo C, se não for possível, utiliza outro.
- * 
- * `excess`: Utiliza o modelo C apenas se a razão entre a quantidade de recursos esperados e a
- * capacidade de carga do modelo atacante for maior que o valor indicado em `useCWhenResourceRatioIsBiggerThan`.
- * 
- * `only`: Utiliza apenas o modelo C.
- */
-type UseCPattern = 'excess' | 'normal' | 'only';
-
 type PlunderConfigType = {
-    // Painel
     /** Indica se o Plunder está ativado. */
     active: boolean;
-    /** Determina se o Plunder deve atacar aldeias com muralha. */
-    ignoreWall: boolean;
-    /** Determina se o Plunder deve demolir a muralha das aldeias. */
-    destroyWall: boolean;
-    /** Determina se o Plunder deve utilizar o grupo Insidious ao atacar. */
-    groupAttack: boolean;
-    /** Determina se o Plunder deve atacar usando o modelo C. */
-    useC: boolean;
-    /** Se ativado, o Plunder não terá delay entre os ataques. */
-    ignoreDelay: boolean;
-    /** Se ativado, o Plunder não levará em consideração as informações dos exploradores. */
-    blindAttack: boolean;
+    /** Indica o modo de saque. */
+    mode: 'single' | 'group';
+    /** Aldeia de onde partirão os ataques quando no modo `single`. */
+    village: number | null;
+    /** Grupo a partir do qual serão feitos os ataques quando no modo `group`. */
+    group: number;
 
     // Ataque
     /** Distância máxima para os ataques normais do Plunder. */
     maxDistance: number;
     /** Ignora aldeias cujo último ataque ocorreu há uma quantidade de horas superior à indicada. */
     ignoreOlderThan: number;
+    /** Razão entre a quantidade de recursos esperados e a capacidade de carga do modelo atacante. */
+    ratio: number;
     /** Delay médio entre os ataques. */
     attackDelay: number;
-    /** Razão entre a quantidade de recursos esperados e a capacidade de carga do modelo atacante. */
-    resourceRatio: number;
-    /** Determina o padrão de ataque quando o Plunder não tem informações dos exploradores. */
-    blindAttackPattern: BlindAttackPattern;
+    /**
+     * Padrão de ataque quando o Plunder não tem informações dos exploradores.
+     * 
+     * `bigger`: Ataca com a maior capacidade de carga possível.
+     * 
+     * `smaller`: Ataca com a menor capacidade de carga possível.
+     * 
+     * `never`: Nunca ataca às cegas.
+     */
+    blindAttack: 'bigger' | 'smaller' | 'never';
+
+    // Grupo
+    /** Máximo de campos por onda. */
+    fieldsPerWave: number;
+    /** Delay médio entre cada troca de aldeia. */
+    villageDelay: number;
+
+    // Muralha
+    /** Determina se o Plunder deve atacar aldeias com muralha. */
+    ignoreWall: boolean;
+    /** Nível da muralha a partir do qual ele deve ignorar. */
+    wallLevelToIgnore: number;
+    /** Determina se o Plunder deve demolir a muralha das aldeias. */
+    destroyWall: boolean;
+    /** Nível da muralha a partir do qual ele deve demolir. */
+    wallLevelToDestroy: number;
+    /** Distância máxima para a demolição da muralha. */
+    destroyWallMaxDistance: number;
+    /** Modelo usado para demolir a muralha. */
+    demolitionTemplate: number;
 
     // Modelo C
-    /** Determina o padrão de ataque quando o Plunder está usando o modelo C. */
-    useCPattern: UseCPattern;
+    /**
+     * Padrão de ataque quando o Plunder está usando o modelo C.
+     * 
+     * `normal`: Tenta utilizar o modelo C, se não for possível, utiliza outro.
+     * 
+     * `excess`: Utiliza o modelo C apenas se a razão entre a quantidade de recursos esperados e a
+     * capacidade de carga do modelo atacante for maior que o valor indicado em `useCWhenRatioIsBiggerThan`.
+     * 
+     * `only`: Utiliza apenas o modelo C.
+     * 
+     * `never`: Nunca utiliza o modelo C.
+     */
+    useC: 'excess' | 'normal' | 'only' | 'never';
     /** Distância máxima para ataques usando o modelo C. */
     maxDistanceC: number;
     /** Ao usar o modelo C, ignora aldeias cujo último ataque ocorreu há uma quantidade de horas superior à indicada. */
@@ -59,32 +70,16 @@ type PlunderConfigType = {
      * Utiliza o modelo C apenas se a razão entre a quantidade de recursos esperados e a
      * capacidade de carga do modelo atacante for maior que o valor indicado.
      */
-    useCWhenResourceRatioIsBiggerThan: number;
-
-    // Grupo
-    /** ID do grupo que será utilizado para atacar. */
-    plunderGroupId: number | null;
-    /** Máximo de campos por onda. */
-    fieldsPerWave: number;
-    /** Delay médio entre cada troca de aldeia. */
-    villageDelay: number;
-
-    // Muralha
-    /** Nível da muralha a partir do qual ele deve ignorar. */
-    wallLevelToIgnore: WallLevel;
-    /** Nível da muralha a partir do qual ele deve demolir. */
-    wallLevelToDestroy: WallLevel;
-    /** Distância máxima para ataques de destruição de muralha. */
-    destroyWallMaxDistance: number;
+    useCWhenRatioIsBiggerThan: number;
 
     // Outros
     /** Minutos até que a página seja recarregada automaticamente. */
     minutesUntilReload: number;
     /**
      * Por padrão, o Plunder sempre assume que o modelo saqueou 100% de sua capacidade de carga.
-     * No entanto, essa opção permite ao usuário alterar o valor padrão.
+     * No entanto, essa opção permite ao usuário alterar isso.
      */
-    plunderedResourcesRatio: number;
+    estimate: number;
     /** Delay médio entre cada troca de página. */
     pageDelay: number;
 };
@@ -95,7 +90,7 @@ type PlunderCacheType = {
     /** Informações sobre o grupo de saque. */
     readonly plunderGroup: PlunderGroupType | null;
     /** Modelos usados no assistente de saque para demolição de muralhas. */
-    readonly demolitionTroops: DemolitionTemplateType | null;
+    readonly demolitionTemplate: PlunderDemolitionTemplateType | null;
 };
 
 type PlunderGroupVillageType = {
@@ -193,20 +188,28 @@ type PlunderTableResources = {
     total: number;
 };
 
-type CustomPlunderTemplateType = {
+type PlunderCustomTemplateType = {
     /** Alias do usuário. */
     alias: UserAlias;
     /** Nome do modelo. */
-    type: string;
+    name: string;
     /** Descrição do modelo. */
     description: string | null;
     /** Quantidade de unidades de cada tipo. */
     readonly units: Omit<FarmUnitsAmount, 'knight'>;
 };
 
-type DemolitionTemplateType = {
-    /** Alias do usuário. */
-    alias: UserAlias;
+type PlunderDemolitionTroops = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
+
+interface PlunderDemolitionTemplateTableRow extends PlunderDemolitionTroops {
+    readonly level: number;
+}
+
+interface PlunderDemolitionTemplateType extends Omit<PlunderCustomTemplateType, 'units'> {
+    /** ID do modelo. O modelo padrão terá o ID igual a `-1`. */
+    readonly id: number;
     /** Modelos. */
-    units: UnitsToDestroyWall;
-};
+    readonly units: {
+        [key: string]: PlunderDemolitionTroops;
+    };
+}

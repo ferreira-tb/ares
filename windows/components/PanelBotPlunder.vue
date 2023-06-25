@@ -5,13 +5,10 @@ import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { usePlunderConfigStore } from '$renderer/stores';
 import PanelBotPlunderGridAttack from '$windows/components/PanelBotPlunderGridAttack.vue';
 import PanelBotPlunderGridGroups from '$windows/components/PanelBotPlunderGridGroups.vue';
+import PanelBotPlunderGridMode from '$windows/components/PanelBotPlunderGridMode.vue';
 import PanelBotPlunderGridTemplateC from '$windows/components/PanelBotPlunderGridTemplateC.vue';
 import PanelBotPlunderGridWall from '$windows/components/PanelBotPlunderGridWall.vue';
 import PanelBotPlunderGridOthers from '$windows/components/PanelBotPlunderGridOthers.vue';
-
-defineProps<{
-    userAlias: UserAlias | null;
-}>();
 
 // Sincroniza a configuração com o processo principal.
 const config = usePlunderConfigStore();
@@ -28,10 +25,11 @@ watchDeep(config, () => {
 
 <template>
     <section id="panel-plunder">
+        <PanelBotPlunderGridMode />
         <PanelBotPlunderGridAttack />
+        <PanelBotPlunderGridGroups />
+        <PanelBotPlunderGridWall />
         <PanelBotPlunderGridTemplateC />
-        <PanelBotPlunderGridGroups :user-alias="userAlias" />
-        <PanelBotPlunderGridWall :user-alias="userAlias" />
         <PanelBotPlunderGridOthers />
     </section>
 </template>

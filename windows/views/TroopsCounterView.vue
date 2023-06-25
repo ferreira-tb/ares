@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { h, computed, nextTick, reactive, ref, toRef, toValue, watchEffect } from 'vue';
-import { computedAsync } from '@vueuse/core';
 import { NGrid, NGridItem, NPageHeader, NSelect, NSpin } from 'naive-ui';
-import { useArcherWorld, useGroups, usePlayerVillages, useUserAlias } from '$renderer/composables';
+import { computedAsync, useArcherWorld, useGroups, usePlayerVillages, useUserAlias } from '$renderer/composables';
 import { useGameDataStore } from '$renderer/stores';
 import { ipcInvoke } from '$renderer/ipc';
 import { getContinentFromCoords } from '$common/utils';
@@ -62,7 +61,7 @@ watchEffect(async () => {
 });
 
 const evaluating = ref(false);
-const troops = computedAsync<UnitAmount>(async () => {
+const troops = computedAsync<UnitAmount>(new Units(), async () => {
     const groupId = toValue(selectedGroup);
     const continent = toValue(selectedContinent);
     const type = toValue(selectedType);
@@ -88,7 +87,7 @@ const troops = computedAsync<UnitAmount>(async () => {
     }
 
     return partial;
-}, new Units(), evaluating);
+}, evaluating);
 
 const groupOptions = computed(() => {
     const mapped = groups.value.map((group) => ({

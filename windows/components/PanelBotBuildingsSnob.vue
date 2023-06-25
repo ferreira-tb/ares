@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, nextTick, toRef } from 'vue';
 import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
-import { computedAsync, watchDeep } from '@vueuse/core';
-import { useGroups } from '$renderer/composables';
+import { watchDeep } from '@vueuse/core';
+import { computedAsync, useGroups } from '$renderer/composables';
 import { useGameDataStore, useSnobConfigStore } from '$renderer/stores';
 import { ipcInvoke, ipcSend } from '$renderer/ipc';
 import { decodeString } from '$common/utils';
@@ -22,11 +22,11 @@ const currentConfig = await ipcInvoke('snob:get-config');
 if (currentConfig) config.$patch(currentConfig);
 await nextTick();
 
-const villages = computedAsync<WorldVillageType[]>(async () => {
+const villages = computedAsync<WorldVillageType[]>([], async () => {
     if (!alias.value || typeof gameData.player.id !== 'number') return [];
     const playerVillages = await ipcInvoke('world-data:get-player-villages', gameData.player.id);
     return playerVillages;
-}, []);
+});
 
 const villageOptions = computed(() => {
     const options = villages.value.map(({ id: villageId, name: villageName }) => {

@@ -14,11 +14,11 @@ import SwordIcon18 from '$icons/units/SwordIcon18.vue';
 
 const props = defineProps<{
     locale: string;
-    template: CustomPlunderTemplateType;
+    template: PlunderCustomTemplateType;
 }>();
 
 const emit = defineEmits<{
-    (e: 'template-destroyed', template: CustomPlunderTemplateType): void;
+    (e: 'template-destroyed', template: PlunderCustomTemplateType): void;
 }>();
 
 const dialog = useDialog();
@@ -54,7 +54,7 @@ function destroyTemplate() {
 <template>
     <NCard
         class="template-card"
-        :title="template.type"
+        :title="template.name"
         closable
         hoverable
         bordered

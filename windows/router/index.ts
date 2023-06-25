@@ -7,7 +7,6 @@ import ConfigNotifications from '$windows/components/ConfigNotifications.vue';
 import ConfigTags from '$windows/components/ConfigTags.vue';
 import DebugView from '$windows/views/DebugView.vue';
 import DefaultView from '$renderer/views/DefaultView.vue';
-import DemolitionView from '$windows/views/DemolitionView.vue';
 import ErrorLogView from '$windows/views/ErrorLogView.vue';
 import GroupTemplateView from '$windows/views/GroupTemplateView.vue';
 import GroupTemplateSafeZone from '$windows/components/GroupTemplateSafeZone.vue';
@@ -17,6 +16,7 @@ import PanelBotOverview from '$windows/components/PanelBotOverview.vue';
 import PanelBotPlunder from '$windows/components/PanelBotPlunder.vue';
 import PanelTools from '$windows/components/PanelTools.vue';
 import PanelView from '$windows/views/PanelView.vue';
+import PlunderDemolitionView from '$windows/views/PlunderDemolitionView.vue';
 import PlunderHistoryView from '$windows/views/PlunderHistoryView.vue';
 import PlunderTemplateView from '$windows/views/PlunderTemplateView.vue';
 import TroopsCounterView from '$windows/views/TroopsCounterView.vue';
@@ -62,11 +62,6 @@ const routes: RouteRecordRaw[] = [
         path: '/debug',
         name: StandardWindowName.Debug,
         component: DebugView
-    },
-    {
-        path: '/demolition-template',
-        name: StandardWindowName.DemolitionTemplate,
-        component: DemolitionView
     },
     {
         path: '/error-log',
@@ -120,13 +115,18 @@ const routes: RouteRecordRaw[] = [
         ]
     },
     {
+        path: '/plunder-demolition',
+        name: StandardWindowName.PlunderDemolitionTemplate,
+        component: PlunderDemolitionView
+    },
+    {
         path: '/plunder-history',
         name: StandardWindowName.PlunderHistory,
         component: PlunderHistoryView
     },
     {
         path: '/plunder-template',
-        name: StandardWindowName.PlunderTemplate,
+        name: StandardWindowName.PlunderCustomTemplate,
         component: PlunderTemplateView
     },
     {

@@ -17,18 +17,18 @@ export function definePlunderStore(mechanus: Mechanus) {
             plunderExhausted
         } satisfies MechanusPlunderStoreType;
     });
-};
+}
 
 export function definePlunderCacheStore(mechanus: Mechanus) {
     return mechanus.define('plunderCache', () => {
         const pages = ref<PlunderPageListType | null>(null);
         const plunderGroup = ref<PlunderGroupType | null>(null);
-        const demolitionTroops = ref<DemolitionTemplateType | null>(null);
+        const demolitionTemplate = ref<PlunderDemolitionTemplateType | null>(null);
 
         return {
             pages,
             plunderGroup,
-            demolitionTroops
+            demolitionTemplate
         } satisfies MechanusPlunderCacheStoreType;
     });
-};
+}

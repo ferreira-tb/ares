@@ -12,6 +12,9 @@ export class SnobConfig extends Model<InferAttributes<SnobConfig>, InferCreation
     declare public readonly timeUnit: 'hours' | 'minutes' | 'seconds';
     declare public readonly village: CreationOptional<number | null>;
     declare public readonly group: CreationOptional<number>;
+
+    declare public readonly createdAt: CreationOptional<Date>;
+    declare public readonly updatedAt: CreationOptional<Date>;
 }
 
 SnobConfig.init({
@@ -54,13 +57,18 @@ SnobConfig.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
-    }
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE
 }, { sequelize, tableName: 'snob_config', timestamps: true });
 
 export class SnobHistory extends Model<InferAttributes<SnobHistory>, InferCreationAttributes<SnobHistory>> implements SnobHistoryType {
     declare public readonly id: UserAlias;
     declare public readonly coins: number;
     declare public readonly villages: CreationOptional<SnobHistoryType['villages']>;
+
+    declare public readonly createdAt: CreationOptional<Date>;
+    declare public readonly updatedAt: CreationOptional<Date>;
 }
 
 SnobHistory.init({
@@ -84,5 +92,7 @@ SnobHistory.init({
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: {}
-    }
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE
 }, { sequelize, tableName: 'snob_history', timestamps: true });

@@ -30,9 +30,9 @@ import {
 interface Props {
     show: boolean;
     userAlias: UserAlias;
-    isArcherWorld: boolean;
+    isArcherWorld: boolean | null;
     // eslint-disable-next-line vue/no-unused-properties
-    templates: CustomPlunderTemplateType[];
+    templates: PlunderCustomTemplateType[];
 
     spear: number;
     sword: number;
@@ -58,7 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
     (e: 'update:show', value: boolean): void;
-    (e: 'update:templates', value: CustomPlunderTemplateType): void;
+    (e: 'update:templates', value: PlunderCustomTemplateType): void;
 }>();
 
 const dialog = useDialog();
@@ -66,8 +66,8 @@ const message = useMessage();
 
 const { show, templates } = useVModels(props, emit);
 
-const templateUnits: CustomPlunderTemplateType = reactive({
-    type: '',
+const templateUnits: PlunderCustomTemplateType = reactive({
+    name: '',
     description: null,
     alias: props.userAlias,
     units: {
@@ -84,7 +84,7 @@ const templateUnits: CustomPlunderTemplateType = reactive({
 
 const keepModalOpen = ref<boolean>(false);
 const saveDisabled = computed<boolean>(() => {
-    if (typeof templateUnits.type !== 'string' || templateUnits.type.length === 0) return true;
+    if (typeof templateUnits.name !== 'string' || templateUnits.name.length === 0) return true;
     if (Object.values(templateUnits.units).some((value) => !Number.isInteger(value) || value < 0)) return true;
     if (Object.values(templateUnits.units).every((value) => value === 0)) return true;
     return false;
@@ -115,7 +115,7 @@ const rules: FormRules = {
                     return new Error('É preciso dar um nome ao modelo');
                 } else if (/^[aAbBcC]{1}$/.test(value)) {
                     return new Error('Nome inválido');
-                } else if (templates.value.some((t) => t.type === value && t.alias === props.userAlias)) {
+                } else if (templates.value.some((t) => t.name === value && t.alias === props.userAlias)) {
                     return new Error('Já existe um modelo com esse nome');
                 }
 
@@ -189,7 +189,7 @@ async function cancel() {
 }
 
 async function resetTemplate() {
-    templateUnits.type = '';
+    templateUnits.name = '';
     templateUnits.description = null;
     for (const unit of Object.keys(templateUnits.units) as (keyof typeof templateUnits.units)[]) {
         templateUnits.units[unit] = 0;
@@ -205,7 +205,7 @@ async function resetTemplate() {
             <NForm label-placement="top" :model="templateUnits" :rules="rules" size="small">
                 <NFormItem label="Nome" path="type" required>
                     <NInput
-                        v-model:value.trim="templateUnits.type"
+                        v-model:value.trim="templateUnits.name"
                         type="text"
                         placeholder="Digite um nome"
                         :minlength="1"
@@ -244,7 +244,7 @@ async function resetTemplate() {
                         <NInputNumber v-model:value="templateUnits.units.axe" v-bind="numberInputProps" />
                     </NFormItemGi>
 
-                    <NFormItemGi v-if="props.isArcherWorld" path="units.archer">
+                    <NFormItemGi v-if="isArcherWorld" path="units.archer">
                         <template #label>
                             <ArcherIcon18 />
                         </template>
@@ -265,7 +265,7 @@ async function resetTemplate() {
                         <NInputNumber v-model:value="templateUnits.units.light" v-bind="numberInputProps" />
                     </NFormItemGi>
 
-                    <NFormItemGi v-if="props.isArcherWorld" path="units.marcher">
+                    <NFormItemGi v-if="isArcherWorld" path="units.marcher">
                         <template #label>
                             <MarcherIcon18 />
                         </template>

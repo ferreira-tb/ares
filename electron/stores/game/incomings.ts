@@ -10,4 +10,4 @@ export function defineIncomingsStore(mechanus: Mechanus) {
             incomings
         } satisfies MechanusIncomingAttacksStoreType;
     });
-};
+}

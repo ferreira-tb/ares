@@ -1,68 +1,21 @@
 import { DataTypes, Model } from 'sequelize';
-import { assertInteger } from '$common/guards';
 import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$common/guards';
 import { DatabaseError } from '$electron/error';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
-export class CustomPlunderTemplate extends Model<
-    InferAttributes<CustomPlunderTemplate>,
-    InferCreationAttributes<CustomPlunderTemplate>>
-implements CustomPlunderTemplateType {
+export class PlunderCustomTemplate extends Model<
+    InferAttributes<PlunderCustomTemplate>,
+    InferCreationAttributes<PlunderCustomTemplate>>
+implements PlunderCustomTemplateType {
     declare public readonly id: CreationOptional<number>;
     declare public readonly alias: UserAlias;
-    declare public readonly type: string;
+    declare public readonly name: string;
     declare public readonly description: string | null;
-    declare public readonly units: CustomPlunderTemplateType['units'];
+    declare public readonly units: PlunderCustomTemplateType['units'];
+}
 
-    public static async getCustomPlunderTemplates(alias: UserAlias): Promise<CustomPlunderTemplateType[] | null> {
-        try {
-            assertUserAlias(alias, DatabaseError);
-            const templates = await CustomPlunderTemplate.findAll({ where: { alias } });
-            return templates.map((template) => template.toJSON());
-
-        } catch (err) {
-            DatabaseError.catch(err);
-            return null;
-        };
-    };
-
-    public static async saveCustomPlunderTemplate(template: CustomPlunderTemplateType): Promise<boolean> {
-        try {
-            for (const [unit, amount] of Object.entries(template.units)) {
-                assertInteger(amount, `Invalid ${unit} amount: ${amount}`);
-                if (amount < 0) throw new DatabaseError(`${unit} amount cannot be negative`);
-            };
-
-            await sequelize.transaction(async () => {
-                await CustomPlunderTemplate.upsert({ ...template });
-            });
-
-            return true;
-
-        } catch (err) {
-            DatabaseError.catch(err);
-            return false;
-        };
-    };
-
-    public static async destroyCustomPlunderTemplate(template: CustomPlunderTemplateType): Promise<boolean> {
-        try {
-            assertUserAlias(template.alias, DatabaseError);
-            await sequelize.transaction(async () => {
-                await CustomPlunderTemplate.destroy({ where: { alias: template.alias, type: template.type } });
-            });
-
-            return true;
-
-        } catch (err) {
-            DatabaseError.catch(err);
-            return false;
-        };
-    };
-};
-
-CustomPlunderTemplate.init({
+PlunderCustomTemplate.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -77,7 +30,7 @@ CustomPlunderTemplate.init({
             }
         }
     },
-    type: {
+    name: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -89,4 +42,4 @@ CustomPlunderTemplate.init({
         type: DataTypes.JSON,
         allowNull: false
     }
-}, { sequelize, tableName: 'custom_plunder_template', timestamps: true });
+}, { sequelize, tableName: 'custom_plunder_templates', timestamps: true });

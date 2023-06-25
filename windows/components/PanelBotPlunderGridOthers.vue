@@ -38,7 +38,7 @@ const config = usePlunderConfigStore();
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="config.plunderedResourcesRatio"
+                    v-model:value="config.estimate"
                     class="config-input"
                     :min="0.2"
                     :max="1"

@@ -11,9 +11,12 @@ export const database = path.join(userData, 'ares.db');
 export const browserJs = path.join(__dirname, 'browser.js');
 export const ipcTribalJs = path.join(__dirname, 'ipc-tw.js');
 
-/** Caminhos para os arquivos usados pelos processos filhos. */
 export const childProcess = {
     fetchWorldData: path.join(__dirname, 'child-process/fetch-world-data.js')
+} as const;
+
+export const json = {
+    plunderDemolitionTemplate: path.join(__dirname, 'json/plunder-demolition-template.json')
 } as const;
 
 // HTML

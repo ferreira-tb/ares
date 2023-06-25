@@ -103,18 +103,26 @@ export async function ipcInvoke(channel: 'plunder:get-config'): Promise<PlunderC
 export async function ipcInvoke(channel: 'plunder:get-history', omitVillages?: boolean): Promise<PlunderHistoryType>;
 export async function ipcInvoke(
     channel: 'plunder:get-custom-templates', alias?: UserAlias
-): Promise<CustomPlunderTemplateType[] | null>;
-export async function ipcInvoke(channel: 'plunder:save-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
-export async function ipcInvoke(channel: 'plunder:destroy-custom-template', template: CustomPlunderTemplateType): Promise<boolean>;
+): Promise<PlunderCustomTemplateType[] | null>;
+export async function ipcInvoke(channel: 'plunder:save-custom-template', template: PlunderCustomTemplateType): Promise<boolean>;
+export async function ipcInvoke(channel: 'plunder:destroy-custom-template', template: PlunderCustomTemplateType): Promise<boolean>;
 export async function ipcInvoke(channel: 'plunder:get-pages-info'): Promise<PlunderPageListType | null>;
 export async function ipcInvoke(channel: 'plunder:get-group-info'): Promise<PlunderGroupType | null>;
 export async function ipcInvoke(channel: 'plunder:navigate-to-next-page'): Promise<boolean>;
 export async function ipcInvoke(
     channel: 'plunder:calc-carry-capacity', units: Partial<UnitAmount>, world?: World
 ): Promise<number | null>;
-export async function ipcInvoke(channel: 'plunder:get-demolition-config', alias?: UserAlias): Promise<DemolitionTemplateType | null>;
-export async function ipcInvoke(channel: 'plunder:save-demolition-config', template: DemolitionTemplateType): Promise<boolean>;
-export async function ipcInvoke(channel: 'plunder:destroy-demolition-config', alias: UserAlias): Promise<boolean>;
+export async function ipcInvoke(
+    channel: 'plunder:default-demolition-template', alias?: UserAlias | null
+): Promise<PlunderDemolitionTemplateType>;
+export async function ipcInvoke(channel: 'plunder:delete-demolition-template', id: number): Promise<boolean>;
+export async function ipcInvoke(channel: 'plunder:get-demolition-template', id: number): Promise<PlunderDemolitionTemplateType | null>;
+export async function ipcInvoke(
+    channel: 'plunder:get-demolition-templates-by-alias', alias?: UserAlias | null
+): Promise<PlunderDemolitionTemplateType[] | null>;
+export async function ipcInvoke(
+    channel: 'plunder:save-demolition-template', template: PartialKeys<PlunderDemolitionTemplateType, 'id'>
+): Promise<boolean>;
 
 // Academia
 export async function ipcInvoke(channel: 'snob:get-config'): Promise<SnobConfigType | null>;

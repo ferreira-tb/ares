@@ -12,9 +12,12 @@
     background-image: url($image-url);
 }
 
-@mixin bold-text-color($text-color: var(--color-green)) {
-    font-weight: bold;
-    color: $text-color;
+@mixin bold-text-color(
+    $font-weight: bold,
+    $color: var(--color-green)
+) {
+    font-weight: $font-weight;
+    color: $color;
 }
 
 @mixin to-center {

@@ -53,7 +53,7 @@ watchDeep(config, () => {
                 <NButton :disabled="disabled" @click="config.active = !config.active">
                     {{ buttonText }}
                 </NButton>
-                <NButton @click="ipcSend('window:open', StandardWindowName.PlunderTemplate)">
+                <NButton @click="ipcSend('window:open', StandardWindowName.PlunderCustomTemplate)">
                     Modelos
                 </NButton>
                 <NButton @click="ipcSend('window:open', StandardWindowName.PlunderHistory)">

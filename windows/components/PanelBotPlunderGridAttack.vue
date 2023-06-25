@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NDivider, NGrid, NGridItem, NInputNumber, NSelect, NSwitch } from 'naive-ui';
+import { NDivider, NGrid, NGridItem, NInputNumber, NSelect } from 'naive-ui';
 import { usePlunderConfigStore } from '$renderer/stores';
 import {
     formatFields,
@@ -13,28 +13,16 @@ import {
 const config = usePlunderConfigStore();
 
 const blindAttackOptions = [
-    { label: 'Menor capacidade', value: 'smaller' },
-    { label: 'Maior capacidade', value: 'bigger' }
-] satisfies NSelectOptions<BlindAttackPattern>;
+    { label: 'Nunca atacar às cegas', value: 'never' },
+    { label: 'Usar menor capacidade', value: 'smaller' },
+    { label: 'Usar maior capacidade', value: 'bigger' }
+] satisfies NSelectOptions<PlunderConfigType['blindAttack']>;
 </script>
 
 <template>
     <div>
         <NDivider title-placement="left" class="config-divider">Ataque</NDivider>
         <NGrid :cols="2" :x-gap="6" :y-gap="10">
-            <NGridItem>
-                <div class="labeled-switch-wrapper">
-                    <NSwitch v-model:value="config.ignoreDelay" round size="small" />
-                    <div class="switch-label">Ignorar delay</div>
-                </div>
-            </NGridItem>
-            <NGridItem>
-                <div class="labeled-switch-wrapper">
-                    <NSwitch v-model:value="config.blindAttack" round size="small" />
-                    <div class="switch-label">Ataque às cegas</div>
-                </div>
-            </NGridItem>
-
             <NGridItem>
                 <div class="config-label">Distância máxima</div>
             </NGridItem>
@@ -74,11 +62,10 @@ const blindAttackOptions = [
                 <NInputNumber
                     v-model:value="config.attackDelay"
                     class="config-input"
-                    :disabled="config.ignoreDelay"
-                    :min="100"
+                    :min="0"
                     :max="60000"
                     :step="10"
-                    :validator="(v) => Number.isInteger(v) && v >= 100 && v <= 60000"
+                    :validator="(v) => Number.isInteger(v) && v >= 0 && v <= 60000"
                     :format="formatMilliseconds"
                     :parse="parseMilliseconds"
                 />
@@ -89,7 +76,7 @@ const blindAttackOptions = [
             </NGridItem>
             <NGridItem>
                 <NInputNumber
-                    v-model:value="config.resourceRatio"
+                    v-model:value="config.ratio"
                     class="config-input"
                     :min="0.2"
                     :max="1"
@@ -99,12 +86,12 @@ const blindAttackOptions = [
             </NGridItem>
 
             <NGridItem>
-                <div class="config-label">Padrão do ataque às cegas</div>
+                <div class="config-label">Ataque às cegas</div>
             </NGridItem>
             <NGridItem>
                 <div class="config-select">
                     <NSelect
-                        v-model:value="config.blindAttackPattern"
+                        v-model:value="config.blindAttack"
                         :options="blindAttackOptions"
                         :disabled="!config.blindAttack"
                     />
@@ -113,9 +100,3 @@ const blindAttackOptions = [
         </NGrid>
     </div>
 </template>
-
-<style scoped lang="scss">
-.labeled-switch-wrapper {
-    margin-bottom: 0.5rem;
-}
-</style>

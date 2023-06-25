@@ -57,7 +57,7 @@ watch(() => config.groupAttack, async (isGroupAttackActive) => {
         groupInfo.value = await queryPlunderGroupInfo();
     } else {
         groupInfo.value = null;
-    };
+    }
 });
 
 watchImmediate(() => config.active, async (isActive) => {
@@ -80,11 +80,11 @@ watchImmediate(() => config.active, async (isActive) => {
                     message: 'Você precisa selecionar um grupo de saque para usar o ataque em grupo.'
                 });
                 return;
-            };
-        };
+            }
+        }
 
         handleAttack().catch(PlunderError.catch);
-    };
+    }
 });
 
 async function handleAttack(): Promise<void> {
@@ -100,7 +100,7 @@ async function handleAttack(): Promise<void> {
             targets.delete(id);
             village.remove();
             continue;
-        };
+        }
 
         // Ignora caso a aldeia já esteja sob ataque.
         const attackIcon = village.querySelector('img[src*="attack.png" i]');
@@ -108,7 +108,7 @@ async function handleAttack(): Promise<void> {
             targets.delete(id);
             village.remove();
             continue;
-        };
+        }
 
         /** Informações sobre a aldeia. */
         const info = targets.getStrict(id);
@@ -121,7 +121,7 @@ async function handleAttack(): Promise<void> {
         if (config.groupAttack && groupInfo.value) {
             const villageStatus = groupInfo.value.villages.getStrict(gameData.getVillageId());
             if (info.distance > villageStatus.waveMaxDistance) continue;
-        };
+        }
 
         // Destrói a muralha da aldeia caso `destroyWall` esteja ativado.
         // Se o ataque for enviado com sucesso, pula para a próxima aldeia.
@@ -134,7 +134,7 @@ async function handleAttack(): Promise<void> {
         ) {
             const destroyed = await destroyWall(info);
             if (destroyed) continue;
-        };
+        }
 
         // Ignora caso a aldeia tenha muralha e a muralha possua nível superior ao permitido.
         if (config.ignoreWall && info.wallLevel >= config.wallLevelToIgnore) continue;
@@ -150,7 +150,7 @@ async function handleAttack(): Promise<void> {
             const attackButton = info.button[best.type];
             if (!attackButton) {
                 throw new PlunderError(`Could not find attack button for template ${best.type.toUpperCase()}.`);
-            };
+            }
 
             prepareAttack(plunderAttack, attackButton)
                 .then(() => best.reset())
@@ -160,7 +160,7 @@ async function handleAttack(): Promise<void> {
                 .catch(PlunderError.catch);
 
             return;
-        };
+        }
 
         await openPlace(info.button.place);
         const sent = await sendAttackFromPlace(best.units);
@@ -172,12 +172,12 @@ async function handleAttack(): Promise<void> {
         
         handleAttack().catch(PlunderError.catch);
         return;
-    };
+    }
 
     // Caso, em toda tabela, não haja aldeia adequada para envio do ataque, verifica se há mais páginas.
     // Após acessar todas as páginas possíveis, navega para a próxima aldeia se o ataque em grupo estiver ativado.
     handleLackOfTargets(groupInfo.value).catch(PlunderError.catch);
-};
+}
 </script>
 
 <template>

@@ -4,73 +4,70 @@ import { DefaultPlunderConfig } from '$common/templates';
 export function definePlunderConfigStore(mechanus: Mechanus) {
     const config = new DefaultPlunderConfig();
 
-    // Painel
     const active = ref<boolean>(config.active);
-    const ignoreWall = ref<boolean>(config.ignoreWall);
-    const destroyWall = ref<boolean>(config.destroyWall);
-    const groupAttack = ref<boolean>(config.groupAttack);
-    const useC = ref<boolean>(config.useC);
-    const ignoreDelay = ref<boolean>(config.ignoreDelay);
-    const blindAttack = ref<boolean>(config.blindAttack);
+    const mode = ref<'single' | 'group'>(config.mode);
+    const village = ref<number | null>(config.village);
+    const group = ref<number>(config.group);
 
     // Ataque
     const maxDistance = ref<number>(config.maxDistance);
     const ignoreOlderThan = ref<number>(config.ignoreOlderThan);
+    const ratio = ref<number>(config.ratio);
     const attackDelay = ref<number>(config.attackDelay);
-    const resourceRatio = ref<number>(config.resourceRatio);
-    const blindAttackPattern = ref<BlindAttackPattern>(config.blindAttackPattern);
-
-    // Modelo C
-    const useCPattern = ref<UseCPattern>(config.useCPattern);
-    const maxDistanceC = ref<number>(config.maxDistanceC);
-    const ignoreOlderThanC = ref<number>(config.ignoreOlderThanC);
-    const useCWhenResourceRatioIsBiggerThan = ref<number>(config.useCWhenResourceRatioIsBiggerThan);
+    const blindAttack = ref<PlunderConfigType['blindAttack']>(config.blindAttack);
 
     // Grupo
-    const plunderGroupId = ref<number | null>(config.plunderGroupId);
     const fieldsPerWave = ref<number>(config.fieldsPerWave);
     const villageDelay = ref<number>(config.villageDelay);
 
     // Muralha
-    const wallLevelToIgnore = ref<WallLevel>(config.wallLevelToIgnore);
-    const wallLevelToDestroy = ref<WallLevel>(config.wallLevelToDestroy);
+    const ignoreWall = ref<boolean>(config.ignoreWall);
+    const wallLevelToIgnore = ref<number>(config.wallLevelToIgnore);
+    const destroyWall = ref<boolean>(config.destroyWall);
+    const wallLevelToDestroy = ref<number>(config.wallLevelToDestroy);
     const destroyWallMaxDistance = ref<number>(config.destroyWallMaxDistance);
+    const demolitionTemplate = ref<number>(config.demolitionTemplate);
+
+    // Modelo C
+    const useC = ref<PlunderConfigType['useC']>(config.useC);
+    const maxDistanceC = ref<number>(config.maxDistanceC);
+    const ignoreOlderThanC = ref<number>(config.ignoreOlderThanC);
+    const useCWhenRatioIsBiggerThan = ref<number>(config.useCWhenRatioIsBiggerThan);
     
     // Outros
     const minutesUntilReload = ref<number>(config.minutesUntilReload);
-    const plunderedResourcesRatio = ref<number>(config.plunderedResourcesRatio);
+    const estimate = ref<number>(config.estimate);
     const pageDelay = ref<number>(config.pageDelay);
     
     return mechanus.define('plunderConfig', {
         active,
-        ignoreWall,
-        destroyWall,
-        groupAttack,
-        useC,
-        ignoreDelay,
-        blindAttack,
+        mode,
+        village,
+        group,
 
         maxDistance,
         ignoreOlderThan,
+        ratio,
         attackDelay,
-        resourceRatio,
-        blindAttackPattern,
+        blindAttack,
 
-        useCPattern,
-        maxDistanceC,
-        ignoreOlderThanC,
-        useCWhenResourceRatioIsBiggerThan,
-
-        plunderGroupId,
         fieldsPerWave,
         villageDelay,
 
+        ignoreWall,
         wallLevelToIgnore,
+        destroyWall,
         wallLevelToDestroy,
         destroyWallMaxDistance,
-        
+        demolitionTemplate,
+
+        useC,
+        maxDistanceC,
+        ignoreOlderThanC,
+        useCWhenRatioIsBiggerThan,
+
         minutesUntilReload,
-        plunderedResourcesRatio,
+        estimate,
         pageDelay
     } satisfies MechanusPlunderConfigStoreType);
-};
+}

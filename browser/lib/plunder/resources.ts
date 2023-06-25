@@ -20,14 +20,14 @@ export class PlunderAttackWithLoot extends PlunderAttack {
         let total = this.wood + this.stone + this.iron;
         if (total === 0) total = Infinity;
 
-        const { plunderedResourcesRatio } = usePlunderConfigStore();
+        const { estimate } = usePlunderConfigStore();
         [this.wood, this.stone, this.iron].forEach((amount, index) => {
             // Se houver mais recursos do que a carga suporta, calcula quanto de cada recurso deve ser saqueado.
             if (total > carry) amount = Math.ceil((amount / total) * carry);
             assertInteger(amount, `Resource amount should be an integer, but got ${amount}.`);
 
             const resName = resources[index];
-            this[resName] = Math.ceil(amount * plunderedResourcesRatio);
+            this[resName] = Math.ceil(amount * estimate);
         });
     };
 };

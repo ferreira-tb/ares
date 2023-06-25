@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { RouterView } from 'vue-router';
 import { useArrayIncludes, watchImmediate, whenever } from '@vueuse/core';
 import { IpcTribal } from '$ipc/interface';
 import { routeNames, router } from '$browser/router';
@@ -26,7 +25,7 @@ watchImmediate(screen, async (name) => {
         await router.push({ name });
     } else {
         await router.push('/');
-    };
+    }
 });
 
 whenever(isIpcTribalReady, async () => {
@@ -34,7 +33,7 @@ whenever(isIpcTribalReady, async () => {
         const responseTime = await IpcTribal.invoke('get-response-time');
         ipcSend('browser:update-response-time', responseTime);
         cache.responseTime = responseTime;
-    };
+    }
 });
 </script>
 
@@ -50,12 +49,4 @@ whenever(isIpcTribalReady, async () => {
             <TheIncomingsObserver />
         </Suspense>
     </template>
-
-    <RouterView #default="{ Component }">
-        <template v-if="Component">
-            <Suspense>
-                <component :is="Component" />
-            </Suspense>
-        </template>
-    </RouterView>
 </template>

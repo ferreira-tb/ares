@@ -38,12 +38,6 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
         resizable: true
     },
     [StandardWindowName.Default]: {},
-    [StandardWindowName.DemolitionTemplate]: {
-        width: 1000,
-        height: 600,
-        title: 'Demolição',
-        minimizable: true
-    },
     [StandardWindowName.ErrorLog]: {
         width: 500,
         height: 600,
@@ -57,6 +51,12 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
     [StandardWindowName.PanelBotOverview]: panel,
     [StandardWindowName.PanelBotPlunder]: panel,
     [StandardWindowName.PanelTools]: panel,
+    [StandardWindowName.PlunderDemolitionTemplate]: {
+        width: 1000,
+        height: 600,
+        title: 'Demolição',
+        minimizable: true
+    },
     [StandardWindowName.PlunderHistory]: {
         width: 1200,
         minWidth: 1200,
@@ -67,7 +67,7 @@ export const windowOptions: { [key in StandardWindowName]: BrowserWindowOptions 
         maximizable: true,
         resizable: true
     },
-    [StandardWindowName.PlunderTemplate]: {
+    [StandardWindowName.PlunderCustomTemplate]: {
         width: 1000,
         height: 600,
         title: 'Modelos',
