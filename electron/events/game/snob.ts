@@ -29,7 +29,7 @@ export function setSnobEvents() {
     ipcMain.on('snob:update-config', async (e, snobConfig: SnobConfigType) => {
         try {
             const alias = userAlias.value;
-            assertUserAlias(alias, MainProcessError, 'Cannot update snob config without a valid user alias.');
+            assertUserAlias(alias, 'Cannot update snob config without a valid user alias.');
 
             await sequelize.transaction(async () => {
                 await SnobConfig.upsert({ id: alias, ...snobConfig });
@@ -37,6 +37,7 @@ export function setSnobEvents() {
 
             patchAllWebContents('config', snobConfig, e.sender);
             isMinting.value = snobConfig.active;
+
         } catch (err) {
             MainProcessError.catch(err);
         }
@@ -64,6 +65,7 @@ export function setSnobEvents() {
     watch(userAlias, async (newAlias) => {
         try {
             stopMinting();
+
             if (!isUserAlias(newAlias)) {
                 isMinting.value = false;
                 return;
@@ -98,8 +100,9 @@ export function setSnobEvents() {
             }
 
             const alias = userAlias.value;
-            assertUserAlias(alias, MainProcessError, 'Cannot start minting without a valid user alias.');
+            assertUserAlias(alias, 'Cannot start minting without a valid user alias.');
             mintWorker.value = await mint(alias);
+            
         } catch (err) {
             isMinting.value = false;
             MainProcessError.catch(err);

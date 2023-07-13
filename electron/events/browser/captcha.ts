@@ -1,13 +1,10 @@
 import { ipcMain, webContents } from 'electron';
-import { storeToRefs, watch } from 'mechanus';
-import { isUserAlias } from '$common/guards';
-import { MainProcessError } from '$electron/error';
-import { useCacheStore } from '$electron/stores';
-import { PlunderHistory } from '$electron/database/models';
+import { storeToRefs } from 'mechanus';
+import { useBrowserStore } from '$electron/stores';
 
 export function setCaptchaEvents() {
-    const cacheStore = useCacheStore();
-    const { captcha, userAlias } = storeToRefs(cacheStore);
+    const browserStore = useBrowserStore();
+    const { captcha } = storeToRefs(browserStore);
 
     ipcMain.on('captcha:update-status', (e, status: boolean) => {
         captcha.value = status;
@@ -15,23 +12,6 @@ export function setCaptchaEvents() {
             if (contents !== e.sender) {
                 contents.send('captcha:did-update-status', status);
             }
-        }
-    });
-
-    watch(captcha, async (status) => {
-        try {
-            if (!status) return;
-            for (const contents of webContents.getAllWebContents()) {
-                contents.send('plunder:stop');
-            }
-
-            const alias = userAlias.value;
-            if (isUserAlias(alias)) {
-                await PlunderHistory.saveHistory(alias);
-            }
-            
-        } catch (err) {
-            MainProcessError.catch(err);
         }
     });
 }

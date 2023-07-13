@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import { shell } from 'electron';
 import { computed, ref } from 'vue';
 import { useElementSize, useMediaQuery } from '@vueuse/core';
 import { NIcon } from 'naive-ui';
-import { DiscordSharp, ViewQuiltSharp } from '@vicons/material';
+import { ViewQuiltSharp } from '@vicons/material';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import { useIpcOn, useTagsConfig, useUserAlias } from '$renderer/composables';
-import { StandardWindowName, WebsiteUrl } from '$common/enum';
+import { StandardWindowName } from '$common/enum';
 import TagIncomingHandler from '$ui/components/TagIncomingHandler.vue';
 import TagMintingStatus from '$ui/components/TagMintingStatus.vue';
 import TagNextIncoming from '$ui/components/TagNextIncoming.vue';
 import TagResponseTime from '$ui/components/TagResponseTime.vue';
 import TagUpdateNotification from '$ui/components/TagUpdateNotification.vue';
-
 import {
     ArrowBackSharp,
     ArrowForwardSharp,
     BugSharp,
-    HelpCircleSharp,
-    LogoGithub,
     HomeSharp,
     ReloadSharp,
     SettingsSharp
@@ -67,15 +63,6 @@ useIpcOn('tab:back-forward-status', (_e, status: BackForwardStatus) => {
             </div>
             <div class="menu-icon" @click="ipcSend('menu:bug')">
                 <NIcon :size="22" :depth="3" :component="BugSharp" />
-            </div>
-            <div class="menu-icon" @click="ipcSend('website:open', WebsiteUrl.HowToUse)">
-                <NIcon :size="26" :depth="3" :component="HelpCircleSharp" />
-            </div>
-            <div class="menu-icon" @click="ipcSend('website:open', WebsiteUrl.Repository)">
-                <NIcon :size="22" :depth="3" :component="LogoGithub" />
-            </div>
-            <div class="menu-icon" @click="shell.openExternal(WebsiteUrl.Discord)">
-                <NIcon :size="22" :depth="3" :component="DiscordSharp" />
             </div>
         </div>
 

@@ -27,29 +27,11 @@ interface CacheStore {
     readonly world: World | null;
     readonly player: string | null;
     readonly userAlias: UserAlias | null;
-
-    /** Indica se há um captcha ativo. */
-    readonly captcha: boolean;
-    /** Tempo de resposta do servidor do jogo. */
-    readonly responseTime: number | null;
 }
-
-type PiniaCacheStoreType = {
-    [K in keyof Omit<CacheStore, 'world' | 'player' | 'userAlias'>]: import('vue').Ref<CacheStore[K]>;
-};
 
 type MechanusCacheStoreType = {
     [K in keyof CacheStore]:
         K extends 'userAlias' ? MechanusComputedRef<CacheStore[K]> : MechanusRef<CacheStore[K]>;
-};
-
-// PLUNDER INFO
-type PlunderStore = PlunderInfoType;
-type PiniaPlunderStoreType = {
-    [K in keyof PlunderStore]: import('vue').Ref<PlunderStore[K]>;
-};
-type MechanusPlunderStoreType = {
-    [K in keyof PlunderStore]: MechanusRef<PlunderStore[K]>;
 };
 
 // PLUNDER CONFIG
@@ -107,12 +89,18 @@ type MechanusUnitsStoreType = {
 
 // BROWSER
 interface BrowserStore {
-    /** Indica se o IpcTribal está pronto para receber comandos. */
-    readonly isIpcTribalReady: boolean;
+    /** Indica se há um captcha ativo. */
+    readonly captcha: boolean;
+    /** Tempo de resposta do servidor do jogo. */
+    readonly responseTime: number | null;
 }
 
 type PiniaBrowserStoreType = {
     [K in keyof BrowserStore]: import('vue').Ref<BrowserStore[K]>;
+};
+
+type MechanusBrowserStoreType = {
+    [K in keyof BrowserStore]: MechanusRef<BrowserStore[K]>;
 };
 
 // INCOMING ATTACKS

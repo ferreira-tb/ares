@@ -130,7 +130,6 @@ export async function ipcInvoke(channel: 'snob:get-history'): Promise<SnobHistor
 
 // IpcTribal
 export async function ipcInvoke(channel: 'ipc-tribal:get-file'): Promise<string | null>;
-export async function ipcInvoke(channel: 'ipc-tribal:update-plunder-info', plunderInfo: PlunderInfoType): Promise<boolean>;
 export async function ipcInvoke(channel: 'ipc-tribal:update-current-village-units', units: UnitAmount): Promise<boolean>;
 
 // Renderer Worker

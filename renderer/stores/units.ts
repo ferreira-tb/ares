@@ -33,7 +33,7 @@ export const useUnitsStore = defineStore('unit', () => {
             snob: snob.value,
             militia: militia.value
         };
-    };
+    }
 
     return {
         spear,

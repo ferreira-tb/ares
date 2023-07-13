@@ -8,7 +8,7 @@ export function setIpcTribalEvents() {
 
     ipcOn('get-game-data', async () => {
         try {
-            const gameData = await IpcTribal.invoke('get-game-data');
+            const gameData = await IpcTribal.invoke('ipc-tribal:game-data');
             ipcSend('ipc-tribal:update-game-data', gameData);
 
             if (!gameData) return; 

@@ -1,4 +1,4 @@
-import { isString, isInteger } from '$common/guards';
+import { isEmpty, isInteger, isString } from 'lodash-es';
 import { isWorld } from '$common/guards';
 
 /** `null` indica que o usuário se encontra numa página a partir da qual não é possível obter essas informações. */
@@ -16,16 +16,17 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
     public readonly groupId: number | null;
 
     constructor(raw: RawTribalWarsGameData) {
-        this.locale = isString(raw.locale) ? raw.locale : null;
+        this.locale = isString(raw.locale) && !isEmpty(raw.locale) ? raw.locale : null;
         this.world = isWorld(raw.world) ? raw.world : null;
-        this.majorVersion = isString(raw.majorVersion) ? raw.majorVersion : null;
-        this.screen = isString(raw.screen) ? raw.screen : null;
-        this.screenMode = isString(raw.mode) ? raw.mode : null;
+        this.majorVersion = isString(raw.majorVersion) && !isEmpty(raw.majorVersion) ? raw.majorVersion : null;
+        this.screen = isString(raw.screen) && !isEmpty(raw.screen) ? raw.screen : null;
+        this.screenMode = isString(raw.mode) && !isEmpty(raw.mode) ? raw.mode : null;
         this.pregame = typeof raw.pregame === 'boolean' ? raw.pregame : null;
 
         // O valor de group_id pode ser uma string ou um número.
-        this.groupId = isInteger(raw.group_id) ? raw.group_id :
-            isString(raw.group_id) ? Number.parseIntStrict(raw.group_id) : null;
+        let groupId: number | null = isString(raw.group_id) ? Number.parseIntStrict(raw.group_id) : raw.group_id;
+        if (!isInteger(groupId)) groupId = null;
+        this.groupId = groupId;
 
         const premium = raw.features.Premium.active;
         const accountManager = raw.features.AccountManager.active;
@@ -39,7 +40,7 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
         };
 
         this.player = {
-            name: isString(raw.player.name) ? raw.player.name : null,
+            name: isString(raw.player.name) && !isEmpty(raw.player.name) ? raw.player.name : null,
             id: isInteger(raw.player.id) ? raw.player.id : null,
             points: isString(raw.player.points) ? Number.parseIntStrict(raw.player.points) : 0,
             villageAmount: isString(raw.player.villages) ? Number.parseIntStrict(raw.player.villages) : 0,
@@ -50,7 +51,7 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
             x: isInteger(raw.village.x) ? raw.village.x : null,
             y: isInteger(raw.village.y) ? raw.village.y : null,
             id: isInteger(raw.village.id) ? raw.village.id : null,
-            name: isString(raw.village.name) ? raw.village.name : null,
+            name: isString(raw.village.name) && !isEmpty(raw.village.name) ? raw.village.name : null,
             points: isInteger(raw.village.points) ? raw.village.points : null,
             population: isInteger(raw.village.pop) ? raw.village.pop : null,
             maxPopulation: isInteger(raw.village.pop_max) ? raw.village.pop_max : null,
@@ -59,5 +60,5 @@ export class TribalWarsGameData implements TribalWarsGameDataType {
             iron: isInteger(raw.village.iron) ? raw.village.iron : null,
             maxStorage: isInteger(raw.village.storage_max) ? raw.village.storage_max : null
         };
-    };
-};
+    }
+}

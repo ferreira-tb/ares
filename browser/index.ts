@@ -3,7 +3,6 @@ import '@tb-dev/prototype';
 import '@tb-dev/prototype-dom';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { router, setNavigationGuards } from '$browser/router';
 import { setBrowserEvents } from '$browser/events';
 import { BrowserError } from '$browser/error';
 import { ipcSend } from '$renderer/ipc';
@@ -14,7 +13,6 @@ const pinia = createPinia();
 
 // Plugins.
 app.use(pinia);
-app.use(router);
 
 // Error handler.
 app.config.errorHandler = (err: unknown) => {
@@ -23,16 +21,10 @@ app.config.errorHandler = (err: unknown) => {
 
 // Eventos.
 setBrowserEvents();
-setNavigationGuards(router);
 
-async function mount() {
-    try {
-        await router.push('/');
-        const ares = document.createElement('ares');
-        app.mount(ares);
-    } catch (err) {
-        BrowserError.catch(err);
-    }
+function mount() {
+    const ares = document.createElement('ares');
+    app.mount(ares);
 }
 
 window.addEventListener('DOMContentLoaded', mount, { once: true });
@@ -40,6 +32,7 @@ window.addEventListener('DOMContentLoaded', mount, { once: true });
 window.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
     ipcSend('browser:show-context-menu', {
         x: e.clientX,
         y: e.clientY

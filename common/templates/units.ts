@@ -1,4 +1,4 @@
-export class Units implements UnitAmount {
+export class PlunderUnits implements PlunderUnitAmount {
     public spear: number = 0;
     public sword: number = 0;
     public axe: number = 0;
@@ -6,11 +6,17 @@ export class Units implements UnitAmount {
     public light: number = 0;
     public heavy: number = 0;
     public knight: number = 0;
-    public ram: number = 0;
-    public catapult: number = 0;
-    public snob: number = 0;
-    public militia: number = 0;
 
     public archer: number = 0;
     public marcher: number = 0;
+}
+
+export class PlaceUnits extends PlunderUnits implements Required<PlaceUnitAmount> {
+    public ram: number = 0;
+    public catapult: number = 0;
+    public snob: number = 0;
+}
+
+export class Units extends PlaceUnits implements UnitAmount {
+    public militia: number = 0;
 }

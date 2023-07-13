@@ -4,20 +4,6 @@ import { DefaultPlunderHistory } from '$common/templates';
 
 export * from '$renderer/stores/plunder/config';
 
-export const usePlunderStore = defineStore('plunder', () => {
-    const hideAttacked = ref<boolean>(true);
-    const page = ref<number>(0);
-    const pageSize = ref<number | null>(null);
-    const plunderExhausted = ref<boolean>(false);
-
-    return {
-        hideAttacked,
-        page,
-        pageSize,
-        plunderExhausted
-    } satisfies PiniaPlunderStoreType;
-});
-
 export const usePlunderHistoryStore = defineStore('plunder-history', () => {
     const history = new DefaultPlunderHistory();
 

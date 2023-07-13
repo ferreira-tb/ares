@@ -66,11 +66,9 @@ export function setPlunderGroupEvents() {
 
     ipcMain.on('plunder:navigate-to-group', async (e) => {
         try {
-            if (!plunderConfigStore.plunderGroupId) return;
-
             const url = new URL(e.sender.getURL());
             url.search = GameSearchParams.Farm;
-            url.searchParams.set('group', plunderConfigStore.plunderGroupId.toString(10));
+            url.searchParams.set('group', plunderConfigStore.group.toString(10));
             await e.sender.loadURL(url.href);
         } catch (err) {
             MainProcessError.catch(err);

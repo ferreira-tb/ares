@@ -196,12 +196,12 @@ type PlunderCustomTemplateType = {
     /** Descrição do modelo. */
     description: string | null;
     /** Quantidade de unidades de cada tipo. */
-    readonly units: Omit<FarmUnitsAmount, 'knight'>;
+    readonly units: Omit<PlunderUnitAmount, 'knight'>;
 };
 
-type PlunderDemolitionTroops = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
+type PlunderDemolitionUnits = Omit<UnitAmount, 'knight' | 'militia' | 'snob'>;
 
-interface PlunderDemolitionTemplateTableRow extends PlunderDemolitionTroops {
+interface PlunderDemolitionTemplateTableRow extends PlunderDemolitionUnits {
     readonly level: number;
 }
 
@@ -210,6 +210,6 @@ interface PlunderDemolitionTemplateType extends Omit<PlunderCustomTemplateType, 
     readonly id: number;
     /** Modelos. */
     readonly units: {
-        [key: string]: PlunderDemolitionTroops;
+        [key: string]: PlunderDemolitionUnits;
     };
 }

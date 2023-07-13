@@ -31,7 +31,8 @@ async function countTroops(port: MessagePort) {
 
         const unitsTable = document.queryStrict<HTMLTableElement>('#units_table');
         const icons = unitsTable.queryAsArray<HTMLImageElement>('thead th img[src*="unit_"]');
-        const indexMap = Map.fromElements(icons, (img: HTMLImageElement) => icons.indexOf(img),
+        const indexMap = Map.fromElements(icons,
+            (img: HTMLImageElement) => icons.indexOf(img),
             (img: HTMLImageElement): keyof Units => {
                 const src = img.src.match(/unit_\w+\.png/)?.[0];
                 if (!src) throw new TribalWorkerError(`Invalid source: ${img.src}`);

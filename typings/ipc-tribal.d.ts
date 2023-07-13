@@ -121,7 +121,7 @@ interface RawTribalWarsGameData {
 
 interface RawPlunderInfo {
     // Accountmanager.farm
-    readonly current_units: Readonly<UnitsAmountAsStrings>;
+    readonly current_units: Readonly<{ [key in AllUnits]: string }>;
     readonly extended: boolean;
     readonly hide_attacked: boolean;
     readonly last_click: number;

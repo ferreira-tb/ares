@@ -11,6 +11,7 @@
         "paths": {
             "$browser/*": ["../browser/*"],
             "$common/*": ["../common/*"],
+            "$ipc/*": ["../ipc/*"],
             "$renderer/*": ["../renderer/*"],
             "$worker/*": ["./*"]
         },

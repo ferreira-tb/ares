@@ -1,4 +1,3 @@
-type UserAlias = `${World}_${string}`;
 type GameRegion = 'br' | 'en' | 'nl' | 'pt' | 'uk' | 'us';
 type World =
     // eslint-disable-next-line @typescript-eslint/sort-type-constituents
@@ -6,29 +5,35 @@ type World =
     | `${GameRegion}s${string}` // Rodada speed.
     | `${GameRegion}p${string}`; // Mundo casual.
 
+type UserAlias = `${World}_${string}`;
+
 // RECURSOS
 type Resources = 'iron' | 'stone' | 'wood';
 type ResourcesPTBR = 'Argila' | 'Ferro' | 'Madeira';
 type ResourceAmount = { [key in Resources]: number };
 
 // UNIDADES
-/** Unidades que podem ser usadas no assistente de saque. */
-type FarmUnits =
-    'archer' | 'axe' | 'heavy' | 'knight' | 'light' | 'marcher' | 'spear' | 'spy' | 'sword';
-
-/** Unidades que não podem saquear. */
-type OtherUnits =
-    'catapult' | 'militia' | 'ram' | 'snob';
-
-/** Todas as unidades do jogo. */
+/** Nomes de todas as unidades do jogo. */
 type AllUnits =
-    | FarmUnits
-    | OtherUnits;
+    | 'archer'
+    | 'axe'
+    | 'heavy'
+    | 'knight'
+    | 'light'
+    | 'marcher'
+    | 'spear'
+    | 'spy'
+    | 'sword'
+    | 'catapult'
+    | 'militia'
+    | 'ram'
+    | 'snob';
 
-type FarmUnitsAmount = { [key in FarmUnits]: number };
 type UnitAmount = { [key in AllUnits]: number };
-type UnitsAmountAsStrings = { [key in AllUnits]: string };
-type PlaceUnitsAmount = Partial<Omit<UnitAmount, 'militia'>>;
+type PlaceUnitAmount = Partial<Omit<UnitAmount, 'militia'>>;
+type PlunderUnitAmount = {
+    [key in keyof Omit<UnitAmount, 'catapult' | 'militia' | 'ram' | 'snob'>]: number;
+};
 
 // ATAQUE A CAMINHO
 type IncomingAttack = {
@@ -54,9 +59,7 @@ type RawDiplomacy = {
 };
 
 type Diplomacy = {
-    readonly allies: WorldAllyType[];
-    readonly enemies: WorldAllyType[];
-    readonly nap: WorldAllyType[];
+    readonly [K in keyof RawDiplomacy]: WorldAllyType[];
 };
 
 type GameScreen =

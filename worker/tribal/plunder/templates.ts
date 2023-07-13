@@ -1,50 +1,38 @@
-import { computed, nextTick, ref } from 'vue';
+import { isInteger } from 'lodash-es';
 import { Kronos } from '@tb-dev/kronos';
-import { assertInteger, isInteger } from '$common/guards';
 import { useUnitsStore } from '$renderer/stores/units';
-import { assertFarmUnit } from '$common/guards';
-import { PlunderError } from '$browser/error';
+import { assertPlunderUnit } from '$common/guards';
+import { PlunderUnits } from '$common/templates';
+import { TribalWorkerError } from '$worker/error';
 import { ipcInvoke, ipcOn } from '$renderer/ipc';
 import type { usePlunderConfigStore } from '$renderer/stores';
-import type { PlunderTargetInfo } from '$browser/lib/plunder/targets';
-
-class TemplateUnits implements FarmUnitsAmount {
-    public spear = 0;
-    public sword = 0;
-    public axe = 0;
-    public spy = 0;
-    public light = 0;
-    public heavy = 0;
-    public knight = 0;
-    public archer = 0;
-    public marcher = 0;
-};
+import type { PlunderTargetInfo } from '$worker/tribal/plunder/targets';
 
 export class PlunderCustomTemplate {
     /** Tipo do modelo. */
-    public readonly type: string;
+    public readonly name: string;
     /** Alias do criador do modelo. Somente válido para modelos personalizados. */
     public readonly alias: UserAlias | null;
     /** Quantidade de tropas no modelo. */
-    public readonly units = new TemplateUnits();
+    public readonly units = new PlunderUnits();
 
-    constructor(type: string, alias: UserAlias | null = null) {
-        this.type = type;
+    constructor(name: string, alias: UserAlias | null = null) {
+        this.name = name;
         this.alias = alias;
-    };
+    }
 
     /** Capacidade de carga. */
-    public readonly carry = ref(0);
+    public carry = 0;
     
     /** Indica se há tropas o suficiente para o modelo ser usado. */
-    public readonly ok = computed(() => {
+    public ok() {
         const unitStore = useUnitsStore();
-        for (const [key, value] of Object.entries(this.units) as [FarmUnits, number][]) {
+        for (const [key, value] of Object.entries(this.units) as [keyof PlunderUnits, number][]) {
             if (unitStore[key] < value) return false;
-        };
+        }
 
         return true;
-    });
+    }
 
     /** 
      * Sempre que o modelo C é usado, a quantidade de tropas no template é atualizada.
@@ -52,40 +40,40 @@ export class PlunderCustomTemplate {
      * Por isso, é necessário resetar o template para que ele possa ser usado novamente.
      */
     public reset() {
-        if (this.type !== 'c') return;
-        for (const key of Object.keys(this.units) as FarmUnits[]) {
+        if (this.name !== 'c') return;
+        for (const key of Object.keys(this.units)) {
             this.units[key] = 0;
-        };
+        }
     }
-};
+}
 
 /** Representa todos os modelos de saque. */
 const allTemplates = new Map<string, PlunderCustomTemplate>();
 
 ipcOn('custom-plunder-template-saved', async (_e, template: PlunderCustomTemplateType) => {
     const plunderTemplate = await parseCustomPlunderTemplate(template);
-    allTemplates.set(plunderTemplate.type, plunderTemplate);
+    allTemplates.set(plunderTemplate.name, plunderTemplate);
 });
 
 ipcOn('custom-plunder-template-destroyed', (_e, template: PlunderCustomTemplateType) => {
-    const templateInMap = allTemplates.get(template.type);
+    const templateInMap = allTemplates.get(template.name);
     if (templateInMap && templateInMap.alias === template.alias) {
-        allTemplates.delete(templateInMap.type);
-    };
+        allTemplates.delete(templateInMap.name);
+    }
 });
 
 /** Retorna uma versão somente leitura do mapa de modelos de saque. */
 export function getAllTemplates() {
     return allTemplates as ReadonlyMap<string, Readonly<PlunderCustomTemplate>>;
-};
+}
 
 /** Obtêm informações sobre os modelos de saque. */
 export async function queryTemplateData() {
     // Cria os modelos de saque base e os adiciona ao mapa.
     const templateA = new PlunderCustomTemplate('a');
     const templateB = new PlunderCustomTemplate('b');
-    allTemplates.set(templateA.type, templateA);
-    allTemplates.set(templateB.type, templateB);
+    allTemplates.set(templateA.name, templateA);
+    allTemplates.set(templateB.name, templateB);
 
     // Corpo da tabela com os modelos do assistente de saque.
     const table = document.queryStrict('#content_value form tbody:has(td input[type="text"][name^="spear" i])');
@@ -94,37 +82,37 @@ export async function queryTemplateData() {
     const aRow = table.queryStrict('tr:nth-of-type(2):has(td input[type="text"][name^="spear" i])');
     const aFields = aRow.queryAsArray('td input[type="text"][name]');
     if (aFields.length < 7) {
-        throw new PlunderError(`Could not find all text fields for template A: ${aFields.length} found.`);
-    };
+        throw new TribalWorkerError(`Could not find all text fields for template A: ${aFields.length} found.`);
+    }
     parseUnitAmount('a', aFields);
 
     const aCarryField = aRow.queryStrict('td:not(:has(input[data-tb-template-a])):not(:has(input[type*="hidden"]))');
-    templateA.carry.value = aCarryField.parseIntStrict();
+    templateA.carry = aCarryField.parseIntStrict();
 
     // Campos do modelo B.
     const bRow = table.queryStrict('tr:nth-of-type(4):has(td input[type="text"][name^="spear" i])');
     const bFields = bRow.queryAsArray('td input[type="text"][name]');
     if (bFields.length < 7) {
-        throw new PlunderError(`Could not find all text fields for template B: ${bFields.length} found.`);
-    }; 
+        throw new TribalWorkerError(`Could not find all text fields for template B: ${bFields.length} found.`);
+    } 
     parseUnitAmount('b', bFields);
 
     const bCarryField = bRow.queryStrict('td:not(:has(input[data-tb-template-b])):not(:has(input[type*="hidden"]))');
-    templateB.carry.value = bCarryField.parseIntStrict();
+    templateB.carry = bCarryField.parseIntStrict();
 
     // Cria um modelo vazio para o tipo 'C'.
     const templateC = new PlunderCustomTemplate('c');
-    allTemplates.set(templateC.type, templateC);
+    allTemplates.set(templateC.name, templateC);
 
     // Obtêm os modelos personalizados.
     const customTemplates = await ipcInvoke('plunder:get-custom-templates');
     if (Array.isArray(customTemplates)) {
         for (const template of customTemplates) {
             const plunderTemplate = await parseCustomPlunderTemplate(template);
-            allTemplates.set(plunderTemplate.type, plunderTemplate);
-        };
-    };
-};
+            allTemplates.set(plunderTemplate.name, plunderTemplate);
+        }
+    }
+}
 
 /**
  * Analisa o conteúdo da linha para determinar a quantidade de tropas disponíveis.
@@ -140,13 +128,13 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
         /** O valor no atributo `name` é algo como `spear[11811]`. */
         const unitType = fieldName.replace(/\[\d+\]/g, '');
 
-        assertFarmUnit(unitType, PlunderError, `${unitType} is not a valid farm unit.`);
+        assertPlunderUnit(unitType, `${unitType} is not a valid plunder unit.`);
         field.setAttribute(`data-tb-template-${row}`, unitType);
 
         /** Contém a quantidade de unidades. */
         template.units[unitType] = field.getAttributeAsIntStrict('value');
-    };
-};
+    }
+}
 
 /**
  * Calcula a razão entre a quantidade de recursos na aldeia-alvo e a capacidade de carga do modelo.
@@ -154,8 +142,8 @@ function parseUnitAmount(row: 'a' | 'b', fields: Element[]) {
  * @param template Modelo atacante.
  */
 function calcResourceRatio(resources: number, template: PlunderCustomTemplate) {
-    return resources / template.carry.value;
-};
+    return resources / template.carry;
+}
 
 /**
  * Filtra todos os modelos de saque disponíveis de acordo com a quantidade de recursos na aldeia-alvo.
@@ -180,26 +168,26 @@ async function filterTemplates(info: PlunderTargetInfo, config: ReturnType<typeo
     const resources = info.res.total;
     for (const template of allTemplates.values()) {
         if (
-            template.carry.value === 0 ||
-            !template.ok.value ||
-            template.type === 'c' ||
-            (template.type === 'a' && !info.button.a) ||
-            (template.type === 'b' && !info.button.b)
+            !template.ok() ||
+            template.carry === 0 ||
+            template.name === 'c' ||
+            (template.name === 'a' && !info.button.a) ||
+            (template.name === 'b' && !info.button.b)
         ) {
             continue;
-        };
+        }
 
-        if (template.carry.value > resources) {
+        if (template.carry > resources) {
             bigger.push(template);
         } else {
             smaller.push(template);
-        };
-    };
+        }
+    }
 
     // Retorna sem filtrar se a opção `blindAttack` estiver ativada.
     if (config.blindAttack && !info.spyInfo) {
         return [...smaller, ...bigger];
-    };
+    }
 
     // Remove os modelos cuja razão entre a quantidade de recursos e a capacidade de carga é menor que o valor definido pelo usuário.
     // Isso impede que sejam enviadas tropas em excesso para a aldeia-alvo.
@@ -207,7 +195,7 @@ async function filterTemplates(info: PlunderTargetInfo, config: ReturnType<typeo
     // Não é necessário filtrar os modelos com capacidade de carga menor que a quantidade de recursos, pois eles sempre são válidos.
     bigger = bigger.filter((template) => calcResourceRatio(resources, template) >= config.ratio);
     return [...smaller, ...bigger];
-};
+}
 
 export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnType<typeof usePlunderConfigStore>) {
     if (config.useC && config.useCPattern !== 'excess') {
@@ -216,7 +204,7 @@ export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnTy
 
         // Se não for possível usar o modelo C, retorna sem enviar o ataque se o padrão de uso for `only`.
         if (config.useCPattern === 'only') return null;
-    };
+    }
 
     const templates = await filterTemplates(info, config);
     if (templates.length === 0) return null;
@@ -229,7 +217,7 @@ export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnTy
         // Se não houver informações sobre os recursos, a opção `blindAttack` estiver ativada
         // e o padrão de seleção for `smaller`, seleciona o modelo com menor capacidade de carga.
         return templates.reduce((prev, curr) => prev.carry < curr.carry ? prev : curr);
-    };
+    }
 
     // Do contrário, apenas seleciona o modelo com maior capacidade de carga.
     const best = templates.reduce((prev, curr) => prev.carry > curr.carry ? prev : curr);
@@ -241,12 +229,12 @@ export async function pickBestTemplate(info: PlunderTargetInfo, config: ReturnTy
     ) {
         const templateC = await getTemplateC(info, config);
         if (templateC) return templateC;
-    };
+    }
 
     return best;
-};
+}
 
-async function getTemplateC<T extends keyof TemplateUnits>(
+async function getTemplateC<T extends keyof PlunderUnits>(
     info: PlunderTargetInfo,
     config: ReturnType<typeof usePlunderConfigStore>
 ) {
@@ -258,7 +246,7 @@ async function getTemplateC<T extends keyof TemplateUnits>(
         if ((Date.now() - info.lastAttack) > config.ignoreOlderThanC * Kronos.Hour) return null;
 
         const json = button.getAttributeStrict('data-units-forecast');
-        const cUnits = JSON.parse(json) as TemplateUnits;
+        const cUnits = JSON.parse(json) as PlunderUnits;
         const templateC = allTemplates.getStrict('c');
 
         // Atualiza a quantidade de tropas disponíveis no modelo C.
@@ -267,49 +255,49 @@ async function getTemplateC<T extends keyof TemplateUnits>(
                 // De maneira completamente aleatória, o jogo às vezes retorna uma string em vez de um número no JSON.
                 // Por isso, é necessário garantir que o valor seja um número inteiro.
                 templateC.units[unit] = isInteger(amount) ? amount : Number.parseIntStrict(amount);
-            };
-        };
+            }
+        }
 
         await nextTick();
         if (Object.values(templateC.units).every((amount) => amount === 0)) return null;
 
-        if (!templateC.ok.value) {
+        if (!templateC.ok()) {
             const unitStore = useUnitsStore();
-            for (const [unit, amount] of Object.entries({ ...templateC.units }) as [FarmUnits, number][]) {
+            for (const [unit, amount] of Object.entries({ ...templateC.units }) as [keyof PlunderUnits, number][]) {
                 if (amount === 0 || unit === 'spy') continue;
                 templateC.units[unit] = unitStore[unit];
-            };
-        };
+            }
+        }
 
         await nextTick();
-        if (!templateC.ok.value) return null;
+        if (!templateC.ok()) return null;
 
-        templateC.carry.value = await calcCarryCapacity({ ...templateC.units });
+        templateC.carry = await calcCarryCapacity({ ...templateC.units });
         return templateC;
 
     } catch (err) {
-        PlunderError.catch(err);
+        TribalWorkerError.catch(err);
         return null;
-    };
-};
+    }
+}
 
-async function calcCarryCapacity(units: TemplateUnits) {
+async function calcCarryCapacity(units: PlunderUnits) {
     const carry = await ipcInvoke('plunder:calc-carry-capacity', units);
     assertInteger(carry, `Expected carry capacity to be an integer, but got ${carry}.`);
     return carry;
-};
+}
 
 async function parseCustomPlunderTemplate(template: PlunderCustomTemplateType) {
     const plunderTemplate = new PlunderCustomTemplate(template.type, template.alias);
 
-    for (const [unit, amount] of Object.entries(template.units) as [FarmUnits, number][]) {
-        assertFarmUnit(unit, PlunderError, `${unit} is not a valid farm unit.`);
+    for (const [unit, amount] of Object.entries(template.units) as [PlunderUnits, number][]) {
+        assertPlunderUnit(unit, TribalWorkerError, `${unit} is not a valid plunder unit.`);
         assertInteger(amount, `Expected ${unit} amount to be an integer, but got ${amount}.`);
         plunderTemplate.units[unit] = amount;
-    };
+    }
 
     plunderTemplate.carry.value = await calcCarryCapacity(plunderTemplate.units);
 
     await nextTick();
     return plunderTemplate;
-};
+}

@@ -7,8 +7,13 @@ import { MainProcessError } from '$electron/error';
 export function setUnitsEvents() {
     ipcMain.handle('game:count-troops', async (_e, group: number = 0) => {
         try {
+            if (!Number.isInteger(group) || group < 0) {
+                throw new MainProcessError(`Invalid group: ${group}.`);
+            }
+
             const amount = await countTroops(group);
             return amount;
+            
         } catch (err) {
             MainProcessError.catch(err);
             return null;

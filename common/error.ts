@@ -12,8 +12,8 @@ export class AresError extends Error {
             content += `${date}\nAres: ${error.ares} Electron: ${error.electron} Chrome: ${error.chrome}\n`;
             content += `Tribal Wars: ${error.tribal ?? 'unknown'} Locale: ${error.locale ?? 'unknown'}\n`;
             content += `${error.stack ?? error.message}\n\n`;
-        };
+        }
 
         return content;
-    };
-};
+    }
+}

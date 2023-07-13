@@ -27,7 +27,7 @@ export function setPlunderConfigEvents() {
     ipcMain.on('plunder:update-config', async (e, config: PlunderConfigType) => {
         try {
             const alias = userAlias.value;
-            assertUserAlias(alias, MainProcessError);
+            assertUserAlias(alias, 'Cannot update plunder config without a valid user alias.');
 
             await sequelize.transaction(async () => {
                 await PlunderConfig.upsert({ id: alias, ...plunderConfigStore });

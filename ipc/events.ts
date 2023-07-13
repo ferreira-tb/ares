@@ -13,17 +13,17 @@ export function setIpcTribalEvents() {
         } catch (err) {
             IpcTribalError.catch(err);
             return null;
-        };
+        }
     });
 
-    IpcTribal.handle('get-game-data', () => {
+    IpcTribal.handle('ipc-tribal:game-data', () => {
         try {
             const rawGameData = TribalWars.getGameData();
             return new TribalWarsGameData(rawGameData);
         } catch (err) {
             IpcTribalError.catch(err);
             return null;
-        };
+        }
     });
 
     IpcTribal.handle('ipc-tribal:incoming-attacks', () => {
@@ -33,7 +33,7 @@ export function setIpcTribalEvents() {
         } catch (err) {
             IpcTribalError.catch(err);
             return null;
-        };
+        }
     });
 
     IpcTribal.handle('ipc-tribal:plunder-info', () => {
@@ -43,10 +43,10 @@ export function setIpcTribalEvents() {
         } catch (err) {
             IpcTribalError.catch(err);
             return null;
-        };
+        }
     });
 
-    IpcTribal.handle('get-response-time', () => {
+    IpcTribal.handle('ipc-tribal:response-time', () => {
         try {
             const responseTime = Timing.offset_to_server;
             if (!Number.isInteger(responseTime)) throw new IpcTribalError('Failed to get response time');
@@ -54,7 +54,7 @@ export function setIpcTribalEvents() {
         } catch (err) {
             IpcTribalError.catch(err);
             return null;
-        };
+        }
     });
 
     IpcTribal.handle('ipc-tribal:timing', () => {
@@ -63,6 +63,6 @@ export function setIpcTribalEvents() {
         } catch (err) {
             IpcTribalError.catch(err);
             return null;
-        };
+        }
     });
-};
+}

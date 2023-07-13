@@ -1,10 +1,5 @@
-import { assertString, isString } from '$common/guards';
+import { isString } from 'lodash-es';
 import { Units } from '$common/templates';
-
-interface MaybeNotArcherWorld extends Omit<UnitsAmountAsStrings, 'archer' | 'marcher'> {
-    archer?: string;
-    marcher?: string;
-};
 
 export class GameUnits extends Units {
     public override readonly spear: number;
@@ -22,12 +17,8 @@ export class GameUnits extends Units {
     public override readonly archer: number;
     public override readonly marcher: number;
 
-    constructor(units: MaybeNotArcherWorld) {
+    constructor(units: PartialKeys<{ [K in AllUnits]: string }, 'archer' | 'marcher'>) {
         super();
-        
-        for (const unit of Object.keys(units)) {
-            assertString(unit, 'Invalid unit name');
-        };
 
         this.spear = units.spear.toIntegerStrict();
         this.sword = units.sword.toIntegerStrict();
@@ -44,5 +35,5 @@ export class GameUnits extends Units {
         // Serão undefined em mundos sem arqueiros.
         this.archer = isString(units.archer) ? units.archer.toIntegerStrict() : 0;
         this.marcher = isString(units.marcher) ? units.marcher.toIntegerStrict() : 0;
-    };
-};
+    }
+}

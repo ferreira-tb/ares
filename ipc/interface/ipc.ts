@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unified-signatures */
 import { assertString, isString } from '$common/guards';
 import { IpcTribalError } from '$ipc/interface/error';
 import type { PlunderInfo, TribalWarsGameData, TribalWarsTiming, GameUnits } from '$ipc/templates';
@@ -12,7 +13,7 @@ export class IpcTribal {
     private constructor(channel: string, ...args: unknown[]) {
         this.channel = channel;
         this.message = args;
-    };
+    }
 
     private static uuid: number = 0;
     private static readonly generateUUID = (type: 'invoke' | 'send') => `${type}${(++this.uuid).toString(10)}`;
@@ -23,13 +24,13 @@ export class IpcTribal {
         const uuid = this.generateUUID('send');
         const ipc = new IpcTribal(channel, uuid, ...args);
         window.postMessage(ipc, '*');
-    };
+    }
 
     public static invoke(channel: 'ipc-tribal:current-village-units'): Promise<GameUnits | null>;
-    public static invoke(channel: 'get-game-data'): Promise<TribalWarsGameData | null>;
+    public static invoke(channel: 'ipc-tribal:game-data'): Promise<TribalWarsGameData | null>;
     public static invoke(channel: 'ipc-tribal:incoming-attacks'): Promise<number>;
     public static invoke(channel: 'ipc-tribal:plunder-info'): Promise<PlunderInfo | null>;
-    public static invoke(channel: 'get-response-time'): Promise<number | null>;
+    public static invoke(channel: 'ipc-tribal:response-time'): Promise<number | null>;
     public static invoke(channel: 'ipc-tribal:timing'): Promise<TribalWarsTiming | null>;
     public static invoke(channel: string, ...args: unknown[]): Promise<unknown> {
         return new Promise((resolve) => {
@@ -45,18 +46,19 @@ export class IpcTribal {
                     window.removeEventListener('message', request);
                     e.data.message.shift();
                     resolve(e.data.message[0]);
-                };
+                }
             };
 
             window.addEventListener('message', request);
             window.postMessage(ipc, '*');
         });
-    };
+    }
 
     public static handle(channel: 'ipc-tribal:current-village-units', listener: () => GameUnits | null): void;
-    public static handle(channel: 'get-game-data', listener: () => TribalWarsGameData | null): void;
-    public static handle(channel: 'ipc-tribal:incoming-attacks' | 'get-response-time', listener: () => number | null): void;
+    public static handle(channel: 'ipc-tribal:game-data', listener: () => TribalWarsGameData | null): void;
+    public static handle(channel: 'ipc-tribal:incoming-attacks', listener: () => number | null): void;
     public static handle(channel: 'ipc-tribal:plunder-info', listener: () => PlunderInfo | null): void;
+    public static handle(channel: 'ipc-tribal:response-time', listener: () => number | null): void;
     public static handle(channel: 'ipc-tribal:timing', listener: () => TribalWarsTiming | null): void;
     public static handle(channel: string, listener: (...args: unknown[]) => unknown): void {
         channel = this.handleKey(channel);
@@ -79,10 +81,10 @@ export class IpcTribal {
 
                 } catch (err) {
                     IpcTribalError.catch(err);
-                };
-            };
+                }
+            }
         });
-    };
+    }
 
     public static on(channel: UIMessageType, listener: (message: string) => void): void;
     public static on(channel: string, listener: (...args: any[]) => void) {
@@ -101,14 +103,14 @@ export class IpcTribal {
 
                 } catch (err) {
                     IpcTribalError.catch(err);
-                };
-            };
+                }
+            }
         });
-    };
+    }
 
 
     private static handleKey(channel: string) {
         assertString(channel, 'IpcTribal channel must be a string.');
         return `ipc-${channel}`;
-    };
-};
+    }
+}

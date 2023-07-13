@@ -29,14 +29,14 @@ export function prepareAttack(plunderAttack: PlunderAttack, button: HTMLAnchorEl
                 .then(() => resolve())
                 .catch((err: unknown) => reject(err))
                 .finally(() => cleanup());
-        };
+        }
 
         function stop() {
             clearTimeout(attackTimeout);
             reject();
-        };
+        }
     });
-};
+}
 
 /**
  * O Plunder cumpre sua tarefa bem mais rápido que o servidor consegue responder.
@@ -60,7 +60,7 @@ function sendAttack(button: HTMLAnchorElement) {
         observer.stop();
         reject();
     });
-};
+}
 
 /**
  * Envia um ataque com as unidades especificadas a partir da praça de reunião.
@@ -68,12 +68,12 @@ function sendAttack(button: HTMLAnchorElement) {
  * @param units Unidades que serão enviadas.
  * @returns `true` se o ataque foi enviado com sucesso, `false` caso contrário.
  */
-export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<boolean> {
+export async function sendAttackFromPlace(units: PlaceUnitAmount): Promise<boolean> {
     try {
         const isArcherWorld = await ipcInvoke('world:is-archer-world');
         if (typeof isArcherWorld !== 'boolean') {
             throw new PlunderError('Could not determine if world is archer world.');
-        };
+        }
         
         const commandForm = document.queryStrict('#command-data-form[action*="place" i]');
         for (const [key, value] of Object.entries(units)) {
@@ -83,7 +83,7 @@ export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<bool
             const selector = `input#unit_input_${key}[name*="${key}" i][class*="unitsInput" i]`;
             const input = commandForm.queryStrict<HTMLInputElement>(selector);
             input.value = value.toString(10);
-        };
+        }
 
         await submitAndWaitConfirmationPopup(commandForm);
 
@@ -96,15 +96,15 @@ export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<bool
         // Confirma se a quantidade de tropas sendo enviada é igual à quantidade de tropas exigida.
         for (const unit of unitsBeingSent) {
             const elClass = unit.getAttributeStrict('class');
-            const unitName = elClass.match(unitsRegex)?.[0] as keyof PlaceUnitsAmount | undefined;
+            const unitName = elClass.match(unitsRegex)?.[0] as keyof PlaceUnitAmount | undefined;
             assertString(unitName, `Could not determine unit name from class "${elClass}".`);
             const unitAmount = unit.parseIntStrict(10, false);
             assertInteger(unitAmount, `Could not determine ${unitName} amount.`);
 
             if (unitAmount !== units[unitName]) {
                 throw new PlunderError(`${unitName} amount is not equal to the required amount.`);
-            };
-        };
+            }
+        }
 
         await sendAttack(confirmationButton);
         return true;
@@ -115,8 +115,8 @@ export async function sendAttackFromPlace(units: PlaceUnitsAmount): Promise<bool
         const closeButton = document.querySelector<HTMLAnchorElement>(selector);
         if (closeButton) closeButton.click();
         return false;
-    };
-};
+    }
+}
 
 /** Confirma o envio do ataque pela pop-up da praça de reunião. */
 function submitAndWaitConfirmationPopup(commandForm: Element) {
@@ -147,4 +147,4 @@ function submitAndWaitConfirmationPopup(commandForm: Element) {
         observer.stop();
         reject();
     });
-};
+}

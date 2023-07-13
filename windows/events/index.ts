@@ -7,8 +7,7 @@ import {
     usePlunderConfigStore,
     usePlunderHistoryStore,
     useSnobConfigStore,
-    useSnobHistoryStore,
-    useUnitsStore
+    useSnobHistoryStore
 } from '$renderer/stores';
 
 export function setWindowEvents() {
@@ -17,7 +16,6 @@ export function setWindowEvents() {
     const plunderHistoryStore = usePlunderHistoryStore();
     const snobConfigStore = useSnobConfigStore();
     const snobHistoryStore = useSnobHistoryStore();
-    const unitStore = useUnitsStore();
 
     ipcOnce('window:set-route', async (_e, name: StandardWindowName) => {
         try {
@@ -28,7 +26,6 @@ export function setWindowEvents() {
     });
 
     ipcOn('game:patch-game-data', (_e, data: TribalWarsGameDataType) => gameDataStore.$patch(data));
-    ipcOn('game:patch-village-units', (_e, units: UnitAmount) => unitStore.$patch(units));
     ipcOn('plunder:patch-config', (_e, config: PlunderConfigType) => plunderConfigStore.$patch(config));
     ipcOn('plunder:patch-history', (_e, history: PlunderHistoryType) => plunderHistoryStore.$patch(history));
     ipcOn('snob:patch-config', (_e, config: SnobConfigType) => snobConfigStore.$patch(config));
