@@ -1,0 +1,1 @@
+import{h as e,j as a,k as l,C as t,u as o,m as c,B as r,_ as n}from"./framework.832c03ad.js";const _=["src","alt"],m=e({__name:"FlexImage",props:{src:{},alt:{}},setup(u){return(s,f)=>(a(),l("div",{class:c(s.$style["flex-image"])},[t("img",{src:o(r)(s.src),alt:s.alt},null,8,_)],2))}}),i={"flex-image":"_flex-image_1adu9_2"},p={$style:i},g=n(m,[["__cssModules",p]]);export{g as F};
