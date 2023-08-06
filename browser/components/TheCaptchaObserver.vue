@@ -2,7 +2,6 @@
 import { ref, watchSyncEffect, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useMutationObserver } from '@vueuse/core';
-import { isInstanceOf } from '$common/guards';
 import { useBrowserStore } from '$renderer/stores';
 import { ipcSend, ipcInvoke } from '$renderer/ipc';
 import type { UseMutationObserverOptions } from '@vueuse/core';
@@ -34,7 +33,7 @@ useMutationObserver(content, (mutations) => {
 
 function thereIsBotCheck() {
     const botCheck = document.querySelector('#bot_check');
-    return isInstanceOf(botCheck, HTMLElement);
+    return botCheck instanceof HTMLElement;
 }
 
 function thereIsBotCheckAmongNodes(rawNodes: NodeList) {
@@ -43,7 +42,7 @@ function thereIsBotCheckAmongNodes(rawNodes: NodeList) {
 }
 
 function isBotCheck(node: Node) {
-    if (!isInstanceOf(node, HTMLElement)) return false;
+    if (!(node instanceof HTMLElement)) return false;
     return node.matches('#bot_check');
 }
 

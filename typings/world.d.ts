@@ -64,7 +64,7 @@ interface WorldAlliesModel extends SequelizeModel {
     points: number;
     allPoints: number;
     rank: number;
-};
+}
 
 type WorldAllyType = Omit<WorldAlliesModel, keyof import('sequelize').Model>;
 
@@ -75,7 +75,7 @@ interface WorldPlayersModel extends SequelizeModel {
     villages: number;
     points: number;
     rank: number;
-};
+}
 
 type WorldPlayerType = Omit<WorldPlayersModel, keyof import('sequelize').Model>;
 
@@ -87,6 +87,6 @@ interface WorldVillagesModel extends SequelizeModel {
     player: number;
     points: number;
     type: number;
-};
+}
 
 type WorldVillageType = Omit<WorldVillagesModel, keyof import('sequelize').Model>;

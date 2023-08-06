@@ -49,8 +49,8 @@ export class PlunderTargetInfo {
 
     constructor(villageId: number) {
         this.id = villageId;
-    };
-};
+    }
+}
 
 /** Ajuda a controlar o MutationObserver. */
 const eventTarget = new EventTarget();
@@ -61,7 +61,7 @@ export const targets = new Map<string, PlunderTargetInfo>();
 /** Retorna uma versão somente leitura do mapa com as informações sobre as aldeias-alvo. */
 export function getPlunderTargets() {
     return targets as ReadonlyMap<string, Readonly<PlunderTargetInfo>>;
-};
+}
 
 export function queryTargetsInfo() {
     // Desconecta qualquer observer que esteja ativo.
@@ -97,7 +97,7 @@ export function queryTargetsInfo() {
 
         // Armazena os dados obtidos.
         targets.set(villageId, info);
-    };
+    }
 
     // Dispara a função novamente caso surjam alterações na tabela.
     const plunderList = document.queryStrict<HTMLTableElement>('#plunder_list');
@@ -106,7 +106,7 @@ export function queryTargetsInfo() {
 
     // Caso a função seja chamada novamente, desconecta o observer ativo.
     useEventListener(eventTarget, 'stop', () => observer.stop(), { once: true });
-};
+}
 
 function queryReport(row: Element, info: PlunderTargetInfo, currentX: number | null, currentY: number | null) {
     assertInteger(currentX, `Current village X coordinate is invalid: ${currentX}.`);
@@ -118,14 +118,14 @@ function queryReport(row: Element, info: PlunderTargetInfo, currentX: number | n
     info.distance = calcDistance(currentX, currentY, coords[0], coords[1]);
     info.coords.x = coords[0];
     info.coords.y = coords[1];
-};
+}
 
 function queryLastAttack(row: Element, info: PlunderTargetInfo) {
     const selector = 'td:not(:has(a)):not(:has(img)):not(:has(span.icon))';
     const fields = row.queryAsArray(selector);
     if (fields.length === 0) {
         throw new PlunderError(`Invalid CSS selector: ${selector}.`);
-    };
+    }
 
     for (const field of fields) {
         if (!field.textContent) continue;
@@ -134,11 +134,11 @@ function queryLastAttack(row: Element, info: PlunderTargetInfo) {
             info.lastAttack = date;
             info.minutesSince = Math.ceil((Date.now() - date) / Kronos.Minute);
             return;
-        };
-    };
+        }
+    }
 
     throw new PlunderError('Could not find last attack date.');
-};
+}
 
 /**
  * Verifica se existem informações sobre os recursos disponíveis na aldeia-alvo.
@@ -156,7 +156,7 @@ function queryResourcesField(row: Element, info: PlunderTargetInfo): Element | n
         row.queryStrict('span[data-title*="explorador" i]');
         info.spyInfo = false;
         return null;
-    };
+    }
 
     const woodField = resourcesField.queryStrict('span span[class*="wood" i] + span');
     const stoneField = resourcesField.queryStrict('span span[class*="stone" i] + span');
@@ -173,7 +173,7 @@ function queryResourcesField(row: Element, info: PlunderTargetInfo): Element | n
 
     info.spyInfo = true;
     return resourcesField;
-};
+}
 
 /**
  * É preciso usar o campo dos recursos como referência para encontrar o nível da muralha.
@@ -191,7 +191,7 @@ function queryWallLevel(resourcesField: Element | null, info: PlunderTargetInfo)
     assertWallLevel(wallLevel, PlunderError, 'Found invalid wall level.');
 
     info.wallLevel = wallLevel;
-};
+}
 
 /**
  * Não pode haver emissão de erro caso os botões não forem encontrados.
@@ -208,8 +208,8 @@ function queryTemplateButtons(row: Element, info: PlunderTargetInfo) {
         // Verifica se o botão C está desativado.
         const cButtonStatus = info.button.c.getAttributeStrict('class');
         if (cButtonStatus.includes('disabled')) info.button.c = null;
-    };
-};
+    }
+}
 
 /**
  * Encontra o botão da praça de reunião.
@@ -218,4 +218,4 @@ function queryTemplateButtons(row: Element, info: PlunderTargetInfo) {
  */
 function queryPlaceButton(row: Element, info: PlunderTargetInfo) {
     info.button.place = row.queryStrict<HTMLAnchorElement>('td a[href*="screen=place" i][onclick]:has(img)');
-};
+}

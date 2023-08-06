@@ -16,8 +16,8 @@ export async function handleLackOfTargets(groupInfo: PlunderGroupType | null) {
         navigateToNextVillage(config, groupInfo);
     } catch (err) {
         PlunderError.catch(err);
-    };
-};
+    }
+}
 
 async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStore>, groupInfo: PlunderGroupType | null) {
     try {
@@ -29,7 +29,7 @@ async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStor
             const currentVillageId = gameData.getVillageId();
             const villageStatus = groupInfo.villages.get(currentVillageId);
             if (villageStatus) maxDistance = villageStatus.waveMaxDistance;
-        };
+        }
 
         const targets: ReadonlyArray<Readonly<PlunderTargetInfo>> = Array.from(getPlunderTargets().values());
         const biggestDistance = targets.reduce((biggest, target) => Math.max(biggest, target.distance), 0);
@@ -41,8 +41,8 @@ async function navigateToNextPage(config: ReturnType<typeof usePlunderConfigStor
     } catch (err) {
         PlunderError.catch(err);
         return false;
-    };
-};
+    }
+}
 
 function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>, groupInfo: PlunderGroupType) {
     try {
@@ -59,15 +59,15 @@ function navigateToNextVillage(config: ReturnType<typeof usePlunderConfigStore>,
             groupVillage.done = true;
         } else {
             groupVillage.waveMaxDistance += config.fieldsPerWave;
-        };
+        }
 
         ipcSend('plunder:update-group-info', toRaw(groupInfo));
         ipcSend('plunder:navigate-to-next-village', currentVillageId);
 
     } catch (err) {
         PlunderError.catch(err);
-    };
-};
+    }
+}
 
 /** Verifica se algum dos modelos pode ser usado para atacar. */
 function canSomeTemplateAttack() {
@@ -75,13 +75,13 @@ function canSomeTemplateAttack() {
     const allTemplates = Array.from(templatesMap.values()).filter((template) => template.type !== 'c');
     const status = allTemplates.map((template) => template.ok.value);
     return status.some((ok) => ok);
-};
+}
 
 function isOverWaveMaxDistance(config: ReturnType<typeof usePlunderConfigStore>, groupVillage: PlunderGroupVillageType) {
     return groupVillage.waveMaxDistance >= config.maxDistance;
-};
+}
 
 function isOverTemplateCMaxDistance(config: ReturnType<typeof usePlunderConfigStore>, groupVillage: PlunderGroupVillageType) {
     if (!config.useC || config.useCPattern !== 'only') return false;
     return groupVillage.waveMaxDistance >= config.maxDistanceC;
-};
+}

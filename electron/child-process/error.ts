@@ -25,6 +25,6 @@ export class ChildProcessError extends AresError {
             const content = this.generateLogContent(errorLog);
             const logPath = path.join(process.env.USER_DATA_PATH, 'error.log');
             await fs.appendFile(logPath, content, { encoding: 'utf-8' });
-        };
-    };
-};
+        }
+    }
+}

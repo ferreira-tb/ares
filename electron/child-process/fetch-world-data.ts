@@ -13,8 +13,8 @@ process.parentPort.once('message', async (e) => {
     const [port] = e.ports;
     try {
         const request = e.data as WorldDataRequest;
-        assertWorld(request.world, ChildProcessError, `Invalid world: ${request.world}.`);
-        const region = getRegionFromWorld(request.world, ChildProcessError);
+        assertWorld(request.world, `Invalid world: ${request.world}.`);
+        const region = getRegionFromWorld(request.world);
 
         const allies = request.ally ? await fetchAllies(request.world, region) : [];
         const players = request.player ? await fetchPlayers(request.world, region) : [];

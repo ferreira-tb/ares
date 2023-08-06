@@ -49,7 +49,7 @@ app.once('will-quit', async (e) => {
             await sequelize.sync({ alter: { drop: false } });
         } else {
             await sequelize.sync();
-        }   
+        }
     } catch (err) {
         await MainProcessError.log(err);
     }

@@ -8,8 +8,8 @@ class PlunderPageList implements PlunderPageListType {
     constructor() {
         const gameData = useGameDataStore();
         this.id = gameData.getVillageId();
-    };
-};
+    }
+}
 
 class PlunderPage implements PlunderPageType {
     public readonly index: number;
@@ -18,8 +18,8 @@ class PlunderPage implements PlunderPageType {
     constructor(plunderStore: ReturnType<typeof usePlunderStore>, index: number) {
         this.index = index;
         this.done = plunderStore.page === index;
-    };
-};
+    }
+}
 
 /** Obtém informações sobre a aldeia atual e as envia para o cache no processo principal. */
 export function queryCurrentVillageInfo() {
@@ -30,8 +30,8 @@ export function queryCurrentVillageInfo() {
         ipcSend('plunder:update-pages-info', pages);
     } else {
         ipcSend('plunder:update-pages-info', null);
-    };
-};
+    }
+}
 
 function queryPlunderPages(pages: PlunderPageListType) {
     const plunderNav = document.querySelector('#plunder_list_nav table td:has(.paged-nav-item)');
@@ -52,7 +52,7 @@ function queryPlunderPages(pages: PlunderPageListType) {
     for (let i = 0; i <= lastIndex; i++) {
         const plunderPage = new PlunderPage(plunderStore, i);
         pages.all.push(plunderPage);
-    };
+    }
 
     return true;
-};
+}

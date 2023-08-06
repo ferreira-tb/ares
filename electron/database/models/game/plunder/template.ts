@@ -1,7 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$common/guards';
-import { DatabaseError } from '$electron/error';
 import type { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 
 export class PlunderCustomTemplate extends Model<
@@ -26,7 +25,7 @@ PlunderCustomTemplate.init({
         allowNull: false,
         validate: {
             isUserAlias(value: unknown) {
-                assertUserAlias(value, DatabaseError);
+                assertUserAlias(value);
             }
         }
     },

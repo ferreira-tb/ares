@@ -1,7 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '$electron/database';
 import { assertUserAlias } from '$common/guards';
-import { DatabaseError } from '$electron/error';
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 
 export class PlunderDemolitionTemplate extends Model<
@@ -29,7 +28,7 @@ PlunderDemolitionTemplate.init({
         allowNull: false,
         validate: {
             isUserAlias(value: unknown) {
-                assertUserAlias(value, DatabaseError);
+                assertUserAlias(value);
             }
         }
     },

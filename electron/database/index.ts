@@ -7,7 +7,7 @@ Sequelize.useCLS(namespace);
 
 class SequelizeDatabase extends Sequelize {
     public isClosed: boolean = false;
-};
+}
 
 export const sequelize = new SequelizeDatabase({
     dialect: 'sqlite',

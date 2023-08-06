@@ -1,6 +1,6 @@
 export function decodeString(str: string) {
     return decodeURIComponent(str).replace(/\+/g, ' ');
-};
+}
 
 export function decodeAlly(raw: WorldAllyType) {
     return {
@@ -13,7 +13,7 @@ export function decodeAlly(raw: WorldAllyType) {
         allPoints: raw.allPoints,
         rank: raw.rank
     };
-};
+}
 
 export function decodePlayer(raw: WorldPlayerType) {
     return {
@@ -24,7 +24,7 @@ export function decodePlayer(raw: WorldPlayerType) {
         rank: raw.rank,
         ally: raw.ally
     };
-};
+}
 
 export function decodeVillage(raw: WorldVillageType) {
     return {
@@ -36,7 +36,7 @@ export function decodeVillage(raw: WorldVillageType) {
         points: raw.points,
         type: raw.type
     };
-};
+}
 
 export function decodeVillageGroups(raw: VillageGroup[]) {
     return raw.map((group) => {
@@ -46,4 +46,4 @@ export function decodeVillageGroups(raw: VillageGroup[]) {
             type: group.type
         };
     });
-};
+}

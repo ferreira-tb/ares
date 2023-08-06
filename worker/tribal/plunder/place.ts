@@ -26,4 +26,4 @@ export function openPlace(placeButton: PlunderTargetInfo['button']['place']) {
         observer.stop();
         reject();
     });
-};
+}

@@ -40,7 +40,7 @@ PlunderHistory.init({
         unique: true,
         validate: {
             isUserAlias(value: unknown) {
-                assertUserAlias(value, DatabaseError);
+                assertUserAlias(value);
             }
         }
     },

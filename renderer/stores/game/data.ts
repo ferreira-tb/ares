@@ -42,16 +42,16 @@ export const useGameDataStore = defineStore('game-data', () => {
     function getVillageId() {
         if (typeof village.value.id !== 'number' || !Number.isInteger(village.value.id)) {
             throw new TypeError(`${village.value.id} is not a valid village id.`);
-        };
+        }
 
         return village.value.id;
-    };
+    }
 
     function useCoords() {
         return computed<[number | null, number | null]>(() => {
             return [village.value.x, village.value.y];
         });
-    };
+    }
 
     function useTotalResources() {
         return computed<number | null>(() => {

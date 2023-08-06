@@ -6,4 +6,4 @@ type BackForwardStatus = {
 interface CreateBrowserTabOptions {
     current?: boolean;
     url?: string;
-};
+}

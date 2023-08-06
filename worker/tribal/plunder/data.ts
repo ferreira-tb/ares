@@ -15,11 +15,11 @@ export async function getPlunderInfo() {
         if (!updated) throw new PlunderError('Could not update plunder info.');
     } catch (err) {
         PlunderError.catch(err);
-    };
-};
+    }
+}
 
 export async function updatePlunderConfig() {
     const plunderConfigStore = usePlunderConfigStore();
     const previousConfig = await ipcInvoke('plunder:get-config');
     if (previousConfig) plunderConfigStore.$patch(previousConfig);
-};
+}

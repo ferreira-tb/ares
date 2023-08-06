@@ -23,7 +23,7 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
         const unitStore = useUnitsStore();
         for (const [key, value] of Object.entries(neededUnits) as [keyof DemolitionTroops, number][]) {
             if (unitStore[key] < value) return false;
-        };
+        }
 
         await openPlace(info.button.place);
         const sent = await sendAttackFromPlace(neededUnits);
@@ -37,12 +37,12 @@ export async function destroyWall(info: PlunderTargetInfo): Promise<boolean> {
 
             const gameData = useGameDataStore();
             ipcSend('plunder:attack-sent', gameData.village.id, attack);
-        };
+        }
 
         return sent;
 
     } catch (err) {
         PlunderError.catch(err);
         return false;
-    };
-};
+    }
+}

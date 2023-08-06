@@ -6,7 +6,8 @@ module.exports = {
         name: 'ares',
         executableName: 'ares',
         overwrite: true,
-        icon: path.join(__dirname, 'public/favicon')
+        icon: path.join(__dirname, 'public/favicon'),
+        prune: true
     },
     rebuildConfig: {},
     makers: [

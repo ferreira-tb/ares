@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/unified-signatures */
-import { assertString, isString } from '$common/guards';
 import { IpcTribalError } from '$ipc/interface/error';
 import type { PlunderInfo, TribalWarsGameData, TribalWarsTiming, GameUnits } from '$ipc/templates';
 
@@ -65,7 +64,7 @@ export class IpcTribal {
         window.addEventListener('message', async (e: MessageEvent<IpcTribal>) => {
             if (e.data.channel === channel) {
                 try {
-                    if (!isString(e.data.message[0])) return;
+                    if (typeof e.data.message[0] !== 'string') return;
 
                     // Verifica se há o UUID.
                     const regex = /^invoke\d+$/;
@@ -92,7 +91,7 @@ export class IpcTribal {
         window.addEventListener('message', async (e: MessageEvent<IpcTribal>) => {
             if (e.data.channel === channel) {
                 try {
-                    if (!isString(e.data.message[0])) return;
+                    if (typeof e.data.message[0] !== 'string') return;
 
                     // Verifica se há o UUID.
                     const regex = /^send\d+$/;
@@ -110,7 +109,6 @@ export class IpcTribal {
 
 
     private static handleKey(channel: string) {
-        assertString(channel, 'IpcTribal channel must be a string.');
         return `ipc-${channel}`;
     }
 }

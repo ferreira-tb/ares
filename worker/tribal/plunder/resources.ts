@@ -29,5 +29,5 @@ export class PlunderAttackWithLoot extends PlunderAttack {
             const resName = resources[index];
             this[resName] = Math.ceil(amount * estimate);
         });
-    };
-};
+    }
+}
