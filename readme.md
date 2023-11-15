@@ -1,5 +1,7 @@
 # Ares
 
+**O PROJETO FOI DESCONTINUADO.**
+
 Ares é um ambiente completo para se jogar Tribal Wars, que será sempre **gratuito** e **open source**.
 
 Para entender como ele funciona, acesse nosso [site](https://tb.dev.br/ares/).
